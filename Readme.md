@@ -1,0 +1,1 @@
+# Repository für Bachelor Praktikum
