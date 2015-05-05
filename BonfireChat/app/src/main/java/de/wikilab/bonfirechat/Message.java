@@ -4,7 +4,7 @@ package de.wikilab.bonfirechat;
  * Created by johannes on 05.05.15.
  */
 public class Message {
-    enum MessageDirection {
+    public enum MessageDirection {
         Unknown,
         Sent,
         Received
