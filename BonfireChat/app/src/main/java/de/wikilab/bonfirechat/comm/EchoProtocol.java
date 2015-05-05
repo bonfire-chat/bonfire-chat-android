@@ -12,7 +12,7 @@ public class EchoProtocol implements IProtocol {
     @Override
     public void sendMessage(String target, Message message) {
         Message newMsg = new Message(message.body, Message.MessageDirection.Received);
-        listener.onMessageReceived(this, message);
+        listener.onMessageReceived(this, newMsg);
     }
 
     @Override
