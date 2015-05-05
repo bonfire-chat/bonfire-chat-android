@@ -16,12 +16,12 @@ import java.util.List;
  */
 public class ContactsAdapter extends ArrayAdapter<Contact> {
     private final Context context;
-    private final ArrayList<Contact> objects;
+    private final List<Contact> objects;
 
     public ContactsAdapter(Context context, List<Contact> objects) {
         super(context, R.layout.contacts_layout, objects);
         this.context = context;
-        this.objects = new ArrayList<>(objects);
+        this.objects = objects;
     }
 
     @Override
