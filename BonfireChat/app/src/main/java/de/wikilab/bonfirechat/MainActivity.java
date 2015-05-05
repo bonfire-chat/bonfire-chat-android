@@ -5,19 +5,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,9 +31,17 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
 
+    private ArrayList<Fragment> fragments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fragments = new ArrayList<>();
+        fragments.add(new ConversationsFragment());
+        fragments.add(new ContactsFragment());
+        fragments.add(new SettingsFragment());
+
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -49,20 +52,6 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        final ListView chatList = (ListView) findViewById(R.id.chatList);
-        final ArrayList<Conversation> chatListItems = new ArrayList<Conversation>();
-        for (int i = 0; i < 10; i++) {
-            Message[] messages = {
-                    new Message("hallo")
-            };
-            chatListItems.add(new Conversation(
-                    new Contact("Johannes Lauinger"),
-                    Arrays.asList(messages)
-            ));
-        }
-        final ConversationsAdapter adapter = new ConversationsAdapter(this, chatListItems);
-        chatList.setAdapter(adapter);
     }
 
     @Override
@@ -70,20 +59,20 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, fragments.get(position))
                 .commit();
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
+    public void onSectionAttached(String id) {
+        switch (id) {
+            case "conversations":
+                mTitle = getString(R.string.title_conversations);
                 break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
+            case "contacts":
+                mTitle = getString(R.string.title_contacts);
                 break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
+            case "settings":
+                mTitle = getString(R.string.title_settings);
                 break;
         }
     }
@@ -125,42 +114,83 @@ public class MainActivity extends ActionBarActivity
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * conversations list
      */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
+    public static class ConversationsFragment extends Fragment {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_conversations, container, false);
+
+            final ListView conversationsList = (ListView) rootView.findViewById(R.id.conversationsList);
+            final ArrayList<Conversation> conversationsListItems = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                Message[] messages = {
+                        new Message("hallo")
+                };
+                conversationsListItems.add(new Conversation(
+                        new Contact("Johannes Lauinger"),
+                        Arrays.asList(messages)
+                ));
+            }
+            final ConversationsAdapter adapter = new ConversationsAdapter(this.getActivity(), conversationsListItems);
+            conversationsList.setAdapter(adapter);
+
             return rootView;
         }
 
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+            ((MainActivity) activity).onSectionAttached("conversations");
+        }
+    }
+
+    /**
+     * contacts list
+     */
+    public static class ContactsFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
+
+            final ListView contactsList = (ListView) rootView.findViewById(R.id.contactsList);
+            final ArrayList<Contact> contactsListItems = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                contactsListItems.add(new Contact("Simon Thiem"));
+            }
+            final ContactsAdapter adapter = new ContactsAdapter(this.getActivity(), contactsListItems);
+            contactsList.setAdapter(adapter);
+
+            return rootView;
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((MainActivity) activity).onSectionAttached("contacts");
+        }
+    }
+
+    /**
+     * settings list
+     */
+    public static class SettingsFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+            return rootView;
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((MainActivity) activity).onSectionAttached("settings");
         }
     }
 
