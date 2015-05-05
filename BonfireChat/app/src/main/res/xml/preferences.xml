@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Kommunikationswege">
+        <CheckBoxPreference android:title="Verwende Bluetooth"></CheckBoxPreference>
+
+        <CheckBoxPreference android:title="Verwende Wi-Fi (AdHoc)"></CheckBoxPreference>
+
+        <CheckBoxPreference android:title="Verwende Mobile Daten / Wi-Fi"></CheckBoxPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Sonstiges">
+        <PreferenceScreen android:title="Über BonfireChat">
+            <Preference android:title="Entwickelt an der TU Darmstadt"
+                android:summary=" "></Preference>
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
