@@ -1,6 +1,7 @@
 package de.wikilab.bonfirechat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,11 +10,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static android.widget.AdapterView.*;
 
 /**
  * conversations list
@@ -40,7 +44,7 @@ public class ConversationsFragment extends Fragment {
         final ArrayList<Conversation> conversationsListItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Message[] messages = {
-                    new Message("hallo")
+                    new Message("hallo", Message.MessageDirection.Received)
             };
             conversationsListItems.add(new Conversation(
                     new Contact("Johannes Lauinger"),
@@ -49,6 +53,7 @@ public class ConversationsFragment extends Fragment {
         }
         final ConversationsAdapter adapter = new ConversationsAdapter(this.getActivity(), conversationsListItems);
         conversationsList.setAdapter(adapter);
+        conversationsList.setOnItemClickListener(itemClickListener);
 
         return rootView;
     }
@@ -70,4 +75,12 @@ public class ConversationsFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public OnItemClickListener itemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent i = new Intent(getActivity(), MessagesActivity.class);
+            startActivity(i);
+        }
+    };
 }
