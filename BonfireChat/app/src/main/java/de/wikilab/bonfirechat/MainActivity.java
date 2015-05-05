@@ -16,7 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class MainActivity extends ActionBarActivity
@@ -45,6 +49,20 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        final ListView chatList = (ListView) findViewById(R.id.chatList);
+        final ArrayList<Conversation> chatListItems = new ArrayList<Conversation>();
+        for (int i = 0; i < 10; i++) {
+            Message[] messages = {
+                    new Message("hallo")
+            };
+            chatListItems.add(new Conversation(
+                    new Contact("Johannes Lauinger"),
+                    Arrays.asList(messages)
+            ));
+        }
+        final ConversationsAdapter adapter = new ConversationsAdapter(this, chatListItems);
+        chatList.setAdapter(adapter);
     }
 
     @Override
