@@ -15,9 +15,15 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 public class BonfireData extends SQLiteOpenHelper{
 
     private static String CONTACTS = "contacts";
+    private static BonfireData instance;
 
-    BonfireData(Context context) {
-        super(context,"CommunicationData", null, 1);
+    public static BonfireData getInstance(Context ctx) {
+        if (instance == null) instance = new BonfireData(ctx);
+        return instance;
+    }
+
+    private BonfireData(Context context) {
+        super(context, "CommunicationData", null, 1);
     }
 
     @Override
