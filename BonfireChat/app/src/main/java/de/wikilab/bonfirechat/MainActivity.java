@@ -129,7 +129,7 @@ public class MainActivity extends ActionBarActivity
             final ArrayList<Conversation> conversationsListItems = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 Message[] messages = {
-                        new Message("hallo")
+                        new Message("hallo", Message.MessageDirection.Received)
                 };
                 conversationsListItems.add(new Conversation(
                         new Contact("Johannes Lauinger"),
