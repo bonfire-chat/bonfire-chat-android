@@ -24,13 +24,30 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         super(context, R.layout.message_rowlayout_received, objects);
     }
 
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getItem(position).direction == Message.MessageDirection.Received ? 1 : 0;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder v;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.message_rowlayout_received, parent, false);
+            switch (getItem(position).direction) {
+                case Received:
+                    convertView = inflater.inflate(R.layout.message_rowlayout_received, parent, false);
+                    break;
+                case Sent:
+                    convertView = inflater.inflate(R.layout.message_rowlayout_sent, parent, false);
+                    break;
+            }
+
             v = new ViewHolder();
             v.messageBody = (TextView) convertView.findViewById(R.id.message_body);
             v.dateTime = (TextView) convertView.findViewById(R.id.message_time);
