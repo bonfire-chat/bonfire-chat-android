@@ -12,4 +12,7 @@
     <string name="action_credits">Über Bonfire Chat</string>
     <string name="action_add_conversation">Neue Unterhaltung</string>
     <string name="action_add_contact">Neuer Kontakt</string>
+
+    <string name="new_contact">Neuer Kontakt</string>
+    <string name="search_contact_by_name">Nach Name suchen:</string>
 </resources>

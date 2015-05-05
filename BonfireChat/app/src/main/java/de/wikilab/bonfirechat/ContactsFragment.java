@@ -63,13 +63,13 @@ public class ContactsFragment extends Fragment {
             input.setSingleLine();
             FrameLayout container = new FrameLayout(getActivity());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.leftMargin = 50;
-            params.rightMargin = 50;
+            params.leftMargin = 60;
+            params.rightMargin = 60;
             input.setLayoutParams(params);
             container.addView(input);
             new AlertDialog.Builder(getActivity())
-                    .setTitle("Neuer Kontakt")
-                    .setMessage("Nach Name suchen:")
+                    .setTitle(R.string.new_contact)
+                    .setMessage(R.string.search_contact_by_name)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
