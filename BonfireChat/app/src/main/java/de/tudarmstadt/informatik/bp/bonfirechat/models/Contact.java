@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 /**
  * Created by johannes on 05.05.15.
@@ -52,5 +53,11 @@ public class Contact {
         values.put("firstName", firstName);
         values.put("lastName", lastName);
         return values;
+    }
+
+    public static Contact fromCursor(Cursor cursor){
+        return new Contact(cursor.getString(cursor.getColumnIndex("uid")),
+                    cursor.getString(cursor.getColumnIndex("firstName")),
+                    cursor.getString(cursor.getColumnIndex("lastName")));
     }
 }

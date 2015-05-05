@@ -41,9 +41,7 @@ public class BonfireData extends SQLiteOpenHelper{
         ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor = db.query(CONTACTS, null, null, null, null, null, null);
         while(cursor.moveToNext()){
-            contacts.add(new Contact(cursor.getString(cursor.getColumnIndex("uid")),
-                    cursor.getString(cursor.getColumnIndex("firstName")),
-                    cursor.getString(cursor.getColumnIndex("lastName"))));
+            contacts.add(Contact.fromCursor(cursor));
         }
         return contacts;
     }
