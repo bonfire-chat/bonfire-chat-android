@@ -1,14 +1,14 @@
-package de.wikilab.bonfirechat;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import de.wikilab.bonfirechat.helper.PreferenceFragment;
-import android.support.v4.app.Fragment;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.wikilab.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 /**
  * settings list
