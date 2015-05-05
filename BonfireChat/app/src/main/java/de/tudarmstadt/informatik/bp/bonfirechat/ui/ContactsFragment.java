@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
@@ -33,11 +34,9 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new ContactsAdapter(this.getActivity(), new ArrayList<Contact>());
-        BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
-        for(Contact contact : bonfireData.getContacts()){
-            adapter.add(contact);
-        }
+        BonfireData db = BonfireData.getInstance(getActivity());
+        List<Contact> contacts = db.getContacts();
+        adapter = new ContactsAdapter(this.getActivity(), contacts);
     }
 
     @Override
@@ -83,12 +82,7 @@ public class ContactsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String name = input.getText().toString();
-                            // TODO: insert sophisticated contact existing check
-                            if (!name.isEmpty()) {
-                                Contact contact = new Contact(name);
-                                bonfireData.createContact(contact);
-                                adapter.add(contact);
-                            }
+                            addContact(name);
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -105,5 +99,14 @@ public class ContactsFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void addContact(String name) {
+        // TODO: insert sophisticated contact existing check
+        if (!name.isEmpty()) {
+            Contact contact = new Contact(name);
+            adapter.add(contact);
+            BonfireData.getInstance(getActivity()).createContact(contact);
+        }
     }
 }
