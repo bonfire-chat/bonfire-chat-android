@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.content.Context;
 
 import java.util.ArrayList;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
@@ -32,6 +34,10 @@ public class ContactsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         adapter = new ContactsAdapter(this.getActivity(), new ArrayList<Contact>());
+        BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
+        for(Contact contact : bonfireData.getContacts()){
+            adapter.add(contact);
+        }
     }
 
     @Override
@@ -59,6 +65,7 @@ public class ContactsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
 
         if (item.getItemId() == R.id.action_add_contact) {
             final EditText input = new EditText(getActivity());
@@ -79,6 +86,7 @@ public class ContactsFragment extends Fragment {
                             // TODO: insert sophisticated contact existing check
                             if (!name.isEmpty()) {
                                 Contact contact = new Contact(name);
+                                bonfireData.createContact(contact);
                                 adapter.add(contact);
                             }
                         }
