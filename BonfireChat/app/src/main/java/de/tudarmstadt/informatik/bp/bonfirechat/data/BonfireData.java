@@ -50,6 +50,6 @@ public class BonfireData extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase base, int oldVersion, int newVersion){
-    //todo
+        // TODO
     }
 }

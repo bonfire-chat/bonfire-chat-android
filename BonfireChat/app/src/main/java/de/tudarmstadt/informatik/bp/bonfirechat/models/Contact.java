@@ -7,14 +7,12 @@ import android.database.Cursor;
  * Created by johannes on 05.05.15.
  */
 public class Contact {
-    private String nickname;
+    private final String nickname;
     private String firstName;
     private String lastName;
 
     public Contact(String nickname) {
-        this.nickname = nickname;
-        this.firstName = "";
-        this.lastName = "";
+        this(nickname, "", "");
     }
 
     public Contact(String nickname, String firstName, String lastName){
@@ -42,6 +40,7 @@ public class Contact {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
     @Override
     public String toString() {
         return nickname;
