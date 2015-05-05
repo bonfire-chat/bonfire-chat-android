@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat.ui;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.wikilab.bonfirechat.models.Message;
-import de.wikilab.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 
 public class MessagesActivity extends ActionBarActivity {

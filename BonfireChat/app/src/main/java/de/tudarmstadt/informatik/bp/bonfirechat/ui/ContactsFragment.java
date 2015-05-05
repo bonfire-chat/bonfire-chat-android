@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat.ui;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,8 +17,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import de.wikilab.bonfirechat.models.Contact;
-import de.wikilab.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 /**
  * contacts list

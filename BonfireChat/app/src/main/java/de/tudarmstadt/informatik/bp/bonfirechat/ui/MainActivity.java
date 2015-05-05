@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat.ui;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -9,7 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import java.util.ArrayList;
 
-import de.wikilab.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 
 public class MainActivity extends ActionBarActivity

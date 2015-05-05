@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat.ui;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import de.wikilab.bonfirechat.models.Contact;
-import de.wikilab.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 /**
  * Created by johannes on 05.05.15.

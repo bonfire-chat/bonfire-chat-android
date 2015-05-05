@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat.ui;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
@@ -20,9 +20,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import de.wikilab.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.

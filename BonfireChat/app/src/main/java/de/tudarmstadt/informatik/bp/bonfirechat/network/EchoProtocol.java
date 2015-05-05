@@ -1,6 +1,6 @@
-package de.wikilab.bonfirechat.network;
+package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import de.wikilab.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by mw on 05.05.2015.

@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat;
+package de.tudarmstadt.informatik.bp.bonfirechat;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat;
+package de.tudarmstadt.informatik.bp.bonfirechat;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
