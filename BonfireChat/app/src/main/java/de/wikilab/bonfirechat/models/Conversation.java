@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat;
+package de.wikilab.bonfirechat.models;
 
 import java.util.ArrayList;
 import java.util.List;

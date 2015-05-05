@@ -1,10 +1,9 @@
-package de.wikilab.bonfirechat;
+package de.wikilab.bonfirechat.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,27 +11,32 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.wikilab.bonfirechat.models.Conversation;
+import de.wikilab.bonfirechat.R;
+
 /**
  * Created by johannes on 05.05.15.
  */
-public class ContactsAdapter extends ArrayAdapter<Contact> {
+public class ConversationsAdapter extends ArrayAdapter<Conversation> {
     private final Context context;
-    private final List<Contact> objects;
+    private final ArrayList<Conversation> objects;
 
-    public ContactsAdapter(Context context, List<Contact> objects) {
-        super(context, R.layout.contacts_layout, objects);
+    public ConversationsAdapter(Context context, List<Conversation> objects) {
+        super(context, R.layout.conversations_layout, objects);
         this.context = context;
-        this.objects = objects;
+        this.objects = new ArrayList<>(objects);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.contacts_layout, parent, false);
+        View rowView = inflater.inflate(R.layout.conversations_layout, parent, false);
         TextView name = (TextView) rowView.findViewById(R.id.name);
+        TextView lastMessage = (TextView) rowView.findViewById(R.id.lastMessage);
         ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
 
         name.setText(objects.get(position).getName());
+        lastMessage.setText(objects.get(position).getLastMessage());
         icon.setImageResource(R.mipmap.ic_launcher);
 
         return rowView;
