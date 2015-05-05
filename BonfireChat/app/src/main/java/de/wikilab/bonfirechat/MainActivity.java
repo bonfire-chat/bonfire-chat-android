@@ -1,6 +1,7 @@
 package de.wikilab.bonfirechat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -136,9 +138,17 @@ public class MainActivity extends ActionBarActivity
             }
             final ConversationsAdapter adapter = new ConversationsAdapter(this.getActivity(), conversationsListItems);
             conversationsList.setAdapter(adapter);
-
+            conversationsList.setOnItemClickListener(itemClickListener);
             return rootView;
         }
+
+        public AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getActivity(), MessagesActivity.class);
+                startActivity(i);
+            }
+        };
 
         @Override
         public void onAttach(Activity activity) {

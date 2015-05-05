@@ -32,9 +32,9 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.message_rowlayout_received, parent, false);
             v = new ViewHolder();
-            TextView name = (TextView) convertView.findViewById(R.id.name);
-            TextView lastMessage = (TextView) convertView.findViewById(R.id.lastMessage);
-            ImageView icon = (ImageView) convertView.findViewById(R.id.icon);
+            v.messageBody = (TextView) convertView.findViewById(R.id.message_body);
+            v.dateTime = (TextView) convertView.findViewById(R.id.message_time);
+            v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
             convertView.setTag(v);
         } else {
             v = (ViewHolder)convertView.getTag();

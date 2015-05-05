@@ -18,7 +18,7 @@
         </activity>
         <activity
             android:name=".MessagesActivity"
-            android:label="@string/title_activity_messages"
+            android:label="Nachrichten"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
