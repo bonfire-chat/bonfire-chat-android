@@ -33,7 +33,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         TextView name = (TextView) rowView.findViewById(R.id.name);
         ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
 
-        name.setText(objects.get(position).getName());
+        name.setText(objects.get(position).getNickname());
         icon.setImageResource(R.mipmap.ic_launcher);
 
         return rowView;
