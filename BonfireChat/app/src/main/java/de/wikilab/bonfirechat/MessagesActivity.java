@@ -42,7 +42,7 @@ public class MessagesActivity extends ActionBarActivity {
             messages.add(new Message(msg, Message.MessageDirection.Sent));
             ListView lv = (ListView) findViewById(R.id.messages_view);
             ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
-
+            ed.setText("");
         }
     };
 
