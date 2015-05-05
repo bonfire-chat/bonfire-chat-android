@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip" >
+    android:padding="6dip">
 
     <ImageView
         android:id="@+id/icon"
@@ -10,7 +10,6 @@
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="6dip"
         android:contentDescription="TODO"
         android:src="@mipmap/ic_launcher" />
 
@@ -24,6 +23,7 @@
         android:layout_toRightOf="@id/icon"
         android:gravity="center_vertical"
         android:text="Max Mustermann"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:paddingLeft="20dp" />
 
 </RelativeLayout>
