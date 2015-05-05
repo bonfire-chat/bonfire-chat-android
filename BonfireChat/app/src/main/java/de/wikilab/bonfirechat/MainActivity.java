@@ -156,6 +156,15 @@ public class MainActivity extends ActionBarActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
+
+            final ListView contactsList = (ListView) rootView.findViewById(R.id.contactsList);
+            final ArrayList<Contact> contactsListItems = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                contactsListItems.add(new Contact("Simon Thiem"));
+            }
+            final ContactsAdapter adapter = new ContactsAdapter(this.getActivity(), contactsListItems);
+            contactsList.setAdapter(adapter);
+
             return rootView;
         }
 
