@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +31,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         TextView name = (TextView) rowView.findViewById(R.id.name);
         ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
 
-        name.setText(objects.get(position).getName());
+        name.setText(objects.get(position).getNickname());
         icon.setImageResource(R.mipmap.ic_launcher);
 
         return rowView;
