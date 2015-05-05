@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,32 +8,32 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 /**
  * Created by johannes on 05.05.15.
  */
-public class ConversationsAdapter extends ArrayAdapter<Conversation> {
+public class ContactsAdapter extends ArrayAdapter<Contact> {
     private final Context context;
-    private final ArrayList<Conversation> objects;
+    private final List<Contact> objects;
 
-    public ConversationsAdapter(Context context, List<Conversation> objects) {
-        super(context, R.layout.conversations_layout, objects);
+    public ContactsAdapter(Context context, List<Contact> objects) {
+        super(context, R.layout.contacts_layout, objects);
         this.context = context;
-        this.objects = new ArrayList<>(objects);
+        this.objects = objects;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.conversations_layout, parent, false);
+        View rowView = inflater.inflate(R.layout.contacts_layout, parent, false);
         TextView name = (TextView) rowView.findViewById(R.id.name);
-        TextView lastMessage = (TextView) rowView.findViewById(R.id.lastMessage);
         ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
 
-        name.setText(objects.get(position).getName());
-        lastMessage.setText(objects.get(position).getLastMessage());
+        name.setText(objects.get(position).getNickname());
         icon.setImageResource(R.mipmap.ic_launcher);
 
         return rowView;

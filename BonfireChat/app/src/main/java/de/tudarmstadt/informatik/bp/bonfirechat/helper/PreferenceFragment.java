@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat.helper;
+package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

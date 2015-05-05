@@ -5,7 +5,7 @@ android {
     buildToolsVersion "19.1.0"
 
     defaultConfig {
-        applicationId "de.wikilab.bonfirechat"
+        applicationId "de.tudarmstadt.informatik.bp.bonfirechat"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1

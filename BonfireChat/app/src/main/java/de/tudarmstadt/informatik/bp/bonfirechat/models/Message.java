@@ -1,4 +1,4 @@
-package de.wikilab.bonfirechat;
+package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 /**
  * Created by johannes on 05.05.15.
