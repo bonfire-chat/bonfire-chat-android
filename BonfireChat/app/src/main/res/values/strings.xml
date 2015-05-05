@@ -11,5 +11,5 @@
     <string name="action_settings">Einstellungen</string>
     <string name="action_credits">Über Bonfire Chat</string>
     <string name="action_add_conversation">Neue Unterhaltung</string>
-
+    <string name="action_add_contact">Neuer Kontakt</string>
 </resources>
