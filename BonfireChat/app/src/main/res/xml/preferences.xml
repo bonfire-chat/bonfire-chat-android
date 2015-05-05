@@ -13,9 +13,11 @@
     <PreferenceCategory android:title="Sonstiges">
         <PreferenceScreen android:title="Über BonfireChat">
             <Preference android:title="Entwickelt an der TU Darmstadt"
-                android:summary="von Johannes, Jonas, Max, Matthias und Simon "></Preference>
+                android:summary="von Johannes, Jonas, Max, Matthias und Simon "/>
 
-            <Preference android:title="Version x.x.x" android:key="version_number"></Preference>
+            <Preference android:title="Version x.x.x" android:key="version_number"/>
+
+            <Preference android:title="Credits" android:summary="Icon by Pixel Buddha (CC-BY 3.0)"/>
 
         </PreferenceScreen>
 
