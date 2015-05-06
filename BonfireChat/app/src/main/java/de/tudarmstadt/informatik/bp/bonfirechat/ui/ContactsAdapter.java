@@ -1,15 +1,19 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
@@ -18,6 +22,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
  */
 public class ContactsAdapter extends ArrayAdapter<Contact> {
     private final Context context;
+
+    public List<Contact> getObjects() {
+        return objects;
+    }
+
     private final List<Contact> objects;
 
     public ContactsAdapter(Context context, List<Contact> objects) {
@@ -25,6 +34,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         this.context = context;
         this.objects = objects;
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -38,4 +48,8 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
 
         return rowView;
     }
+
+
+
+
 }
