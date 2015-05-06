@@ -5,12 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -37,9 +39,13 @@ public class ContactsFragment extends Fragment {
         BonfireData db = BonfireData.getInstance(getActivity());
         List<Contact> contacts = db.getContacts();
         adapter = new ContactsAdapter(this.getActivity(), contacts);
+        final AdapterView listViewAdapter = (AdapterView) this.getActivity().findViewById(R.id.contactsList);
+        listViewAdapter.setOnItemLongClickListener(ContactClickedHandler);
     }
 
-    @Override
+
+
+        @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.contacts, menu);
     }
@@ -100,7 +106,14 @@ public class ContactsFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+        private AdapterView.OnItemLongClickListener ContactClickedHandler = new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                BonfireData db = BonfireData.getInstance(view.getContext());
+                return db.deleteContact(adapter.getObjects().get(position));
 
+            }
+        };
 
 
     void addContact(String name) {
@@ -114,6 +127,6 @@ public class ContactsFragment extends Fragment {
 
     void removeContact(Contact contact){
         adapter.remove(contact);
-        //todo in Datenbank löschen.
+        BonfireData.getInstance(getActivity()).deleteContact(contact);
     }
 }

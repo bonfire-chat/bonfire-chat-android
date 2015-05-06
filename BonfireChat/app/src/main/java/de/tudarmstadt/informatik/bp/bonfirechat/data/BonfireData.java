@@ -36,7 +36,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public void createContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         db.insert(CONTACTS, null, contact.getContentValues());
-        //TODO onUpgrade ausführen
+        //TODO onUpgrade ausfuehren
     }
 
     public boolean deleteContact(Contact contact){
