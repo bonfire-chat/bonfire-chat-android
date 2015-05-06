@@ -22,6 +22,8 @@ public class BonfireData extends SQLiteOpenHelper{
         return instance;
     }
 
+    private SQLiteOpenHelper helper;
+
     private BonfireData(Context context) {
         super(context, "CommunicationData", null, 1);
     }
@@ -34,6 +36,13 @@ public class BonfireData extends SQLiteOpenHelper{
     public void createContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         db.insert(CONTACTS, null, contact.getContentValues());
+        //TODO onUpgrade ausführen
+    }
+
+    public boolean deleteContact(Contact contact){
+        SQLiteDatabase db = getReadableDatabase();
+        String nickname = contact.getNickname();
+        return db.delete(CONTACTS,  "uid =" + nickname, null)>0;
     }
 
     public ArrayList<Contact> getContacts(){

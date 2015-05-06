@@ -101,6 +101,8 @@ public class ContactsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     void addContact(String name) {
         // TODO: insert sophisticated contact existing check
         if (!name.isEmpty()) {
@@ -108,5 +110,10 @@ public class ContactsFragment extends Fragment {
             adapter.add(contact);
             BonfireData.getInstance(getActivity()).createContact(contact);
         }
+    }
+
+    void removeContact(Contact contact){
+        adapter.remove(contact);
+        //todo in Datenbank löschen.
     }
 }
