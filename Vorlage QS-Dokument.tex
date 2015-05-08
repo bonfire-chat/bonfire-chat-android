@@ -1,0 +1,57 @@
+\documentclass[accentcolor=tud0b,12pt,paper=a4]{tudreport}
+
+\usepackage[utf8]{inputenc}
+\usepackage{ngerman}
+\usepackage{parcolumns}
+
+\newcommand{\titlerow}[2]{
+	\begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
+		\colchunk[1]{#1:} 
+		\colchunk[2]{#2}
+	\end{parcolumns}
+	\vspace{0.2cm}
+}
+
+\title{Projektthema}
+\subtitle{Qualitätssicherungsdokument}
+\subsubtitle{%
+	\titlerow{Gruppe NR}{%
+		Vorname Nachname <mail@xyz.de>\\
+		Vorname Nachname <mail@xyz.de>\\
+		Vorname Nachname <mail@xyz.de>\\
+		Vorname Nachname <mail@xyz.de>}
+	\titlerow{Teamleiter}{Vorname Nachname <mail@xyz.de>}
+	\titlerow{Auftraggeber}{%
+		Titel Vorname Nachname <mail@xyz.de>\\
+		Fachgebiet des Auftraggebers\\
+		Fachbereich des Auftraggebers}
+	\titlerow{Abgabedatum}{xx.xx.xxxx}}
+\institution{Bachelor-Praktikum SoSe~2015\\Fachbereich Informatik}
+
+\begin{document}
+
+	\maketitle
+	\tableofcontents 
+	
+	\chapter{Einleitung}
+		Kurze Projektbeschreibung
+	
+	\chapter{Qualitätsziele}
+        \section{Ziel 1}
+    
+		Beschreibung eines QS-Ziels und wieso dieses in diesem Projekt wichtig ist.\\
+		Maßnahme zum Erreichen des Ziels.\\
+		Prozessbeschreibung - wer führt wann die oben genannte Maßnahme durch und wie wird auf Probleme reagiert.\\
+		Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
+
+        \section{Ziel xyz}
+	        \ldots
+	        
+	
+\appendix	
+	\chapter{Anhang}
+		(Am Ende des Projekts nachzureichen)\\
+		Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
+		Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
+	
+\end{document}
