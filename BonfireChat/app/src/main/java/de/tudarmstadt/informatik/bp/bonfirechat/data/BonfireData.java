@@ -17,6 +17,7 @@ public class BonfireData extends SQLiteOpenHelper{
     private static String CONTACTS = "contacts";
     private static BonfireData instance;
 
+
     public static BonfireData getInstance(Context ctx) {
         if (instance == null) instance = new BonfireData(ctx);
         return instance;
@@ -26,23 +27,39 @@ public class BonfireData extends SQLiteOpenHelper{
 
     private BonfireData(Context context) {
         super(context, "CommunicationData", null, 1);
+
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE " + CONTACTS + "(uid TEXT UNIQUE PRIMARY KEY, firstName TEXT, lastName TEXT)");
+
     }
 
     public void createContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         db.insert(CONTACTS, null, contact.getContentValues());
-        //TODO onUpgrade ausfuehren
     }
 
     public boolean deleteContact(Contact contact){
-        SQLiteDatabase db = getReadableDatabase();
-        String nickname = contact.getNickname();
-        return db.delete(CONTACTS,  "uid =" + nickname, null)>0;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        try
+        {
+            db.delete(CONTACTS, "uid=?", new String[] { contact.getNickname() });
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            db.close();
+        }
+        ;
+        return true;
+
     }
 
     public ArrayList<Contact> getContacts(){
@@ -55,10 +72,18 @@ public class BonfireData extends SQLiteOpenHelper{
         return contacts;
     }
 
-    
 
     @Override
-    public void onUpgrade(SQLiteDatabase base, int oldVersion, int newVersion){
-        // TODO
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+        if (oldVersion >= newVersion)
+            return;
+        ArrayList<Contact> buffer = new ArrayList<>();
+        buffer = getContacts();
+        db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
+        onCreate(db);
+        for(Contact c : buffer){
+            createContact(c);
+        }
+
     }
 }
