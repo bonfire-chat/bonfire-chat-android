@@ -39,8 +39,9 @@ public class ContactsFragment extends Fragment {
         BonfireData db = BonfireData.getInstance(getActivity());
         List<Contact> contacts = db.getContacts();
         adapter = new ContactsAdapter(this.getActivity(), contacts);
-        final AdapterView listViewAdapter = (AdapterView) this.getActivity().findViewById(R.id.contactsList);
-        listViewAdapter.setOnItemLongClickListener(ContactClickedHandler);
+       // final ListView listViewAdapter = (ListView) this.getActivity().findViewById(R.id.contactsList);
+        //findViewById(R.id.contactsList).setOnItemLongClickListener(ContactClickedHandler);
+
     }
 
 
@@ -57,6 +58,8 @@ public class ContactsFragment extends Fragment {
 
         final ListView contactsList = (ListView) rootView.findViewById(R.id.contactsList);
         contactsList.setAdapter(adapter);
+
+        contactsList.setOnItemLongClickListener(ContactClickedHandler);
 
         return rootView;
     }
