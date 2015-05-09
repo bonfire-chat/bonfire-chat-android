@@ -108,6 +108,11 @@ public class ContactsFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Todo!
+     * should be transformed into an contextual menu with batch contextual action mode.
+     */
         private AdapterView.OnItemLongClickListener ContactClickedHandler = new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
