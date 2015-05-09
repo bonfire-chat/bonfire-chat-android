@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.style.UpdateLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,8 +40,6 @@ public class ContactsFragment extends Fragment {
         BonfireData db = BonfireData.getInstance(getActivity());
         List<Contact> contacts = db.getContacts();
         adapter = new ContactsAdapter(this.getActivity(), contacts);
-       // final ListView listViewAdapter = (ListView) this.getActivity().findViewById(R.id.contactsList);
-        //findViewById(R.id.contactsList).setOnItemLongClickListener(ContactClickedHandler);
 
     }
 
@@ -113,9 +112,11 @@ public class ContactsFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 BonfireData db = BonfireData.getInstance(view.getContext());
-                return db.deleteContact(adapter.getObjects().get(position));
-
-            }
+                db.deleteContact(adapter.getObjects().get(position));
+                adapter.remove(adapter.getObjects().get(position));
+                adapter.notifyDataSetChanged();
+                return true;
+                }
         };
 
 
@@ -128,8 +129,5 @@ public class ContactsFragment extends Fragment {
         }
     }
 
-    void removeContact(Contact contact){
-        adapter.remove(contact);
-        BonfireData.getInstance(getActivity()).deleteContact(contact);
-    }
+
 }
