@@ -19,7 +19,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
  */
 public class ConversationsAdapter extends ArrayAdapter<Conversation> {
     private final Context context;
-    private final ArrayList<Conversation> objects;
+    private List<Conversation> objects;
+
+    public List<Conversation> getObjects(){
+        return objects;
+    }
 
     public ConversationsAdapter(Context context, List<Conversation> objects) {
         super(context, R.layout.conversations_layout, objects);
@@ -35,8 +39,8 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
         TextView lastMessage = (TextView) rowView.findViewById(R.id.lastMessage);
         ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
 
-        name.setText(objects.get(position).getName());
-        lastMessage.setText(objects.get(position).getLastMessage());
+        name.setText(getItem(position).getName());
+        lastMessage.setText(getItem(position).getLastMessage());
         icon.setImageResource(R.mipmap.ic_launcher);
 
         return rowView;

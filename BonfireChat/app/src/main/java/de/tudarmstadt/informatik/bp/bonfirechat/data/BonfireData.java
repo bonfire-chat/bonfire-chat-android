@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,13 +9,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by simon on 05.05.15.
  */
 public class BonfireData extends SQLiteOpenHelper{
 
-    private static String CONTACTS = "contacts";
+    private static final String CONTACTS = "contacts";
+    private static final String CONVERSATIONS = "conversations";
+    private static final String MESSAGES = "messages";
     private static BonfireData instance;
 
 
@@ -34,12 +39,46 @@ public class BonfireData extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE " + CONTACTS + "(uid TEXT UNIQUE PRIMARY KEY, firstName TEXT, lastName TEXT)");
-
+        db.execSQL("CREATE TABLE " + CONVERSATIONS + "(peer TEXT UNIQUE PRIMARY KEY)");
+        db.execSQL("CREATE TABLE " + MESSAGES + "(id INTEGER PRIMARY KEY AUTOINCREMENT, peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT)");
     }
 
     public void createContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         db.insert(CONTACTS, null, contact.getContentValues());
+        db.close();
+    }
+
+    public void createConversation(Conversation conversation){
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(CONVERSATIONS, null, conversation.getContentValues());
+        db.close();
+    }
+
+    public void createMessage(Message message, Conversation conversation){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = message.getContentValues();
+        values.putAll(conversation.getContentValues());
+        db.insert(MESSAGES, null, values);
+        db.close();
+    }
+
+    public ArrayList<Conversation> getConversations(){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Conversation> conversations = new ArrayList<>();
+        ArrayList<Message> messages = new ArrayList<>();
+        Cursor conversationCursor = db.query(CONVERSATIONS, null, null, null, null, null, null);
+        while(conversationCursor.moveToNext()){
+            Conversation conversation = Conversation.fromCursor(conversationCursor);
+            Cursor messageCursor = db.query(MESSAGES, null, "peer=?", new String[]  {conversation.getName()}, null, null, null);
+            while(messageCursor.moveToNext()){
+                messages.add(Message.fromCursor(messageCursor));
+            }
+            conversation.addMessages(messages);
+            conversations.add(conversation);
+        }
+        db.close();
+        return conversations;
     }
 
     public boolean deleteContact(Contact contact){
