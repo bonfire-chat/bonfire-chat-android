@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -64,34 +65,8 @@ public class ContactsFragment extends Fragment {
         contactsList = (ListView) rootView.findViewById(R.id.contactsList);
         contactsList.setAdapter(adapter);
 
-        //contactsList.setOnItemLongClickListener(ContactClickedHandler);
-        contactsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("ContactsFragment", "itemClick: "+position+"    mActionMode="+mActionMode);
-                if (mActionMode != null) {
-                    adapter.itemSelected[position] = true;
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
-        contactsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mActionMode != null) {
-                    return false;
-                }
-
-                Log.d("ContactsFragment", "itemLongClick: "+position);
-                // Start the CAB using the ActionMode.Callback defined above
-                mActionMode = getActivity().startActionMode(mActionModeCallback);
-                //view.setSelected(true);
-                //contactsList.setSelection(position);
-                adapter.itemSelected[position] = true;
-                adapter.notifyDataSetChanged();
-                return true;
-            }
-        });
+        contactsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        contactsList.setMultiChoiceModeListener(multiChoiceListener);
 
 
         return rootView;
@@ -168,27 +143,20 @@ public class ContactsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+    private AbsListView.MultiChoiceModeListener multiChoiceListener = new AbsListView.MultiChoiceModeListener() {
 
-        // Called when the action mode is created; startActionMode() was called
         @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            // Inflate a menu resource providing context menu items
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.menu_contact, menu);
-            return true;
+        public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                              long id, boolean checked) {
+            // Here you can do something when items are selected/de-selected,
+            // such as update the title in the CAB
+            adapter.itemSelected[position] = checked;
+            adapter.notifyDataSetChanged();
         }
 
-        // Called each time the action mode is shown. Always called after onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false; // Return false if nothing is done
-        }
-
-        // Called when the user selects a contextual menu item
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // Respond to clicks on the actions in the CAB
             switch (item.getItemId()) {
                 case R.id.action_delete:
                     deleteSelectedItems();
@@ -199,10 +167,25 @@ public class ContactsFragment extends Fragment {
             }
         }
 
-        // Called when the user exits the action mode
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate the menu for the CAB
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_contact, menu);
+            return true;
+        }
+
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            mActionMode = null;
+            // Here you can make any necessary updates to the activity when
+            // the CAB is removed. By default, selected items are deselected/unchecked.
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            // Here you can perform updates to the CAB due to
+            // an invalidate() request
+            return false;
         }
     };
 
