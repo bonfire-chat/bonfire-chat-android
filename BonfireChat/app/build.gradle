@@ -22,4 +22,20 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
+    compile files('libs/smack-android-4.1.1.jar')
+    compile files('libs/smack-android-4.1.1-javadoc.jar')
+    compile files('libs/smack-android-4.1.1-sources.jar')
+    compile files('libs/smack-core-4.1.1.jar')
+    compile files('libs/smack-core-4.1.1-javadoc.jar')
+    compile files('libs/smack-core-4.1.1-sources.jar')
+    compile files('libs/smack-tcp-4.1.1.jar')
+    compile files('libs/smack-tcp-4.1.1-javadoc.jar')
+    compile files('libs/smack-tcp-4.1.1-sources.jar')
+    compile files('libs/bcprov-jdk15on-152.jar')
+    compile files('libs/smack-extensions-4.1.1.jar')
+    compile files('libs/smack-extensions-4.1.1-javadoc.jar')
+    compile files('libs/smack-extensions-4.1.1-sources.jar')
+    compile files('libs/smack-im-4.1.1.jar')
+    compile files('libs/smack-im-4.1.1-javadoc.jar')
+    compile files('libs/smack-im-4.1.1-sources.jar')
 }
