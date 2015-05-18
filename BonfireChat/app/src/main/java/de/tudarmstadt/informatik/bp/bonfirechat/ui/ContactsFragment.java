@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -92,7 +93,7 @@ public class ContactsFragment extends Fragment {
             params.rightMargin = 60;
             input.setLayoutParams(params);
             container.addView(input);
-            new AlertDialog.Builder(getActivity())
+            AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.new_contact)
                     .setMessage(R.string.search_contact_by_name)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -109,9 +110,10 @@ public class ContactsFragment extends Fragment {
                         }
                     })
                     .setIcon(R.mipmap.ic_launcher)
-                    .setView(container)
-                    .show();
-
+                    .setView(container);
+            AlertDialog d = b.create();
+            d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            d.show();
             return true;
         }
 

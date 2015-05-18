@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
@@ -20,6 +21,7 @@ public class BonfireData extends SQLiteOpenHelper{
     private static final String CONTACTS = "contacts";
     private static final String CONVERSATIONS = "conversations";
     private static final String MESSAGES = "messages";
+    private static final String IDENTITIES = "identity";
     private static BonfireData instance;
 
 
@@ -41,11 +43,19 @@ public class BonfireData extends SQLiteOpenHelper{
         db.execSQL("CREATE TABLE " + CONTACTS + "(uid TEXT UNIQUE PRIMARY KEY, firstName TEXT, lastName TEXT)");
         db.execSQL("CREATE TABLE " + CONVERSATIONS + "(peer TEXT UNIQUE PRIMARY KEY)");
         db.execSQL("CREATE TABLE " + MESSAGES + "(id INTEGER PRIMARY KEY AUTOINCREMENT, peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT)");
+        db.execSQL("CREATE TABLE " + IDENTITIES + "(id INTEGER PRIMARY KEY AUTOINCREMENT, nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
+
     }
 
     public void createContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         db.insert(CONTACTS, null, contact.getContentValues());
+        db.close();
+    }
+
+    public void createIdentity(Identity identity){
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(CONTACTS, null, identity.getContentValues());
         db.close();
     }
 
@@ -61,6 +71,17 @@ public class BonfireData extends SQLiteOpenHelper{
         values.putAll(conversation.getContentValues());
         db.insert(MESSAGES, null, values);
         db.close();
+    }
+
+    public Identity getDefaultIdentity() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(IDENTITIES, null, null, null, null, null, null, "1");
+        Identity i = null;
+        if (cursor.moveToNext()) {
+            i = Identity.fromCursor(cursor);
+        }
+        db.close();
+        return i;
     }
 
     public ArrayList<Conversation> getConversations(){
