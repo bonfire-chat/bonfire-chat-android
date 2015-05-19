@@ -38,8 +38,8 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        if (itemSelected.length != this.objects.size())
-            itemSelected = new boolean[this.objects.size()];
+        if (itemSelected.length != this.getCount())
+            itemSelected = new boolean[this.getCount()];
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
         name.setText(getItem(position).getName());
         lastMessage.setText(getItem(position).getLastMessage());
         icon.setImageResource(R.mipmap.ic_launcher);
-        Log.d("ContactsAdapter", "getview position=" + position + "   selected=" + itemSelected[position]);
+        Log.d("ConversationsAdapter", "getview position=" + position + "   selected=" + itemSelected[position]);
         rowView.setSelected(itemSelected[position]);
         rowView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 
