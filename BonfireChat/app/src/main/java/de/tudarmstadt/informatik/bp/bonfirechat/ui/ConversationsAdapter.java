@@ -1,6 +1,8 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
     private final Context context;
     private List<Conversation> objects;
 
+    boolean[] itemSelected;
     public List<Conversation> getObjects(){
         return objects;
     }
@@ -29,6 +32,14 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
         super(context, R.layout.conversations_layout, objects);
         this.context = context;
         this.objects = new ArrayList<>(objects);
+        itemSelected = new boolean[this.objects.size()];
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        if (itemSelected.length != this.objects.size())
+            itemSelected = new boolean[this.objects.size()];
     }
 
     @Override
@@ -42,6 +53,9 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
         name.setText(getItem(position).getName());
         lastMessage.setText(getItem(position).getLastMessage());
         icon.setImageResource(R.mipmap.ic_launcher);
+        Log.d("ContactsAdapter", "getview position=" + position + "   selected=" + itemSelected[position]);
+        rowView.setSelected(itemSelected[position]);
+        rowView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 
         return rowView;
     }
