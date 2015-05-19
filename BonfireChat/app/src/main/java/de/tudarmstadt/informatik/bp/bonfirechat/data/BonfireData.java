@@ -134,6 +134,7 @@ public class BonfireData extends SQLiteOpenHelper{
         try
         {
             db.delete(CONVERSATIONS, "peer=?", new String[] { conversation.getName() });
+            db.delete(MESSAGES, "peer=?", new String[] { conversation.getName() });
         }
         catch(Exception e)
         {
