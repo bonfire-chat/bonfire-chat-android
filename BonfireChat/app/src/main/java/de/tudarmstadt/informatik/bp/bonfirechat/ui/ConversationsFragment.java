@@ -111,8 +111,8 @@ public class ConversationsFragment extends Fragment {
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
-                //TODO: aus der Datenbank löschen
-                adapter.remove(adapter.getObjects().get(position));
+                db.deleteConversation(adapter.getItem(position));
+                adapter.remove(adapter.getItem(position));
             }
         }
 
