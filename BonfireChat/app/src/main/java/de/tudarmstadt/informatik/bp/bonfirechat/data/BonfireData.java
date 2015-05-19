@@ -87,19 +87,25 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Conversation> getConversations(){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Conversation> conversations = new ArrayList<>();
-        ArrayList<Message> messages = new ArrayList<>();
         Cursor conversationCursor = db.query(CONVERSATIONS, null, null, null, null, null, null);
         while(conversationCursor.moveToNext()){
             Conversation conversation = Conversation.fromCursor(conversationCursor);
-            Cursor messageCursor = db.query(MESSAGES, null, "peer=?", new String[]  {conversation.getName()}, null, null, null);
-            while(messageCursor.moveToNext()){
-                messages.add(Message.fromCursor(messageCursor));
-            }
-            conversation.addMessages(messages);
+            conversation.addMessages(this.getMessages(conversation));
             conversations.add(conversation);
         }
         db.close();
         return conversations;
+    }
+
+    public ArrayList<Message> getMessages(Conversation conversation){
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Message> messages = new ArrayList<>();
+        Cursor messageCursor = db.query(MESSAGES, null, "peer=?", new String[]  {conversation.getName()}, null, null, null);
+        while(messageCursor.moveToNext()){
+            messages.add(Message.fromCursor(messageCursor));
+        }
+        db.close();
+        return messages;
     }
 
     public boolean deleteContact(Contact contact){

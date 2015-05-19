@@ -101,6 +101,7 @@ public class ConversationsFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent i = new Intent(getActivity(), MessagesActivity.class);
+            i.putExtra("Conversation", adapter.getItem(position).getName());
             startActivity(i);
         }
     };
