@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,13 +9,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by simon on 05.05.15.
  */
 public class BonfireData extends SQLiteOpenHelper{
 
-    private static String CONTACTS = "contacts";
+    private static final String CONTACTS = "contacts";
+    private static final String CONVERSATIONS = "conversations";
+    private static final String MESSAGES = "messages";
+    private static final String IDENTITIES = "identity";
     private static BonfireData instance;
 
 
@@ -34,12 +41,71 @@ public class BonfireData extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE " + CONTACTS + "(uid TEXT UNIQUE PRIMARY KEY, firstName TEXT, lastName TEXT)");
+        db.execSQL("CREATE TABLE " + CONVERSATIONS + "(peer TEXT UNIQUE PRIMARY KEY)");
+        db.execSQL("CREATE TABLE " + MESSAGES + "(id INTEGER PRIMARY KEY AUTOINCREMENT, peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT)");
+        db.execSQL("CREATE TABLE " + IDENTITIES + "(id INTEGER PRIMARY KEY AUTOINCREMENT, nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
 
     }
 
     public void createContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         db.insert(CONTACTS, null, contact.getContentValues());
+        db.close();
+    }
+
+    public void createIdentity(Identity identity){
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(CONTACTS, null, identity.getContentValues());
+        db.close();
+    }
+
+    public void createConversation(Conversation conversation){
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(CONVERSATIONS, null, conversation.getContentValues());
+        db.close();
+    }
+
+    public void createMessage(Message message, Conversation conversation){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = message.getContentValues();
+        values.putAll(conversation.getContentValues());
+        db.insert(MESSAGES, null, values);
+        db.close();
+    }
+
+    public Identity getDefaultIdentity() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(IDENTITIES, null, null, null, null, null, null, "1");
+        Identity i = null;
+        if (cursor.moveToNext()) {
+            i = Identity.fromCursor(cursor);
+        }
+        db.close();
+        return i;
+    }
+
+    public ArrayList<Conversation> getConversations(){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Conversation> conversations = new ArrayList<>();
+        Cursor conversationCursor = db.query(CONVERSATIONS, null, null, null, null, null, null);
+        while(conversationCursor.moveToNext()){
+            Conversation conversation = Conversation.fromCursor(conversationCursor);
+            conversation.addMessages(this.getMessages(conversation));
+            conversations.add(conversation);
+        }
+        db.close();
+        return conversations;
+    }
+
+    public ArrayList<Message> getMessages(Conversation conversation){
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Message> messages = new ArrayList<>();
+        Cursor messageCursor = db.query(MESSAGES, null, "peer=?", new String[]  {conversation.getName()}, null, null, null);
+        while(messageCursor.moveToNext()){
+            messages.add(Message.fromCursor(messageCursor));
+        }
+        db.close();
+        return messages;
     }
 
     public boolean deleteContact(Contact contact){
@@ -61,7 +127,27 @@ public class BonfireData extends SQLiteOpenHelper{
         return true;
 
     }
+    
+    public boolean deleteConversation(Conversation conversation){
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        try
+        {
+            db.delete(CONVERSATIONS, "peer=?", new String[] { conversation.getName() });
+            db.delete(MESSAGES, "peer=?", new String[] { conversation.getName() });
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            db.close();
+        }
+        ;
+        return true;
+
+    }
     public ArrayList<Contact> getContacts(){
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();

@@ -3,16 +3,21 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.style.UpdateLayout;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -45,20 +50,25 @@ public class ContactsFragment extends Fragment {
 
 
 
-        @Override
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.contacts, menu);
     }
 
+
+    ActionMode mActionMode;
+    ListView contactsList;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
-        final ListView contactsList = (ListView) rootView.findViewById(R.id.contactsList);
+        contactsList = (ListView) rootView.findViewById(R.id.contactsList);
         contactsList.setAdapter(adapter);
 
-        contactsList.setOnItemLongClickListener(ContactClickedHandler);
+        contactsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        contactsList.setMultiChoiceModeListener(multiChoiceListener);
+
 
         return rootView;
     }
@@ -83,7 +93,7 @@ public class ContactsFragment extends Fragment {
             params.rightMargin = 60;
             input.setLayoutParams(params);
             container.addView(input);
-            new AlertDialog.Builder(getActivity())
+            AlertDialog.Builder b = new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.new_contact)
                     .setMessage(R.string.search_contact_by_name)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -100,29 +110,16 @@ public class ContactsFragment extends Fragment {
                         }
                     })
                     .setIcon(R.mipmap.ic_launcher)
-                    .setView(container)
-                    .show();
-
+                    .setView(container);
+            AlertDialog d = b.create();
+            d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            d.show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Todo!
-     * should be transformed into an contextual menu with batch contextual action mode.
-     */
-        private AdapterView.OnItemLongClickListener ContactClickedHandler = new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                BonfireData db = BonfireData.getInstance(view.getContext());
-                db.deleteContact(adapter.getObjects().get(position));
-                adapter.remove(adapter.getObjects().get(position));
-                adapter.notifyDataSetChanged();
-                return true;
-                }
-        };
 
 
     void addContact(String name) {
@@ -133,6 +130,66 @@ public class ContactsFragment extends Fragment {
             BonfireData.getInstance(getActivity()).createContact(contact);
         }
     }
+
+    private void deleteSelectedItems() {
+        BonfireData db = BonfireData.getInstance(getActivity());
+        boolean[] mySelected = adapter.itemSelected;
+
+        for (int position = adapter.getCount() - 1; position >= 0; position--) {
+            if (mySelected[position]) {
+                db.deleteContact(adapter.getObjects().get(position));
+                adapter.remove(adapter.getObjects().get(position));
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private AbsListView.MultiChoiceModeListener multiChoiceListener = new AbsListView.MultiChoiceModeListener() {
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                              long id, boolean checked) {
+            // Here you can do something when items are selected/de-selected,
+            // such as update the title in the CAB
+            adapter.itemSelected[position] = checked;
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // Respond to clicks on the actions in the CAB
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    deleteSelectedItems();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate the menu for the CAB
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_contact, menu);
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            // Here you can make any necessary updates to the activity when
+            // the CAB is removed. By default, selected items are deselected/unchecked.
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            // Here you can perform updates to the CAB due to
+            // an invalidate() request
+            return false;
+        }
+    };
 
 
 }
