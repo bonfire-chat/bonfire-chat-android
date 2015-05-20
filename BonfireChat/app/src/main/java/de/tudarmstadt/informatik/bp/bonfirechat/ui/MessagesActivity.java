@@ -11,6 +11,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
@@ -18,11 +21,14 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 public class MessagesActivity extends ActionBarActivity {
 
     List<Message> messages = new ArrayList<Message>();
+    private Conversation conversation;
+    private BonfireData db = BonfireData.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+        conversation = new Conversation(new Contact(getIntent().getStringExtra("Conversation")));
 
         ListView lv = (ListView) findViewById(R.id.messages_view);
         messages.add(new Message("At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", Message.MessageDirection.Received));
@@ -30,6 +36,7 @@ public class MessagesActivity extends ActionBarActivity {
         messages.add(new Message("Wie gehts?", Message.MessageDirection.Sent));
         messages.add(new Message("wie stehts?", Message.MessageDirection.Received));
         messages.add(new Message("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.", Message.MessageDirection.Received));
+        messages.addAll(db.getMessages(conversation));
         lv.setAdapter(new MessagesAdapter(this, messages));
 
         findViewById(R.id.textSendButton).setOnClickListener(onSendButtonClickListener);
@@ -40,7 +47,9 @@ public class MessagesActivity extends ActionBarActivity {
         public void onClick(View v) {
             EditText ed = (EditText) findViewById(R.id.textinput);
             String msg = ed.getText().toString();
-            messages.add(new Message(msg, Message.MessageDirection.Sent));
+            Message message = new Message(msg, Message.MessageDirection.Sent);
+            db.createMessage(message, conversation);
+            messages.add(message);
             ListView lv = (ListView) findViewById(R.id.messages_view);
             ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
             ed.setText("");
