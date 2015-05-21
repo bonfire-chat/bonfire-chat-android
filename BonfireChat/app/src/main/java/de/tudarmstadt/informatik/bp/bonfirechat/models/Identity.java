@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 public class Identity {
 
     public String nickname, privateKey, publicKey, server, username, password;
+    public int rowid;
 
     public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password) {
         this.nickname = nickname; this.privateKey = privateKey; this.publicKey = publicKey;
@@ -60,12 +61,14 @@ public class Identity {
     }
 
     public static Identity fromCursor(Cursor cursor){
-        return new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
+        Identity id = new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
                 cursor.getString(cursor.getColumnIndex("privateKey")),
                 cursor.getString(cursor.getColumnIndex("publicKey")),
                 cursor.getString(cursor.getColumnIndex("server")),
                 cursor.getString(cursor.getColumnIndex("username")),
                 cursor.getString(cursor.getColumnIndex("password")));
+        id.rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
+        return id;
     }
 
 }

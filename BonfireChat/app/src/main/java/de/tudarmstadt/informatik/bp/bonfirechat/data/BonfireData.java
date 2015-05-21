@@ -22,8 +22,11 @@ public class BonfireData extends SQLiteOpenHelper{
     private static final String CONVERSATIONS = "conversations";
     private static final String MESSAGES = "messages";
     private static final String IDENTITIES = "identity";
-    private static BonfireData instance;
 
+    // rowid is not included in "*" by default
+    private static final String[] ALL_COLS = new String[]{"rowid","*"};
+
+    private static BonfireData instance;
 
     public static BonfireData getInstance(Context ctx) {
         if (instance == null) instance = new BonfireData(ctx);
@@ -75,7 +78,7 @@ public class BonfireData extends SQLiteOpenHelper{
 
     public Identity getDefaultIdentity() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(IDENTITIES, null, null, null, null, null, null, "1");
+        Cursor cursor = db.query(IDENTITIES, ALL_COLS, null, null, null, null, null, "1");
         Identity i = null;
         if (cursor.moveToNext()) {
             i = Identity.fromCursor(cursor);
@@ -144,6 +147,12 @@ public class BonfireData extends SQLiteOpenHelper{
         for(Contact c : buffer){
             createContact(c);
         }
+
+    }
+
+    public void updateIdentity(Identity identity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(IDENTITIES, identity.getContentValues(), " rowid = ? ", new String[]{String.valueOf(identity.rowid)});
 
     }
 }
