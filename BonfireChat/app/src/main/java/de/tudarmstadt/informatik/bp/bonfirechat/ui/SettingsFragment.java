@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
+//import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
 
+import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

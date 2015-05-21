@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
@@ -15,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 public class Identity {
 
     public String nickname, privateKey, publicKey, server, username, password;
-    public int rowid;
+    public long rowid;
 
     public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password) {
         this.nickname = nickname; this.privateKey = privateKey; this.publicKey = publicKey;
@@ -24,25 +25,26 @@ public class Identity {
 
     public static Identity generate() {
         Identity i= new Identity("nobody", String.valueOf(Math.random()*100000000000f), String.valueOf(Math.random()*100000000000f),
-                "", String.valueOf(Math.random()*100000000000f), "teamwiki.de");
+                "teamwiki.de", "", String.valueOf(Math.random()*100000000000f));
         return i;
     }
 
     public String getPublicKeyHash() {
-        return Identity.sha256(this.publicKey);
+        return Identity.hash("MD5", this.publicKey);
+        //return Identity.hash("SHA-256", this.publicKey);
     }
 
-    public static String sha256(String string) {
+    public static String hash(String algorithm, String string) {
         MessageDigest digest = null;
         try {
-            digest = MessageDigest.getInstance("SHA-256");
+            digest = MessageDigest.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e1) {
             e1.printStackTrace();
             return null;
         }
         digest.reset();
         try {
-            return digest.digest(string.getBytes("UTF-8")).toString();
+            return Base64.encodeToString(digest.digest(string.getBytes("UTF-8")), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return null;

@@ -12,10 +12,14 @@ public class Message {
         Sent,
         Received
     }
-
-    public String fromId, toId;
+    public long rowid;
+    public Contact peer;
     public String body;
     public MessageDirection direction = MessageDirection.Unknown;
+
+    public Message(String body, Contact peer, MessageDirection dir) {
+        this.body = body; this.peer = peer; this.direction = dir;
+    }
 
     public Message(String body, MessageDirection dir) {
         this.body = body; this.direction = dir;
@@ -34,6 +38,7 @@ public class Message {
     }
 
     public static Message fromCursor(Cursor cursor){
-        return new Message(cursor.getString(cursor.getColumnIndex("body")), MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))]);
+        return new Message(cursor.getString(cursor.getColumnIndex("body")),
+                MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))]);
     }
 }

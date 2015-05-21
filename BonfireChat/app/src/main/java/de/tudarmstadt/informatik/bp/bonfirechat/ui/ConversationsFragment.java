@@ -1,13 +1,14 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,8 +42,8 @@ public class ConversationsFragment extends Fragment {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        adapter.add(BonfireData.getInstance(getActivity()).getConversationByPeer(
-                                intent.getStringExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID)
+                        adapter.add(BonfireData.getInstance(getActivity()).getConversationById(
+                                intent.getIntExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1)
                         ));
                         adapter.notifyDataSetChanged();
                     }
@@ -100,7 +101,8 @@ public class ConversationsFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent i = new Intent(getActivity(), MessagesActivity.class);
-            i.putExtra("Conversation", adapter.getItem(position).getName());
+            Log.i("ConversationsFragment", "starting MessagesActivity with ConversationId=" + adapter.getItem(position).rowid);
+            i.putExtra("ConversationId", adapter.getItem(position).rowid);
             startActivity(i);
         }
     };

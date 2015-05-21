@@ -12,17 +12,27 @@ import java.util.List;
 public class Conversation {
     private Contact peer;
     private ArrayList<Message> messages;
-    public int rowid;
+    public long rowid;
     public String title;
+    public ConversationType conversationType = ConversationType.Single;
+
+    public enum ConversationType {
+        Single,
+        GroupChat
+    }
 
     public Conversation(Contact peer, String title, int rowid, List<Message> messages) {
         this.peer = peer;
+        this.title = title;
         this.messages = new ArrayList<>(messages);
+        this.rowid = rowid;
     }
 
     public Conversation(Contact peer, String title, int rowid){
         this.peer = peer;
+        this.title = title;
         this.messages = new ArrayList<>();
+        this.rowid = rowid;
     }
 
     public void addMessages(ArrayList<Message> messages){
@@ -36,18 +46,25 @@ public class Conversation {
             return "";
     }
     public String getName() {
-        return peer.toString();
+        if (title != null && !title.equals("")) return title;
+        if (peer != null) return peer.getNickname();
+        return "(unnamed)";
     }
 
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
-        values.put("peer", getName());
+        if (peer != null) values.put("peer", peer.rowid);
+        values.put("conversationType", conversationType.ordinal());
+        values.put("title", title);
         return values;
     }
 
-    public static Conversation fromCursor(Cursor cursor){
-       return new Conversation(new Contact(cursor.getString(cursor.getColumnIndex("peer"))),
+    public static Conversation fromCursor(Contact contact, Cursor cursor){
+        Conversation conversation = new Conversation(contact,
                cursor.getString(cursor.getColumnIndex("title")),
                cursor.getInt(cursor.getColumnIndex("rowid")));
+        conversation.conversationType = ConversationType.values()[cursor.getInt(cursor.getColumnIndex("conversationType"))];
+        return conversation;
     }
+
 }
