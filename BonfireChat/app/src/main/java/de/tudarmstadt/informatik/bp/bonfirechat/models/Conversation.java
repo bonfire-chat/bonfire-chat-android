@@ -28,7 +28,10 @@ public class Conversation {
     }
 
     public String getLastMessage() {
-        return messages.get(messages.size() - 1).toString();
+        if(messages.size() > 0)
+            return messages.get(messages.size() - 1).toString();
+        else
+            return "";
     }
     public String getName() {
         return peer.toString();
