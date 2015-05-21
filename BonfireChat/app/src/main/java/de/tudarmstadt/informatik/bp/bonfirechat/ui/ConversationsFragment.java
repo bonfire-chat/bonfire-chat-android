@@ -1,9 +1,13 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,20 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 import static android.widget.AdapterView.*;
 
@@ -40,6 +36,18 @@ public class ConversationsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        adapter.add(BonfireData.getInstance(getActivity()).getConversationByPeer(
+                                intent.getStringExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID)
+                        ));
+                        adapter.notifyDataSetChanged();
+                    }
+                },
+                new IntentFilter(ConnectionManager.NEW_CONVERSATION_BROADCAST_EVENT));
     }
 
     @Override
@@ -53,16 +61,7 @@ public class ConversationsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_conversations, container, false);
 
         final ListView conversationsList = (ListView) rootView.findViewById(R.id.conversationsList);
-        final ArrayList<Conversation> conversationsListItems = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            Message[] messages = {
-                    new Message("hallo", Message.MessageDirection.Received)
-            };
-            conversationsListItems.add(new Conversation(
-                    new Contact("Johannes Lauinger"),
-                    Arrays.asList(messages)
-            ));
-        }
+
         adapter = new ConversationsAdapter(this.getActivity(), BonfireData.getInstance(getActivity()).getConversations());
         conversationsList.setAdapter(adapter);
         conversationsList.setOnItemClickListener(itemClickListener);
@@ -80,7 +79,7 @@ public class ConversationsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+/*
         if (item.getItemId() == R.id.action_add_conversation) {
             Toast.makeText(getActivity(), "Conversation added.", Toast.LENGTH_SHORT).show();
             Message[] messages = {
@@ -92,7 +91,7 @@ public class ConversationsFragment extends Fragment {
             for(Message message : messages)
                 BonfireData.getInstance(getActivity()).createMessage(message, myConversation);
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

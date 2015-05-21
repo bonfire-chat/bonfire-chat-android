@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,10 @@ import android.support.v4.widget.DrawerLayout;
 import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ClientServerProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 
 public class MainActivity extends ActionBarActivity
@@ -43,6 +48,20 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        initializeNetwork();
+    }
+
+    private void initializeNetwork() {
+        BonfireData db = BonfireData.getInstance(this);
+        if (db.getDefaultIdentity() == null) {
+            Identity id = Identity.generate();
+            db.createIdentity(id);
+        }
+
+        Intent intent = new Intent(this, ConnectionManager.class);
+        intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
+        this.startService(intent);
     }
 
     @Override

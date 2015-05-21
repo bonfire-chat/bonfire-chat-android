@@ -12,13 +12,15 @@ import java.util.List;
 public class Conversation {
     private Contact peer;
     private ArrayList<Message> messages;
+    public int rowid;
+    public String title;
 
-    public Conversation(Contact peer, List<Message> messages) {
+    public Conversation(Contact peer, String title, int rowid, List<Message> messages) {
         this.peer = peer;
         this.messages = new ArrayList<>(messages);
     }
 
-    public Conversation(Contact peer){
+    public Conversation(Contact peer, String title, int rowid){
         this.peer = peer;
         this.messages = new ArrayList<>();
     }
@@ -44,6 +46,8 @@ public class Conversation {
     }
 
     public static Conversation fromCursor(Cursor cursor){
-       return new Conversation(new Contact(cursor.getString(cursor.getColumnIndex("peer"))));
+       return new Conversation(new Contact(cursor.getString(cursor.getColumnIndex("peer"))),
+               cursor.getString(cursor.getColumnIndex("title")),
+               cursor.getInt(cursor.getColumnIndex("rowid")));
     }
 }
