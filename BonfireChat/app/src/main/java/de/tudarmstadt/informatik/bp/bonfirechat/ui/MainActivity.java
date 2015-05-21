@@ -1,10 +1,10 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.ClientServerProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -41,7 +40,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -67,7 +66,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragments.get(position))
                 .commit();
@@ -85,12 +84,13 @@ public class MainActivity extends ActionBarActivity
                 mTitle = getString(R.string.title_settings);
                 break;
         }
+        onPageSelected();
     }
 
-    public void onPageSelected(int position) {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
+    public void onPageSelected() {
+        ActionBar actionBar = getActionBar();
+        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        //actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
 }

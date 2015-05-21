@@ -1,12 +1,16 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackAndroid;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +47,8 @@ public class ConnectionManager extends IntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.CONVERSATION_ID";
     public static final String EXTENDED_DATA_PEER_ID =
             "de.tudarmstadt.informatik.bp.bonfirechat.PEER_ID";
+    public static final String EXTENDED_DATA_MESSAGE_TEXT =
+            "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_TEXT";
 
     /**
      * Creates the ConnectionManager, called by Android creating the service
@@ -71,15 +77,17 @@ public class ConnectionManager extends IntentService {
         IProtocol p = getConnection(typ);
         if (p == null) {
             try {
-                p = (IProtocol) typ.newInstance();
+                p = (IProtocol) typ.getDeclaredConstructor(Context.class).newInstance(ConnectionManager.this);
                 p.setIdentity(BonfireData.getInstance(this).getDefaultIdentity());
                 p.setOnMessageReceivedListener(listener);
             } catch (InstantiationException e) {
                 e.printStackTrace();
-                return null;
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-                return null;
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
             }
             connections.add(p);
         }
@@ -90,30 +98,36 @@ public class ConnectionManager extends IntentService {
         @Override
         public void onMessageReceived(IProtocol sender, Message message) {
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
-            Conversation conversation = data.getConversationByPeer(message.fromId);
+            Conversation conversation = data.getConversationByPeer(message.peer);
             if (conversation == null) {
-                conversation = new Conversation(new Contact(message.fromId), message.fromId, 0);
+                conversation = new Conversation(message.peer, message.peer.getNickname(), 0);
                 data.createConversation(conversation);
 
-                Intent localIntent =
-                        new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
+                Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
                                 // Puts the status into the Intent
                                 .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.getName());
             }
             data.createMessage(message, conversation);
 
-            Intent localIntent =
-                    new Intent(MSG_RECEIVED_BROADCAST_EVENT)
-                            // Puts the status into the Intent
-                            .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.getName());
+            Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
+                    .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
+                    .putExtra(EXTENDED_DATA_PEER_ID, message.peer.rowid)
+                            .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ConnectionManager.this)
-                            .setSmallIcon(R.drawable.ic_drawer)
+                            .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(conversation.title)
                             .setContentText(message.body);
+            // Sets an ID for the notification
+            int mNotificationId = 001;
+            // Gets an instance of the NotificationManager service
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            // Builds the notification and issues it.
+            mNotifyMgr.notify(mNotificationId, mBuilder.build());
         }
     };
 

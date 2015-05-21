@@ -15,6 +15,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import javax.net.ssl.SSLContext;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
@@ -36,21 +38,22 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     private OnMessageReceivedListener listener;
     private Context ctx;
 
-    public ClientServerProtocol() {
+    public ClientServerProtocol(Context ctx) {
+        this.ctx = ctx;
     }
 
     public void setIdentity(Identity identity) {
         this.identity = identity;
     }
 
-    public static String getUsernameByHash(String hash) {
+    public static String getJidByHash(String hash) {
         return "u" + hash + "@teamwiki.de";
     }
 
     private void createMyAccount(Context ctx) {
         AccountManager a = AccountManager.getInstance(connection);
         try {
-            a.createAccount(identity.username, identity.password);
+            a.createAccount(StringUtils.parseName(identity.username), identity.password);
             BonfireData.getInstance(ctx).updateIdentity(identity);
 
         } catch (SmackException.NoResponseException e) {
@@ -64,24 +67,25 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
 
     public void connectToServer(Context ctx) {
 
-        Log.d(TAG, "connecting XMPP "+identity.server);
+        Log.d(TAG, "connecting XMPP server="+identity.server+", username="+identity.username+", password="+identity.password);
         ConnectionConfiguration config = new ConnectionConfiguration("teamwiki.de");
         //config.setCustomSSLContext(SSLCon);
-        connection = new XMPPTCPConnection("teamwiki.de");
+        config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
+        //config.set
+        connection = new XMPPTCPConnection(config);
         connection.addConnectionListener(this);
         try {
             connection.connect();
             Log.d(TAG, " XMPP connected");
 
             if (identity.username == null || identity.username.equals("")) {
-                identity.username = getUsernameByHash(identity.getPublicKeyHash());
+                identity.username = getJidByHash(identity.getPublicKeyHash());
                 Log.d(TAG, "calling createMyAccount, with username="+identity.username);
                 createMyAccount(ctx);
-                return;
             }
 
             Log.d(TAG, "before connection login");
-            connection.login(identity.username, identity.password, "Bonfire");
+            connection.login(StringUtils.parseName(identity.username), identity.password, "Bonfire");
             connection.addPacketListener(onXMPPMessageReceivedListener, new PacketTypeFilter(org.jivesoftware.smack.packet.Message.class));
             connection.addPacketListener(onXMPPPresenceReceivedListener, new PacketTypeFilter(org.jivesoftware.smack.packet.Presence.class));
             Log.d(TAG, "after connection login");
@@ -102,9 +106,17 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
         @Override
         public void processPacket(Packet packet) throws SmackException.NotConnectedException {
             org.jivesoftware.smack.packet.Message msg = (org.jivesoftware.smack.packet.Message) packet;
-            Log.i(TAG, "processPacket : "+msg.getFrom()+" : " +msg.getBody());
+            Log.i(TAG, "processPacket : " + msg.getFrom() + " : " + msg.getBody());
+            if (msg.getBody() == null) return;
 
-            listener.onMessageReceived(ClientServerProtocol.this, new Message(msg.getBody(), Message.MessageDirection.Received));
+            BonfireData db = BonfireData.getInstance(ctx);
+            Contact c = db.getContactByXmppId(msg.getFrom());
+            if (c == null) {
+                c = new Contact(StringUtils.parseName(msg.getFrom()));
+                c.setXmppId(msg.getFrom());
+                db.createContact(c);
+            }
+            listener.onMessageReceived(ClientServerProtocol.this, new Message(msg.getBody(), c, Message.MessageDirection.Received));
         }
     };
 
@@ -121,7 +133,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     // ###########################################################################
     @Override
     public void sendMessage(String target, Message message) {
-        String jid = getUsernameByHash(target);
+        String jid = getJidByHash(target);
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message(jid);
         msg.setBody(message.body);
         try {
