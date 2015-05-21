@@ -2,23 +2,26 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 
 import android.content.Context;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.AccountManager;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jivesoftware.smack.util.dns.HostAddress;
 
 import java.io.IOException;
 
+import javax.net.ssl.SSLContext;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -33,9 +36,11 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     private OnMessageReceivedListener listener;
     private Context ctx;
 
-    public ClientServerProtocol(Identity i) {
-        identity = i;
+    public ClientServerProtocol() {
+    }
 
+    public void setIdentity(Identity identity) {
+        this.identity = identity;
     }
 
     public static String getUsernameByHash(String hash) {
@@ -59,10 +64,12 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
 
     public void connectToServer(Context ctx) {
 
-        connection = new XMPPTCPConnection(identity.username, identity.password, identity.server);
+        Log.d(TAG, "connecting XMPP "+identity.server);
+        ConnectionConfiguration config = new ConnectionConfiguration("teamwiki.de");
+        //config.setCustomSSLContext(SSLCon);
+        connection = new XMPPTCPConnection("teamwiki.de");
         connection.addConnectionListener(this);
         try {
-            Log.d(TAG, "connecting XMPP");
             connection.connect();
             Log.d(TAG, " XMPP connected");
 
@@ -74,12 +81,15 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
             }
 
             Log.d(TAG, "before connection login");
-            connection.login();
-            connection.addAsyncStanzaListener(onXMPPMessageReceivedListener, new StanzaTypeFilter(org.jivesoftware.smack.packet.Message.class));
-            connection.addAsyncStanzaListener(onXMPPPresenceReceivedListener, new StanzaTypeFilter(org.jivesoftware.smack.packet.Presence.class));
+            connection.login(identity.username, identity.password, "Bonfire");
+            connection.addPacketListener(onXMPPMessageReceivedListener, new PacketTypeFilter(org.jivesoftware.smack.packet.Message.class));
+            connection.addPacketListener(onXMPPPresenceReceivedListener, new PacketTypeFilter(org.jivesoftware.smack.packet.Presence.class));
             Log.d(TAG, "after connection login");
         } catch (XMPPException e) {
             e.printStackTrace();
+        } catch (SmackException.ConnectionException e) {
+            e.printStackTrace();
+            for(HostAddress host : e.getFailedAddresses()) Log.e(TAG, "Failed address: "+host.toString());
         } catch (SmackException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -88,9 +98,9 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
 
     }
 
-    private StanzaListener onXMPPMessageReceivedListener = new StanzaListener() {
+    private PacketListener onXMPPMessageReceivedListener = new PacketListener() {
         @Override
-        public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
+        public void processPacket(Packet packet) throws SmackException.NotConnectedException {
             org.jivesoftware.smack.packet.Message msg = (org.jivesoftware.smack.packet.Message) packet;
             Log.i(TAG, "processPacket : "+msg.getFrom()+" : " +msg.getBody());
 
@@ -98,9 +108,9 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
         }
     };
 
-    private StanzaListener onXMPPPresenceReceivedListener = new StanzaListener() {
+    private PacketListener onXMPPPresenceReceivedListener = new PacketListener() {
         @Override
-        public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
+        public void processPacket(Packet packet) throws SmackException.NotConnectedException {
             Log.i(TAG, "presence: "+packet.getFrom());
         }
     };
@@ -112,9 +122,10 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     @Override
     public void sendMessage(String target, Message message) {
         String jid = getUsernameByHash(target);
-        org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message(jid, message.body);
+        org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message(jid);
+        msg.setBody(message.body);
         try {
-            connection.sendStanza(msg);
+            connection.sendPacket(msg);
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         }
@@ -135,10 +146,11 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     }
 
     @Override
-    public void authenticated(XMPPConnection connection, boolean resumed) {
+    public void authenticated(XMPPConnection xmppConnection) {
         Log.i(TAG, "XMPP : authenticated");
 
     }
+
 
     @Override
     public void connectionClosed() {

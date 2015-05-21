@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
@@ -13,6 +14,11 @@ public class EchoProtocol implements IProtocol {
     public void sendMessage(String target, Message message) {
         Message newMsg = new Message(message.body, Message.MessageDirection.Received);
         listener.onMessageReceived(this, newMsg);
+    }
+
+    @Override
+    public void setIdentity(Identity identity) {
+
     }
 
     @Override

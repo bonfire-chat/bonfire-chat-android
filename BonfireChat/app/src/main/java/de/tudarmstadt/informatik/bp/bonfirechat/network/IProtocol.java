@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
@@ -7,6 +8,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
  */
 public interface IProtocol {
     void sendMessage(String target, Message message);
-
+    void setIdentity(Identity identity);
     void setOnMessageReceivedListener(OnMessageReceivedListener listener);
 }

@@ -24,7 +24,7 @@ public class BonfireData extends SQLiteOpenHelper{
     private static final String IDENTITIES = "identity";
 
     // rowid is not included in "*" by default
-    private static final String[] ALL_COLS = new String[]{"rowid","*"};
+    private static final String[] ALL_COLS = new String[]{ "rowid", "*" };
 
     private static BonfireData instance;
 
@@ -36,7 +36,7 @@ public class BonfireData extends SQLiteOpenHelper{
     private SQLiteOpenHelper helper;
 
     private BonfireData(Context context) {
-        super(context, "CommunicationData", null, 1);
+        super(context, "CommunicationData", null, 4);
 
     }
 
@@ -44,9 +44,9 @@ public class BonfireData extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE " + CONTACTS + "(uid TEXT UNIQUE PRIMARY KEY, firstName TEXT, lastName TEXT)");
-        db.execSQL("CREATE TABLE " + CONVERSATIONS + "(peer TEXT UNIQUE PRIMARY KEY)");
-        db.execSQL("CREATE TABLE " + MESSAGES + "(id INTEGER PRIMARY KEY AUTOINCREMENT, peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT)");
-        db.execSQL("CREATE TABLE " + IDENTITIES + "(id INTEGER PRIMARY KEY AUTOINCREMENT, nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
+        db.execSQL("CREATE TABLE " + CONVERSATIONS + "(peer TEXT, title TEXT)");
+        db.execSQL("CREATE TABLE " + MESSAGES + "(peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT)");
+        db.execSQL("CREATE TABLE " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
 
     }
 
@@ -58,7 +58,7 @@ public class BonfireData extends SQLiteOpenHelper{
 
     public void createIdentity(Identity identity){
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(CONTACTS, null, identity.getContentValues());
+        db.insert(IDENTITIES, null, identity.getContentValues());
         db.close();
     }
 
@@ -90,7 +90,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Conversation> getConversations(){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Conversation> conversations = new ArrayList<>();
-        Cursor conversationCursor = db.query(CONVERSATIONS, null, null, null, null, null, null);
+        Cursor conversationCursor = db.query(CONVERSATIONS, ALL_COLS, null, null, null, null, null);
         while(conversationCursor.moveToNext()){
             Conversation conversation = Conversation.fromCursor(conversationCursor);
             conversation.addMessages(this.getMessages(conversation));
@@ -98,6 +98,18 @@ public class BonfireData extends SQLiteOpenHelper{
         }
         db.close();
         return conversations;
+    }
+
+    public Conversation getConversationByPeer(String peerId){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Conversation> conversations = new ArrayList<>();
+        Cursor conversationCursor = db.query(CONVERSATIONS, null, "peer = ?", new String[]{peerId}, null, null, null);
+        Conversation conversation = null;
+        if(conversationCursor.moveToNext()){
+            conversation = Conversation.fromCursor(conversationCursor);
+        }
+        db.close();
+        return conversation;
     }
 
     public ArrayList<Message> getMessages(Conversation conversation){
@@ -166,14 +178,13 @@ public class BonfireData extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         if (oldVersion >= newVersion)
             return;
-        ArrayList<Contact> buffer = new ArrayList<>();
-        buffer = getContacts();
-        db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
-        onCreate(db);
-        for(Contact c : buffer){
-            createContact(c);
-        }
+        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
 
+        db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
+        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);
+
+        onCreate(db);
     }
 
     public void updateIdentity(Identity identity) {

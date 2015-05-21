@@ -24,6 +24,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
         </activity>
+
+        <service
+            android:name=".network.ConnectionManager"
+            android:exported="false"/>
+        
     </application>
 
 </manifest>

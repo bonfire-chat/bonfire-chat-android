@@ -13,6 +13,7 @@ public class Message {
         Received
     }
 
+    public String fromId, toId;
     public String body;
     public MessageDirection direction = MessageDirection.Unknown;
 

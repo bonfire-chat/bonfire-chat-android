@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
@@ -52,8 +53,8 @@ public class Identity {
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put("nickname", nickname);
-        values.put("privateKey", privateKey);
-        values.put("publicKey", publicKey);
+        values.put("privatekey", privateKey);
+        values.put("publickey", publicKey);
         values.put("server", server);
         values.put("username", username);
         values.put("password", password);
@@ -61,9 +62,10 @@ public class Identity {
     }
 
     public static Identity fromCursor(Cursor cursor){
+        Log.d("Identity", TextUtils.join(",",cursor.getColumnNames()));
         Identity id = new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
-                cursor.getString(cursor.getColumnIndex("privateKey")),
-                cursor.getString(cursor.getColumnIndex("publicKey")),
+                cursor.getString(cursor.getColumnIndex("privatekey")),
+                cursor.getString(cursor.getColumnIndex("publickey")),
                 cursor.getString(cursor.getColumnIndex("server")),
                 cursor.getString(cursor.getColumnIndex("username")),
                 cursor.getString(cursor.getColumnIndex("password")));
