@@ -33,7 +33,7 @@ public class WifiSenderActivity extends Activity {
     WifiP2pManager mWifiP2pManager;
     WifiP2pManager.Channel mChannel;
     IntentFilter mIntentFilter;
-    BroadcastReceiver mReceiver;
+    WifiReceiver mReceiver;
 
 
 
@@ -79,29 +79,7 @@ public class WifiSenderActivity extends Activity {
        mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                mWifiP2pManager.requestPeers(mChannel, new WifiP2pManager.PeerListListener() {
-                    @Override
-                    public void onPeersAvailable(WifiP2pDeviceList peers) {
-                        Collection<WifiP2pDevice> mDevList = peers.getDeviceList();
-                        for(WifiP2pDevice dev : mDevList){
-                            WifiP2pConfig config = new WifiP2pConfig();
-                            config.deviceAddress = dev.deviceAddress;
-                            config.groupOwnerIntent = 0;
-                            config.wps.setup = WpsInfo.PBC;
-                            mWifiP2pManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-                                @Override
-                                public void onSuccess() {
 
-                                }
-
-                                @Override
-                                public void onFailure(int reason) {
-
-                                }
-                            });
-                        }
-                    }
-                });
             };
 
             @Override
