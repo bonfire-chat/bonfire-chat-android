@@ -180,7 +180,7 @@ public class NavigationDrawerFragment extends Fragment {
                             .getDefaultSharedPreferences(getActivity());
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 }
-
+                getActionBar().setTitle(R.string.app_name);
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
         };
@@ -274,7 +274,7 @@ public class NavigationDrawerFragment extends Fragment {
         //actionBar.setDisplayShowTitleEnabled(true);
         //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
-        actionBar.setTitle(R.string.app_name);
+
     }
 
     private ActionBar getActionBar() {
