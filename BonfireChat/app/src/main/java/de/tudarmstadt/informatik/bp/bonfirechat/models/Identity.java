@@ -1,7 +1,9 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -27,18 +29,18 @@ import java.util.List;
  */
 public class Identity {
 
-    public String nickname, privateKey, publicKey, server, username, password;
+    public String nickname, privateKey, publicKey, server, username, password, phone;
     public long rowid;
 
-    public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password) {
-        this.nickname = nickname; this.privateKey = privateKey; this.publicKey = publicKey;
+    public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password, String phone) {
+        this.nickname = nickname; this.privateKey = privateKey; this.publicKey = publicKey; this.phone = phone;
         this.server = server; this.username = username; this.password = password;
     }
 
-    public static Identity generate() {
+    public static Identity generate(Context ctx) {
         // TODO generate a real key pair
         Identity i= new Identity("", String.valueOf(Math.random()*100000000000f), String.valueOf(Math.random()*100000000000f),
-                "teamwiki.de", "", String.valueOf(Math.random()*100000000000f));
+                "teamwiki.de", "", String.valueOf(Math.random()*100000000000f), getMyPhoneNumber(ctx));
         return i;
     }
 
@@ -73,6 +75,7 @@ public class Identity {
         values.put("server", server);
         values.put("username", username);
         values.put("password", password);
+        values.put("phone", phone);
         return values;
     }
 
@@ -83,7 +86,8 @@ public class Identity {
                 cursor.getString(cursor.getColumnIndex("publickey")),
                 cursor.getString(cursor.getColumnIndex("server")),
                 cursor.getString(cursor.getColumnIndex("username")),
-                cursor.getString(cursor.getColumnIndex("password")));
+                cursor.getString(cursor.getColumnIndex("password")),
+                cursor.getString(cursor.getColumnIndex("phone")));
         id.rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
         return id;
     }
@@ -100,6 +104,8 @@ public class Identity {
             nameValuePairs.add(new BasicNameValuePair("nickname", nickname));
             nameValuePairs.add(new BasicNameValuePair("xmppid", username));
             nameValuePairs.add(new BasicNameValuePair("publickey", publicKey));
+            nameValuePairs.add(new BasicNameValuePair("phone", phone));
+            nameValuePairs.add(new BasicNameValuePair("gcmid", publicKey));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             // Execute HTTP Post Request
@@ -115,6 +121,13 @@ public class Identity {
         }
 
 
+    }
+
+    private static String getMyPhoneNumber(Context ctx){
+        TelephonyManager mTelephonyMgr;
+        mTelephonyMgr = (TelephonyManager)
+                ctx.getSystemService(Context.TELEPHONY_SERVICE);
+        return mTelephonyMgr.getLine1Number();
     }
 
 }

@@ -7,12 +7,16 @@ import android.app.TaskStackBuilder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackAndroid;
@@ -25,6 +29,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
@@ -170,13 +175,25 @@ public class ConnectionManager extends NonStopIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        BonfireData db = BonfireData.getInstance(this);
         if (intent.getAction() == GO_ONLINE_ACTION) {
-            ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
-            xmpp.connectToServer(this);
-            getOrCreateConnection(BluetoothProtocol.class);
+            Identity id = db.getDefaultIdentity();
+            id.registerWithServer();
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (preferences.getBoolean("enable_xmpp", true)) {
+                ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
+                xmpp.connectToServer(this);
+            }
+            if (preferences.getBoolean("enable_bluetooth", true)) {
+                getOrCreateConnection(BluetoothProtocol.class);
+            }
+            if (preferences.getBoolean("enable_wifi", true)) {
+                // getOrCreateConnection(WifiProtocol.class);
+            }
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
-            BonfireData db = BonfireData.getInstance(this);
             Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
             Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.peer.getNickname());
             try {
@@ -197,6 +214,43 @@ public class ConnectionManager extends NonStopIntentService {
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
 
+        } else if (!extras.isEmpty()) {
+            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+            String messageType = gcm.getMessageType(intent);
+
+            if (GoogleCloudMessaging.
+                    MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
+                sendNotification("Send error: " + extras.toString());
+            } else if (GoogleCloudMessaging.
+                    MESSAGE_TYPE_DELETED.equals(intent.getAction())) {
+                sendNotification("Deleted messages on server: " +
+                        extras.toString());
+                // If it's a regular GCM message, do some work.
+            } else if (GoogleCloudMessaging.
+                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+
+                sendNotification("Received: " + extras.toString());
+                Log.i(TAG, "Received: " + extras.toString());
+            }
         }
+    }
+
+    // Put the message into a notification and post it.
+    // This is just one simple example of what you might choose to do with
+    // a GCM message.
+    private void sendNotification(String msg) {
+        NotificationManager mNotificationManager = (NotificationManager)
+                this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("GCM Notification")
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(msg))
+                        .setContentText(msg);
+
+        mNotificationManager.notify(2, mBuilder.build());
     }
 }
