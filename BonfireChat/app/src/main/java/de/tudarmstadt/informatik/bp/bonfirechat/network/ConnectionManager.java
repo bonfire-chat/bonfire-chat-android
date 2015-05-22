@@ -178,7 +178,7 @@ public class ConnectionManager extends NonStopIntentService {
             Exception error = null;
             BonfireData db = BonfireData.getInstance(this);
             Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
-            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message);
+            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.peer.getNickname());
             try {
                 Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
 

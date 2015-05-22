@@ -26,13 +26,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 /**
  * Created by johannes on 22.05.15.
  */
-public class BluetoothProtocol implements IProtocol {
+public class BluetoothProtocol extends SocketProtocol {
 
     private static final String TAG = "BluetoothProtocol";
     private static final UUID BTMODULEUUID = UUID.fromString("D5AD0434-34AA-4B5C-B100-4964BFE3E739");
 
-    private Identity identity;
-    private OnMessageReceivedListener listener;
     private Context ctx;
     private BluetoothAdapter adapter;
     private List<BluetoothDevice> nearby;
@@ -117,7 +115,7 @@ public class BluetoothProtocol implements IProtocol {
     public BroadcastReceiver onDeviceFoundReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction(); //may need to chain this to a recognizing function
+            String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -152,9 +150,9 @@ public class BluetoothProtocol implements IProtocol {
             Log.d(TAG, "running listener thread");
             try {
 
-                BluetoothServerSocket ss = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
+                BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
-                    BluetoothSocket socket = ss.accept();
+                    BluetoothSocket socket = server.accept();
                     ConnectionHandler handler = new ConnectionHandler(socket);
                     connections.add(handler);
                 }
@@ -181,13 +179,12 @@ public class BluetoothProtocol implements IProtocol {
 
         @Override
         public void run() {
-            Log.d(TAG, "Client connected : " + socket.getRemoteDevice().getAddress());
-            Scanner s = new Scanner(input).useDelimiter("\\A");
-            String message = s.next();
-            Log.d(TAG, "recieved message via Bluetooth: " + message);
+            Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
+            Message message = deserializeMessage(input);
+            Log.d(TAG, "Recieved message: " + message.peer.getNickname() + ": " + message.body);
+            listener.onMessageReceived(BluetoothProtocol.this, message);
         }
     }
-
 
     // ###########################################################################
     // ###    Implementation of IProtocol
@@ -198,24 +195,9 @@ public class BluetoothProtocol implements IProtocol {
         Log.d(TAG, "broadcasting message via Bluetooth");
 
         connect();
-        for (OutputStream stream: output) {
-            byte[] buf = message.body.getBytes();
-            try {
-                stream.write(buf);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        for (OutputStream stream : output) {
+            serializeMessage(stream, target, message);
         }
         disconnect();
-    }
-
-    @Override
-    public void setIdentity(Identity identity) {
-        this.identity = identity;
-    }
-
-    @Override
-    public void setOnMessageReceivedListener(OnMessageReceivedListener listener) {
-        this.listener = listener;
     }
 }
