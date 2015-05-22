@@ -22,9 +22,6 @@ public class Contact {
     }
 
     public String getXmppId() {
-        if (xmppId == null || xmppId.equals("")) {
-            return getPublicKeyHash();
-        }
         return xmppId;
     }
     public void setXmppId(String xmppId) {
