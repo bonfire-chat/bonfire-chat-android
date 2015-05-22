@@ -38,17 +38,17 @@ public class BonfireData extends SQLiteOpenHelper{
     private SQLiteOpenHelper helper;
 
     private BonfireData(Context context) {
-        super(context, "CommunicationData", null, 8);
+        super(context, "CommunicationData", null, 9);
 
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, phoneNumber TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
         db.execSQL("CREATE TABLE if not exists " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
         db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(conversation INT NOT NULL, peer INT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT, dateTime TEXT)");
-        db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT, phone TEXT)");
 
     }
 
@@ -219,11 +219,11 @@ public class BonfireData extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         if (oldVersion >= newVersion)
             return;
-        db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
 
+        db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
         db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
-        //db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);*/
+        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);
 
         onCreate(db);
     }
