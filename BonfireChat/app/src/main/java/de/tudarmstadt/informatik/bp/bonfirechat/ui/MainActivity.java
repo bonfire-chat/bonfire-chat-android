@@ -53,8 +53,9 @@ public class MainActivity extends Activity
 
     private void initializeNetwork() {
         BonfireData db = BonfireData.getInstance(this);
-        if (db.getDefaultIdentity() == null) {
-            Identity id = Identity.generate();
+        Identity id = db.getDefaultIdentity();
+        if (id == null) {
+            id = Identity.generate(this);
             db.createIdentity(id);
         }
 
