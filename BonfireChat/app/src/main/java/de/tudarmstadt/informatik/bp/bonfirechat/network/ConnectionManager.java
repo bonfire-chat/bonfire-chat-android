@@ -3,8 +3,11 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -23,6 +26,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
 
 /**
@@ -80,16 +84,9 @@ public class ConnectionManager extends NonStopIntentService {
 
     public static List<IProtocol> connections = new ArrayList<IProtocol>();
 
-    public Class getConnectionClassByName(String name) {
-        if (name.equals("ClientServerProtocol")) {
-            return ClientServerProtocol.class;
-        } else if (name.equals("BluetoothProtocol")) {
-            return BluetoothProtocol.class;
-        } else if (name.equals("EchoProtocol")) {
-            return EchoProtocol.class;
-        } else {
-            throw new IllegalArgumentException("Unknown Connection class "+name);
-        }
+
+    public Class getConnectionClassByName(String name) throws ClassNotFoundException {
+        return Class.forName("de.tudarmstadt.informatik.bp.bonfirechat.network."+name);
     }
 
     public IProtocol getConnection(Class typ) {
@@ -123,9 +120,11 @@ public class ConnectionManager extends NonStopIntentService {
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Message message) {
+            Log.d(TAG, "received message : " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
             Conversation conversation = data.getConversationByPeer(message.peer);
             if (conversation == null) {
+                Log.d(TAG, "creating new conversation for peer "+message.peer.getNickname());
                 conversation = new Conversation(message.peer, message.peer.getNickname(), 0);
                 data.createConversation(conversation);
 
@@ -133,7 +132,10 @@ public class ConnectionManager extends NonStopIntentService {
                                 // Puts the status into the Intent
                                 .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.getName());
             }
+            Log.d(TAG, "conversationId=" + conversation.rowid);
+
             data.createMessage(message, conversation);
+            Log.d(TAG, "message stored in db with id=" + message.rowid);
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
@@ -142,22 +144,27 @@ public class ConnectionManager extends NonStopIntentService {
             // Broadcasts the Intent to receivers in this app.
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
 
-            Bundle bundle = new Bundle(); bundle.putLong("ConversationID", conversation.rowid);
-            PendingIntent pi = PendingIntent.getActivity(ConnectionManager.this, 0,
-                    new Intent(ConnectionManager.this, MessagesActivity.class), 0, bundle);
+
+            Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
+            intent.putExtra("ConversationId", conversation.rowid);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
+            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addNextIntent(intent);
+            PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+            //PendingIntent.getActivity(ConnectionManager.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ConnectionManager.this)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle(conversation.title)
-                            .setContentText(message.body)
-                            .setContentIntent(pi);
-            // Sets an ID for the notification
-            int mNotificationId = 001;
-            // Gets an instance of the NotificationManager service
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(conversation.title)
+                    .setContentText(message.body)
+                    .setContentIntent(pi)
+                    .setSound(sound)
+                    .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
+
             NotificationManager mNotifyMgr =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-            mNotifyMgr.notify(mNotificationId, mBuilder.build());
+            mNotifyMgr.notify(1, mBuilder.build());
         }
     };
 

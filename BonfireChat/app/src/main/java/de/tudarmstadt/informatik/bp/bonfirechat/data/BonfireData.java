@@ -141,7 +141,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Message> getMessages(Conversation conversation){
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Message> messages = new ArrayList<>();
-        Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "peer=?", new String[]{conversation.getName()}, null, null, null);
+        Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "peer=?", new String[]{String.valueOf(conversation.rowid)}, null, null, null);
         while(messageCursor.moveToNext()){
             messages.add(Message.fromCursor(messageCursor));
         }
