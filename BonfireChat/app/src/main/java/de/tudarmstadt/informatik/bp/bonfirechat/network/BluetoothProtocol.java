@@ -26,13 +26,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 /**
  * Created by johannes on 22.05.15.
  */
-public class BluetoothProtocol implements IProtocol {
+public class BluetoothProtocol extends SocketProtocol {
 
     private static final String TAG = "BluetoothProtocol";
     private static final UUID BTMODULEUUID = UUID.fromString("D5AD0434-34AA-4B5C-B100-4964BFE3E739");
 
-    private Identity identity;
-    private OnMessageReceivedListener listener;
     private Context ctx;
     private BluetoothAdapter adapter;
     private List<BluetoothDevice> nearby;
@@ -198,7 +196,7 @@ public class BluetoothProtocol implements IProtocol {
         Log.d(TAG, "broadcasting message via Bluetooth");
 
         connect();
-        for (OutputStream stream: output) {
+        for (OutputStream stream : output) {
             byte[] buf = message.body.getBytes();
             try {
                 stream.write(buf);
@@ -207,15 +205,5 @@ public class BluetoothProtocol implements IProtocol {
             }
         }
         disconnect();
-    }
-
-    @Override
-    public void setIdentity(Identity identity) {
-        this.identity = identity;
-    }
-
-    @Override
-    public void setOnMessageReceivedListener(OnMessageReceivedListener listener) {
-        this.listener = listener;
     }
 }
