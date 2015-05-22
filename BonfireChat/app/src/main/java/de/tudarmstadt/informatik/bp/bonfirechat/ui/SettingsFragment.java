@@ -44,6 +44,5 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached("settings");
     }
 }

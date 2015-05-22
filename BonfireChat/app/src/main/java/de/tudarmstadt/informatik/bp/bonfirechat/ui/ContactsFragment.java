@@ -76,7 +76,6 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached("contacts");
     }
 
     @Override
