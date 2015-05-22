@@ -55,10 +55,9 @@ public class MainActivity extends Activity
         BonfireData db = BonfireData.getInstance(this);
         Identity id = db.getDefaultIdentity();
         if (id == null) {
-            id = Identity.generate();
+            id = Identity.generate(this);
             db.createIdentity(id);
         }
-        id.registerWithServer();
 
         Intent intent = new Intent(this, ConnectionManager.class);
         intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
