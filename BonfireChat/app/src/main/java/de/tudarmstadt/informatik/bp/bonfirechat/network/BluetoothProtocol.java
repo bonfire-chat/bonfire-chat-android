@@ -115,7 +115,7 @@ public class BluetoothProtocol extends SocketProtocol {
     public BroadcastReceiver onDeviceFoundReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction(); //may need to chain this to a recognizing function
+            String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -150,9 +150,9 @@ public class BluetoothProtocol extends SocketProtocol {
             Log.d(TAG, "running listener thread");
             try {
 
-                BluetoothServerSocket ss = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
+                BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
-                    BluetoothSocket socket = ss.accept();
+                    BluetoothSocket socket = server.accept();
                     ConnectionHandler handler = new ConnectionHandler(socket);
                     connections.add(handler);
                 }
@@ -181,10 +181,10 @@ public class BluetoothProtocol extends SocketProtocol {
         public void run() {
             Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
             Message message = deserializeMessage(input);
-            Log.d(TAG, "Recieved message: " + ": " + message.body);
+            Log.d(TAG, "Recieved message: " + message.peer.getNickname() + ": " + message.body);
+            listener.onMessageReceived(BluetoothProtocol.this, message);
         }
     }
-
 
     // ###########################################################################
     // ###    Implementation of IProtocol
