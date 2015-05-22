@@ -61,6 +61,7 @@ public class MessagesActivity extends Activity {
         messages.add(new Message("wie stehts?", Message.MessageDirection.Received));
         messages.add(new Message("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.", Message.MessageDirection.Received));
         messages.addAll(db.getMessages(conversation));*/
+        messages = db.getMessages(conversation);
         lv.setAdapter(new MessagesAdapter(this, messages));
 
         findViewById(R.id.textSendButton).setOnClickListener(onSendButtonClickListener);
@@ -99,6 +100,10 @@ public class MessagesActivity extends Activity {
                 new IntentFilter(ConnectionManager.MSG_SENT_BROADCAST_EVENT));
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(TAG, "onNewIntent: "+intent);
+    }
 
     private View.OnClickListener onSendButtonClickListener = new View.OnClickListener() {
         @Override
