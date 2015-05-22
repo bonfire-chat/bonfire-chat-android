@@ -115,7 +115,11 @@ public class MessagesActivity extends Activity {
             Log.d(TAG, "sending message id "+message.rowid);
             Intent intent = new Intent(MessagesActivity.this, ConnectionManager.class);
             intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
-            intent.putExtra("protocolName", "ClientServerProtocol");
+            if (conversation.getPeer().getXmppId() != null) {
+                intent.putExtra("protocolName", "ClientServerProtocol");
+            } else {
+                intent.putExtra("protocolName", "BluetoothProtocol");
+            }
             intent.putExtra("contactId", conversation.getPeer().rowid);
             intent.putExtra("messageId", message.rowid);
             startService(intent);

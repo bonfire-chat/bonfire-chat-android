@@ -83,6 +83,8 @@ public class ConnectionManager extends NonStopIntentService {
     public Class getConnectionClassByName(String name) {
         if (name.equals("ClientServerProtocol")) {
             return ClientServerProtocol.class;
+        } else if (name.equals("BluetoothProtocol")) {
+            return BluetoothProtocol.class;
         } else if (name.equals("EchoProtocol")) {
             return EchoProtocol.class;
         } else {
@@ -164,6 +166,7 @@ public class ConnectionManager extends NonStopIntentService {
         if (intent.getAction() == GO_ONLINE_ACTION) {
             ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
             xmpp.connectToServer(this);
+            getOrCreateConnection(BluetoothProtocol.class);
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             BonfireData db = BonfireData.getInstance(this);

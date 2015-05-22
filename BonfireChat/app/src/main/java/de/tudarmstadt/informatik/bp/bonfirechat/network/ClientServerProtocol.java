@@ -164,7 +164,6 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
 
     }
 
-
     @Override
     public void connectionClosed() {
         Log.i(TAG, "XMPP : connectionClosed");
