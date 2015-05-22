@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
@@ -11,8 +12,8 @@ public class EchoProtocol implements IProtocol {
     OnMessageReceivedListener listener;
 
     @Override
-    public void sendMessage(String target, Message message) {
-        Message newMsg = new Message(message.body, Message.MessageDirection.Received);
+    public void sendMessage(Contact target, Message message) {
+        Message newMsg = new Message(message.body, Message.MessageDirection.Received, message.dateTime);
         listener.onMessageReceived(this, newMsg);
     }
 

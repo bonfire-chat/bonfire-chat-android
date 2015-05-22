@@ -42,8 +42,9 @@ public class ConversationsFragment extends Fragment {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+
                         adapter.add(BonfireData.getInstance(getActivity()).getConversationById(
-                                intent.getIntExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1)
+                                intent.getLongExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1)
                         ));
                         adapter.notifyDataSetChanged();
                     }

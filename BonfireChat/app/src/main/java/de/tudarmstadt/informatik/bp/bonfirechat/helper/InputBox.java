@@ -44,10 +44,23 @@ public class InputBox {
                         // do nothing
                     }
                 })
-                //.setIcon(R.mipmap.ic_launcher)
+                        //.setIcon(R.mipmap.ic_launcher)
                 .setView(container);
         AlertDialog d = b.create();
         d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        d.show();
+    }
+    public static void Info(Context ctx, String title, String message) {
+        AlertDialog.Builder b = new AlertDialog.Builder(ctx)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog d = b.create();
         d.show();
     }
 }

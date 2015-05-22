@@ -15,10 +15,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
@@ -29,6 +32,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 public class MessagesActivity extends Activity {
 
+    private static final String TAG = "MessagesActivity";
     List<Message> messages = new ArrayList<Message>();
     private Conversation conversation;
     private BonfireData db = BonfireData.getInstance(this);
@@ -66,25 +70,55 @@ public class MessagesActivity extends Activity {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         messages.add(new Message(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_TEXT)
-                                , Message.MessageDirection.Received
+                                , Message.MessageDirection.Received, DateHelper.getNowString()
                         ));
-                        ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
+                        ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
                     }
                 },
-                new IntentFilter(ConnectionManager.NEW_CONVERSATION_BROADCAST_EVENT));
+                new IntentFilter(ConnectionManager.MSG_RECEIVED_BROADCAST_EVENT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.i(TAG, "MSG_SENT: "+intent.getLongExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_ID, -1)+" - "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
+                        for(Message m : messages) {
+                            if (m.rowid == intent.getLongExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_ID, -1)) {
+                                if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
+                                    m.dateTime = "ERR: "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
+                                } else {
+                                    m.dateTime = DateHelper.getNowString();
+                                }
+                                BonfireData db = BonfireData.getInstance(MessagesActivity.this);
+                                db.updateMessage(m);
+                                ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
+                                return;
+                            }
+                        }
+                    }
+                },
+                new IntentFilter(ConnectionManager.MSG_SENT_BROADCAST_EVENT));
     }
+
 
     private View.OnClickListener onSendButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             EditText ed = (EditText) findViewById(R.id.textinput);
             String msg = ed.getText().toString();
-            Message message = new Message(msg, Message.MessageDirection.Sent);
+            Message message = new Message(msg, conversation.getPeer(), Message.MessageDirection.Sent, "Sending...");
             db.createMessage(message, conversation);
             messages.add(message);
             ListView lv = (ListView) findViewById(R.id.messages_view);
             ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
             ed.setText("");
+
+            Log.d(TAG, "sending message id "+message.rowid);
+            Intent intent = new Intent(MessagesActivity.this, ConnectionManager.class);
+            intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
+            intent.putExtra("protocolName", "ClientServerProtocol");
+            intent.putExtra("contactId", conversation.getPeer().rowid);
+            intent.putExtra("messageId", message.rowid);
+            startService(intent);
         }
     };
 
@@ -105,6 +139,15 @@ public class MessagesActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            String info  = "Titel: " + conversation.title + "\nId: " + conversation.rowid +
+                    "\nTyp: "+conversation.conversationType.toString()+
+                    "";
+            if (conversation.getPeer() != null) {
+                info += "\nKontakt: " + conversation.getPeer().getNickname() +
+                        "\nName: " + conversation.getPeer().getFirstName() + " "+conversation.getPeer().getLastName() +
+                        "\nXMPP ID: " + conversation.getPeer().getXmppId();
+            }
+            InputBox.Info(this, "Info", info);
             return true;
         } else if (id == R.id.action_edit_title) {
 
