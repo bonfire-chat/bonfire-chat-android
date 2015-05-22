@@ -70,27 +70,25 @@ public class MainActivity extends Activity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragments.get(position))
                 .commit();
+        onSectionAttached(position);
     }
 
-    public void onSectionAttached(String id) {
+    public void onSectionAttached(int id) {
         switch (id) {
-            case "conversations":
+            case 0:
                 mTitle = getString(R.string.title_conversations);
                 break;
-            case "contacts":
+            case 1:
                 mTitle = getString(R.string.title_contacts);
                 break;
-            case "settings":
+            case 2:
                 mTitle = getString(R.string.title_settings);
                 break;
         }
-        onPageSelected();
-    }
-
-    public void onPageSelected() {
         ActionBar actionBar = getActionBar();
         //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         //actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
+
 }
