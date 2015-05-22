@@ -3,10 +3,12 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.io.Serializable;
+
 /**
  * Created by johannes on 05.05.15.
  */
-public class Contact {
+public class Contact implements Serializable {
     private String nickname;
     private String firstName;
     private String lastName;
