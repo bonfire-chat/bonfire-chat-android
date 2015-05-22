@@ -14,6 +14,7 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.Collection;
@@ -24,9 +25,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
  * Created by Simon on 20.05.2015.
  * Class to setting up a Wifi -Ad Hoc Connection
  */
-public class WifiSenderActivity extends Activity {
+public class WifiSenderActivity  {
 
-    //todo in etwas sinnvolles ändern:
+    //todo in etwas sinnvolles  aendern:
     public static final String MBSSID ="1A:2B:3C:4D:5E:6F";
     //if a callback is needed in case of loss of framework communication this should be unnulled;
     public static final WifiP2pManager.ChannelListener MCHLISTENER =null;
@@ -36,15 +37,13 @@ public class WifiSenderActivity extends Activity {
     WifiReceiver mReceiver;
 
 
+ public WifiSenderActivity(Context ctx){
 
+        Log.d(TAG, "Dieser Code wird ausgefuehrt");
+        Looper mSrcLooper = ctx.getMainLooper();
 
-
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        Looper mSrcLooper = this.getMainLooper();
-
-        this.mWifiP2pManager= (WifiP2pManager) this.getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel =  mWifiP2pManager.initialize(this, mSrcLooper, MCHLISTENER);
+        this.mWifiP2pManager= (WifiP2pManager) ctx.getSystemService(Context.WIFI_P2P_SERVICE);
+        mChannel =  mWifiP2pManager.initialize(ctx, mSrcLooper, MCHLISTENER);
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -52,23 +51,10 @@ public class WifiSenderActivity extends Activity {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(mReceiver, mIntentFilter);
-    }
-    /* unregister the broadcast receiver */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(mReceiver);
     }
 
 
+private static final String TAG = "WifiSenderActivity";
 
     /**
      * broadcasts a message to spread amount of recipients if available
@@ -76,10 +62,11 @@ public class WifiSenderActivity extends Activity {
      * @param spread
      */
     public void broadcastMsg(Message msg, final int spread){
-
+        Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
        mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
+            Log.d(TAG, "Discovering of peers was successful!");
 
             };
 
