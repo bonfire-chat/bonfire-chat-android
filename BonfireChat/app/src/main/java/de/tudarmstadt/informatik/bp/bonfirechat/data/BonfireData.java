@@ -135,7 +135,7 @@ public class BonfireData extends SQLiteOpenHelper{
         ArrayList<Message> messages = new ArrayList<>();
         Cursor cursor = db.query(MESSAGES, ALL_COLS, "rowid=?", new String[]  {String.valueOf(rowid)}, null, null, null);
         if (!cursor.moveToNext()) return null;
-        Message message = Message.fromCursor(cursor);
+        Message message = Message.fromCursor(cursor, this);
         db.close();
         return message;
     }
@@ -144,7 +144,7 @@ public class BonfireData extends SQLiteOpenHelper{
         ArrayList<Message> messages = new ArrayList<>();
         Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "conversation=?", new String[]{String.valueOf(conversation.rowid)}, null, null, null);
         while(messageCursor.moveToNext()){
-            messages.add(Message.fromCursor(messageCursor));
+            messages.add(Message.fromCursor(messageCursor, this));
         }
         db.close();
         return messages;

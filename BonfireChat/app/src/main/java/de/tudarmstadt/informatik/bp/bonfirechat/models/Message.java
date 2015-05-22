@@ -1,9 +1,12 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 
 import java.io.Serializable;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 
 /**
  * Created by johannes on 05.05.15.
@@ -32,6 +35,11 @@ public class Message implements Serializable {
         this.body = body; this.direction = dir; this.dateTime = dateTime; this.rowid = rowid;
     }
 
+    public Message(String body, Contact peer, MessageDirection dir, String dateTime, long rowid) {
+        this.body = body; this.direction = dir; this.dateTime = dateTime; this.rowid = rowid;
+        this.peer = peer;
+    }
+
     @Override
     public String toString() {
         return body;
@@ -46,8 +54,10 @@ public class Message implements Serializable {
         return values;
     }
 
-    public static Message fromCursor(Cursor cursor){
+    public static Message fromCursor(Cursor cursor, BonfireData db){
+        Contact peer = db.getContactById(cursor.getLong(cursor.getColumnIndex("peer")));
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
+                peer,
                 MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))],
                 cursor.getString(cursor.getColumnIndex("dateTime")),
                 cursor.getLong(cursor.getColumnIndex("rowid")));
