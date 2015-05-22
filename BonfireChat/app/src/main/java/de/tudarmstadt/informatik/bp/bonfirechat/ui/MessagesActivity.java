@@ -123,7 +123,7 @@ public class MessagesActivity extends Activity {
             if (conversation.getPeer().getXmppId() != null) {
                 intent.putExtra("protocolName", "ClientServerProtocol");
             } else {
-                intent.putExtra("protocolName", "BluetoothProtocol");
+                intent.putExtra("protocolName", "WifiProtocol");
             }
             intent.putExtra("contactId", conversation.getPeer().rowid);
             intent.putExtra("messageId", message.rowid);
