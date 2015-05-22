@@ -10,6 +10,7 @@ public class Contact {
     private String nickname;
     private String firstName;
     private String lastName;
+    public String phoneNumber;
     public String publicKey;
     public String xmppId;
     public String wifiMacAddress;
@@ -29,13 +30,14 @@ public class Contact {
     }
 
     public Contact(String nickname) {
-        this(nickname, nickname, "", null, null, null, null, 0);
+        this(nickname, nickname, "", null, null, null, null, null, 0);
     }
 
-    public Contact(String nickname, String firstName, String lastName, String publicKey, String xmppId, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
+    public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey, String xmppId, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
         this.publicKey = publicKey;
         this.xmppId = xmppId;
         this.wifiMacAddress = wifiMacAddress;
@@ -77,6 +79,7 @@ public class Contact {
         values.put("nickname", nickname);
         values.put("firstName", firstName);
         values.put("lastName", lastName);
+        values.put("phoneNumber", phoneNumber);
         values.put("publicKey", publicKey);
         values.put("xmppId", xmppId);
         values.put("wifiMacAddress", wifiMacAddress);
@@ -88,6 +91,7 @@ public class Contact {
         Contact contact = new Contact(cursor.getString(cursor.getColumnIndex("nickname")),
                     cursor.getString(cursor.getColumnIndex("firstName")),
                 cursor.getString(cursor.getColumnIndex("lastName")),
+                cursor.getString(cursor.getColumnIndex("phoneNumber")),
                 cursor.getString(cursor.getColumnIndex("publicKey")),
                 cursor.getString(cursor.getColumnIndex("xmppId")),
                 cursor.getString(cursor.getColumnIndex("wifiMacAddress")),

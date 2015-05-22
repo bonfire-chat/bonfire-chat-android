@@ -6,9 +6,21 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mw on 18.05.15.
@@ -24,7 +36,8 @@ public class Identity {
     }
 
     public static Identity generate() {
-        Identity i= new Identity("nobody", String.valueOf(Math.random()*100000000000f), String.valueOf(Math.random()*100000000000f),
+        // TODO generate a real key pair
+        Identity i= new Identity("", String.valueOf(Math.random()*100000000000f), String.valueOf(Math.random()*100000000000f),
                 "teamwiki.de", "", String.valueOf(Math.random()*100000000000f));
         return i;
     }
@@ -64,7 +77,7 @@ public class Identity {
     }
 
     public static Identity fromCursor(Cursor cursor){
-        Log.d("Identity", TextUtils.join(",",cursor.getColumnNames()));
+        Log.d("Identity", TextUtils.join(",", cursor.getColumnNames()));
         Identity id = new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
                 cursor.getString(cursor.getColumnIndex("privatekey")),
                 cursor.getString(cursor.getColumnIndex("publickey")),
@@ -73,6 +86,35 @@ public class Identity {
                 cursor.getString(cursor.getColumnIndex("password")));
         id.rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
         return id;
+    }
+
+    public void registerWithServer() {
+
+        // Create a new HttpClient and Post Header
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://bonfire.teamwiki.net/register.php");
+
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("nickname", nickname));
+            nameValuePairs.add(new BasicNameValuePair("xmppid", username));
+            nameValuePairs.add(new BasicNameValuePair("publickey", publicKey));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(httppost);
+
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }
