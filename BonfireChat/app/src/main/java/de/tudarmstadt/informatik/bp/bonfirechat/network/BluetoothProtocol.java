@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
@@ -28,6 +30,7 @@ public class BluetoothProtocol implements IProtocol {
 
     private static final String TAG = "BluetoothProtocol";
     private static final UUID BTMODULEUUID = UUID.fromString("D5AD0434-34AA-4B5C-B100-4964BFE3E739");
+
     private Identity identity;
     private OnMessageReceivedListener listener;
     private Context ctx;
@@ -36,6 +39,7 @@ public class BluetoothProtocol implements IProtocol {
     private List<BluetoothSocket> sockets;
     private List<OutputStream> output;
     private List<ConnectionHandler> connections;
+    private Handler searchLoopHandler;
 
     BluetoothProtocol(Context ctx) {
         this.ctx = ctx;
@@ -43,24 +47,35 @@ public class BluetoothProtocol implements IProtocol {
         nearby = new ArrayList<>();
         sockets = new ArrayList<>();
         connections = new ArrayList<>();
+        searchLoopHandler = new Handler();
 
         adapter = BluetoothAdapter.getDefaultAdapter();
-        ctx.registerReceiver(onDeviceFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
-        searchDevices();
-        startListeningThread.start();
+        ensureBluetoothUp();
     }
 
     private boolean ensureBluetoothUp() {
         if (adapter == null) {
             Log.d(TAG, "device does not support Bluetooth");
-            if (adapter.isEnabled()) {
-                Log.d(TAG, "bluetooth enabled");
-                return true;
-            } else  {
-                Log.d(TAG, "bluetooth disabled - please enable it!");
-            }
+        } else {
+            Log.d(TAG, "enabling bluetooth and requesting infinite discoverability");
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            discoverableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ctx.startActivity(discoverableIntent);
+            new android.os.Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    initializeBluetooth();
+                }
+            }, 7500);
         }
         return false;
+    }
+
+    private void initializeBluetooth() {
+        ctx.registerReceiver(onDeviceFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+        searchDevicesThread.run();
+        listeningThread.start();
     }
 
     private void connect() {
@@ -68,6 +83,8 @@ public class BluetoothProtocol implements IProtocol {
             Log.d(TAG, "stopping discovery for connecting");
             adapter.cancelDiscovery();
         }
+        sockets.clear();
+        output.clear();
         for (BluetoothDevice device: nearby) {
             try {
                 BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);
@@ -75,7 +92,9 @@ public class BluetoothProtocol implements IProtocol {
                 sockets.add(socket);
                 output.add(socket.getOutputStream());
             } catch (IOException e) {
-                e.printStackTrace();
+                // do nothing, this exception will occur a lot because there will be Bluetooth
+                // devices nearby that do not run BonfireChat, resulting in no suitable
+                // ServerSocket to accept this connection
             }
         }
     }
@@ -88,6 +107,7 @@ public class BluetoothProtocol implements IProtocol {
                 e.printStackTrace();
             }
         }
+        nearby.clear();
         if (!adapter.isDiscovering()) {
             Log.d(TAG, "starting discovery after disconnecting");
             adapter.startDiscovery();
@@ -102,8 +122,17 @@ public class BluetoothProtocol implements IProtocol {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 nearby.add(device);
-                Log.i(TAG, "device found: " + device.getName() + " - " + device.getAddress());
+                Log.d(TAG, "device found: " + device.getName() + " - " + device.getAddress());
             }
+        }
+    };
+
+    private Runnable searchDevicesThread = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "starting next discovery interval");
+            searchDevices();
+            searchLoopHandler.postDelayed(searchDevicesThread, 120000);
         }
     };
 
@@ -113,10 +142,11 @@ public class BluetoothProtocol implements IProtocol {
             adapter.cancelDiscovery();
         }
         Log.d(TAG, "starting discovery");
+        nearby.clear();
         adapter.startDiscovery();
     }
 
-    public Thread startListeningThread = new Thread(new Runnable() {
+    public Thread listeningThread = new Thread(new Runnable() {
         @Override
         public void run() {
             Log.d(TAG, "running listener thread");
@@ -151,20 +181,10 @@ public class BluetoothProtocol implements IProtocol {
 
         @Override
         public void run() {
-            Log.i(TAG, "Client connected : " + socket.getRemoteDevice().getAddress());
-
-            byte[] buffer = new byte[512];
-            int bytes;
-
-            while (true) {
-                try {
-                    bytes = input.read(buffer);
-                    String readMessage = new String(buffer, 0, bytes);
-                    Log.d(TAG, "recieved message via Bluetooth: " + readMessage);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            Log.d(TAG, "Client connected : " + socket.getRemoteDevice().getAddress());
+            Scanner s = new Scanner(input).useDelimiter("\\A");
+            String message = s.next();
+            Log.d(TAG, "recieved message via Bluetooth: " + message);
         }
     }
 
@@ -177,10 +197,7 @@ public class BluetoothProtocol implements IProtocol {
     public void sendMessage(Contact target, Message message) {
         Log.d(TAG, "broadcasting message via Bluetooth");
 
-        // TODO: move to another function
-        ensureBluetoothUp();
         connect();
-
         for (OutputStream stream: output) {
             byte[] buf = message.body.getBytes();
             try {
@@ -189,7 +206,6 @@ public class BluetoothProtocol implements IProtocol {
                 e.printStackTrace();
             }
         }
-
         disconnect();
     }
 
