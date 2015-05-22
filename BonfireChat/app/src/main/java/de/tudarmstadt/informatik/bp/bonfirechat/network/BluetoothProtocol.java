@@ -181,7 +181,7 @@ public class BluetoothProtocol extends SocketProtocol {
         public void run() {
             Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
             Message message = deserializeMessage(input);
-            Log.d(TAG, "Recieved message: " + message.peer.getNickname() + ": " + message.body);
+            Log.d(TAG, "Recieved message: " + ": " + message.body);
         }
     }
 
