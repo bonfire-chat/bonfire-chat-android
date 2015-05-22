@@ -156,8 +156,8 @@ public class ContactsFragment extends Fragment {
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            // Here you can make any necessary updates to the activity when
-            // the CAB is removed. By default, selected items are deselected/unchecked.
+            adapter.itemSelected = new boolean[adapter.getCount()];
+            adapter.notifyDataSetChanged();
         }
 
         @Override
