@@ -7,6 +7,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 public abstract class NonStopIntentService extends Service {
 
@@ -26,6 +27,10 @@ public abstract class NonStopIntentService extends Service {
 
         @Override
         public void handleMessage(Message msg) {
+            if (msg.obj == null) {
+                Log.w("NonStopIntentService", "received message with null intent!");
+                return;
+            }
             onHandleIntent((Intent)msg.obj);
         }
     }

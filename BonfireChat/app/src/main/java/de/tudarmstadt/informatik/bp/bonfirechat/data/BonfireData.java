@@ -38,7 +38,7 @@ public class BonfireData extends SQLiteOpenHelper{
     private SQLiteOpenHelper helper;
 
     private BonfireData(Context context) {
-        super(context, "CommunicationData", null, 7);
+        super(context, "CommunicationData", null, 8);
 
     }
 
@@ -47,7 +47,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
         db.execSQL("CREATE TABLE if not exists " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
-        db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(conversation INT, peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT, dateTime TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(conversation INT NOT NULL, peer INT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT, dateTime TEXT)");
         db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
 
     }
@@ -73,6 +73,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public void createMessage(Message message, Conversation conversation){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = message.getContentValues();
+        values.put("conversation", conversation.rowid);
         message.rowid = db.insert(MESSAGES, null, values);
         db.close();
     }
@@ -141,7 +142,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Message> getMessages(Conversation conversation){
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Message> messages = new ArrayList<>();
-        Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "peer=?", new String[]{String.valueOf(conversation.rowid)}, null, null, null);
+        Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "conversation=?", new String[]{String.valueOf(conversation.rowid)}, null, null, null);
         while(messageCursor.moveToNext()){
             messages.add(Message.fromCursor(messageCursor));
         }
@@ -220,9 +221,9 @@ public class BonfireData extends SQLiteOpenHelper{
             return;
         db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
 
-        /*db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
-        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);*/
+        //db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);*/
 
         onCreate(db);
     }
