@@ -41,15 +41,22 @@
         Ziel des Projektes ist die Entwicklung eines adaptiven peer-to-peer Bluetooth-Chats, mit dem man kommunizieren kann, wenn das mobile Handynetz überlastet ist.
 	
 	\chapter{Qualitätsziele}
-        \section{Ziel 1}
+        \section{Wartbarkeit}
     
-		Beschreibung eines QS-Ziels und wieso dieses in diesem Projekt wichtig ist.\\
-		Maßnahme zum Erreichen des Ziels.\\
-		Prozessbeschreibung - wer führt wann die oben genannte Maßnahme durch und wie wird auf Probleme reagiert.\\
-		Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
+		Da unsere Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln ist es notwendig, dass unser Programm wartbar ist.\\
 
-        \section{Ziel xyz}
-	        \ldots
+		Zur Sicherstellung der Wartbarkeit werden wir Checkstyle verwenden, um einen einheitlichen Codestil zu gewährleisten.\\
+                Checkstyle wird bei jedem Build automatisch ausgeführt werden. Sollte Checkstyle eine Stilverletzung melden, wird der Entwickler, bei dem die Fehlermeldung auftrat, den Codestil anpassen, sodass dieser der Vorgabe entspricht.\\
+
+                Weiterhin soll einmal pro Sprint ein Code-Review stattfinden. Dafür wird das Tool Gerrit verwendet, das kollaborative Code-Reviews unterstützt und sich in Git integriert.\\
+
+                Findbugs verwenden\ldots etc. Es könnte noch jemand anderes was hierzu schreiben :-)
+
+        \section{Datensicherheit}
+
+        \section{Robustheit}
+
+        \section{Energieeffizienz}
 	        
 	
 \appendix	
