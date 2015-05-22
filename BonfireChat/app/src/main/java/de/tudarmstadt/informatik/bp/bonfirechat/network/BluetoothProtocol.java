@@ -179,10 +179,9 @@ public class BluetoothProtocol extends SocketProtocol {
 
         @Override
         public void run() {
-            Log.d(TAG, "Client connected : " + socket.getRemoteDevice().getAddress());
-            Scanner s = new Scanner(input).useDelimiter("\\A");
-            String message = s.next();
-            Log.d(TAG, "recieved message via Bluetooth: " + message);
+            Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
+            Message message = deserializeMessage(input);
+            Log.d(TAG, "Recieved message: " + message.peer.getNickname() + ": " + message.body);
         }
     }
 
@@ -197,12 +196,7 @@ public class BluetoothProtocol extends SocketProtocol {
 
         connect();
         for (OutputStream stream : output) {
-            byte[] buf = message.body.getBytes();
-            try {
-                stream.write(buf);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            serializeMessage(stream, target, message);
         }
         disconnect();
     }
