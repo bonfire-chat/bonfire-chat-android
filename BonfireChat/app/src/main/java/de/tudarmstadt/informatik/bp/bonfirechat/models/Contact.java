@@ -10,10 +10,10 @@ public class Contact {
     private String nickname;
     private String firstName;
     private String lastName;
-    private String publicKey;
-    private String xmppId;
-    private String wifiMacAddress;
-    private String bluetoothMacAddress;
+    public String publicKey;
+    public String xmppId;
+    public String wifiMacAddress;
+    public String bluetoothMacAddress;
     public long rowid;
 
     public String getPublicKeyHash() {
@@ -48,6 +48,10 @@ public class Contact {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getFirstName() {
