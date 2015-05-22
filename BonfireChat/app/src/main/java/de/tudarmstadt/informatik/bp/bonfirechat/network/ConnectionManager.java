@@ -174,6 +174,7 @@ public class ConnectionManager extends NonStopIntentService {
             ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
             xmpp.connectToServer(this);
             getOrCreateConnection(BluetoothProtocol.class);
+            WifiProtocol mWifi = (WifiProtocol) getOrCreateConnection(WifiProtocol.class);
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             BonfireData db = BonfireData.getInstance(this);
@@ -183,6 +184,7 @@ public class ConnectionManager extends NonStopIntentService {
                 Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
 
                 IProtocol protocol = getConnection(protocolClass);
+                Log.d(TAG, "protocol : " + protocol);
                 protocol.sendMessage(db.getContactById(intent.getLongExtra("contactId", -1)),
                         message);
 

@@ -10,6 +10,7 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,34 @@ public class WifiReceiver extends BroadcastReceiver {
     private WifiP2pDevice connectedDevice;
 
     private WifiSenderActivity mActivity;
-    WifiP2pManager.PeerListListener mWifiPeerListListener;
+    WifiP2pManager.PeerListListener mWifiPeerListListener = new WifiP2pManager.PeerListListener() {
+        @Override
+        public void onPeersAvailable(WifiP2pDeviceList peers) {
+            Collection<WifiP2pDevice> mDevList = peers.getDeviceList();
+            Log.d(TAG, "the device List is: " + mDevList);
+            for (WifiP2pDevice dev : mDevList) {
+                WifiP2pConfig config = new WifiP2pConfig();
+                config.deviceAddress = dev.deviceAddress;
+                Log.d(TAG, "wifi device found " + config.deviceAddress);
+                config.groupOwnerIntent = 0;
+                config.wps.setup = WpsInfo.PBC;
+                connectedDevice = dev;
+                mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFailure(int reason) {
+
+                    }
+                });
+            }
+
+
+        }
+    };
 
     public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel,
                         WifiSenderActivity activity) {
@@ -55,16 +83,18 @@ public class WifiReceiver extends BroadcastReceiver {
 
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // Call WifiP2pManager.requestPeers() to get a list of current peers
+            Log.d(TAG, "PeerschangedAction");
             if (mManager != null) {
+                Log.d(TAG, "request peers has been done");
                 mManager.requestPeers(mChannel, mWifiPeerListListener);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            String host= connectedDevice.deviceAddress;
-            int port=4242;
+            String host = connectedDevice.deviceAddress;
+            int port = 4242;
             int len;
             Socket socket = new Socket();
-            String msg= MessageQ.msg.body;
-            byte buf[]  = new byte[1024];
+            String msg = MessageQ.msg.body;
+            byte buf[] = new byte[1024];
 
             try {
                 /**
@@ -93,8 +123,7 @@ public class WifiReceiver extends BroadcastReceiver {
 /**
  * Clean up any open sockets when done
  * transferring or if an exception occurred.
- */
-            finally {
+ */ finally {
                 if (socket != null) {
                     if (socket.isConnected()) {
                         try {
@@ -110,27 +139,5 @@ public class WifiReceiver extends BroadcastReceiver {
         }
     }
 
-    public void onPeersAvailable(WifiP2pDeviceList peers) {
-        Collection<WifiP2pDevice> mDevList = peers.getDeviceList();
-        for (WifiP2pDevice dev : mDevList) {
-            WifiP2pConfig config = new WifiP2pConfig();
-            config.deviceAddress = dev.deviceAddress;
-            config.groupOwnerIntent = 0;
-            config.wps.setup = WpsInfo.PBC;
-            connectedDevice = dev;
-            mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onFailure(int reason) {
-
-                }
-            });
-        }
-    }
-
+    private final String TAG = "WifiReceiver";
 }
-
