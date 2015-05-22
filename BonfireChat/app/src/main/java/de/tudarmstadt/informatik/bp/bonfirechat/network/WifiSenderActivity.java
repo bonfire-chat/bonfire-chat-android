@@ -59,7 +59,7 @@ public class WifiSenderActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver( mReceiver, mIntentFilter);
+        registerReceiver(mReceiver, mIntentFilter);
     }
     /* unregister the broadcast receiver */
     @Override
@@ -75,7 +75,8 @@ public class WifiSenderActivity extends Activity {
      * @param msg
      * @param spread
      */
-    public void broadcastMsg(Message msg, int spread){
+    public void broadcastMsg(Message msg, final int spread){
+
        mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -84,7 +85,7 @@ public class WifiSenderActivity extends Activity {
 
             @Override
             public void onFailure(int reason) {
-
+                System.out.println(reason);
             }
 
         });

@@ -18,6 +18,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Collection;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+
 
 /**
  * Created by Simon on 22.05.2015.
@@ -61,6 +63,7 @@ public class WifiReceiver extends BroadcastReceiver {
             int port=4242;
             int len;
             Socket socket = new Socket();
+            String msg= MessageQ.msg.body;
             byte buf[]  = new byte[1024];
 
             try {
@@ -76,14 +79,11 @@ public class WifiReceiver extends BroadcastReceiver {
                  * of the socket. This data will be retrieved by the server device.
                  */
                 OutputStream outputStream = socket.getOutputStream();
-                ContentResolver cr = context.getContentResolver();
-                InputStream inputStream = null;
-                inputStream = cr.openInputStream(Uri.parse("path/to/picture.jpg"));
-                while ((len = inputStream.read(buf)) != -1) {
-                    outputStream.write(buf, 0, len);
-                }
+
+                outputStream.write(msg.getBytes());
+
                 outputStream.close();
-                inputStream.close();
+
             } catch (IllegalArgumentException e) {
                 //catch logic
             } catch (IOException e) {
