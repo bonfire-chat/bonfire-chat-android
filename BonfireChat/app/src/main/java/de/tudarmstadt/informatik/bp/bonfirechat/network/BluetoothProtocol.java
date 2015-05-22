@@ -35,13 +35,11 @@ public class BluetoothProtocol implements IProtocol {
     private List<BluetoothDevice> nearby;
     private List<BluetoothSocket> sockets;
     private List<OutputStream> output;
-    private List<InputStream> input;
     private List<ConnectionHandler> connections;
 
     BluetoothProtocol(Context ctx) {
         this.ctx = ctx;
         output = new ArrayList<>();
-        input = new ArrayList<>();
         nearby = new ArrayList<>();
         sockets = new ArrayList<>();
         connections = new ArrayList<>();
@@ -49,6 +47,7 @@ public class BluetoothProtocol implements IProtocol {
         adapter = BluetoothAdapter.getDefaultAdapter();
         ctx.registerReceiver(onDeviceFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
         searchDevices();
+        startListeningThread.start();
     }
 
     private boolean ensureBluetoothUp() {
@@ -75,7 +74,6 @@ public class BluetoothProtocol implements IProtocol {
                 socket.connect();
                 sockets.add(socket);
                 output.add(socket.getOutputStream());
-                input.add(socket.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -139,14 +137,34 @@ public class BluetoothProtocol implements IProtocol {
 
     public class ConnectionHandler extends Thread {
         BluetoothSocket socket;
+        InputStream input;
+
         public ConnectionHandler(BluetoothSocket socket) {
             this.socket = socket;
+            try {
+                input = socket.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             this.start();
         }
 
         @Override
         public void run() {
             Log.i(TAG, "Client connected : " + socket.getRemoteDevice().getAddress());
+
+            byte[] buffer = new byte[512];
+            int bytes;
+
+            while (true) {
+                try {
+                    bytes = input.read(buffer);
+                    String readMessage = new String(buffer, 0, bytes);
+                    Log.d(TAG, "recieved message via Bluetooth: " + readMessage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
