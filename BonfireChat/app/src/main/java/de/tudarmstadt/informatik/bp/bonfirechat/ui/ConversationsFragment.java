@@ -31,6 +31,7 @@ import static android.widget.AdapterView.*;
  */
 public class ConversationsFragment extends Fragment {
 
+    private static final String TAG = "ConversationsFragment";
     private ConversationsAdapter adapter;
 
     @Override
@@ -42,10 +43,9 @@ public class ConversationsFragment extends Fragment {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-
-                        adapter.add(BonfireData.getInstance(getActivity()).getConversationById(
-                                intent.getLongExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1)
-                        ));
+                        long convId = intent.getLongExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1);
+                        Log.i(TAG, "Received NEW_CONVERSATION_BROADCAST_EVENT and now adding conv id "+convId);
+                        adapter.add(BonfireData.getInstance(getActivity()).getConversationById(convId));
                         adapter.notifyDataSetChanged();
                     }
                 },
