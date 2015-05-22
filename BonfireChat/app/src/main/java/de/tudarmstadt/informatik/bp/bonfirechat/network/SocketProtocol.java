@@ -1,6 +1,11 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -13,12 +18,28 @@ public abstract class SocketProtocol implements IProtocol {
     protected Identity identity;
     protected OnMessageReceivedListener listener;
 
-    protected String serializeMessage(Contact target, Message message) {
-        return identity.nickname + ":" + message.body;
+    protected void serializeMessage(OutputStream output, Contact target, Message message) {
+        try {
+            ObjectOutputStream stream = new ObjectOutputStream(output);
+            stream.writeObject(target);
+            stream.writeObject(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    protected Message deserializeMessage(String buffer) {
-        return new Message(buffer, new Contact("foo"), Message.MessageDirection.Received, DateHelper.getNowString());
+    protected Message deserializeMessage(InputStream input) {
+        try {
+            ObjectInputStream stream = new ObjectInputStream(input);
+            Contact target = (Contact) stream.readObject();
+            Message message = (Message) stream.readObject();
+            return message;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
