@@ -16,13 +16,18 @@ public class Message {
     public Contact peer;
     public String body;
     public MessageDirection direction = MessageDirection.Unknown;
+    public String dateTime;
 
-    public Message(String body, Contact peer, MessageDirection dir) {
-        this.body = body; this.peer = peer; this.direction = dir;
+    public Message(String body, Contact peer, MessageDirection dir, String dateTime) {
+        this.body = body; this.peer = peer; this.direction = dir; this.dateTime = dateTime;
     }
 
-    public Message(String body, MessageDirection dir) {
-        this.body = body; this.direction = dir;
+    public Message(String body, MessageDirection dir, String dateTime) {
+        this.body = body; this.direction = dir; this.dateTime = dateTime;
+    }
+
+    public Message(String body, MessageDirection dir, String dateTime, long rowid) {
+        this.body = body; this.direction = dir; this.dateTime = dateTime; this.rowid = rowid;
     }
 
     @Override
@@ -32,13 +37,17 @@ public class Message {
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
+        if (this.peer != null) values.put("peer", this.peer.rowid);
         values.put("messageDirection", direction.ordinal());
         values.put("body", body);
+        values.put("dateTime", dateTime);
         return values;
     }
 
     public static Message fromCursor(Cursor cursor){
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
-                MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))]);
+                MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))],
+                cursor.getString(cursor.getColumnIndex("dateTime")),
+                cursor.getLong(cursor.getColumnIndex("rowid")));
     }
 }

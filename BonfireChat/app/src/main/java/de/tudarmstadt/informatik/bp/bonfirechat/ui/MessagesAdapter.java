@@ -62,6 +62,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         }
 
         v.messageBody.setText(getItem(position).body);
+        v.dateTime.setText((getItem(position).dateTime));
         //lastMessage.setText(objects.get(position).getLastMessage());
         //icon.setImageResource(R.mipmap.ic_launcher);
 

@@ -50,6 +50,9 @@ public class Conversation {
         if (peer != null) return peer.getNickname();
         return "(unnamed)";
     }
+    public Contact getPeer() {
+        return peer;
+    }
 
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();

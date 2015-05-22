@@ -24,6 +24,7 @@ import javax.net.ssl.SSLContext;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -116,7 +117,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
                 c.setXmppId(msg.getFrom());
                 db.createContact(c);
             }
-            listener.onMessageReceived(ClientServerProtocol.this, new Message(msg.getBody(), c, Message.MessageDirection.Received));
+            listener.onMessageReceived(ClientServerProtocol.this, new Message(msg.getBody(), c, Message.MessageDirection.Received, DateHelper.getNowString()));
         }
     };
 
@@ -132,8 +133,8 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     // ###    Implementation of IProtocol
     // ###########################################################################
     @Override
-    public void sendMessage(String target, Message message) {
-        String jid = getJidByHash(target);
+    public void sendMessage(Contact target, Message message) {
+        String jid = target.getXmppId(); // getJidByHash(target);
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message(jid);
         msg.setBody(message.body);
         try {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,7 @@ public class BonfireData extends SQLiteOpenHelper{
 
     // rowid is not included in "*" by default
     private static final String[] ALL_COLS = new String[]{ "rowid", "*" };
+    private static final String TAG = "BonfireData";
 
     private static BonfireData instance;
 
@@ -36,17 +38,17 @@ public class BonfireData extends SQLiteOpenHelper{
     private SQLiteOpenHelper helper;
 
     private BonfireData(Context context) {
-        super(context, "CommunicationData", null, 6);
+        super(context, "CommunicationData", null, 7);
 
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        db.execSQL("CREATE TABLE " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
-        db.execSQL("CREATE TABLE " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
-        db.execSQL("CREATE TABLE " + MESSAGES + "(conversation INT, peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT)");
-        db.execSQL("CREATE TABLE " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(conversation INT, peer TEXT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT, dateTime TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT)");
 
     }
 
@@ -117,18 +119,29 @@ public class BonfireData extends SQLiteOpenHelper{
         Cursor conversationCursor = db.query(CONVERSATIONS, ALL_COLS, "rowid = ?", new String[]{String.valueOf(rowid)}, null, null, null);
         Conversation conversation = null;
         if(conversationCursor.moveToNext()){
+            long peerId = conversationCursor.getInt(conversationCursor.getColumnIndex("peer"));
+            Log.d(TAG, "Found conversation with id=" + rowid + " and peerId=" + peerId);
             conversation = Conversation.fromCursor(
-                    getContactById(conversationCursor.getInt(conversationCursor.getColumnIndex("peer"))),
+                    getContactById(peerId),
                     conversationCursor);
         }
         db.close();
         return conversation;
     }
 
+    public Message getMessageById(long rowid){
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Message> messages = new ArrayList<>();
+        Cursor cursor = db.query(MESSAGES, ALL_COLS, "rowid=?", new String[]  {String.valueOf(rowid)}, null, null, null);
+        if (!cursor.moveToNext()) return null;
+        Message message = Message.fromCursor(cursor);
+        db.close();
+        return message;
+    }
     public ArrayList<Message> getMessages(Conversation conversation){
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Message> messages = new ArrayList<>();
-        Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "peer=?", new String[]  {conversation.getName()}, null, null, null);
+        Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "peer=?", new String[]{conversation.getName()}, null, null, null);
         while(messageCursor.moveToNext()){
             messages.add(Message.fromCursor(messageCursor));
         }
@@ -195,7 +208,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public Contact getContactById(long id){
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();
-        Cursor cursor = db.query(CONTACTS, ALL_COLS, "xmppId = ?", new String[]{ String.valueOf(id) }, null, null, null);
+        Cursor cursor = db.query(CONTACTS, ALL_COLS, "rowid = ?", new String[]{ String.valueOf(id) }, null, null, null);
         if (!cursor.moveToNext()) return null;
         return Contact.fromCursor(cursor);
     }
@@ -205,23 +218,25 @@ public class BonfireData extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         if (oldVersion >= newVersion)
             return;
-        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
 
+        /*db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
-        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);
+        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);*/
 
         onCreate(db);
     }
 
+    public void updateMessage(Message message) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(MESSAGES, message.getContentValues(), " rowid = ? ", new String[]{String.valueOf(message.rowid)});
+    }
     public void updateIdentity(Identity identity) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(IDENTITIES, identity.getContentValues(), " rowid = ? ", new String[]{String.valueOf(identity.rowid)});
-
     }
     public void updateConversation(Conversation conversation) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(CONVERSATIONS, conversation.getContentValues(), " rowid = ? ", new String[]{String.valueOf(conversation.rowid)});
-
     }
 }
