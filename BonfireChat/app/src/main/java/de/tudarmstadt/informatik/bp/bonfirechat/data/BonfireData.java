@@ -227,6 +227,10 @@ public class BonfireData extends SQLiteOpenHelper{
         onCreate(db);
     }
 
+    public void updateContact(Contact contact) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(CONTACTS, contact.getContentValues(), " rowid = ? ", new String[]{String.valueOf(contact.rowid)});
+    }
     public void updateMessage(Message message) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(MESSAGES, message.getContentValues(), " rowid = ? ", new String[]{String.valueOf(message.rowid)});

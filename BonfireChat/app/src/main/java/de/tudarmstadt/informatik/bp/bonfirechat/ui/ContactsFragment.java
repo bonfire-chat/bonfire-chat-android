@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -69,6 +70,15 @@ public class ContactsFragment extends Fragment {
         contactsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         contactsList.setMultiChoiceModeListener(multiChoiceListener);
 
+        contactsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Contact contact = adapter.getItem(position);
+                Intent intent = new Intent(getActivity(), ContactDetailsActivity.class);
+                intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, contact.rowid);
+                startActivity(intent);
+            }
+        });
 
         return rootView;
     }

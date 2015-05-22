@@ -15,4 +15,8 @@
 
     <string name="new_contact">Neuer Kontakt</string>
     <string name="search_contact_by_name">Nach Name suchen:</string>
+    <string name="title_activity_contact_details">ContactDetailsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_save">Speichern</string>
 </resources>
