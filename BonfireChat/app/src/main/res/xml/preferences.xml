@@ -2,13 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="Kommunikationswege">
-        <CheckBoxPreference android:id="@+id/enable_bluetooth"
+        <CheckBoxPreference android:key="enable_bluetooth"
             android:title="Verwende Bluetooth"></CheckBoxPreference>
 
-        <CheckBoxPreference android:id="@+id/enable_wifi"
+        <CheckBoxPreference android:key="enable_wifi"
             android:title="Verwende Wi-Fi (AdHoc)"></CheckBoxPreference>
 
-        <CheckBoxPreference android:id="@+id/enable_xmpp"
+        <CheckBoxPreference android:key="enable_xmpp"
             android:title="Verwende Mobile Daten / Wi-Fi"></CheckBoxPreference>
 
     </PreferenceCategory>
