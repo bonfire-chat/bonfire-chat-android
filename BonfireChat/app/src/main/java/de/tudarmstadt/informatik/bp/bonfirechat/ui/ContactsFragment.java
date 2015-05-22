@@ -31,6 +31,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 
 /**
  * contacts list
@@ -124,12 +125,29 @@ public class ContactsFragment extends Fragment {
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
-                db.deleteContact(adapter.getObjects().get(position));
-                adapter.remove(adapter.getObjects().get(position));
+                db.deleteContact(adapter.getItem(position));
+                adapter.remove(adapter.getItem(position));
             }
         }
 
         adapter.notifyDataSetChanged();
+    }
+
+    private void createConversationWithSelectedItems() {
+        BonfireData db = BonfireData.getInstance(getActivity());
+        boolean[] mySelected = adapter.itemSelected;
+
+        for (int position = adapter.getCount() - 1; position >= 0; position--) {
+            if (mySelected[position]) {
+                Conversation conversation = new Conversation(adapter.getItem(position), adapter.getItem(position).getNickname(), 0);
+                db.createConversation(conversation);
+                Intent i = new Intent(getActivity(), MessagesActivity.class);
+                Log.i("ConversationsFragment", "starting MessagesActivity with ConversationId=" + conversation.rowid);
+                i.putExtra("ConversationId", conversation.rowid);
+                startActivity(i);
+                break;
+            }
+        }
     }
 
     private AbsListView.MultiChoiceModeListener multiChoiceListener = new AbsListView.MultiChoiceModeListener() {
@@ -150,6 +168,10 @@ public class ContactsFragment extends Fragment {
                 case R.id.action_delete:
                     deleteSelectedItems();
                     mode.finish(); // Action picked, so close the CAB
+                    return true;
+                case R.id.action_create_conversation:
+                    createConversationWithSelectedItems();
+                    mode.finish();
                     return true;
                 default:
                     return false;

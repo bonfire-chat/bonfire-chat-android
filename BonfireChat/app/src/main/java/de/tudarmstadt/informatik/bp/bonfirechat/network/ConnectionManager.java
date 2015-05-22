@@ -84,6 +84,7 @@ public class ConnectionManager extends NonStopIntentService {
 
     public static List<IProtocol> connections = new ArrayList<IProtocol>();
 
+
     public Class getConnectionClassByName(String name) throws ClassNotFoundException {
         return Class.forName("de.tudarmstadt.informatik.bp.bonfirechat.network."+name);
     }
@@ -172,7 +173,7 @@ public class ConnectionManager extends NonStopIntentService {
         if (intent.getAction() == GO_ONLINE_ACTION) {
             ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
             xmpp.connectToServer(this);
-
+            getOrCreateConnection(BluetoothProtocol.class);
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             BonfireData db = BonfireData.getInstance(this);
