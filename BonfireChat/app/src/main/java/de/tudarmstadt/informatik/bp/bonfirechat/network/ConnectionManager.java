@@ -84,14 +84,8 @@ public class ConnectionManager extends NonStopIntentService {
 
     public static List<IProtocol> connections = new ArrayList<IProtocol>();
 
-    public Class getConnectionClassByName(String name) {
-        if (name.equals("ClientServerProtocol")) {
-            return ClientServerProtocol.class;
-        } else if (name.equals("EchoProtocol")) {
-            return EchoProtocol.class;
-        } else {
-            throw new IllegalArgumentException("Unknown Connection class "+name);
-        }
+    public Class getConnectionClassByName(String name) throws ClassNotFoundException {
+        return Class.forName("de.tudarmstadt.informatik.bp.bonfirechat.network."+name);
     }
 
     public IProtocol getConnection(Class typ) {
