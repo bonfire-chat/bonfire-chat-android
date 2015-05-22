@@ -17,7 +17,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +31,7 @@ import java.util.List;
  */
 public class Identity {
 
+    private static final String TAG = "Identity";
     public String nickname, privateKey, publicKey, server, username, password, phone;
     public long rowid;
 
@@ -105,11 +108,13 @@ public class Identity {
             nameValuePairs.add(new BasicNameValuePair("xmppid", username));
             nameValuePairs.add(new BasicNameValuePair("publickey", publicKey));
             nameValuePairs.add(new BasicNameValuePair("phone", phone));
-            nameValuePairs.add(new BasicNameValuePair("gcmid", publicKey));
+            nameValuePairs.add(new BasicNameValuePair("gcmid", ""));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
+            Log.d(TAG, "registered with server : " + response.getStatusLine().toString());
+            Log.d(TAG, "registered with server : " + new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine());
 
 
         } catch (ClientProtocolException e) {
