@@ -47,7 +47,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, phoneNumber TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
         db.execSQL("CREATE TABLE if not exists " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
-        db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(conversation INT NOT NULL, peer INT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT, dateTime TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(conversation INT NOT NULL, sender INT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT, dateTime TEXT)");
         db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT, phone TEXT)");
 
     }
