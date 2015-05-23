@@ -1,10 +1,8 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +16,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +24,6 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -127,10 +123,10 @@ public class ConnectionManager extends NonStopIntentService {
         public void onMessageReceived(IProtocol sender, Message message) {
             Log.d(TAG, "received message : " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
-            Conversation conversation = data.getConversationByPeer(message.peer);
+            Conversation conversation = data.getConversationByPeer(message.sender);
             if (conversation == null) {
-                Log.d(TAG, "creating new conversation for peer "+message.peer.getNickname());
-                conversation = new Conversation(message.peer, message.peer.getNickname(), 0);
+                Log.d(TAG, "creating new conversation for peer "+message.sender.getNickname());
+                conversation = new Conversation(message.sender, message.sender.getNickname(), 0);
                 data.createConversation(conversation);
 
                 Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
@@ -144,7 +140,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
-                    .putExtra(EXTENDED_DATA_PEER_ID, message.peer.rowid)
+                    .putExtra(EXTENDED_DATA_PEER_ID, message.sender.rowid)
                             .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
@@ -195,7 +191,7 @@ public class ConnectionManager extends NonStopIntentService {
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
-            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.peer.getNickname());
+            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.sender.getNickname());
             try {
                 Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
 
