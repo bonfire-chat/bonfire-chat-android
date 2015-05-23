@@ -55,7 +55,6 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
         AccountManager a = AccountManager.getInstance(connection);
         try {
             a.createAccount(StringUtils.parseName(identity.username), identity.password);
-            BonfireData.getInstance(ctx).updateIdentity(identity);
 
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();
@@ -83,6 +82,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
                 identity.username = getJidByHash(identity.getPublicKeyHash());
                 Log.d(TAG, "calling createMyAccount, with username="+identity.username);
                 createMyAccount(ctx);
+                BonfireData.getInstance(ctx).updateIdentity(identity);
             }
 
             Log.d(TAG, "before connection login");
@@ -114,7 +114,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
             Contact c = db.getContactByXmppId(msg.getFrom());
             if (c == null) {
                 c = new Contact(StringUtils.parseName(msg.getFrom()));
-                c.setXmppId(msg.getFrom());
+                c.setXmppId(StringUtils.parseBareAddress(msg.getFrom()));
                 db.createContact(c);
             }
             listener.onMessageReceived(ClientServerProtocol.this, new Message(msg.getBody(), c, Message.MessageDirection.Received, DateHelper.getNowString()));
