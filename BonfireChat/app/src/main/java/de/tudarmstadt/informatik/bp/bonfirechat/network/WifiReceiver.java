@@ -68,6 +68,11 @@ public class WifiReceiver extends BroadcastReceiver {
         this.mActivity = activity;
     }
 
+    public WifiReceiver() {
+
+    }
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
