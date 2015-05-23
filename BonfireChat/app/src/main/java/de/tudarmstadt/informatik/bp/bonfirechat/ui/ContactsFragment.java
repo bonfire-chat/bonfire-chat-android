@@ -60,9 +60,6 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        BonfireData db = BonfireData.getInstance(getActivity());
-        List<Contact> contacts = db.getContacts();
-        adapter = new ContactsAdapter(this.getActivity(), contacts);
 
     }
 
@@ -71,16 +68,17 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.contacts, menu);
-
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager)getActivity().getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BonfireData db = BonfireData.getInstance(getActivity());
+        List<Contact> contacts = db.getContacts();
+        adapter = new ContactsAdapter(this.getActivity(), contacts);
+        contactsList.setAdapter(adapter);
+    }
 
     ActionMode mActionMode;
     ListView contactsList;
@@ -90,8 +88,12 @@ public class ContactsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         contactsList = (ListView) rootView.findViewById(R.id.contactsList);
+/*
+        BonfireData db = BonfireData.getInstance(getActivity());
+        List<Contact> contacts = db.getContacts();
+        adapter = new ContactsAdapter(this.getActivity(), contacts);
         contactsList.setAdapter(adapter);
-
+*/
         contactsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         contactsList.setMultiChoiceModeListener(multiChoiceListener);
 
@@ -125,50 +127,16 @@ public class ContactsFragment extends Fragment {
             intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, c.rowid);
             startActivity(intent);
             return true;
-/*
-        } else if (item.getItemId() == R.id.action_search_contact) {
-            InputBox.InputBox(getActivity(), getString(R.string.new_contact), getString(R.string.search_contact_by_name), "",
-            new InputBox.OnOkClickListener() {
-                @Override
-                public void onOkClicked(String input) {
-                    contactSearch.execute(input);
-                }
-            });
-            return true;*/
+
+        } else if (item.getItemId() == R.id.action_search) {
+            startActivity(new Intent(getActivity(), SearchUserActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
 
-
-    AsyncTask<String, Object, Contact> contactSearch = new AsyncTask<String, Object, Contact>() {
-        @Override
-        protected Contact doInBackground(String... params) {
-
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://bonfire.teamwiki.net/search.php?nickname=%"+params[0]+"%");
-            try {
-                HttpResponse response = httpclient.execute(httppost);
-                java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent()).useDelimiter("\\A");
-                JSONTokener tokener = new JSONTokener(s.next());
-                JSONArray array = (JSONArray) tokener.nextValue();
-/*
-                Contact contact = new Contact();
-                adapter.add(contact);
-                BonfireData.getInstance(getActivity()).createContact(contact);
-*/
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-    };
 
 
     private void deleteSelectedItems() {

@@ -125,6 +125,7 @@ public class ConnectionManager extends NonStopIntentService {
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Message message) {
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);
             Log.d(TAG, "received message : " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
             Conversation conversation = data.getConversationByPeer(message.peer);
@@ -135,7 +136,9 @@ public class ConnectionManager extends NonStopIntentService {
 
                 Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
                                 // Puts the status into the Intent
-                                .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.getName());
+                                .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
+                broadcastManager.sendBroadcast(localIntent);
+
             }
             Log.d(TAG, "conversationId=" + conversation.rowid);
 
@@ -147,7 +150,7 @@ public class ConnectionManager extends NonStopIntentService {
                     .putExtra(EXTENDED_DATA_PEER_ID, message.peer.rowid)
                             .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
-            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+            broadcastManager.sendBroadcast(localIntent);
 
 
             Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
