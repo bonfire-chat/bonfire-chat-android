@@ -44,13 +44,14 @@ public class WifiSenderActivity  {
 
         this.mWifiP2pManager= (WifiP2pManager) ctx.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel =  mWifiP2pManager.initialize(ctx, mSrcLooper, MCHLISTENER);
+        mReceiver = new WifiReceiver();
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-
+        ctx.registerReceiver(mReceiver, mIntentFilter);
     }
 
 
@@ -64,18 +65,21 @@ private static final String TAG = "WifiSenderActivity";
     public void broadcastMsg(Message msg, final int spread){
         Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
        mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-            Log.d(TAG, "Discovering of peers was successful!");
+           @Override
+           public void onSuccess() {
 
-            };
+               Log.d(TAG, "Discovering of peers was successful!");
 
-            @Override
-            public void onFailure(int reason) {
-                System.out.println(reason);
-            }
+           }
 
-        });
+           ;
+
+           @Override
+           public void onFailure(int reason) {
+               System.out.println(reason);
+           }
+
+       });
     }
 
 
