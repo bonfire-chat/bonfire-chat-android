@@ -1,11 +1,13 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 //import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
 
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,14 @@ public class SettingsFragment extends PreferenceFragment {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+        findPreference("edit_account").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(getActivity(), IdentityActivity.class));
+                return true;
+            }
+        });
 
     }
 
