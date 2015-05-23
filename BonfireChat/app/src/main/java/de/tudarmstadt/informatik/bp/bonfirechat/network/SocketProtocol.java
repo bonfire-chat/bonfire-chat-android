@@ -22,10 +22,10 @@ public abstract class SocketProtocol implements IProtocol {
 
     protected void serializeMessage(OutputStream output, Contact target, Message message) {
         try {
-            if (message.peer == null) {
-                message.peer = new Contact("catcher");
+            if (message.sender == null) {
+                message.sender = new Contact("catcher");
             }
-            Log.e("424242", "Get your seats up, gentlemen! Preparing to send that message. Peer object is: " + message.peer);
+            Log.e("424242", "Get your seats up, gentlemen! Preparing to send that message. Sender object is: " + message.sender);
             ObjectOutputStream stream = new ObjectOutputStream(output);
             stream.writeObject(target);
             stream.writeObject(message);
