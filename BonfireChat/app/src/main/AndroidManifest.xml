@@ -64,6 +64,14 @@
                 android:value=".ui.MainActivity" />
         </activity>
 
+        <receiver
+            android:name=".network.gcm.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.example.gcm" />
+            </intent-filter>
+        </receiver>
         <service
             android:name=".network.ConnectionManager"
             android:exported="false" />

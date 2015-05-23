@@ -2,12 +2,15 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.style.UpdateLayout;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -23,7 +26,20 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.content.Context;
+import android.widget.SearchView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +71,14 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.contacts, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager)getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
     }
 
 
@@ -95,14 +119,22 @@ public class ContactsFragment extends Fragment {
         final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
 
         if (item.getItemId() == R.id.action_add_contact) {
-            InputBox.InputBox(getActivity(), getString(R.string.new_contact), getString(R.string.search_contact_by_name), "",
-                    new InputBox.OnOkClickListener() {
-                        @Override
-                        public void onOkClicked(String input) {
-                            addContact(input);
-                        }
-                    });
+            Contact c = new Contact("");
+            bonfireData.createContact(c);
+            Intent intent = new Intent(this.getActivity(), ContactDetailsActivity.class);
+            intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, c.rowid);
+            startActivity(intent);
             return true;
+/*
+        } else if (item.getItemId() == R.id.action_search_contact) {
+            InputBox.InputBox(getActivity(), getString(R.string.new_contact), getString(R.string.search_contact_by_name), "",
+            new InputBox.OnOkClickListener() {
+                @Override
+                public void onOkClicked(String input) {
+                    contactSearch.execute(input);
+                }
+            });
+            return true;*/
         }
 
         return super.onOptionsItemSelected(item);
@@ -110,14 +142,34 @@ public class ContactsFragment extends Fragment {
 
 
 
-    void addContact(String name) {
-        // TODO: insert sophisticated contact existing check
-        if (!name.isEmpty()) {
-            Contact contact = new Contact(name);
-            adapter.add(contact);
-            BonfireData.getInstance(getActivity()).createContact(contact);
+    AsyncTask<String, Object, Contact> contactSearch = new AsyncTask<String, Object, Contact>() {
+        @Override
+        protected Contact doInBackground(String... params) {
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://bonfire.teamwiki.net/search.php?nickname=%"+params[0]+"%");
+            try {
+                HttpResponse response = httpclient.execute(httppost);
+                java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent()).useDelimiter("\\A");
+                JSONTokener tokener = new JSONTokener(s.next());
+                JSONArray array = (JSONArray) tokener.nextValue();
+/*
+                Contact contact = new Contact();
+                adapter.add(contact);
+                BonfireData.getInstance(getActivity()).createContact(contact);
+*/
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
-    }
+
+    };
+
 
     private void deleteSelectedItems() {
         BonfireData db = BonfireData.getInstance(getActivity());

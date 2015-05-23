@@ -2,7 +2,9 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -25,6 +27,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
 
 /**
  * Created by mw on 18.05.15.
@@ -102,13 +106,14 @@ public class Identity {
         HttpPost httppost = new HttpPost("http://bonfire.teamwiki.net/register.php");
 
         try {
+
             // Add your data
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("nickname", nickname));
             nameValuePairs.add(new BasicNameValuePair("xmppid", username));
             nameValuePairs.add(new BasicNameValuePair("publickey", publicKey));
             nameValuePairs.add(new BasicNameValuePair("phone", phone));
-            nameValuePairs.add(new BasicNameValuePair("gcmid", ""));
+            nameValuePairs.add(new BasicNameValuePair("gcmid", GcmBroadcastReceiver.regid));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             // Execute HTTP Post Request
