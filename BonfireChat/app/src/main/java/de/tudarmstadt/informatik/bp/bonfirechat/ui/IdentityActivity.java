@@ -55,8 +55,12 @@ public class IdentityActivity extends Activity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("Willkommen!");
+        if (getIntent().hasExtra("isWelcomeScreen")) {
+            getActionBar().setTitle("Willkommen!");
+        }else {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setTitle("Account bearbeiten");
+        }
 
         BonfireData db = BonfireData.getInstance(this);
         identity = db.getDefaultIdentity();

@@ -48,7 +48,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     }
 
     public static String getJidByHash(String hash) {
-        return "u" + hash + "@teamwiki.de";
+        return "u" + hash.toLowerCase().substring(0,16) + "@teamwiki.de";
     }
 
     private void createMyAccount(Context ctx) {
@@ -83,6 +83,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
                 Log.d(TAG, "calling createMyAccount, with username="+identity.username);
                 createMyAccount(ctx);
                 BonfireData.getInstance(ctx).updateIdentity(identity);
+                identity.registerWithServer();
             }
 
             Log.d(TAG, "before connection login");
