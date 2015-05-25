@@ -1,4 +1,4 @@
-\documentclass[accentcolor=tud0b,12pt,paper=a4]{tudreport}
+\documentclass{tudreport}
 
 \usepackage[utf8]{inputenc}
 \usepackage{ngerman}
@@ -6,7 +6,7 @@
 
 \newcommand{\titlerow}[2]{
 	\begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
-		\colchunk[1]{#1:} 
+		\colchunk[1]{#1:}
 		\colchunk[2]{#2}
 	\end{parcolumns}
 	\vspace{0.2cm}
@@ -38,7 +38,7 @@
 	\tableofcontents 
 	
 	\chapter{Einleitung}
-        Ziel des Projektes ist die Entwicklung eines adaptiven Chatsystems für Android, mit dem man sowohl über Bluetooth oder WiFi peer-to-peer als auch über eiene Client-Server Infrastruktur kommunizieren kann. Die App soll 2016 auf dem Schlossgrabenfest benutzt werden, um Daten über die Ausfallsicherheit von Netzen zu sammeln. Hintergrund ist, dass auf Großereignissen wie dem Schlossgrabenfest die Handynetze extrem überlastet sind, sodass fast kein Besucher Zugang zum Internet und Telefonnetz hat. Dies macht die entfernte Kommmunikation umöglich.\\
+        Ziel des Projektes ist die Entwicklung eines adaptiven Chatsystems für Android, mit dem man sowohl über Bluetooth oder WiFi peer-to-peer als auch über eine Client-Server Infrastruktur kommunizieren kann. Die App soll 2016 auf dem Schlossgrabenfest benutzt werden, um Daten über die Ausfallsicherheit von Netzen zu sammeln. Hintergrund ist, dass auf Großereignissen wie dem Schlossgrabenfest die Handynetze extrem überlastet sind, sodass fast kein Besucher Zugang zum Internet und Telefonnetz hat. Dies macht die entfernte Kommmunikation umöglich.\\
 
         Wir wollen nun eine Plattform schaffen, über die man peer-to-peer, also unabhängig von zentralen Netzen, kommunizieren kann. Sollte keine Internetverbindung möglich sein, sollen Netzwerkpakete über das peer-to-peer Netzwerk weitergereicht werden, bis ein Client eine Internetverbindung hat und das Paket an den Server übermitteln kann. So ist auch Kommunikation mit Chatpartnern, die sich nicht im eigenen peer-to-peer Netzwerk befinden, möglich. Die App soll vom Funktionsumfang gängigen Messengerapps ähneln, vorerst beschränken wir uns aber bei der Entwicklung auf einfache Textnachrichten in normalen eins-zu-eins-Chats.
 	
@@ -47,18 +47,45 @@
     
 		Da unsere Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln ist es notwendig, dass unser Programm wartbar ist.\\
 
-		Zur Sicherstellung der Wartbarkeit werden wir Checkstyle verwenden, um einen einheitlichen Codestil zu gewährleisten.\\
+		Zur Sicherstellung der Wartbarkeit werden wir Checkstyle verwenden, um einen einheitlichen Codestil zu gewährleisten.
                 Checkstyle wird bei jedem Build automatisch ausgeführt werden. Sollte Checkstyle eine Stilverletzung melden, wird der Entwickler, bei dem die Fehlermeldung auftrat, den Codestil anpassen, sodass dieser der Vorgabe entspricht.\\
 
                 Weiterhin soll einmal pro Sprint ein Code-Review stattfinden. Dafür wird das Tool Gerrit verwendet, das kollaborative Code-Reviews unterstützt und sich in Git integriert.\\
 
-                Findbugs verwenden\ldots etc. Es könnte noch jemand anderes was hierzu schreiben :-)
+                Findbugs verwenden\ldots etc.
+                
+                
 
         \section{Datensicherheit}
+        
+        Es handelt sich bei dem Programm um ein Chat-System, das mit privaten Daten von Nutzern arbeitet. Wichtig ist, dass unbefugte Dritte nicht an diese Daten heran kommen.
+        Im Rahmen dieses Projektes ist es uns nur möglich, einen Basisschutz gegen einfache Angriffe zu erzeugen. Die angestrebten Sicherheitsziele sind Integrität, Vertraulichkeit, Authentizität und Verbindlichkeit.
+        Dies erreichen wir durch Verwendung von Sicherheitsmechanismen (Message Authentication Code, Digitale Signatur, Verschlüsselung).
+        Nach jedem Sprint wird manuell mittels Codereview geprüft, ob die lokal gespeicherten, personenbezogenen Daten und Kommunikationsschnittstellen die Sicherheitsziele erfüllen.
+        Es wird außerdem getestet, ob die gesendeten Daten von einem Netzwerkknoten, gelesen werden kann. Dies erfolgt ebenfalls durch manuelles Testen.
+        \glqq Name einfügen\grqq informiert sich über solche Sicherheitsmechanismen und führt dann die Reviews und Tests durch. 
+        Im Fall, dass eine Sicherheitslücke entdeckt wurde, wird diese von dem Tester umgehend, mit den ihm zur Verfügung stehenden Methoden, geschlossen.
+        
+        \section{Wiederverwendbarkeit}
+        
+        Die Kernanwendung besteht aus zwei Basiselementen, dem Chatsystem und den Routingmechanismen. Da die Entwicklung dieses Routingmechanismus sehr vielseitig einsetzbar, aufwendig und neuartig ist, achten wir auf Wiederverwendbarkeit des Codes. Dieser Mechanismus soll auch unabhängig von einer Chatapp verwendet werden können.
+        
+        Die Wiederverwendbarkeit stellen wir sicher indem nach jedem Sprint Softwaremetriken (LCOM werte und den Grad von Coupling) bestimmen. Dazu verwenden wir das Tool Sonar. Wenn schlechte Ergebnisse erzielt werden (zu enges oder zu loses Coupling, oder zu geringen Kohäsion) wird die Klassenarchitektur angepasst, sodass die angestrebten Werte im gewünschten Bereich liegen.
+        
+        Um die Sicherstellung dieses Qualitätsziels kümmert sich \glqq Name einfügen\grqq.
+        
 
         \section{Robustheit}
+        
+        Da es sich bei dem Projekt um ein Chatprogramm handelt, ist es wichtig, dass das Programm auch mit unerwarteten Eingaben (seitens Netzwerkschnittstelle und Nutzer) umgehen kann.
+        Im Rahmen dieses Projektes können nur die wichtigsten Methoden und Klassen auf Robustheit geprüft werden.
+        Automatische Tests sollen Path Coverage abdecken.
+        Nach jeder Iteration wird mit Sonar geprüft, welche Methoden am wichtigsten sind (am häufigsten verwendet werden). Falls für diese noch keine Testsuite besteht, oder Tests fehlschlagen, werden die Fehler behoben oder Test geschrieben um Path Coverage zu erreichen.
+        Die Tests werden vom Entwickler der jeweiligen Methode geschrieben und durchgeführt.
+        
 
         \section{Energieeffizienz}
+        
 	        
 	
 \appendix	
