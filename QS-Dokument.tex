@@ -38,11 +38,16 @@
 	\tableofcontents 
 	
 	\chapter{Einleitung}
-        
-        Ziel des Projektes ist die Entwicklung eines adaptiven Chatsystems für Android, mit dem man sowohl über Bluetooth oder WiFi peer-to-peer als auch über eine Client-Server Infrastruktur kommunizieren kann. Die App soll 2016 auf dem Schlossgrabenfest benutzt werden, um Daten über die Ausfallsicherheit von Netzen zu sammeln. Hintergrund ist, dass auf Großereignissen wie dem Schlossgrabenfest die Handynetze extrem überlastet sind, sodass fast kein Besucher Zugang zum Internet und Telefonnetz hat. Dies macht die entfernte Kommmunikation umöglich.\\
+		Ein Leben ohne die Kommunikation über das Handynetz ist heutzutage nahezu unvorstellbar. Die Anzahl an übertragenen Nachrichten zwischen zwei mobilen Geräten ist auf Rekordhöhe und es wird prognostiziert, dass diese weiter steigen wird. Die Kommunikation über das Handynetz ist jedoch auf einen bestimmten Frequenzbereich beschränkt. Die Möglichkeit mehr Nachrichten darüber zu übertragen ist nur durch die Entwicklung neuer Methoden erreichbar. Diese versuchen das aktuelle Frequenzband effizienter auszunutzen (Siehe die LTE-Frequenzbandausnutzung im Vergleich zu der bei UMTS). Doch bei Events bei denen sich große Menschenmassen auf wenig Platz versammeln, ist dies nicht genug. Es kommt dort häufig zu Ausfällen im Handynetz. \\
 
-        Wir wollen nun eine Plattform schaffen, über die man peer-to-peer, also unabhängig von zentralen Netzen, kommunizieren kann. Sollte keine Internetverbindung möglich sein, sollen Netzwerkpakete über das peer-to-peer Netzwerk weitergereicht werden, bis ein Client eine Internetverbindung hat und das Paket an den Server übermitteln kann. So ist auch Kommunikation mit Chatpartnern, die sich nicht im eigenen peer-to-peer Netzwerk befinden, möglich. Die App soll vom Funktionsumfang gängigen Messengerapps ähneln, vorerst beschränken wir uns aber bei der Entwicklung auf einfache Textnachrichten in normalen eins-zu-eins-Chats.
-	
+		Die Idee des Projektes ist es bei solchen Veranstaltungen trotz Ausfall des Mobilfunkverkehres weiterhin die Möglichkeit zur Kommunikation zwischen zwei Parteien zu gewährleisten. Dies soll neben der bisher verbreiteten Möglichkeit über eine Client-Server Infrastruktur zu kommunizieren sich auf weitere Methoden erstrecken. Es soll ein adaptives Chatsystems für Android entwickelt werden, dass je nach Verfügbarkeit in der Lage ist auch über Bluetooth und über WiFi peer-to-peer eine Kommunikation zwischen mehreren Parteien zu gewährleisten. \\
+
+		Ziel ist es die App 2016 auf dem Darmstädter Schlossgrabenfest benutzen zu können. Dort kamen in den Vorjahren über 100 000 Menschen gleichzeitig zu Besuch und brachten dadurch das Handynetz in starke Schwierigkeiten.\\
+
+		Wir wollen eine Plattform schaffen, über die man peer-to-peer, also unabhängig von zentralen Netzen, kommunizieren kann. So soll es auch ohne funktionierende Internetverbindung möglich sein Netzwerkpakete über mehrere (mobile) Geräte bis zu dem Empfänger der Nachricht weiterzureichen und diesem zuzustellen. Des Weiteren soll die App in der Lage sein, die Nachricht über einen Teilnehmer des peer-to-peer Netzwerkes, der über eine Internetverbindung verfügt, zu senden, damit dieser das Paket an den Server übermitteln kann. So ist auch Kommunikation mit Chatpartnern, die sich außerhalb des eigenen peer-to-peer Netzwerk befinden, möglich.\\
+
+		Die App soll vom Funktionsumfang gängigen Messenger-Apps ähneln, vorerst beschränken wir uns aber bei der Entwicklung auf einfache Textnachrichten in normalen eins-zu-eins-Chats.\\
+
 	\chapter{Qualitätsziele}
         \section{Wartbarkeit}
     
