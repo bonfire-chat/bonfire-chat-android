@@ -28,7 +28,12 @@ public class BonfireData extends SQLiteOpenHelper{
     private static final String[] ALL_COLS = new String[]{ "rowid", "*" };
     private static final String TAG = "BonfireData";
 
-    private static BonfireData instance;
+	/**
+	 * URL of the rendezvous server API endpoint
+	 */
+	public static final String API_ENDPOINT = "https://bonfire.projects.teamwiki.net";
+
+	private static BonfireData instance;
 
     public static BonfireData getInstance(Context ctx) {
         if (instance == null) instance = new BonfireData(ctx);
