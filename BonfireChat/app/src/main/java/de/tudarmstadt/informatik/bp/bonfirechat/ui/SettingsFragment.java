@@ -1,12 +1,17 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 //import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
 
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
@@ -41,6 +46,23 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+
+		findPreference("update_dev").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				String url = "https://ci.projects.teamwiki.net/job/BonfireChat/lastSuccessfulBuild/artifact/BonfireChat/app/build/outputs/apk/app-debug.apk";
+				DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+				request.setDescription("Update wird geladen...");
+				request.setTitle("BonfireChat");
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+				request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Bonfirechat-dev.apk");
+
+				// get download service and enqueue file
+				DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+				manager.enqueue(request);
+				return true;
+			}
+		});
 
     }
 

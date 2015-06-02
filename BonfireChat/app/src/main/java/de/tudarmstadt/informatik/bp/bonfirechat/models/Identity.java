@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -103,7 +104,7 @@ public class Identity {
 
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://bonfire.teamwiki.net/register.php");
+        HttpPost httppost = new HttpPost(BonfireData.API_ENDPOINT + "/register.php");
 
         try {
 

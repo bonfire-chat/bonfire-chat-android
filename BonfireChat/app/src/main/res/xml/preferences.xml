@@ -30,6 +30,10 @@
 
         </PreferenceScreen>
 
+        <Preference android:title="Update" android:summary="Letzten Dev-Build laden" android:key="update_dev"/>
+
     </PreferenceCategory>
+
+
 
 </PreferenceScreen>

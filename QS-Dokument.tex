@@ -4,9 +4,12 @@
 \usepackage{ngerman}
 \usepackage{parcolumns}
 
+% clickable hyperlinks in the table of contents
+\usepackage{hyperref}
+
 \newcommand{\titlerow}[2]{
 	\begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
-		\colchunk[1]{#1:} 
+		\colchunk[1]{#1:}
 		\colchunk[2]{#2}
 	\end{parcolumns}
 	\vspace{0.2cm}
@@ -35,12 +38,12 @@
 \begin{document}
 
 	\maketitle
-	\tableofcontents 
-	
+	\tableofcontents
+
 	\chapter{Einleitung}
 		Ein Leben ohne die Kommunikation über das Handynetz ist heutzutage nahezu unvorstellbar. Die Anzahl an übertragenen Nachrichten zwischen zwei mobilen Geräten ist auf Rekordhöhe und es wird prognostiziert, dass diese weiter steigen wird. Die Kommunikation über das Handynetz ist jedoch auf einen bestimmten Frequenzbereich beschränkt. Die Möglichkeit, mehr Nachrichten darüber zu übertragen ist nur durch die Entwicklung neuer Methoden erreichbar. Diese versuchen, das aktuelle Frequenzband effizienter auszunutzen (Siehe die LTE-Frequenzbandausnutzung im Vergleich zu der bei UMTS). Doch bei Events, bei denen sich große Menschenmassen auf wenig Platz versammeln, ist dies nicht genug. Es kommt dort häufig zu Ausfällen im Handynetz. \\
 
-		Die Idee des Projektes ist es, bei solchen Veranstaltungen trotz Ausfalls des Mobilfunkverkehrs weiterhin die Möglichkeit zur Kommunikation zwischen zwei Parteien zu gewährleisten. Dies soll neben der bisher verbreiteten Möglichkeit über eine Client-Server Infrastruktur zu kommunizieren, sich auf weitere Methoden erstrecken. Es soll ein adaptives Chatsystem für Android entwickelt werden, dass je nach Verfügbarkeit in der Lage ist, auch über Bluetooth und über WiFi peer-to-peer eine Kommunikation zwischen mehreren Parteien zu gewährleisten. \\
+		Die Idee des Projektes ist es, bei solchen Veranstaltungen trotz Ausfalls des Mobilfunkverkehrs weiterhin die Möglichkeit zur Kommunikation zwischen zwei Parteien zu gewährleisten. Dies soll sich, neben der bisher verbreiteten Möglichkeit über eine Client-Server-Infrastruktur zu kommunizieren, auf weitere Methoden erstrecken. Es soll ein adaptives Chatsystem für Android entwickelt werden, dass je nach Verfügbarkeit in der Lage ist, auch über Bluetooth und über WiFi eine Peer-to-Peer-Kommunikation zwischen mehreren Parteien zu ermöglichen. \\
 
 		Ziel ist es, die App 2016 auf dem Darmstädter Schlossgrabenfest benutzen zu können. Dort kamen in den Vorjahren über 100 000 Menschen gleichzeitig zu Besuch und brachten dadurch das Handynetz in starke Schwierigkeiten.\\
 
@@ -50,8 +53,8 @@
 
 	\chapter{Qualitätsziele}
         \section{Wartbarkeit}
-    
-		Da die Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen, um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln, ist es notwendig, dass unser Programm wartbar ist. Darüber hinaus erhöht eine gute Wartbarkeit die Produktivität durch kürztere Wartungszeiten, wodurch der Projektfortschritt beschleunigt wird.\\
+
+		Da die Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen, um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln, ist es notwendig, dass unser Programm wartbar ist. Darüber hinaus erhöht eine gute Wartbarkeit die Produktivität durch kürzere Wartungszeiten, wodurch der Projektfortschritt beschleunigt wird.\\
 
                 Zur Sicherstellung der Wartbarkeit ist es unter anderem wichtig, auf Lesbarkeit und geringe Codekomplexität zu achten. Dabei unterstützt uns das statische Codeanalysetool Checkstyle. Checkstyle überprüft den Code auf die Einhaltung verschiedenster Programmierrichtlinien und generiert automatisch Berichte. Besonderen Fokus beim Auswerten der Berichte wollen wir dabei auf die von Checkstyle errechneten Codemetriken legen, da diese in direktem Zusammenhang zur Codekomplexität, und daher zur Wartbarkeit stehen. Die Javadoc-Überprüfungen von Checkstyle werden wir jedoch nicht durchführen lassen, da die Auftraggeber keinen Wert auf ausführliches Javadoc legen.\\
 
@@ -59,18 +62,17 @@
 
                 Weiterhin werden wir das statische Codeanalysetool Findbugs einsetzen, um Fehler im Code frühzeitig zu entdecken. Findbugs integrieren wir ebenfalls in Jenkins, sodass bei jedem Push ins Repository ein Bericht erstellt wird. Werden Fehler gefunden, wird im Team entschieden, wer diese behebt. Da auf diese Art und Weise sofort Fehler automatisch gefunden werden, muss man später keine Zeit mehr dafür aufwenden, diese zu suchen. Diese Maßnahme reduziert somit den Wartungsaufwand und verbessert folglich die Wartbarkeit.\\
 
-                Außerdem wollen die Auftraggeber mit uns zusammen einige Code-Reviews durchführen. Die Modalitäten dieser Reviews sind noch nicht bekannt, aber vermutlich werden die Auftraggeber sich für einen Over-the-Shoulder Ansatz entscheiden, bei dem sie sich den Code von einem Entwickler erläutern lassen und Anmerkungen und Fragen einbringen. So werden einerseits Schwächen aufgedeckt und behoben, was unter anderem die Wartbarkeit unterstützt, als auch die Codequalität im Allgemeinen gesteigert und die Zufriedenheit der Auftraggeber erhöht, da diese direkten Einfluss auf den Code haben. 
+                Außerdem wollen die Auftraggeber mit uns zusammen einige Code-Reviews durchführen. Die Modalitäten dieser Reviews sind noch nicht bekannt, aber vermutlich werden die Auftraggeber sich für einen Over-the-Shoulder-Ansatz entscheiden, bei dem sie sich den Code von einem Entwickler erläutern lassen und Anmerkungen und Fragen einbringen. So werden einerseits Schwächen aufgedeckt und behoben, was unter anderem die Wartbarkeit unterstützt, als auch die Codequalität im Allgemeinen gesteigert und die Zufriedenheit der Auftraggeber erhöht, da diese direkten Einfluss auf den Code haben.
 
                 \newpage
         \section{Datensicherheit}
-        
+
         \section{Robustheit}
-        
-\appendix	
+
+\appendix
 	\chapter{Anhang}
 		(Am Ende des Projekts nachzureichen)\\
 		Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
 		Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
-	
-\end{document}
 
+\end{document}
