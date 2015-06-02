@@ -44,3 +44,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile "com.google.android.gms:play-services:3.1.+"
 }
+
+apply plugin: 'findbugs'
+
+
+findbugs {
+    excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
+}
+

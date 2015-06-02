@@ -2,7 +2,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.jivesoftware.smack.AccountManager;
@@ -20,9 +19,6 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 
 import java.io.IOException;
 
-import javax.net.ssl.SSLContext;
-
-import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
