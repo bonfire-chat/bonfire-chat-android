@@ -16,6 +16,9 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+
 /**
  * Created by Simon on 22.05.2015.
  */
@@ -42,7 +45,9 @@ public class FileServerAsyncTask extends AsyncTask {
             Socket client = serverSocket.accept();
 
             InputStream inputstream = client.getInputStream();
-            inputstream.read();
+            WifiProtocol mySocketProtocol = new WifiProtocol(context);
+
+            Message m = mySocketProtocol.deserializeMessage(inputstream);
 
         } catch (IOException e) {
         }
