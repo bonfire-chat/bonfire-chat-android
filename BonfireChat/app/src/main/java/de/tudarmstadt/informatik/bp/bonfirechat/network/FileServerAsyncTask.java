@@ -34,22 +34,17 @@ public class FileServerAsyncTask extends AsyncTask {
     @Override
     protected Object doInBackground(Object[] params) {
         try {
-
             /**
              * Create a server socket and wait for client connections. This
              * call blocks until a connection is accepted from a client
              */
-            ServerSocket serverSocket = new ServerSocket(8888);
+            ServerSocket serverSocket = new ServerSocket(4242);
             Socket client = serverSocket.accept();
-
 
             InputStream inputstream = client.getInputStream();
             inputstream.read();
 
-
         } catch (IOException e) {
-
-
         }
         return null;
     }
