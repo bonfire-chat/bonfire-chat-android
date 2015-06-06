@@ -1,20 +1,21 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,8 +24,8 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
@@ -120,17 +121,20 @@ public class ConnectionManager extends NonStopIntentService {
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Message message) {
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);
             Log.d(TAG, "received message : " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
-            Conversation conversation = data.getConversationByPeer(message.peer);
+            Conversation conversation = data.getConversationByPeer(message.sender);
             if (conversation == null) {
-                Log.d(TAG, "creating new conversation for peer "+message.peer.getNickname());
-                conversation = new Conversation(message.peer, message.peer.getNickname(), 0);
+                Log.d(TAG, "creating new conversation for peer "+message.sender.getNickname());
+                conversation = new Conversation(message.sender, message.sender.getNickname(), 0);
                 data.createConversation(conversation);
 
                 Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
                                 // Puts the status into the Intent
-                                .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.getName());
+                                .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
+                broadcastManager.sendBroadcast(localIntent);
+
             }
             Log.d(TAG, "conversationId=" + conversation.rowid);
 
@@ -139,10 +143,10 @@ public class ConnectionManager extends NonStopIntentService {
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
-                    .putExtra(EXTENDED_DATA_PEER_ID, message.peer.rowid)
+                    .putExtra(EXTENDED_DATA_PEER_ID, message.sender.rowid)
                             .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
-            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+            broadcastManager.sendBroadcast(localIntent);
 
 
             Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
@@ -170,21 +174,31 @@ public class ConnectionManager extends NonStopIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        BonfireData db = BonfireData.getInstance(this);
         if (intent.getAction() == GO_ONLINE_ACTION) {
-            ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
-            xmpp.connectToServer(this);
-            getOrCreateConnection(BluetoothProtocol.class);
-            WifiProtocol mWifi = (WifiProtocol) getOrCreateConnection(WifiProtocol.class);
+            Identity id = db.getDefaultIdentity();
+            id.registerWithServer();
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            if (preferences.getBoolean("enable_xmpp", true)) {
+                ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
+                xmpp.connectToServer(this);
+            }
+            if (preferences.getBoolean("enable_bluetooth", true)) {
+                getOrCreateConnection(BluetoothProtocol.class);
+            }
+            if (preferences.getBoolean("enable_wifi", true)) {
+                // getOrCreateConnection(WifiProtocol.class);
+            }
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
-            BonfireData db = BonfireData.getInstance(this);
             Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
-            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message);
+            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.sender.getNickname());
             try {
                 Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
 
                 IProtocol protocol = getConnection(protocolClass);
-                Log.d(TAG, "protocol : " + protocol);
                 protocol.sendMessage(db.getContactById(intent.getLongExtra("contactId", -1)),
                         message);
 
@@ -199,6 +213,43 @@ public class ConnectionManager extends NonStopIntentService {
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
 
+        } else if (!extras.isEmpty()) {
+            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+            String messageType = gcm.getMessageType(intent);
+
+            if (GoogleCloudMessaging.
+                    MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
+                sendNotification("Send error: " + extras.toString());
+            } else if (GoogleCloudMessaging.
+                    MESSAGE_TYPE_DELETED.equals(intent.getAction())) {
+                sendNotification("Deleted messages on server: " +
+                        extras.toString());
+                // If it's a regular GCM message, do some work.
+            } else if (GoogleCloudMessaging.
+                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+
+                sendNotification("Received: " + extras.toString());
+                Log.i(TAG, "Received: " + extras.toString());
+            }
         }
+    }
+
+    // Put the message into a notification and post it.
+    // This is just one simple example of what you might choose to do with
+    // a GCM message.
+    private void sendNotification(String msg) {
+        NotificationManager mNotificationManager = (NotificationManager)
+                this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("GCM Notification")
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(msg))
+                        .setContentText(msg);
+
+        mNotificationManager.notify(2, mBuilder.build());
     }
 }

@@ -1,0 +1,92 @@
+\documentclass[accentcolor=tud4c,colorbacktitle]{tudbeamer}
+\usepackage{ngerman}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+  \begin{document}
+  \title{Entwicklung eines adaptiven Chat-Systems}
+  \author{Jonas Mönnig}
+
+  \begin{titleframe}
+  \end{titleframe}
+    \begin{frame}
+      \frametitle{Projektkontext}
+      \begin{itemize}
+        \item Peer-to-Peer über Bluetooth und WiFi wenn keine Internetverbindung
+        \item sonst Client-Server  
+        \item gedacht für Überlastsituationen (Schlossgrabenfest) 
+        \item Android
+      \end{itemize}
+    \end{frame}
+    \begin{frame}
+      \frametitle{Projektfortschritt}
+      \begin{itemize}
+        \item (fast) Fertig:
+        \begin{itemize}
+          \item Userinterface
+          \item Datenbank
+          \item Client-Server-Kommunikation (Jabber)
+          \item Nachrichten zu einem anderen Bluetooth-Gerät senden
+        \end{itemize}
+      \end{itemize}
+      \begin{itemize}
+        \item Noch nicht fertig:
+        \begin{itemize}
+          \item Aufbau eines Peer-to-Peer Netzes
+          \item Routing von Paketen
+          \item WiFi
+        \end{itemize}
+      \end{itemize}
+    \end{frame}
+    \begin{frame}
+      \frametitle{UI-Prototyp }
+      \begin{figure}[ht!]
+        \centering
+        \includegraphics[height=6cm]{Screenshot.png}
+      \end{figure}
+    \end{frame}
+    \begin{frame}
+      \frametitle{Qualitätsziele}
+      \begin{itemize}
+        \item Wartbarkeit
+        \item Datensicherheit
+        \item Robustheit
+      \end{itemize}
+    \end{frame}    
+    \begin{frame}
+      \frametitle{Wartbarkeit}
+      \begin{itemize}
+        \item Auftraggeber wollen die App wahrscheinlich selbst weiterentwickeln
+        \item Maßnahmen
+        \begin{itemize}
+          \item Code-Review (Gerrit)
+          \item Einheitlicher Codestil (Checkstyle)
+          \item Findbugs
+        \end{itemize}
+      \end{itemize}
+    \end{frame}
+    \begin{frame}
+      \frametitle{Datensicherheit}
+      \begin{itemize}
+        \item Damit Kommunikation vertraulich bleibt
+        \item Maßnahmen und Prozess stehen noch nicht fest
+      \end{itemize}
+    \end{frame}
+    \begin{frame}
+      \frametitle{Robustheit}
+      \begin{itemize}
+        \item App wird hauptsächlich in Ausnahmesituationen eingesetzt werden
+        \item Maßnahmen und Prozess stehen noch nicht fest
+      \end{itemize}
+    \end{frame}
+    \begin{frame}
+      \frametitle{Arbeitszeiten}
+      \begin{itemize}
+        \item Sprint 1:
+          \begin{itemize}
+            \item Userstories: 30 Stunden; 92 Storypoints; Velocity: 3,1415
+            \item Sonstiges: 28 Stunden
+          \end{itemize}
+        \item Sprint 2: Steht noch nicht fest
+      \end{itemize}
+    \end{frame}
+  \end{document}
