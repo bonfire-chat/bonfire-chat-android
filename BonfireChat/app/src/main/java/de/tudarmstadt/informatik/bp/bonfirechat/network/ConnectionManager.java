@@ -174,13 +174,17 @@ public class ConnectionManager extends NonStopIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
         Bundle extras = intent.getExtras();
         BonfireData db = BonfireData.getInstance(this);
+
         if (intent.getAction() == GO_ONLINE_ACTION) {
             Identity id = db.getDefaultIdentity();
             id.registerWithServer();
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+
             if (preferences.getBoolean("enable_xmpp", true)) {
                 ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
                 xmpp.connectToServer(this);
@@ -189,7 +193,8 @@ public class ConnectionManager extends NonStopIntentService {
                 getOrCreateConnection(BluetoothProtocol.class);
             }
             if (preferences.getBoolean("enable_wifi", true)) {
-                // getOrCreateConnection(WifiProtocol.class);
+                WifiProtocol mWifi = (WifiProtocol) getOrCreateConnection(WifiProtocol.class);
+
             }
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
@@ -199,6 +204,7 @@ public class ConnectionManager extends NonStopIntentService {
                 Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
 
                 IProtocol protocol = getConnection(protocolClass);
+                Log.d(TAG, "protocol : " + protocol);
                 protocol.sendMessage(db.getContactById(intent.getLongExtra("contactId", -1)),
                         message);
 
