@@ -2,7 +2,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.jivesoftware.smack.AccountManager;
@@ -20,9 +19,6 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 
 import java.io.IOException;
 
-import javax.net.ssl.SSLContext;
-
-import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
@@ -48,14 +44,13 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     }
 
     public static String getJidByHash(String hash) {
-        return "u" + hash + "@teamwiki.de";
+        return "u" + hash.toLowerCase().substring(0,16) + "@teamwiki.de";
     }
 
     private void createMyAccount(Context ctx) {
         AccountManager a = AccountManager.getInstance(connection);
         try {
             a.createAccount(StringUtils.parseName(identity.username), identity.password);
-            BonfireData.getInstance(ctx).updateIdentity(identity);
 
         } catch (SmackException.NoResponseException e) {
             e.printStackTrace();
@@ -83,6 +78,8 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
                 identity.username = getJidByHash(identity.getPublicKeyHash());
                 Log.d(TAG, "calling createMyAccount, with username="+identity.username);
                 createMyAccount(ctx);
+                BonfireData.getInstance(ctx).updateIdentity(identity);
+                identity.registerWithServer();
             }
 
             Log.d(TAG, "before connection login");
@@ -114,7 +111,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
             Contact c = db.getContactByXmppId(msg.getFrom());
             if (c == null) {
                 c = new Contact(StringUtils.parseName(msg.getFrom()));
-                c.setXmppId(msg.getFrom());
+                c.setXmppId(StringUtils.parseBareAddress(msg.getFrom()));
                 db.createContact(c);
             }
             listener.onMessageReceived(ClientServerProtocol.this, new Message(msg.getBody(), c, Message.MessageDirection.Received, DateHelper.getNowString()));

@@ -1,5 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -20,6 +22,10 @@ public abstract class SocketProtocol implements IProtocol {
 
     protected void serializeMessage(OutputStream output, Contact target, Message message) {
         try {
+            if (message.sender == null) {
+                message.sender = new Contact("catcher");
+            }
+            Log.e("424242", "Get your seats up, gentlemen! Preparing to send that message. Sender object is: " + message.sender);
             ObjectOutputStream stream = new ObjectOutputStream(output);
             stream.writeObject(target);
             stream.writeObject(message);

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="Account">
+        <Preference android:title="Account bearbeiten" android:key="edit_account"/>
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Kommunikationswege">
-        <CheckBoxPreference android:title="Verwende Bluetooth"></CheckBoxPreference>
+        <CheckBoxPreference android:key="enable_bluetooth" android:defaultValue="true"
+            android:title="Verwende Bluetooth"></CheckBoxPreference>
 
-        <CheckBoxPreference android:title="Verwende Wi-Fi (AdHoc)"></CheckBoxPreference>
+        <CheckBoxPreference android:key="enable_wifi" android:defaultValue="true"
+            android:title="Verwende Wi-Fi (AdHoc)"></CheckBoxPreference>
 
-        <CheckBoxPreference android:title="Verwende Mobile Daten / Wi-Fi"></CheckBoxPreference>
+        <CheckBoxPreference android:key="enable_xmpp" android:defaultValue="true"
+            android:title="Verwende Mobile Daten / Wi-Fi"></CheckBoxPreference>
 
     </PreferenceCategory>
 
@@ -23,6 +30,10 @@
 
         </PreferenceScreen>
 
+        <Preference android:title="Update" android:summary="Letzten Dev-Build laden" android:key="update_dev"/>
+
     </PreferenceCategory>
+
+
 
 </PreferenceScreen>

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -83,7 +84,9 @@ public class BluetoothProtocol extends SocketProtocol {
         }
         sockets.clear();
         output.clear();
-        for (BluetoothDevice device: nearby) {
+        // create local copy to prevent ConcurrentModificationException (thread safe)
+        BluetoothDevice[] localNearby = nearby.toArray(new BluetoothDevice[0]);
+        for (BluetoothDevice device : localNearby) {
             try {
                 BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);
                 socket.connect();
@@ -114,8 +117,8 @@ public class BluetoothProtocol extends SocketProtocol {
 
     public BroadcastReceiver onDeviceFoundReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction(); //may need to chain this to a recognizing function
+        public synchronized void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -150,9 +153,9 @@ public class BluetoothProtocol extends SocketProtocol {
             Log.d(TAG, "running listener thread");
             try {
 
-                BluetoothServerSocket ss = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
+                BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
-                    BluetoothSocket socket = ss.accept();
+                    BluetoothSocket socket = server.accept();
                     ConnectionHandler handler = new ConnectionHandler(socket);
                     connections.add(handler);
                 }
@@ -181,10 +184,12 @@ public class BluetoothProtocol extends SocketProtocol {
         public void run() {
             Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
             Message message = deserializeMessage(input);
-            Log.d(TAG, "Recieved message: " + message.peer.getNickname() + ": " + message.body);
+            Log.d(TAG, "Recieved message: " + message.sender.getNickname() + ": " + message.body);
+            message.direction = Message.MessageDirection.Received;
+            message.dateTime = DateHelper.getNowString();
+            listener.onMessageReceived(BluetoothProtocol.this, message);
         }
     }
-
 
     // ###########################################################################
     // ###    Implementation of IProtocol

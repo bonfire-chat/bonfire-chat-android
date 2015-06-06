@@ -2,12 +2,15 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.style.UpdateLayout;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -23,7 +26,20 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.content.Context;
+import android.widget.SearchView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +60,6 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        BonfireData db = BonfireData.getInstance(getActivity());
-        List<Contact> contacts = db.getContacts();
-        adapter = new ContactsAdapter(this.getActivity(), contacts);
 
     }
 
@@ -58,6 +71,15 @@ public class ContactsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        BonfireData db = BonfireData.getInstance(getActivity());
+        List<Contact> contacts = db.getContacts();
+        adapter = new ContactsAdapter(this.getActivity(), contacts);
+        contactsList.setAdapter(adapter);
+    }
+
     ActionMode mActionMode;
     ListView contactsList;
     @Override
@@ -66,8 +88,12 @@ public class ContactsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         contactsList = (ListView) rootView.findViewById(R.id.contactsList);
+/*
+        BonfireData db = BonfireData.getInstance(getActivity());
+        List<Contact> contacts = db.getContacts();
+        adapter = new ContactsAdapter(this.getActivity(), contacts);
         contactsList.setAdapter(adapter);
-
+*/
         contactsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         contactsList.setMultiChoiceModeListener(multiChoiceListener);
 
@@ -95,13 +121,15 @@ public class ContactsFragment extends Fragment {
         final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
 
         if (item.getItemId() == R.id.action_add_contact) {
-            InputBox.InputBox(getActivity(), getString(R.string.new_contact), getString(R.string.search_contact_by_name), "",
-                    new InputBox.OnOkClickListener() {
-                        @Override
-                        public void onOkClicked(String input) {
-                            addContact(input);
-                        }
-                    });
+            Contact c = new Contact("");
+            bonfireData.createContact(c);
+            Intent intent = new Intent(this.getActivity(), ContactDetailsActivity.class);
+            intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, c.rowid);
+            startActivity(intent);
+            return true;
+
+        } else if (item.getItemId() == R.id.action_search) {
+            startActivity(new Intent(getActivity(), SearchUserActivity.class));
             return true;
         }
 
@@ -110,14 +138,6 @@ public class ContactsFragment extends Fragment {
 
 
 
-    void addContact(String name) {
-        // TODO: insert sophisticated contact existing check
-        if (!name.isEmpty()) {
-            Contact contact = new Contact(name);
-            adapter.add(contact);
-            BonfireData.getInstance(getActivity()).createContact(contact);
-        }
-    }
 
     private void deleteSelectedItems() {
         BonfireData db = BonfireData.getInstance(getActivity());

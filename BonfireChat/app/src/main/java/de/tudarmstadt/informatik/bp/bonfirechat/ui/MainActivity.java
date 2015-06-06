@@ -14,6 +14,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
 
 
 public class MainActivity extends Activity
@@ -48,14 +49,20 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        GcmBroadcastReceiver.registerForGcm(this);
         initializeNetwork();
     }
 
     private void initializeNetwork() {
         BonfireData db = BonfireData.getInstance(this);
-        if (db.getDefaultIdentity() == null) {
-            Identity id = Identity.generate();
+        Identity id = db.getDefaultIdentity();
+        if (id == null) {
+            id = Identity.generate(this);
             db.createIdentity(id);
+        }
+        if (id.nickname.equals("")) {
+            Intent intent = new Intent(this, IdentityActivity.class);
+            startActivity(intent);
         }
 
         Intent intent = new Intent(this, ConnectionManager.class);
