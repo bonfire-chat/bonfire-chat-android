@@ -121,7 +121,9 @@ public class MessagesActivity extends Activity {
             Intent intent = new Intent(MessagesActivity.this, ConnectionManager.class);
             intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
             if (conversation.getPeer().getXmppId() != null) {
-                intent.putExtra("protocolName", "ClientServerProtocol");
+                intent.putExtra("protocolName", "WifiProtocol");
+
+                //intent.putExtra("protocolName", "ClientServerProtocol");
             } else {
                 intent.putExtra("protocolName", "WifiProtocol");
             }
