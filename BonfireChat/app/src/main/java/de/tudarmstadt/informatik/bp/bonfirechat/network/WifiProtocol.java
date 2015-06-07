@@ -39,19 +39,23 @@ public class WifiProtocol extends SocketProtocol {
     public WifiProtocol(Context ctx){
 
         this.ctx = ctx;
-        mReceiver = new WifiReceiver(mWifiP2pManager,mChannel, this);
+
         Log.d(TAG, "Dieser Code wird ausgefuehrt");
         Looper mSrcLooper = ctx.getMainLooper();
 
         this.mWifiP2pManager= (WifiP2pManager) ctx.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel =  mWifiP2pManager.initialize(ctx, mSrcLooper, MCHLISTENER);
 
+
+        mReceiver = new WifiReceiver(mWifiP2pManager,mChannel, this);
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         registerWifiReceiverSocket();
+        ctx.registerReceiver(mReceiver, mIntentFilter);
+
     }
 
     @Override
