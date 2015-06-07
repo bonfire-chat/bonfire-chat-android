@@ -24,6 +24,7 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -199,8 +200,8 @@ public class ConnectionManager extends NonStopIntentService {
                 Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
 
                 IProtocol protocol = getConnection(protocolClass);
-                protocol.sendMessage(db.getContactById(intent.getLongExtra("contactId", -1)),
-                        message);
+                Contact recipient = db.getContactById(intent.getLongExtra("contactId", -1));
+                protocol.sendMessage(recipient, message);
 
             }catch(Exception ex) {
                 ex.printStackTrace();
@@ -217,17 +218,14 @@ public class ConnectionManager extends NonStopIntentService {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
             String messageType = gcm.getMessageType(intent);
 
-            if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
+            if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
                 sendNotification("Send error: " + extras.toString());
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_DELETED.equals(intent.getAction())) {
-                sendNotification("Deleted messages on server: " +
-                        extras.toString());
-                // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
+            } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(intent.getAction())) {
+                sendNotification("Deleted messages on server: " + extras.toString());
+
+            } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+                // If it's a regular GCM message, do some work.
                 sendNotification("Received: " + extras.toString());
                 Log.i(TAG, "Received: " + extras.toString());
             }
@@ -240,7 +238,6 @@ public class ConnectionManager extends NonStopIntentService {
     private void sendNotification(String msg) {
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
-
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
