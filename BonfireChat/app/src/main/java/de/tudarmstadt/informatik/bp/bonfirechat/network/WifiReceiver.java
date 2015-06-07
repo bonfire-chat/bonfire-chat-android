@@ -29,8 +29,16 @@ public class WifiReceiver extends BroadcastReceiver {
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     private WifiP2pDevice connectedDevice;
+    private WifiProtocol protocol;
 
-    private WifiSenderActivity mActivity;
+    public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiProtocol protocol) {
+        super();
+        this.mManager = manager;
+        this.mChannel = channel;
+        this.protocol = protocol;
+
+    }
+
     WifiP2pManager.PeerListListener mWifiPeerListListener = new WifiP2pManager.PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peers) {
@@ -60,13 +68,7 @@ public class WifiReceiver extends BroadcastReceiver {
         }
     };
 
-    public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel,
-                        WifiSenderActivity activity) {
-        super();
-        this.mManager = manager;
-        this.mChannel = channel;
-        this.mActivity = activity;
-    }
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -93,7 +95,7 @@ public class WifiReceiver extends BroadcastReceiver {
             int port = 4242;
             int len;
             Socket socket = new Socket();
-            String msg = MessageQ.msg.body;
+            //String msg = mWifiProtocol
             byte buf[] = new byte[1024];
 
             try {
@@ -110,7 +112,7 @@ public class WifiReceiver extends BroadcastReceiver {
                  */
                 OutputStream outputStream = socket.getOutputStream();
 
-                outputStream.write(msg.getBytes());
+                protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
 
                 outputStream.close();
 
