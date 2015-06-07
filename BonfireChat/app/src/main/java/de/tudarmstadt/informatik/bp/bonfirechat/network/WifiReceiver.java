@@ -10,6 +10,7 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
@@ -91,56 +92,76 @@ public class WifiReceiver extends BroadcastReceiver {
                 mManager.requestPeers(mChannel, mWifiPeerListListener);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            if (connectedDevice != null) {
-                String host = connectedDevice.deviceAddress;
-                int port = 4242;
-                int len;
-                Socket socket = new Socket();
-                //String msg = mWifiProtocol
-                byte buf[] = new byte[1024];
+            Log.d(TAG, "Daten werden GANZ AUSSEN gesendet");
+            new AsyncTask() {
 
-                try {
-                    /**
-                     * Create a client socket with the host,
-                     * port, and timeout information.
-                     */
-                    socket.bind(null);
-                    socket.connect((new InetSocketAddress(host, port)), 500);
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    Log.d(TAG, "Daten werden auﬂen gesendet");
+                    if (connectedDevice != null)
 
-                    /**
-                     * Create a byte stream from a JPEG file and pipe it to the output stream
-                     * of the socket. This data will be retrieved by the server device.
-                     */
-                    OutputStream outputStream = socket.getOutputStream();
+                    {
+                        Log.d(TAG, "Daten werden gesendet");
+                        String host = connectedDevice.deviceAddress;
+                        int port = 4242;
+                        int len;
+                        Socket socket = new Socket();
+                        //String msg = mWifiProtocol
+                        byte buf[] = new byte[1024];
 
-                    protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
+                        try {
+                            /**
+                             * Create a client socket with the host,
+                             * port, and timeout information.
+                             */
+                            socket.bind(null);
+                            socket.connect((new InetSocketAddress(host, port)), 500);
 
-                    outputStream.close();
+                            /**
+                             * Create a byte stream from a JPEG file and pipe it to the output stream
+                             * of the socket. This data will be retrieved by the server device.
+                             */
+                            OutputStream outputStream = socket.getOutputStream();
 
-                } catch (IllegalArgumentException e) {
-                    //catch logic
-                } catch (IOException e) {
-                    //catch logic
-                }
+                            protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
 
-/**
- * Clean up any open sockets when done
- * transferring or if an exception occurred.
- */ finally {
-                    if (socket != null) {
-                        if (socket.isConnected()) {
-                            try {
-                                socket.close();
-                            } catch (IOException e) {
-                                //catch logic
+                            outputStream.close();
+
+                        } catch (IllegalArgumentException e) {
+                            //catch logic
+                        } catch (IOException e) {
+                            //catch logic
+                        }
+
+                        /**
+                         * Clean up any open sockets when done
+                         * transferring or if an exception occurred.
+                         */ finally {
+                            if (socket != null) {
+                                if (socket.isConnected()) {
+                                    try {
+                                        socket.close();
+                                    } catch (IOException e) {
+                                        //catch logic
+                                    }
+                                }
                             }
                         }
                     }
+
+
+                return null;
                 }
-            } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-                // Respond to this device's wifi state changing
-            }
+            }.execute(null, null, null);
         }
+
+                else if(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
+
+                {
+                    // Respond to this device's wifi state changing
+                }
+
+
     }
 
     private final String TAG = "WifiReceiver";
