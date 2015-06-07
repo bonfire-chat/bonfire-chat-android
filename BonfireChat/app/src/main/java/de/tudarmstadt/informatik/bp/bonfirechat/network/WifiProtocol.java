@@ -85,10 +85,13 @@ public class WifiProtocol extends SocketProtocol {
 
 
     private void registerWifiReceiverSocket(){
+
         new AsyncTask(){
+
 
             @Override
             protected Object doInBackground(Object[] params) {
+                Log.d(TAG, "do in Backround wird ausgeführt");
                 try {
                     /**
                      * Create a server socket and wait for client connections. This
@@ -101,13 +104,15 @@ public class WifiProtocol extends SocketProtocol {
                     WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
 
                     Message m = mySocketProtocol.deserializeMessage(inputstream);
+                    Log.d(TAG,"Die message war: " + m);
                     listener.onMessageReceived(WifiProtocol.this,m);
 
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 return null;
             }
-        };
+        }.execute(null, null, null);
 
 
     }
