@@ -73,7 +73,7 @@ public class WifiReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-
+        Log.d(TAG, "onReceive wird ausgeführt");
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             // Check to see if Wi-Fi is enabled
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
@@ -91,53 +91,55 @@ public class WifiReceiver extends BroadcastReceiver {
                 mManager.requestPeers(mChannel, mWifiPeerListListener);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            String host = connectedDevice.deviceAddress;
-            int port = 4242;
-            int len;
-            Socket socket = new Socket();
-            //String msg = mWifiProtocol
-            byte buf[] = new byte[1024];
+            if (connectedDevice != null) {
+                String host = connectedDevice.deviceAddress;
+                int port = 4242;
+                int len;
+                Socket socket = new Socket();
+                //String msg = mWifiProtocol
+                byte buf[] = new byte[1024];
 
-            try {
-                /**
-                 * Create a client socket with the host,
-                 * port, and timeout information.
-                 */
-                socket.bind(null);
-                socket.connect((new InetSocketAddress(host, port)), 500);
+                try {
+                    /**
+                     * Create a client socket with the host,
+                     * port, and timeout information.
+                     */
+                    socket.bind(null);
+                    socket.connect((new InetSocketAddress(host, port)), 500);
 
-                /**
-                 * Create a byte stream from a JPEG file and pipe it to the output stream
-                 * of the socket. This data will be retrieved by the server device.
-                 */
-                OutputStream outputStream = socket.getOutputStream();
+                    /**
+                     * Create a byte stream from a JPEG file and pipe it to the output stream
+                     * of the socket. This data will be retrieved by the server device.
+                     */
+                    OutputStream outputStream = socket.getOutputStream();
 
-                protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
+                    protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
 
-                outputStream.close();
+                    outputStream.close();
 
-            } catch (IllegalArgumentException e) {
-                //catch logic
-            } catch (IOException e) {
-                //catch logic
-            }
+                } catch (IllegalArgumentException e) {
+                    //catch logic
+                } catch (IOException e) {
+                    //catch logic
+                }
 
 /**
  * Clean up any open sockets when done
  * transferring or if an exception occurred.
  */ finally {
-                if (socket != null) {
-                    if (socket.isConnected()) {
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            //catch logic
+                    if (socket != null) {
+                        if (socket.isConnected()) {
+                            try {
+                                socket.close();
+                            } catch (IOException e) {
+                                //catch logic
+                            }
                         }
                     }
                 }
+            } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
+                // Respond to this device's wifi state changing
             }
-        } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-            // Respond to this device's wifi state changing
         }
     }
 
