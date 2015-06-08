@@ -19,16 +19,29 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.ec.CustomNamedCurves;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.spec.ECNamedCurveSpec;
+import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.bouncycastle.math.ec.custom.djb.Curve25519;
+import org.whispersystems.curve25519.Curve25519KeyPair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
 
 /**
@@ -47,13 +60,17 @@ public class Identity {
 
     public static Identity generate(Context ctx) {
         // TODO generate a real key pair
-        Identity i= new Identity("", String.valueOf(Math.random()*100000000000f), String.valueOf(Math.random()*100000000000f),
+        KeyPair keyPair = CryptoHelper.generateKeyPair();
+        String pubkey = Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+        String privkey = Base64.encodeToString(keyPair.getPrivate().getEncoded(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+
+        Identity i= new Identity("", privkey, pubkey,
                 "teamwiki.de", "", String.valueOf(Math.random()*100000000000f), getMyPhoneNumber(ctx));
         return i;
     }
 
     public String getPublicKeyHash() {
-        return Identity.hash("MD5", this.publicKey);
+        return publicKey; //Identity.hash("MD5", this.publicKey);
         //return Identity.hash("SHA-256", this.publicKey);
     }
 
