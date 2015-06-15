@@ -194,7 +194,8 @@ public class ConnectionManager extends NonStopIntentService {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             if (preferences.getBoolean("enable_xmpp", true)) {
-                getOrCreateConnection(ClientServerProtocol.class);
+                //getOrCreateConnection(ClientServerProtocol.class);
+                getOrCreateConnection(GcmProtocol.class);
             }
             if (preferences.getBoolean("enable_bluetooth", true)) {
                 getOrCreateConnection(BluetoothProtocol.class);

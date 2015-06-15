@@ -18,6 +18,9 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
@@ -28,6 +31,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
+ *
+ * Broken at the moment!
+ *
  * Created by mw on 13.05.15.
  */
 public class ClientServerProtocol implements IProtocol, ConnectionListener {
@@ -113,11 +119,21 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
             BonfireData db = BonfireData.getInstance(ctx);
             Contact c = db.getContactByXmppId(msg.getFrom());
             if (c == null) {
-                c = new Contact(StringUtils.parseName(msg.getFrom()));
-                c.setXmppId(StringUtils.parseBareAddress(msg.getFrom()));
-                db.createContact(c);
+                //FIXME
+                // c = new Contact(StringUtils.parseName(msg.getFrom()));
+                // c.setXmppId(StringUtils.parseBareAddress(msg.getFrom()));
+                // db.createContact(c);
+                throw new UnsupportedOperationException("");
             }
-            listener.onMessageReceived(ClientServerProtocol.this, new Message(msg.getBody(), c, Message.MessageDirection.Received, DateHelper.getNowString()));
+            UUID uuid = UUID.fromString(msg.getPacketID());
+            ArrayList<byte[]> recip = new ArrayList<>();
+            recip.add(db.getDefaultIdentity().getPublicKey().asByteArray());
+            listener.onMessageReceived(ClientServerProtocol.this, new Envelope(uuid, 2,
+                    //FIXME msg.getExtension("x", "jabber:x:tstamp").getAttribute("tstamp")
+                    new Date(),
+                    //FIXME ogottogottogott
+                    recip,
+                    msg.getFrom(), null, CryptoHelper.fromBase64(msg.getBody())));
         }
     };
 
@@ -136,6 +152,8 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     public void sendMessage(Envelope envelope) {
         String jid = envelope.message.recipients.get(0).getXmppId(); // getJidByHash(target);
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message(jid);
+        msg.setPacketID(envelope.uuid.toString());
+        //msg.addExtension(new Extension);  for date time
         msg.setBody(CryptoHelper.toBase64(envelope.encryptedBody));
         try {
             connection.sendPacket(msg);
