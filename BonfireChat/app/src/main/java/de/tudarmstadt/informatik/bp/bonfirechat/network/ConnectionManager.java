@@ -119,7 +119,7 @@ public class ConnectionManager extends NonStopIntentService {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
             // is this envelope sent to us?
-            if (envelope.containsRecipient(BonfireData.getInstance(this).getDefaultIdentity())) {
+            if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                 Message message = envelope.toMessage(ConnectionManager.this);
                 storeAndDisplayMessage(message);
             } else {

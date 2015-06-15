@@ -201,7 +201,7 @@ public class BluetoothProtocol extends SocketProtocol {
     public Thread inboxProcessor = new Thread(new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "running inbox processor thread")
+            Log.d(TAG, "running inbox processor thread");
             while (true) {
                 if (!inbox.isEmpty()) {
                     Envelope envelope = inbox.poll();
@@ -215,7 +215,7 @@ public class BluetoothProtocol extends SocketProtocol {
     public Thread outboxProcessor = new Thread(new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "running output processor thread")
+            Log.d(TAG, "running output processor thread");
             while (true) {
                 if (!outbox.isEmpty()) {
                     Envelope envelope = outbox.poll();

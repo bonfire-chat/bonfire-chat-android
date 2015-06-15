@@ -33,16 +33,15 @@ public class Contact implements Serializable, IPublicIdentity {
     public long rowid;
 
 
-    public Contact(String nickname) {
-        this(nickname, nickname, "", null, null, null, null, null, 0);
-    }
-
     public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey, String xmppId, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
+        this(nickname, firstName, lastName, phoneNumber, MyPublicKey.deserialize(publicKey), xmppId, wifiMacAddress, bluetoothMacAddress, rowid);
+    }
+    public Contact(String nickname, String firstName, String lastName, String phoneNumber, MyPublicKey publicKey, String xmppId, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.publicKey = MyPublicKey.deserialize(publicKey);
+        this.publicKey = publicKey;
         this.xmppId = xmppId;
         this.wifiMacAddress = wifiMacAddress;
         this.bluetoothMacAddress = bluetoothMacAddress;
@@ -123,6 +122,6 @@ public class Contact implements Serializable, IPublicIdentity {
 
     // TODO: implement
     public static Contact findOrCreate(Context ctx, byte[] publicKey) {
-        return new Contact("foo");
+        return new Contact("foo", "", "", "", MyPublicKey.deserialize(publicKey), null, "", "", 0);
     }
 }
