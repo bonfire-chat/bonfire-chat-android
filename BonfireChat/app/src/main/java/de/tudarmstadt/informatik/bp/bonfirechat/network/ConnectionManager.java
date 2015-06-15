@@ -26,6 +26,7 @@ import java.util.UUID;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
@@ -71,11 +72,14 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
 
 
+    // maximum hops for a message until it will be discarded
+    public static final int MAX_HOP_COUNT = 20;
+
     // buffer for storing which messages have already been sent
     // those won't be sent again, to avoid routing loops
     // as a circular buffer, old messages will gradually be forgotten,
     // because they won't be sent again due to their hopCount anyway
-    private static RingBuffer<UUID> sentMessages = new RingBuffer<>(200);
+    private static RingBuffer<UUID> sentMessages = new RingBuffer<>(250);
 
     /**
      * Creates the ConnectionManager, called by Android creating the service
@@ -141,7 +145,7 @@ public class ConnectionManager extends NonStopIntentService {
         private void redistributeEnvelope(Envelope envelope) {
             envelope.hopCount += 1;
             // if the envelope has been sent less than 20 hops, redistribute it
-            if (envelope.hopCount < 20) {
+            if (envelope.hopCount < MAX_HOP_COUNT) {
                 sendEnvelope(ConnectionManager.this, envelope);
             }
         }
@@ -150,10 +154,10 @@ public class ConnectionManager extends NonStopIntentService {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);
             Log.d(TAG, "received message : " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
-            Conversation conversation = data.getConversationByPeer(message.sender);
+            Conversation conversation = data.getConversationByPeer((Contact) message.sender);
             if (conversation == null) {
                 Log.d(TAG, "creating new conversation for peer "+message.sender.getNickname());
-                conversation = new Conversation(message.sender, message.sender.getNickname(), 0);
+                conversation = new Conversation((Contact) message.sender, message.sender.getNickname(), 0);
                 data.createConversation(conversation);
 
                 Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
