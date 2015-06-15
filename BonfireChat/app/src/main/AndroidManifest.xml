@@ -84,6 +84,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+                <category android:name="android.intent.category.BROWSABLE"></category>
+                <data android:scheme="bonfire" android:host="contact"></data>
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".ui.IdentityActivity"
@@ -98,6 +106,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity" />
         </activity>
+
+
     </application>
 
 </manifest>

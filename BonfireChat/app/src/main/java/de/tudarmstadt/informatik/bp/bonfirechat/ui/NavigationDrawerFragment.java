@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -39,6 +42,7 @@ public class NavigationDrawerFragment extends Fragment {
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+    private static final String TAG = "NavigationDrawerFrag";
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -52,6 +56,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
+    private View rootView;
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
@@ -89,8 +94,9 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+        rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+
+        mDrawerListView = (ListView) rootView.findViewById(R.id.listView);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -107,7 +113,16 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_settings),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+
+        rootView.findViewById(R.id.btnShareIdentityQR).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "btnShareIdentityQR");
+                QRcodeHelper.shareQRcode(getActivity(),
+                        BonfireData.getInstance(getActivity()).getDefaultIdentity());
+            }
+        });
+        return rootView;
     }
 
     public boolean isDrawerOpen() {
