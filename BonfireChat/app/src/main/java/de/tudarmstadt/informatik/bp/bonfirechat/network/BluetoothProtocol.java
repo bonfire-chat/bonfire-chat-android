@@ -202,7 +202,7 @@ public class BluetoothProtocol extends SocketProtocol {
         // send the envelope
         connect();
         for (OutputStream stream : output) {
-            sendEnvelope(envelope);
+            sendEnvelope(stream, envelope);
         }
         disconnect();
     }
