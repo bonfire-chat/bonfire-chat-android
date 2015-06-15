@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
@@ -37,8 +39,10 @@ public class BluetoothProtocol extends SocketProtocol {
     private List<BluetoothDevice> nearby;
     private List<BluetoothSocket> sockets;
     private List<OutputStream> output;
-    private List<ConnectionHandler> connections;
+    private List<IncomingConnectionHandler> connections;
     private Handler searchLoopHandler;
+    ConcurrentLinkedQueue<Envelope> inbox;
+    ConcurrentLinkedQueue<Envelope> outbox;
 
     BluetoothProtocol(Context ctx) {
         this.ctx = ctx;
@@ -47,6 +51,9 @@ public class BluetoothProtocol extends SocketProtocol {
         sockets = new ArrayList<>();
         connections = new ArrayList<>();
         searchLoopHandler = new Handler();
+
+        inboxProcessor.start();
+        outboxProcessor.start();
 
         adapter = BluetoothAdapter.getDefaultAdapter();
         ensureBluetoothUp();
@@ -156,7 +163,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
                     BluetoothSocket socket = server.accept();
-                    ConnectionHandler handler = new ConnectionHandler(socket);
+                    IncomingConnectionHandler handler = new IncomingConnectionHandler(socket);
                     connections.add(handler);
                 }
 
@@ -166,11 +173,11 @@ public class BluetoothProtocol extends SocketProtocol {
         }
     });
 
-    public class ConnectionHandler extends Thread {
+    public class IncomingConnectionHandler extends Thread {
         BluetoothSocket socket;
         InputStream input;
 
-        public ConnectionHandler(BluetoothSocket socket) {
+        public IncomingConnectionHandler(BluetoothSocket socket) {
             this.socket = socket;
             try {
                 input = socket.getInputStream();
@@ -183,13 +190,39 @@ public class BluetoothProtocol extends SocketProtocol {
         @Override
         public void run() {
             Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
-            Message message = deserializeMessage(input);
-            Log.d(TAG, "Recieved message: " + message.sender.getNickname() + ": " + message.body);
-            message.direction = Message.MessageDirection.Received;
-            message.dateTime = DateHelper.getNowString();
-            listener.onMessageReceived(BluetoothProtocol.this, message);
+            Envelope envelope = recieveEnvelope(input);
+            Log.d(TAG, "Recieved envelope from: " + envelope.senderNickname);
+
+            // enqueue this envelope for processing
+            inbox.add(envelope);
         }
     }
+
+    public Thread inboxProcessor = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "running inbox processor thread")
+            while (true) {
+                if (!inbox.isEmpty()) {
+                    Envelope envelope = inbox.poll();
+
+                    // do some magic with packet
+                }
+            }
+        }
+    });
+
+    public Thread outboxProcessor = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "running output processor thread")
+            while (true) {
+                if (!outbox.isEmpty()) {
+                    Envelope envelope = outbox.poll();
+                }
+            }
+        }
+    });
 
     // ###########################################################################
     // ###    Implementation of IProtocol
@@ -199,11 +232,11 @@ public class BluetoothProtocol extends SocketProtocol {
     public void sendMessage(Contact target, Message message) {
         Log.d(TAG, "broadcasting message via Bluetooth");
 
-        connect();
-        for (OutputStream stream : output) {
-            serializeMessage(stream, target, message);
-        }
-        disconnect();
+        // wrap message in an envelope
+        Envelope envelope = Envelope.fromMessage(message);
+
+        // and enqeue it for sending
+        outbox.add(envelope);
     }
 
     @Override

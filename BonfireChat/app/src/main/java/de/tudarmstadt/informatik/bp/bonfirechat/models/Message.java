@@ -5,9 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 
 /**
  * Created by johannes on 05.05.15.
@@ -16,14 +18,19 @@ public class Message implements Serializable {
     public enum MessageDirection {
         Unknown,
         Sent,
-        Received
+        MessageDirection, Received
     }
     public long rowid;
     public List<Contact> recipients;
     public Contact sender;
     public String body;
     public MessageDirection direction = MessageDirection.Unknown;
+    public Date sentTime;
     public String dateTime;
+
+    public Message(String body, Contact sender, MessageDirection dir, Date sentTime) {
+        this.body = body; this.sender = sender; this.direction = dir; this.sentTime = sentTime; this.dateTime = DateHelper.formatTime(sentTime);
+    }
 
     public Message(String body, Contact sender, MessageDirection dir, String dateTime) {
         this.body = body; this.sender = sender; this.direction = dir; this.dateTime = dateTime;

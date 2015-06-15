@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 
 import java.io.Serializable;
@@ -100,5 +101,10 @@ public class Contact implements Serializable {
                 cursor.getString(cursor.getColumnIndex("bluetoothMacAddress")),
                 cursor.getInt(cursor.getColumnIndex("rowid")));
         return contact;
+    }
+
+    // TODO: implement
+    public static Contact findOrCreate(Context ctx, byte[] publicKey) {
+        return new Contact("foo");
     }
 }

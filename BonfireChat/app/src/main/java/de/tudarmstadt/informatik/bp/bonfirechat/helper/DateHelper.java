@@ -11,4 +11,8 @@ public class DateHelper {
     public static String getNowString() {
         return new SimpleDateFormat("HH:mm:ss").format(new Date());
     }
+
+    public static String formatTime(Date date) {
+        return new SimpleDateFormat("HH:mm:ss").format(date);
+    }
 }
