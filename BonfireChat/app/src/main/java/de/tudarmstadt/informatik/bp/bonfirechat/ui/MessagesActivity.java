@@ -110,7 +110,8 @@ public class MessagesActivity extends Activity {
         public void onClick(View v) {
             EditText ed = (EditText) findViewById(R.id.textinput);
             String msg = ed.getText().toString();
-            Message message = new Message(msg, conversation.getPeer(), Message.MessageDirection.Sent, "Sending...");
+            Message message = new Message(msg, db.getDefaultIdentity(), Message.MessageDirection.Sent, "Sending...");
+            message.recipients.add(conversation.getPeer());
             db.createMessage(message, conversation);
             messages.add(message);
             ListView lv = (ListView) findViewById(R.id.messages_view);

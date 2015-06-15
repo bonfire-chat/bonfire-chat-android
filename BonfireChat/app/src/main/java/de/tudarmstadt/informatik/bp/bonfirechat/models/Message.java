@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,22 +30,27 @@ public class Message implements Serializable {
     public String dateTime;
 
     public Message(String body, IPublicIdentity sender, MessageDirection dir, Date sentTime) {
+        this.recipients = new ArrayList<>();
         this.body = body; this.sender = sender; this.direction = dir; this.sentTime = sentTime; this.dateTime = DateHelper.formatTime(sentTime);
     }
 
     public Message(String body, IPublicIdentity sender, MessageDirection dir, String dateTime) {
+        this.recipients = new ArrayList<>();
         this.body = body; this.sender = sender; this.direction = dir; this.dateTime = dateTime;
     }
 
     public Message(String body, MessageDirection dir, String dateTime) {
+        this.recipients = new ArrayList<>();
         this.body = body; this.direction = dir; this.dateTime = dateTime;
     }
 
     public Message(String body, MessageDirection dir, String dateTime, long rowid) {
+        this.recipients = new ArrayList<>();
         this.body = body; this.direction = dir; this.dateTime = dateTime; this.rowid = rowid;
     }
 
     public Message(String body, IPublicIdentity sender, MessageDirection dir, String dateTime, long rowid) {
+        this.recipients = new ArrayList<>();
         this.body = body; this.direction = dir; this.dateTime = dateTime; this.rowid = rowid;
         this.sender = sender;
     }
