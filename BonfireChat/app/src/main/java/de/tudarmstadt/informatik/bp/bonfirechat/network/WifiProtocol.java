@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -40,7 +44,7 @@ public class WifiProtocol extends SocketProtocol {
 
         this.ctx = ctx;
 
-        Log.d(TAG, "Dieser Code wird ausgefuehrt");
+
         Looper mSrcLooper = ctx.getMainLooper();
 
         this.mWifiP2pManager= (WifiP2pManager) ctx.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -53,8 +57,9 @@ public class WifiProtocol extends SocketProtocol {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        registerWifiReceiverSocket();
         ctx.registerReceiver(mReceiver, mIntentFilter);
+        registerWifiReceiverSocket();
+
 
     }
 
@@ -75,7 +80,7 @@ public class WifiProtocol extends SocketProtocol {
 
             @Override
             public void onFailure(int reason) {
-                System.out.println(reason);
+                Log.d(TAG, "the Reason the discovering of peers failed with reason " + reason);
             }
 
         });
@@ -86,11 +91,11 @@ public class WifiProtocol extends SocketProtocol {
 
     private void registerWifiReceiverSocket(){
 
-        new AsyncTask(){
+        FutureTask futureTask = new FutureTask(new Callable(){
 
 
             @Override
-            protected Object doInBackground(Object[] params) {
+            public Object call() throws Exception{
                 Log.d(TAG, "do in Backround wird ausgeführt");
                 try {
                     /**
@@ -112,7 +117,9 @@ public class WifiProtocol extends SocketProtocol {
                 }
                 return null;
             }
-        }.execute(null, null, null);
+        }); //todo wieviele Threats?
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService.execute(futureTask);
 
 
     }
