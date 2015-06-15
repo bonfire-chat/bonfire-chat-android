@@ -47,7 +47,7 @@ public class ContactDetailsActivity extends Activity {
 
         getEdit(R.id.txt_nickname).setText(contact.getNickname());
         getEdit(R.id.txt_xmppId).setText(contact.getXmppId());
-        getEdit(R.id.txt_publicKey).setText(contact.getPublicKeyEncoded());
+        getEdit(R.id.txt_publicKey).setText(contact.getPublicKey().asBase64());
         getEdit(R.id.txt_phoneNumber).setText(contact.phoneNumber);
     }
 

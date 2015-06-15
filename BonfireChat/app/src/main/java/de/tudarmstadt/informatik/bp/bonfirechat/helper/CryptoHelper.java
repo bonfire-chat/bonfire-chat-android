@@ -54,6 +54,7 @@ public class CryptoHelper {
         return Base64.encodeToString(b, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
     }
     public static byte[] fromBase64(String base64) {
+        if (base64 == null) return null;
         return Base64.decode(base64, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
     }
 
