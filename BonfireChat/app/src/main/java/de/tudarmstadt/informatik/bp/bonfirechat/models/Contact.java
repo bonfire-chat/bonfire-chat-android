@@ -100,7 +100,7 @@ public class Contact implements Serializable, IPublicIdentity {
         values.put("firstName", firstName);
         values.put("lastName", lastName);
         values.put("phoneNumber", phoneNumber);
-        values.put("publicKey", publicKey.asBase64());
+        values.put("publicKey", publicKey == null ? null : publicKey.asBase64());
         values.put("xmppId", xmppId);
         values.put("wifiMacAddress", wifiMacAddress);
         values.put("bluetoothMacAddress", bluetoothMacAddress);
