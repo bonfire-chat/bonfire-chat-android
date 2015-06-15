@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import org.bouncycastle.asn1.eac.ECDSAPublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,24 +20,17 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 /**
  * Created by johannes on 05.05.15.
  */
-public class Contact implements Serializable {
+public class Contact implements Serializable, IPublicIdentity {
     private String nickname;
     private String firstName;
     private String lastName;
     public String phoneNumber;
-    public ECDSAPublicKey publicKey;
+    public MyPublicKey publicKey;
     public String xmppId;
     public String wifiMacAddress;
     public String bluetoothMacAddress;
     public long rowid;
 
-
-    public String getXmppId() {
-        return xmppId;
-    }
-    public void setXmppId(String xmppId) {
-        this.xmppId = xmppId;
-    }
 
     public Contact(String nickname) {
         this(nickname, nickname, "", null, null, null, null, null, 0);
@@ -46,14 +41,7 @@ public class Contact implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-
-        try {
-            KeyFactory fact = KeyFactory.getInstance("ECDSA", "BC");
-            this.publicKey = (ECDSAPublicKey) fact.generatePublic(new X509EncodedKeySpec(CryptoHelper.fromBase64(publicKey)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.publicKey = null;
-        }
+        this.publicKey = MyPublicKey.deserialize(publicKey);
         this.xmppId = xmppId;
         this.wifiMacAddress = wifiMacAddress;
         this.bluetoothMacAddress = bluetoothMacAddress;
@@ -84,21 +72,21 @@ public class Contact implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getPublicKeyHash() {
-        try {
-            return CryptoHelper.hash("MD5", this.publicKey.getEncoded());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
+    public String getXmppId() {
+        return xmppId;
     }
-    public String getPublicKeyEncoded() {
-        try {
-            return CryptoHelper.toBase64(publicKey.getEncoded());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
+
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setXmppId(String xmppId) {
+        this.xmppId = xmppId;
+    }
+
+    public MyPublicKey getPublicKey() {
+        return publicKey;
     }
 
     @Override
@@ -112,7 +100,7 @@ public class Contact implements Serializable {
         values.put("firstName", firstName);
         values.put("lastName", lastName);
         values.put("phoneNumber", phoneNumber);
-        values.put("publicKey", this.getPublicKeyEncoded());
+        values.put("publicKey", publicKey.asBase64());
         values.put("xmppId", xmppId);
         values.put("wifiMacAddress", wifiMacAddress);
         values.put("bluetoothMacAddress", bluetoothMacAddress);

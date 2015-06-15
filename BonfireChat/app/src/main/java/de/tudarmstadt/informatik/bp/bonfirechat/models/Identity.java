@@ -24,6 +24,7 @@ import org.bouncycastle.asn1.ASN1TaggedObject;
 import org.bouncycastle.asn1.eac.ECDSAPublicKey;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.ec.CustomNamedCurves;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.jce.spec.ECParameterSpec;
@@ -51,15 +52,18 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver
 /**
  * Created by mw on 18.05.15.
  */
-public class Identity {
+public class Identity implements IPublicIdentity {
 
     private static final String TAG = "Identity";
-    public String nickname, privateKey, publicKey, server, username, password, phone;
+    public String nickname, privateKey, server, username, password, phone;
+    public MyPublicKey publicKey;
     public long rowid;
 
     public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password, String phone) {
-        this.nickname = nickname; this.privateKey = privateKey; this.publicKey = publicKey; this.phone = phone;
-        this.server = server; this.username = username; this.password = password;
+        this.nickname = nickname; this.phone = phone; this.username = username; this.password = password;
+        this.privateKey = privateKey;
+        this.publicKey = MyPublicKey.deserialize(publicKey);
+        this.server = server;
     }
 
     public static Identity generate(Context ctx) {
@@ -72,18 +76,33 @@ public class Identity {
         return i;
     }
 
-    public String getPublicKeyHash() {
-        return CryptoHelper.hash("MD5", this.publicKey);
-        //return Identity.hash("SHA-256", this.publicKey);
+
+    public MyPublicKey getPublicKey() {
+        return publicKey;
     }
 
+
+    @Override
+    public String getNickname() {
+        return nickname;
+    }
+
+    @Override
+    public String getXmppId() {
+        return username;
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phone;
+    }
 
 
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put("nickname", nickname);
         values.put("privatekey", privateKey);
-        values.put("publickey", publicKey);
+        values.put("publickey", publicKey.asBase64());
         values.put("server", server);
         values.put("username", username);
         values.put("password", password);
@@ -116,7 +135,7 @@ public class Identity {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("nickname", nickname));
             nameValuePairs.add(new BasicNameValuePair("xmppid", username));
-            nameValuePairs.add(new BasicNameValuePair("publickey", publicKey));
+            nameValuePairs.add(new BasicNameValuePair("publickey", publicKey.asBase64()));
             nameValuePairs.add(new BasicNameValuePair("phone", phone));
             nameValuePairs.add(new BasicNameValuePair("gcmid", GcmBroadcastReceiver.regid));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
