@@ -41,6 +41,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
 
     public void setIdentity(Identity identity) {
         this.identity = identity;
+        connectToServer(ctx);
     }
 
     public static String getJidByHash(String hash) {

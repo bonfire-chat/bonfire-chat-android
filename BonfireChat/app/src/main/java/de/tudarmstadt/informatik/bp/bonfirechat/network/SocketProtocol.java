@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
@@ -40,6 +41,19 @@ public abstract class SocketProtocol implements IProtocol {
             Contact target = (Contact) stream.readObject();
             Message message = (Message) stream.readObject();
             return message;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    protected Envelope recieveEnvelope(InputStream input) {
+        try {
+            ObjectInputStream stream = new ObjectInputStream(input);
+            Envelope envelope = (Envelope) stream.readObject();
+            return envelope;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

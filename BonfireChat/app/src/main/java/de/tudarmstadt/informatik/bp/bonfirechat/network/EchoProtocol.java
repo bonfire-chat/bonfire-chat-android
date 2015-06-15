@@ -26,4 +26,9 @@ public class EchoProtocol implements IProtocol {
     public void setOnMessageReceivedListener(OnMessageReceivedListener listener) {
         this.listener = listener;
     }
+
+    @Override
+    public boolean canSend() {
+        return true;
+    }
 }

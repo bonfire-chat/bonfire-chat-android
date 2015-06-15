@@ -26,6 +26,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity;
@@ -86,18 +87,6 @@ public class ConnectionManager extends NonStopIntentService {
 
     public static List<IProtocol> connections = new ArrayList<IProtocol>();
 
-
-    public Class getConnectionClassByName(String name) throws ClassNotFoundException {
-        return Class.forName("de.tudarmstadt.informatik.bp.bonfirechat.network."+name);
-    }
-
-    public IProtocol getConnection(Class typ) {
-        for(IProtocol p : connections) {
-            if (typ.isInstance(p)) return p;
-        }
-        return null;
-    }
-
     public IProtocol getOrCreateConnection(Class typ) {
         IProtocol p = getConnection(typ);
         if (p == null) {
@@ -119,9 +108,32 @@ public class ConnectionManager extends NonStopIntentService {
         return p;
     }
 
+    private IProtocol getConnection(Class typ) {
+        for(IProtocol p : connections) {
+            if (typ.isInstance(p)) return p;
+        }
+        return null;
+    }
+
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
-        public void onMessageReceived(IProtocol sender, Message message) {
+        public void onMessageReceived(IProtocol sender, Envelope envelope) {
+            // is this envelope sent to us?
+            if (envelope.containsRecipient(BonfireData.getInstance(this).getDefaultIdentity())) {
+                Message message = envelope.toMessage(ConnectionManager.this);
+                storeAndDisplayMessage(message);
+            } else {
+                redistributeEnvelope(envelope);
+            }
+        }
+
+        // YOLO mode: multihop routing
+        private void redistributeEnvelope(Envelope envelope) {
+            envelope.hopCount += 1;
+            sendEnvelope(ConnectionManager.this, envelope);
+        }
+
+        private void storeAndDisplayMessage(Message message) {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);
             Log.d(TAG, "received message : " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
@@ -132,8 +144,8 @@ public class ConnectionManager extends NonStopIntentService {
                 data.createConversation(conversation);
 
                 Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
-                                // Puts the status into the Intent
-                                .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
+                        // Puts the status into the Intent
+                        .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
                 broadcastManager.sendBroadcast(localIntent);
 
             }
@@ -145,7 +157,7 @@ public class ConnectionManager extends NonStopIntentService {
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
                     .putExtra(EXTENDED_DATA_PEER_ID, message.sender.rowid)
-                            .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
+                    .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             broadcastManager.sendBroadcast(localIntent);
 
@@ -160,12 +172,12 @@ public class ConnectionManager extends NonStopIntentService {
             Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ConnectionManager.this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(conversation.title)
-                    .setContentText(message.body)
-                    .setContentIntent(pi)
-                    .setSound(sound)
-                    .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(conversation.title)
+                            .setContentText(message.body)
+                            .setContentIntent(pi)
+                            .setSound(sound)
+                            .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
 
             NotificationManager mNotifyMgr =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -183,8 +195,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             if (preferences.getBoolean("enable_xmpp", true)) {
-                ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
-                xmpp.connectToServer(this);
+                getOrCreateConnection(ClientServerProtocol.class);
             }
             if (preferences.getBoolean("enable_bluetooth", true)) {
                 getOrCreateConnection(BluetoothProtocol.class);
@@ -202,7 +213,7 @@ public class ConnectionManager extends NonStopIntentService {
                     Contact recipient = db.getContactById(intent.getLongExtra("contactId", -1));
                     protocol.sendMessage(recipient, message);
                 } else {
-                    Log.w(TAG, "No connection available to send message.");
+                    error = new RuntimeException("No connection available for sending :(");
                 }
 
             } catch(Exception ex) {
@@ -256,25 +267,38 @@ public class ConnectionManager extends NonStopIntentService {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         // Bluetooth enabled and ready?
         if (preferences.getBoolean("enable_bluetooth", true)) {
-            IProtocol p = getConnection(BluetoothProtocol.class);
+            IProtocol p = getOrCreateConnection(BluetoothProtocol.class);
             if (p.canSend()) {
                 return p;
             }
         }
         // WiFi enabled and ready?
         /*if (preferences.getBoolean("enable_wifi", true)) {
-            IProtocol p = getConnection(WiFiProtocol.class);
+            IProtocol p = getOrCreateConnection(WiFiProtocol.class);
             if (p.canSend()) {
                 return p;
             }
         }*/
         // ClientServer enabled and ready?
         if (preferences.getBoolean("enable_xmpp", true)) {
-            IProtocol p = getConnection(ClientServerProtocol.class);
+            IProtocol p = getOrCreateConnection(ClientServerProtocol.class);
             if (p.canSend()) {
                 return p;
             }
         }
         return null;
+    }
+
+    // static helper method to enqueue
+    public static void sendEnvelope(Context ctx, Envelope envelope) {
+        Intent intent = new Intent(ctx, ConnectionManager.class);
+        intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
+        intent.putExtra("envelope", envelope);
+        ctx.startService(intent);
+    }
+
+    // you know, for convenience and stuff
+    public static void sendMessage(Context ctx, Message message) {
+        sendEnvelope(ctx, Envelope.fromMessage(message));
     }
 }
