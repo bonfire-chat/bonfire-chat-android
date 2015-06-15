@@ -19,6 +19,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1TaggedObject;
+import org.bouncycastle.asn1.eac.ECDSAPublicKey;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.ec.CustomNamedCurves;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -37,6 +40,7 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +63,6 @@ public class Identity {
     }
 
     public static Identity generate(Context ctx) {
-        // TODO generate a real key pair
         KeyPair keyPair = CryptoHelper.generateKeyPair();
         String pubkey = Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
         String privkey = Base64.encodeToString(keyPair.getPrivate().getEncoded(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
@@ -70,26 +73,10 @@ public class Identity {
     }
 
     public String getPublicKeyHash() {
-        return publicKey; //Identity.hash("MD5", this.publicKey);
+        return CryptoHelper.hash("MD5", this.publicKey);
         //return Identity.hash("SHA-256", this.publicKey);
     }
 
-    public static String hash(String algorithm, String string) {
-        MessageDigest digest = null;
-        try {
-            digest = MessageDigest.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e1) {
-            e1.printStackTrace();
-            return null;
-        }
-        digest.reset();
-        try {
-            return Base64.encodeToString(digest.digest(string.getBytes("UTF-8")), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
 
     public ContentValues getContentValues(){
