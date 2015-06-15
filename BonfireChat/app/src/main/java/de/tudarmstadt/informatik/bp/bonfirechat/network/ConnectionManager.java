@@ -21,10 +21,11 @@ import org.jivesoftware.smack.SmackAndroid;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
@@ -39,7 +40,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
 public class ConnectionManager extends NonStopIntentService {
 
     private static final String TAG = "ConnectionManager";
-    private static ConnectionManager instance;
 
     // action in Intents which are sent to the service
     public static final String GO_ONLINE_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.GO_ONLINE";
@@ -69,6 +69,13 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_ID";
     public static final String EXTENDED_DATA_ERROR =
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
+
+
+    // buffer for storing which messages have already been sent
+    // those won't be sent again, to avoid routing loops
+    // as a circular buffer, old messages will gradually be forgotten,
+    // because they won't be sent again due to their hopCount anyway
+    private static RingBuffer<UUID> sentMessages = new RingBuffer<>(200);
 
     /**
      * Creates the ConnectionManager, called by Android creating the service
@@ -122,6 +129,10 @@ public class ConnectionManager extends NonStopIntentService {
             if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                 Message message = envelope.toMessage(ConnectionManager.this);
                 storeAndDisplayMessage(message);
+                // redistribute the envelope if there are further recipients
+                if (envelope.recipientsPublicKeys.size() > 1) {
+                    redistributeEnvelope(envelope);
+                }
             } else {
                 redistributeEnvelope(envelope);
             }
@@ -129,7 +140,10 @@ public class ConnectionManager extends NonStopIntentService {
 
         private void redistributeEnvelope(Envelope envelope) {
             envelope.hopCount += 1;
-            sendEnvelope(ConnectionManager.this, envelope);
+            // if the envelope has been sent less than 20 hops, redistribute it
+            if (envelope.hopCount < 20) {
+                sendEnvelope(ConnectionManager.this, envelope);
+            }
         }
 
         private void storeAndDisplayMessage(Message message) {
@@ -155,7 +169,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
-                    .putExtra(EXTENDED_DATA_PEER_ID, message.sender.rowid)
+                    .putExtra(EXTENDED_DATA_MESSAGE_ID, message.rowid)
                     .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             broadcastManager.sendBroadcast(localIntent);
@@ -293,10 +307,16 @@ public class ConnectionManager extends NonStopIntentService {
 
     // static helper method to enqueue
     public static void sendEnvelope(Context ctx, Envelope envelope) {
-        Intent intent = new Intent(ctx, ConnectionManager.class);
-        intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
-        intent.putExtra("envelope", envelope);
-        ctx.startService(intent);
+        // check whether this envelope has already been sent
+        if (!sentMessages.contains(envelope.uuid)) {
+            // remember this envelope
+            sentMessages.enqueue(envelope.uuid);
+            // and dispatch sending intent
+            Intent intent = new Intent(ctx, ConnectionManager.class);
+            intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
+            intent.putExtra("envelope", envelope);
+            ctx.startService(intent);
+        }
     }
 
     // you know, for convenience and stuff
