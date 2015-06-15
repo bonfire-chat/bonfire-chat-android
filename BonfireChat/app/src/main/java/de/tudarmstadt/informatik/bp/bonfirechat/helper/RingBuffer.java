@@ -3,13 +3,13 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 /**
  * Created by mw on 15.06.15.
  */
-public class Ringbuffer<T extends Object> {
+public class RingBuffer<T extends Object> {
 
     Object[] content;
     int length;
     int insertPosition;
 
-    public Ringbuffer(int length) {
+    public RingBuffer(int length) {
         content = new Object[length];
         insertPosition = 0;
     }

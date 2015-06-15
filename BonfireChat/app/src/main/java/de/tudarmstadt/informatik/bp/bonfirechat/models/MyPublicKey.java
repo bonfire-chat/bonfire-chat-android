@@ -23,6 +23,7 @@ public class MyPublicKey {
     public MyPublicKey(BCECPublicKey key) {
         thisKey = key;
     }
+
     public BCECPublicKey get() {
         return thisKey;
     }
@@ -35,8 +36,6 @@ public class MyPublicKey {
     public String asHash() {
         return CryptoHelper.hash("MD5", thisKey.getEncoded());
     }
-
-
 
     public static MyPublicKey deserialize(byte[] publicKey) {
         try {
