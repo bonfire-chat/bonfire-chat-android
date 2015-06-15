@@ -29,7 +29,7 @@ public class ContactDetailsActivity extends Activity {
 
         getEdit(R.id.txt_nickname).setText(contact.getNickname());
         getEdit(R.id.txt_xmppId).setText(contact.getXmppId());
-        getEdit(R.id.txt_publicKey).setText(contact.publicKey);
+        getEdit(R.id.txt_publicKey).setText(contact.getPublicKeyEncoded());
         getEdit(R.id.txt_phoneNumber).setText(contact.phoneNumber);
 
     }
@@ -57,7 +57,7 @@ public class ContactDetailsActivity extends Activity {
 
             contact.setNickname(getEdit(R.id.txt_nickname).getText().toString());
             contact.setXmppId(getEdit(R.id.txt_xmppId).getText().toString());
-            contact.publicKey = getEdit(R.id.txt_publicKey).getText().toString();
+            //contact.publicKey = getEdit(R.id.txt_publicKey).getText().toString();
             contact.phoneNumber = getEdit(R.id.txt_phoneNumber).getText().toString();
             BonfireData db = BonfireData.getInstance(this);
             db.updateContact(contact);

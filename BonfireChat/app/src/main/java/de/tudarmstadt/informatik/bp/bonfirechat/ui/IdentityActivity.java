@@ -41,7 +41,7 @@ public class IdentityActivity extends Activity  {
         getEdit(R.id.txt_nickname).setText(identity.nickname);
         getEdit(R.id.email).setText(identity.username);
         getEdit(R.id.password).setText(identity.password);
-        ((TextView)findViewById(R.id.textView3)).setText("Public Key:\n"+identity.publicKey);
+        ((TextView)findViewById(R.id.textView3)).setText("Public Key Hash:\n"+identity.getPublicKeyHash());
         getEdit(R.id.txt_phoneNumber).setText(identity.phone);
 
     }
