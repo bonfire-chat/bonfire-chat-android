@@ -22,17 +22,17 @@ public class Message implements Serializable {
     }
     public long rowid;
     public List<Contact> recipients;
-    public Contact sender;
+    public IPublicIdentity sender;
     public String body;
     public MessageDirection direction = MessageDirection.Unknown;
     public Date sentTime;
     public String dateTime;
 
-    public Message(String body, Contact sender, MessageDirection dir, Date sentTime) {
+    public Message(String body, IPublicIdentity sender, MessageDirection dir, Date sentTime) {
         this.body = body; this.sender = sender; this.direction = dir; this.sentTime = sentTime; this.dateTime = DateHelper.formatTime(sentTime);
     }
 
-    public Message(String body, Contact sender, MessageDirection dir, String dateTime) {
+    public Message(String body, IPublicIdentity sender, MessageDirection dir, String dateTime) {
         this.body = body; this.sender = sender; this.direction = dir; this.dateTime = dateTime;
     }
 
@@ -44,7 +44,7 @@ public class Message implements Serializable {
         this.body = body; this.direction = dir; this.dateTime = dateTime; this.rowid = rowid;
     }
 
-    public Message(String body, Contact sender, MessageDirection dir, String dateTime, long rowid) {
+    public Message(String body, IPublicIdentity sender, MessageDirection dir, String dateTime, long rowid) {
         this.body = body; this.direction = dir; this.dateTime = dateTime; this.rowid = rowid;
         this.sender = sender;
     }
@@ -56,7 +56,8 @@ public class Message implements Serializable {
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        if (this.sender != null) values.put("sender", this.sender.rowid);
+        if (this.sender != null && this.sender instanceof Contact) values.put("sender", ((Contact)this.sender).rowid);
+        if (this.sender != null && this.sender instanceof Identity) values.put("sender", (Long)null);
         values.put("messageDirection", direction.ordinal());
         values.put("body", body);
         values.put("dateTime", dateTime);
@@ -64,7 +65,8 @@ public class Message implements Serializable {
     }
 
     public static Message fromCursor(Cursor cursor, BonfireData db){
-        Contact peer = db.getContactById(cursor.getLong(cursor.getColumnIndex("sender")));
+        Long contactId = cursor.getLong(cursor.getColumnIndex("sender"));
+        IPublicIdentity peer = (contactId == null) ? db.getDefaultIdentity() : db.getContactById(contactId);
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
                 peer,
                 MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))],
