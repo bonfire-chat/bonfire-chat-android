@@ -16,6 +16,7 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 
 /**
@@ -120,8 +121,15 @@ public class Contact implements Serializable, IPublicIdentity {
         return contact;
     }
 
-    // TODO: implement
-    public static Contact findOrCreate(Context ctx, byte[] publicKey) {
-        return new Contact("foo", "", "", "", MyPublicKey.deserialize(publicKey), null, "", "", 0);
+    public static Contact findOrCreate(Context ctx, byte[] publicKey, String untrustedNickname) {
+        String publicKeyString = CryptoHelper.toBase64(publicKey);
+        BonfireData db = BonfireData.getInstance(ctx);
+        Contact theContact = db.getContactByPublicKey(publicKeyString);
+        if (theContact == null) {
+            // TODO: better contact creation.... e.g. search in online directory
+            theContact = new Contact(untrustedNickname, "", "", "", MyPublicKey.deserialize(publicKey), null, "", "", 0);
+            db.createContact(theContact);
+        }
+        return theContact;
     }
 }

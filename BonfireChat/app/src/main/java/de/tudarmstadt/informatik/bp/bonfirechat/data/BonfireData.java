@@ -211,6 +211,13 @@ public class BonfireData extends SQLiteOpenHelper{
         if (!cursor.moveToNext()) return null;
         return Contact.fromCursor(cursor);
     }
+    public Contact getContactByPublicKey(String publicKey){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Contact> contacts = new ArrayList<>();
+        Cursor cursor = db.query(CONTACTS, ALL_COLS, "publicKey = ?", new String[]{ publicKey }, null, null, null);
+        if (!cursor.moveToNext()) return null;
+        return Contact.fromCursor(cursor);
+    }
     public Contact getContactById(long id){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();
