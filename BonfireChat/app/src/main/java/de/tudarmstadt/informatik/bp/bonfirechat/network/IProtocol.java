@@ -11,4 +11,5 @@ public interface IProtocol {
     void sendMessage(Contact target, Message message);
     void setIdentity(Identity identity);
     void setOnMessageReceivedListener(OnMessageReceivedListener listener);
+    boolean canSend();
 }

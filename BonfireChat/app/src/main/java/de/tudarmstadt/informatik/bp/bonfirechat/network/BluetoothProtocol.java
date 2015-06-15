@@ -205,4 +205,9 @@ public class BluetoothProtocol extends SocketProtocol {
         }
         disconnect();
     }
+
+    @Override
+    public boolean canSend() {
+        return true;
+    }
 }

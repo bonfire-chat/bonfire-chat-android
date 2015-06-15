@@ -197,7 +197,7 @@ public class ConnectionManager extends NonStopIntentService {
             Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
             Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.sender.getNickname());
             try {
-                Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
+                Class protocolClass = chooseConnectionType();
 
                 IProtocol protocol = getConnection(protocolClass);
                 Contact recipient = db.getContactById(intent.getLongExtra("contactId", -1));
@@ -248,5 +248,9 @@ public class ConnectionManager extends NonStopIntentService {
                         .setContentText(msg);
 
         mNotificationManager.notify(2, mBuilder.build());
+    }
+
+    private Class<? extends IProtocol> chooseConnectionType() {
+        return BluetoothProtocol.class;
     }
 }
