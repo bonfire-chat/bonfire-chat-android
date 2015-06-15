@@ -10,6 +10,7 @@ public class RingBuffer<T extends Object> {
     int insertPosition;
 
     public RingBuffer(int length) {
+        this.length = length;
         content = new Object[length];
         insertPosition = 0;
     }
