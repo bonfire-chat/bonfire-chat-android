@@ -20,8 +20,10 @@ import org.jivesoftware.smack.util.dns.HostAddress;
 import java.io.IOException;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
@@ -131,10 +133,10 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     // ###    Implementation of IProtocol
     // ###########################################################################
     @Override
-    public void sendMessage(Contact target, Message message) {
-        String jid = target.getXmppId(); // getJidByHash(target);
+    public void sendMessage(Envelope envelope) {
+        String jid = envelope.message.recipients.get(0).getXmppId(); // getJidByHash(target);
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message(jid);
-        msg.setBody(message.body);
+        msg.setBody(CryptoHelper.toBase64(envelope.encryptedBody));
         try {
             connection.sendPacket(msg);
         } catch (SmackException.NotConnectedException e) {
