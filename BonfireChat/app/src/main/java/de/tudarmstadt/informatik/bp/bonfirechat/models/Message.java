@@ -63,7 +63,7 @@ public class Message implements Serializable {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         if (this.sender != null && this.sender instanceof Contact) values.put("sender", ((Contact)this.sender).rowid);
-        if (this.sender != null && this.sender instanceof Identity) values.put("sender", (Long)null);
+        if (this.sender != null && this.sender instanceof Identity) values.put("sender", -1);
         values.put("messageDirection", direction.ordinal());
         values.put("body", body);
         values.put("dateTime", dateTime);
@@ -72,7 +72,7 @@ public class Message implements Serializable {
 
     public static Message fromCursor(Cursor cursor, BonfireData db){
         Long contactId = cursor.getLong(cursor.getColumnIndex("sender"));
-        IPublicIdentity peer = (contactId == null) ? db.getDefaultIdentity() : db.getContactById(contactId);
+        IPublicIdentity peer = (contactId == -1) ? db.getDefaultIdentity() : db.getContactById(contactId);
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
                 peer,
                 MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))],
