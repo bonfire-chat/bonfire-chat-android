@@ -45,6 +45,7 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
@@ -131,6 +132,9 @@ public class ContactsFragment extends Fragment {
         } else if (item.getItemId() == R.id.action_search) {
             startActivity(new Intent(getActivity(), SearchUserActivity.class));
             return true;
+        } else if (item.getItemId() == R.id.action_scan_qr) {
+            IntentIntegrator inte = new IntentIntegrator(getActivity());
+            inte.initiateScan();
         }
 
         return super.onOptionsItemSelected(item);
