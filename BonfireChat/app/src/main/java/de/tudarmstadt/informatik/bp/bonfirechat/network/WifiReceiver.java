@@ -1,26 +1,27 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Collection;
-
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 
 /**
@@ -93,15 +94,17 @@ public class WifiReceiver extends BroadcastReceiver {
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             Log.d(TAG, "Daten werden GANZ AUSSEN gesendet");
-            new AsyncTask() {
-
+            FutureTask futureTask = new FutureTask(new Callable() {
                 @Override
-                protected Object doInBackground(Object[] params) {
+                public Object call() throws Exception{
                     Log.d(TAG, "Daten werden auﬂen gesendet");
                     if (connectedDevice != null)
 
                     {
                         Log.d(TAG, "Daten werden gesendet");
+
+
+
                         String host = connectedDevice.deviceAddress;
                         int port = 4242;
                         int len;
@@ -128,9 +131,9 @@ public class WifiReceiver extends BroadcastReceiver {
                             outputStream.close();
 
                         } catch (IllegalArgumentException e) {
-                            //catch logic
+                            e.printStackTrace();
                         } catch (IOException e) {
-                            //catch logic
+                            e.printStackTrace();
                         }
 
                         /**
@@ -142,17 +145,19 @@ public class WifiReceiver extends BroadcastReceiver {
                                     try {
                                         socket.close();
                                     } catch (IOException e) {
-                                        //catch logic
+                                        e.printStackTrace();
                                     }
                                 }
                             }
                         }
                     }
-
-
-                return null;
+                    return null;
                 }
-            }.execute(null, null, null);
+            });
+            //todo wieviele Threats?
+            ExecutorService executorService = Executors.newFixedThreadPool(2);
+            executorService.execute(futureTask);
+
         }
 
                 else if(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
