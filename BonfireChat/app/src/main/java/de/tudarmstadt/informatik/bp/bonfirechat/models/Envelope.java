@@ -59,7 +59,7 @@ public class Envelope implements Serializable {
     public Message toMessage(Context ctx) {
         return new Message(
                 new String(encryptedBody, Charset.forName("UTF-8")),
-                Contact.findOrCreate(ctx, senderPublicKey),
+                Contact.findOrCreate(ctx, senderPublicKey, senderNickname),
                 Message.MessageDirection.Received,
                 sentTime);
     }
