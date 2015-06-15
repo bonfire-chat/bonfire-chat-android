@@ -76,7 +76,7 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
             Log.d(TAG, " XMPP connected");
 
             if (identity.username == null || identity.username.equals("")) {
-                identity.username = getJidByHash(identity.getPublicKeyHash());
+                identity.username = getJidByHash(identity.getPublicKey().asHash());
                 Log.d(TAG, "calling createMyAccount, with username="+identity.username);
                 createMyAccount(ctx);
                 BonfireData.getInstance(ctx).updateIdentity(identity);

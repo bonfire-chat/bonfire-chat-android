@@ -1,13 +1,18 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 
 public class ContactDetailsActivity extends Activity {
@@ -25,13 +30,25 @@ public class ContactDetailsActivity extends Activity {
         getActionBar().setTitle("Kontakt");
 
         BonfireData db = BonfireData.getInstance(this);
-        contact = db.getContactById(getIntent().getLongExtra(EXTRA_CONTACT_ID, -1));
+        Intent in = getIntent();
+        if (in.hasExtra(EXTRA_CONTACT_ID)) {
+            contact = db.getContactById(getIntent().getLongExtra(EXTRA_CONTACT_ID, -1));
+
+        } else if (in.getAction().equals(Intent.ACTION_VIEW) && in.getData().getScheme().equals("bonfire")) {
+            Uri url = in.getData();
+
+            contact = QRcodeHelper.contactFromUri(url);
+            db.createContact(contact);
+
+        } else {
+            Log.e("ContactDetailsAct", "invalid intent: " + getIntent().toString());
+            finish();
+        }
 
         getEdit(R.id.txt_nickname).setText(contact.getNickname());
         getEdit(R.id.txt_xmppId).setText(contact.getXmppId());
-        getEdit(R.id.txt_publicKey).setText(contact.publicKey);
+        getEdit(R.id.txt_publicKey).setText(contact.getPublicKey().asBase64());
         getEdit(R.id.txt_phoneNumber).setText(contact.phoneNumber);
-
     }
 
     private EditText getEdit(int id) {
@@ -57,7 +74,7 @@ public class ContactDetailsActivity extends Activity {
 
             contact.setNickname(getEdit(R.id.txt_nickname).getText().toString());
             contact.setXmppId(getEdit(R.id.txt_xmppId).getText().toString());
-            contact.publicKey = getEdit(R.id.txt_publicKey).getText().toString();
+            //contact.publicKey = getEdit(R.id.txt_publicKey).getText().toString();
             contact.phoneNumber = getEdit(R.id.txt_phoneNumber).getText().toString();
             BonfireData db = BonfireData.getInstance(this);
             db.updateContact(contact);
