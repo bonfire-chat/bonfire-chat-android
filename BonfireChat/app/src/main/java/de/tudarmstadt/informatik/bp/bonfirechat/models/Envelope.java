@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -66,7 +67,7 @@ public class Envelope implements Serializable {
 
     public boolean containsRecipient(Identity id) {
         for (byte[] publicKey: recipientsPublicKeys) {
-            if (publicKey.equals(id.publicKey)) {
+            if (Arrays.equals(publicKey, id.publicKey.asByteArray())) {
                 return true;
             }
         }
