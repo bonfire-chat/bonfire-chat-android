@@ -38,7 +38,7 @@ public class Envelope implements Serializable {
     public static Envelope fromMessage(Message message) {
         ArrayList<byte[]> publicKeys = new ArrayList<>();
         for(Contact recipient: message.recipients) {
-            publicKeys.add(recipient.publicKey.getBytes(Charset.forName("UTF-8")));
+            publicKeys.add(recipient.getPublicKey().asByteArray());
         }
         return new Envelope(
                 UUID.randomUUID(),
@@ -46,7 +46,7 @@ public class Envelope implements Serializable {
                 new Date(),
                 publicKeys,
                 message.sender.getNickname(),
-                message.sender.publicKey.getBytes(Charset.forName("UTF-8")),
+                message.sender.getPublicKey().asByteArray(),
                 message.body.getBytes(Charset.forName("UTF-8")));
     }
 
