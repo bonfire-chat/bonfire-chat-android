@@ -16,14 +16,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
@@ -185,7 +182,7 @@ public class BluetoothProtocol extends SocketProtocol {
         @Override
         public void run() {
             Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
-            Envelope envelope = recieveEnvelope(input);
+            Envelope envelope = receiveEnvelope(input);
             Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
 
             // hand over to the onMessageReceivedListener, which will take account for displaying
