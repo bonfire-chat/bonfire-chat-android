@@ -197,13 +197,15 @@ public class ConnectionManager extends NonStopIntentService {
             Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
             Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.sender.getNickname());
             try {
-                Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
+                IProtocol protocol = chooseConnection();
+                if (null != protocol) {
+                    Contact recipient = db.getContactById(intent.getLongExtra("contactId", -1));
+                    protocol.sendMessage(recipient, message);
+                } else {
+                    Log.w(TAG, "No connection available to send message.");
+                }
 
-                IProtocol protocol = getConnection(protocolClass);
-                Contact recipient = db.getContactById(intent.getLongExtra("contactId", -1));
-                protocol.sendMessage(recipient, message);
-
-            }catch(Exception ex) {
+            } catch(Exception ex) {
                 ex.printStackTrace();
                 error = ex;
             }
@@ -248,5 +250,31 @@ public class ConnectionManager extends NonStopIntentService {
                         .setContentText(msg);
 
         mNotificationManager.notify(2, mBuilder.build());
+    }
+
+    private IProtocol chooseConnection() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // Bluetooth enabled and ready?
+        if (preferences.getBoolean("enable_bluetooth", true)) {
+            IProtocol p = getConnection(BluetoothProtocol.class);
+            if (p.canSend()) {
+                return p;
+            }
+        }
+        // WiFi enabled and ready?
+        /*if (preferences.getBoolean("enable_wifi", true)) {
+            IProtocol p = getConnection(WiFiProtocol.class);
+            if (p.canSend()) {
+                return p;
+            }
+        }*/
+        // ClientServer enabled and ready?
+        if (preferences.getBoolean("enable_xmpp", true)) {
+            IProtocol p = getConnection(ClientServerProtocol.class);
+            if (p.canSend()) {
+                return p;
+            }
+        }
+        return null;
     }
 }
