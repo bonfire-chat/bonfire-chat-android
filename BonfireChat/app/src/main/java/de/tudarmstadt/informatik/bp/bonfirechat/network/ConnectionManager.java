@@ -219,11 +219,15 @@ public class ConnectionManager extends NonStopIntentService {
                 error = ex;
             }
 
-            Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_ID, message.rowid);
-            if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
+            // if a message object is specified, this envelope was just generated on this phone
+            // notify UI
+            if (null != envelope.message) {
+                Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
+                        .putExtra(EXTENDED_DATA_MESSAGE_ID, envelope.message.rowid);
+                if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
-            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+                LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+            }
 
         } else if (!extras.isEmpty()) {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);

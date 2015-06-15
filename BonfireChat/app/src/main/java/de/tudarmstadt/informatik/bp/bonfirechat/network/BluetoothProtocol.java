@@ -41,8 +41,6 @@ public class BluetoothProtocol extends SocketProtocol {
     private List<OutputStream> output;
     private List<IncomingConnectionHandler> connections;
     private Handler searchLoopHandler;
-    ConcurrentLinkedQueue<Envelope> inbox;
-    ConcurrentLinkedQueue<Envelope> outbox;
 
     BluetoothProtocol(Context ctx) {
         this.ctx = ctx;
@@ -51,9 +49,6 @@ public class BluetoothProtocol extends SocketProtocol {
         sockets = new ArrayList<>();
         connections = new ArrayList<>();
         searchLoopHandler = new Handler();
-
-        inboxProcessor.start();
-        outboxProcessor.start();
 
         adapter = BluetoothAdapter.getDefaultAdapter();
         ensureBluetoothUp();
@@ -191,52 +186,28 @@ public class BluetoothProtocol extends SocketProtocol {
         public void run() {
             Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
             Envelope envelope = recieveEnvelope(input);
-            Log.d(TAG, "Recieved envelope from: " + envelope.senderNickname);
+            Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
 
-            // enqueue this envelope for processing
-            inbox.add(envelope);
+            // hand over to the onMessageReceivedListener, which will take account for displaying
+            // the message and/or redistribute it to further recipients
+            listener.onMessageReceived(BluetoothProtocol.this, envelope);
         }
     }
-
-    public Thread inboxProcessor = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            Log.d(TAG, "running inbox processor thread");
-            while (true) {
-                if (!inbox.isEmpty()) {
-                    Envelope envelope = inbox.poll();
-
-                    // do some magic with packet
-                }
-            }
-        }
-    });
-
-    public Thread outboxProcessor = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            Log.d(TAG, "running output processor thread");
-            while (true) {
-                if (!outbox.isEmpty()) {
-                    Envelope envelope = outbox.poll();
-                }
-            }
-        }
-    });
 
     // ###########################################################################
     // ###    Implementation of IProtocol
     // ###########################################################################
 
     @Override
-    public void sendMessage(Contact target, Message message) {
+    public void sendMessage(Envelope envelope) {
         Log.d(TAG, "broadcasting message via Bluetooth");
 
-        // wrap message in an envelope
-        Envelope envelope = Envelope.fromMessage(message);
-
-        // and enqeue it for sending
-        outbox.add(envelope);
+        // send the envelope
+        connect();
+        for (OutputStream stream : output) {
+            sendEnvelope(envelope);
+        }
+        disconnect();
     }
 
     @Override

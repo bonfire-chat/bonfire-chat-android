@@ -117,12 +117,8 @@ public class MessagesActivity extends Activity {
             ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
             ed.setText("");
 
-            Log.d(TAG, "sending message id "+message.rowid);
-            Intent intent = new Intent(MessagesActivity.this, ConnectionManager.class);
-            intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
-            intent.putExtra("contactId", conversation.getPeer().rowid);
-            intent.putExtra("messageId", message.rowid);
-            startService(intent);
+            Log.d(TAG, "sending message id " + message.rowid);
+            ConnectionManager.sendMessage(MessagesActivity.this, message);
         }
     };
 
