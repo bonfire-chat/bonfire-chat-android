@@ -146,6 +146,11 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
         this.listener = listener;
     }
 
+    @Override
+    public boolean canSend() {
+        return true;
+    }
+
 
     // ###########################################################################
     // ###    Implementation of ConnectionListener
