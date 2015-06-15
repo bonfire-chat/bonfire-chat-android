@@ -121,15 +121,7 @@ public class ContactsFragment extends Fragment {
         int id = item.getItemId();
         final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
 
-        if (item.getItemId() == R.id.action_add_contact) {
-            Contact c = new Contact("");
-            bonfireData.createContact(c);
-            Intent intent = new Intent(this.getActivity(), ContactDetailsActivity.class);
-            intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, c.rowid);
-            startActivity(intent);
-            return true;
-
-        } else if (item.getItemId() == R.id.action_search) {
+        if (item.getItemId() == R.id.action_search) {
             startActivity(new Intent(getActivity(), SearchUserActivity.class));
             return true;
         } else if (item.getItemId() == R.id.action_scan_qr) {
