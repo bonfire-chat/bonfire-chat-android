@@ -119,7 +119,7 @@ public class ConnectionManager extends NonStopIntentService {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
             // is this envelope sent to us?
-            if (envelope.containsRecipient(BonfireData.getInstance(this).getDefaultIdentity())) {
+            if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                 Message message = envelope.toMessage(ConnectionManager.this);
                 storeAndDisplayMessage(message);
             } else {
@@ -127,7 +127,6 @@ public class ConnectionManager extends NonStopIntentService {
             }
         }
 
-        // YOLO mode: multihop routing
         private void redistributeEnvelope(Envelope envelope) {
             envelope.hopCount += 1;
             sendEnvelope(ConnectionManager.this, envelope);
@@ -205,13 +204,12 @@ public class ConnectionManager extends NonStopIntentService {
             }
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
-            Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
-            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.sender.getNickname());
+            Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
+            Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
             try {
                 IProtocol protocol = chooseConnection();
                 if (null != protocol) {
-                    Contact recipient = db.getContactById(intent.getLongExtra("contactId", -1));
-                    protocol.sendMessage(recipient, message);
+                    protocol.sendMessage(envelope);
                 } else {
                     error = new RuntimeException("No connection available for sending :(");
                 }
