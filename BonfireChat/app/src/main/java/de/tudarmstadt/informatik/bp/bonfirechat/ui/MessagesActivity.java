@@ -12,13 +12,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
@@ -64,6 +67,15 @@ public class MessagesActivity extends Activity {
         messages = db.getMessages(conversation);
         lv.setAdapter(new MessagesAdapter(this, messages));
 
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Message msg = messages.get(position);
+                Toast.makeText(MessagesActivity.this, "protocol="+msg.transferProtocol +"  "+ "error="+msg.error, Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+
         findViewById(R.id.textSendButton).setOnClickListener(onSendButtonClickListener);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
@@ -71,7 +83,8 @@ public class MessagesActivity extends Activity {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         messages.add(new Message(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_TEXT)
-                                , Message.MessageDirection.Received, DateHelper.getNowString()
+                                , conversation.getPeer(), Message.MessageDirection.Received, new Date(),
+                                (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID)
                         ));
                         ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
                     }
@@ -81,13 +94,14 @@ public class MessagesActivity extends Activity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        Log.i(TAG, "MSG_SENT: "+intent.getLongExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_ID, -1)+" - "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
+                        UUID sentUUID = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
+                        Log.i(TAG, "MSG_SENT: "+sentUUID.toString()+" - "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
                         for(Message m : messages) {
-                            if (m.rowid == intent.getLongExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_ID, -1)) {
+                            if (m.uuid.equals(sentUUID)) {
                                 if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
-                                    m.dateTime = "ERR: "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
+                                    m.error = "ERR: "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
                                 } else {
-                                    m.dateTime = DateHelper.getNowString();
+                                    m.error = null;
                                 }
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
                                 db.updateMessage(m);
@@ -110,15 +124,16 @@ public class MessagesActivity extends Activity {
         public void onClick(View v) {
             EditText ed = (EditText) findViewById(R.id.textinput);
             String msg = ed.getText().toString();
-            Message message = new Message(msg, db.getDefaultIdentity(), Message.MessageDirection.Sent, "Sending...");
+            Message message = new Message(msg, db.getDefaultIdentity(), Message.MessageDirection.Sent, new Date());
             message.recipients.add(conversation.getPeer());
             db.createMessage(message, conversation);
             messages.add(message);
+            message.error = "Sending";
             ListView lv = (ListView) findViewById(R.id.messages_view);
             ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
             ed.setText("");
 
-            Log.d(TAG, "sending message id " + message.rowid);
+            Log.d(TAG, "sending message id " + message.uuid);
             ConnectionManager.sendMessage(MessagesActivity.this, message);
         }
     };

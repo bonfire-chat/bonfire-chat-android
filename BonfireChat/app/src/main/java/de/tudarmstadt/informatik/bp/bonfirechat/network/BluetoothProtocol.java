@@ -17,11 +17,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by johannes on 22.05.15.
@@ -181,13 +178,18 @@ public class BluetoothProtocol extends SocketProtocol {
 
         @Override
         public void run() {
-            Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
-            Envelope envelope = receiveEnvelope(input);
-            Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
+            try {
+                Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
+                Envelope envelope = receiveEnvelope(input);
+                Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
 
-            // hand over to the onMessageReceivedListener, which will take account for displaying
-            // the message and/or redistribute it to further recipients
-            listener.onMessageReceived(BluetoothProtocol.this, envelope);
+                // hand over to the onMessageReceivedListener, which will take account for displaying
+                // the message and/or redistribute it to further recipients
+                listener.onMessageReceived(BluetoothProtocol.this, envelope);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
