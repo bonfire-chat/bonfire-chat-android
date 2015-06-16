@@ -155,8 +155,14 @@ public class ContactsFragment extends Fragment {
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
-                Conversation conversation = new Conversation(adapter.getItem(position), adapter.getItem(position).getNickname(), 0);
-                db.createConversation(conversation);
+                // conversation with this contact already exists?
+                Conversation conversation = db.getConversationByPeer(adapter.getItem(position));
+                if (conversation == null) {
+                    // add a new conversation
+                    conversation = new Conversation(adapter.getItem(position), adapter.getItem(position).getNickname(), 0);
+                    db.createConversation(conversation);
+                }
+                // start messages activity
                 Intent i = new Intent(getActivity(), MessagesActivity.class);
                 Log.i("ConversationsFragment", "starting MessagesActivity with ConversationId=" + conversation.rowid);
                 i.putExtra("ConversationId", conversation.rowid);
