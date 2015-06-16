@@ -188,10 +188,10 @@ public class MessagesActivity extends Activity {
             return true;
 
         } else if (id == R.id.action_tracert) {
-            Message m = new Message("Tracert", db.getDefaultIdentity(), new Date(), conversation.getPeer());
+            Message m = new Message("TRACEROUTE\n", db.getDefaultIdentity(), new Date(), conversation.getPeer());
             Envelope e = Envelope.fromMessage(m);
             e.flags = Envelope.FLAG_TRACEROUTE;
-            m.body += " " + BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString();
+            m.body += "TRACEROUTE: " + BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString();
             appendMessage(m);
             Log.d(TAG, "sending tracert id " + e.uuid);
             ConnectionManager.sendEnvelope(MessagesActivity.this, e);
