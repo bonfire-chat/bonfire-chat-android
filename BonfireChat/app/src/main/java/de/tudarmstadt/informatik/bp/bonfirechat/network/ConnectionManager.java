@@ -8,17 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Trace;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import org.bouncycastle.util.Arrays;
 import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
@@ -80,7 +77,7 @@ public class ConnectionManager extends NonStopIntentService {
 
     // buffer for storing which messages have already been handled
     // Those were either already sent in the first place, or received
-    private static RingBuffer<UUID> processedMessages = new RingBuffer<>(250);
+    private static RingBuffer<UUID> processedEnvelopes = new RingBuffer<>(250);
 
     /**
      * Creates the ConnectionManager, called by Android creating the service
@@ -131,11 +128,11 @@ public class ConnectionManager extends NonStopIntentService {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
             // has this envelope not yet been processed?
-            if (!processedMessages.contains(envelope.uuid)) {
-                Log.i(TAG, "Received message from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
+            if (!processedEnvelopes.contains(envelope.uuid)) {
+                Log.i(TAG, "Received envelope from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
                 TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
                 // remember this envelope
-                processedMessages.enqueue(envelope.uuid);
+                processedEnvelopes.enqueue(envelope.uuid);
                 // is this envelope sent to us?
                 if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                     Log.d(TAG, "this message is for us.");
@@ -310,7 +307,7 @@ public class ConnectionManager extends NonStopIntentService {
     // static helper method to enqueue
     public static void sendEnvelope(Context ctx, Envelope envelope) {
         // remember this envelope
-        processedMessages.enqueue(envelope.uuid);
+        processedEnvelopes.enqueue(envelope.uuid);
         // and dispatch sending intent
         Intent intent = new Intent(ctx, ConnectionManager.class);
         intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
