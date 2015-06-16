@@ -71,7 +71,7 @@ public class MessagesActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Message msg = messages.get(position);
-                Toast.makeText(MessagesActivity.this, "protocol="+msg.transferProtocol +"  "+ "error="+msg.error, Toast.LENGTH_LONG).show();
+                Toast.makeText(MessagesActivity.this, "protocol=" + msg.transferProtocol + "  " + "error=" + msg.error, Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -181,5 +181,21 @@ public class MessagesActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void startConversationWithPeer(Context ctx, Contact contact) {
+        // conversation with this contact already exists?
+        BonfireData db = BonfireData.getInstance(ctx);
+        Conversation conversation = db.getConversationByPeer(contact);
+        if (conversation == null) {
+            // add a new conversation
+            conversation = new Conversation(contact, contact.getNickname(), 0);
+            db.createConversation(conversation);
+        }
+        // start messages activity
+        Intent i = new Intent(ctx, MessagesActivity.class);
+        Log.i("ContactDetailsActivity", "starting MessagesActivity with ConversationId=" + conversation.rowid);
+        i.putExtra("ConversationId", conversation.rowid);
+        ctx.startActivity(i);
     }
 }
