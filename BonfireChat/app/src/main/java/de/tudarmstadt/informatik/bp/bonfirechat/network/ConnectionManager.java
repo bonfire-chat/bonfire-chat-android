@@ -132,6 +132,7 @@ public class ConnectionManager extends NonStopIntentService {
             // is this envelope sent to us?
             if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                 Message message = envelope.toMessage(ConnectionManager.this);
+                message.transferProtocol = sender.getClass().getName();
                 storeAndDisplayMessage(message);
                 // redistribute the envelope if there are further recipients
                 if (envelope.recipientsPublicKeys.size() > 1) {
@@ -169,11 +170,11 @@ public class ConnectionManager extends NonStopIntentService {
             Log.d(TAG, "conversationId=" + conversation.rowid);
 
             data.createMessage(message, conversation);
-            Log.d(TAG, "message stored in db with id=" + message.rowid);
+            Log.d(TAG, "message stored in db with uuid=" + message.uuid);
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
-                    .putExtra(EXTENDED_DATA_MESSAGE_ID, message.rowid)
+                    .putExtra(EXTENDED_DATA_MESSAGE_ID, message.uuid)
                     .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             broadcastManager.sendBroadcast(localIntent);
@@ -224,7 +225,7 @@ public class ConnectionManager extends NonStopIntentService {
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
-            Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname + "  msg="+envelope.message);
+            Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
             try {
                 IProtocol protocol = chooseConnection();
                 if (null != protocol) {
@@ -239,14 +240,12 @@ public class ConnectionManager extends NonStopIntentService {
             }
 
             // if a message object is specified, this envelope was just generated on this phone
-            // notify UI
-            if (null != envelope.message) {
-                Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                        .putExtra(EXTENDED_DATA_MESSAGE_ID, envelope.message.rowid);
-                if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
+            // notify UI about success or failure
+            Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
+                    .putExtra(EXTENDED_DATA_MESSAGE_ID, envelope.uuid.toString());
+            if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
-                LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
-            }
+            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
 
         } else if (!extras.isEmpty()) {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
@@ -310,6 +309,7 @@ public class ConnectionManager extends NonStopIntentService {
         }
         return null;
     }
+
 
     // static helper method to enqueue
     public static void sendEnvelope(Context ctx, Envelope envelope) {

@@ -150,7 +150,8 @@ public class ClientServerProtocol implements IProtocol, ConnectionListener {
     // ###########################################################################
     @Override
     public void sendMessage(Envelope envelope) {
-        String jid = envelope.message.recipients.get(0).getXmppId(); // getJidByHash(target);
+        //FIXME TODO funktioniert zur Zeit überhaupt gar nicht!
+        String jid = null; // envelope.message.recipients.get(0).getXmppId(); // getJidByHash(target);
         org.jivesoftware.smack.packet.Message msg = new org.jivesoftware.smack.packet.Message(jid);
         msg.setPacketID(envelope.uuid.toString());
         //msg.addExtension(new Extension);  for date time

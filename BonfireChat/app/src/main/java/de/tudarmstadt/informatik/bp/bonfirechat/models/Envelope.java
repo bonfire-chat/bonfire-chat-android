@@ -26,8 +26,6 @@ public class Envelope implements Serializable {
     public byte[] senderPublicKey;
     public byte[] encryptedBody;
 
-    public transient Message message;
-
     public Envelope(UUID uuid, int hopCount, Date sentTime, ArrayList<byte[]> recipientsPublicKeys, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
         this.uuid = uuid;
         this.hopCount = hopCount;
@@ -45,14 +43,13 @@ public class Envelope implements Serializable {
             publicKeys.add(recipient.getPublicKey().asByteArray());
         }
         Envelope envelope = new Envelope(
-                UUID.randomUUID(),
+                message.uuid,
                 0,
                 new Date(),
                 publicKeys,
                 message.sender.getNickname(),
                 message.sender.getPublicKey().asByteArray(),
                 message.body.getBytes(Charset.forName("UTF-8")));
-        envelope.message = message;
         return envelope;
     }
 
@@ -61,7 +58,8 @@ public class Envelope implements Serializable {
                 new String(encryptedBody, Charset.forName("UTF-8")),
                 Contact.findOrCreate(ctx, senderPublicKey, senderNickname),
                 Message.MessageDirection.Received,
-                sentTime);
+                sentTime,
+                uuid);
     }
 
 
