@@ -181,13 +181,18 @@ public class BluetoothProtocol extends SocketProtocol {
 
         @Override
         public void run() {
-            Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
-            Envelope envelope = receiveEnvelope(input);
-            Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
+            try {
+                Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
+                Envelope envelope = receiveEnvelope(input);
+                Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
 
-            // hand over to the onMessageReceivedListener, which will take account for displaying
-            // the message and/or redistribute it to further recipients
-            listener.onMessageReceived(BluetoothProtocol.this, envelope);
+                // hand over to the onMessageReceivedListener, which will take account for displaying
+                // the message and/or redistribute it to further recipients
+                listener.onMessageReceived(BluetoothProtocol.this, envelope);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
