@@ -12,8 +12,11 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Collection;
@@ -32,6 +35,8 @@ public class WifiReceiver extends BroadcastReceiver {
     private WifiP2pManager.Channel mChannel;
     private WifiP2pDevice connectedDevice;
     private WifiProtocol protocol;
+
+    public static InetAddress owneraddress;
 
     public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiProtocol protocol) {
         super();
@@ -53,15 +58,16 @@ public class WifiReceiver extends BroadcastReceiver {
                 config.groupOwnerIntent = 0;
                 config.wps.setup = WpsInfo.PBC;
                 connectedDevice = dev;
+
                 mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-
+                        Log.d(TAG, "successfully connected with " + connectedDevice);
                     }
 
                     @Override
                     public void onFailure(int reason) {
-
+                        Log.d(TAG, "could not connect with " +  connectedDevice + "with reason " + reason);
                     }
                 });
             }
@@ -69,7 +75,6 @@ public class WifiReceiver extends BroadcastReceiver {
 
         }
     };
-
 
 
     @Override
@@ -96,14 +101,26 @@ public class WifiReceiver extends BroadcastReceiver {
             Log.d(TAG, "Daten werden GANZ AUSSEN gesendet");
             FutureTask futureTask = new FutureTask(new Callable() {
                 @Override
-                public Object call() throws Exception{
+                public Object call() throws Exception {
                     Log.d(TAG, "Daten werden außen gesendet");
                     if (connectedDevice != null)
 
                     {
                         Log.d(TAG, "Daten werden gesendet");
+                        //WifiP2pGroup group = mManager.createGroup(mChannel,null);
+/*
+                        mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+                            @Override
+                            public void onGroupInfoAvailable(WifiP2pGroup group) {
 
+                            }
 
+                            @Override
+                            public void onConnectionInfoAvailable(WifiP2pInfo info) {
+                                WifiReceiver.owneraddress = info.groupOwnerAddress;
+                            }
+                        });
+*/
 
                         String host = connectedDevice.deviceAddress;
                         int port = 4242;
@@ -118,7 +135,7 @@ public class WifiReceiver extends BroadcastReceiver {
                              * port, and timeout information.
                              */
                             socket.bind(null);
-                            socket.connect((new InetSocketAddress(host, port)), 500);
+                            socket.connect((new InetSocketAddress(getIPFromMac(host), port)), 500);
 
                             /**
                              * Create a byte stream from a JPEG file and pipe it to the output stream
@@ -158,16 +175,45 @@ public class WifiReceiver extends BroadcastReceiver {
             ExecutorService executorService = Executors.newFixedThreadPool(2);
             executorService.execute(futureTask);
 
+        } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
+
+        {
+            // Respond to this device's wifi state changing
         }
-
-                else if(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
-
-                {
-                    // Respond to this device's wifi state changing
-                }
 
 
     }
 
     private final String TAG = "WifiReceiver";
+
+    public static String getIPFromMac(String MAC) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("/proc/net/arp"));
+            String line;
+            while ((line = br.readLine()) != null) {
+
+                String[] splitted = line.split(" +");
+                if (splitted != null && splitted.length >= 4) {
+                    // Basic sanity check
+                    String device = splitted[5];
+                    if (device.matches(".*p2p-p2p0.*")) {
+                        String mac = splitted[3];
+                        if (mac.matches(MAC)) {
+                            return splitted[0];
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }
