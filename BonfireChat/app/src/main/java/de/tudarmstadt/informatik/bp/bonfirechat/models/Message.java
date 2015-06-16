@@ -53,7 +53,7 @@ public class Message implements Serializable {
         if (this.sender != null && this.sender instanceof Identity) values.put("sender", -1);
         values.put("messageDirection", direction.ordinal());
         values.put("body", body);
-        values.put("dateTime", DateHelper.formatDateTime(this.sentTime));
+        values.put("sentDate", DateHelper.formatDateTime(this.sentTime));
         values.put("uuid", uuid.toString());
         return values;
     }
@@ -63,7 +63,7 @@ public class Message implements Serializable {
         IPublicIdentity peer = (contactId == -1) ? db.getDefaultIdentity() : db.getContactById(contactId);
         Date date;
         try {
-            date = DateHelper.parseDateTime(cursor.getString(cursor.getColumnIndex("dateTime")));
+            date = DateHelper.parseDateTime(cursor.getString(cursor.getColumnIndex("sentDate")));
         } catch (ParseException e) {
             date = new Date();
         }
