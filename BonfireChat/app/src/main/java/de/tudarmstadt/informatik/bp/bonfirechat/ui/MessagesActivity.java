@@ -84,7 +84,7 @@ public class MessagesActivity extends Activity {
                     public void onReceive(Context context, Intent intent) {
                         messages.add(new Message(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_TEXT)
                                 , conversation.getPeer(), Message.MessageDirection.Received, new Date(),
-                                UUID.fromString(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_ID))
+                                (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID)
                         ));
                         ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
                     }
@@ -94,7 +94,7 @@ public class MessagesActivity extends Activity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        UUID sentUUID = UUID.fromString(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_ID));
+                        UUID sentUUID = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
                         Log.i(TAG, "MSG_SENT: "+sentUUID.toString()+" - "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
                         for(Message m : messages) {
                             if (m.uuid.equals(sentUUID)) {
