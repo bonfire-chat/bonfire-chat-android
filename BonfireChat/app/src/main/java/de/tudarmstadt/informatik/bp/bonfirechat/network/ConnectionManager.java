@@ -78,11 +78,9 @@ public class ConnectionManager extends NonStopIntentService {
     // maximum hops for a message until it will be discarded
     public static final int MAX_HOP_COUNT = 20;
 
-    // buffer for storing which messages have already been sent
-    // those won't be sent again, to avoid routing loops
-    // as a circular buffer, old messages will gradually be forgotten,
-    // because they won't be sent again due to their hopCount anyway
-    private static RingBuffer<UUID> sentMessages = new RingBuffer<>(250);
+    // buffer for storing which messages have already been handled
+    // Those were either already sent in the first place, or received
+    private static RingBuffer<UUID> processedMessages = new RingBuffer<>(250);
 
     /**
      * Creates the ConnectionManager, called by Android creating the service
@@ -132,20 +130,26 @@ public class ConnectionManager extends NonStopIntentService {
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
-            Log.i(TAG, "Received message from "+sender.getClass().getName()+"   uuid="+envelope.uuid.toString());
-            TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
-            // is this envelope sent to us?
-            if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
-                TracerouteHandler.publishTraceroute(envelope);
-                Message message = envelope.toMessage(ConnectionManager.this);
-                message.transferProtocol = sender.getClass().getName();
-                storeAndDisplayMessage(message);
-                // redistribute the envelope if there are further recipients
-                if (envelope.recipientsPublicKeys.size() > 1) {
+            // has this envelope not yet been processed?
+            if (!processedMessages.contains(envelope.uuid)) {
+                Log.i(TAG, "Received message from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
+                TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
+                // remember this envelope
+                processedMessages.enqueue(envelope.uuid);
+                // is this envelope sent to us?
+                if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                    Log.d(TAG, "this message is for us.");
+                    TracerouteHandler.publishTraceroute(envelope);
+                    Message message = envelope.toMessage(ConnectionManager.this);
+                    message.transferProtocol = sender.getClass().getName();
+                    storeAndDisplayMessage(message);
+                    // redistribute the envelope if there are further recipients
+                    if (envelope.recipientsPublicKeys.size() > 1) {
+                        redistributeEnvelope(envelope);
+                    }
+                } else {
                     redistributeEnvelope(envelope);
                 }
-            } else {
-                redistributeEnvelope(envelope);
             }
         }
 
@@ -267,7 +271,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
-                Log.i(TAG, "gcmProto="+gcmProto);
+                Log.i(TAG, "gcmProto=" + gcmProto);
                 if (gcmProto == null) return;
                 gcmProto.onHandleGcmIntent(intent);
             }
@@ -305,16 +309,13 @@ public class ConnectionManager extends NonStopIntentService {
 
     // static helper method to enqueue
     public static void sendEnvelope(Context ctx, Envelope envelope) {
-        // check whether this envelope has already been sent
-        if (!sentMessages.contains(envelope.uuid)) {
-            // remember this envelope
-            sentMessages.enqueue(envelope.uuid);
-            // and dispatch sending intent
-            Intent intent = new Intent(ctx, ConnectionManager.class);
-            intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
-            intent.putExtra("envelope", envelope);
-            ctx.startService(intent);
-        }
+        // remember this envelope
+        processedMessages.enqueue(envelope.uuid);
+        // and dispatch sending intent
+        Intent intent = new Intent(ctx, ConnectionManager.class);
+        intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
+        intent.putExtra("envelope", envelope);
+        ctx.startService(intent);
     }
 
     // you know, for convenience and stuff
