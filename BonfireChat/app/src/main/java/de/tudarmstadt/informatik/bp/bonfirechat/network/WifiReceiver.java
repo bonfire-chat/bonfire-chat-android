@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
-
 /**
  * Created by Simon on 22.05.2015.
  */
@@ -32,6 +31,9 @@ public class WifiReceiver extends BroadcastReceiver {
     private WifiP2pManager.Channel mChannel;
     private WifiP2pDevice connectedDevice;
     private WifiProtocol protocol;
+
+    public static WifiP2pInfo info;
+
 
     public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiProtocol protocol) {
         super();
@@ -53,6 +55,15 @@ public class WifiReceiver extends BroadcastReceiver {
                 config.groupOwnerIntent = 0;
                 config.wps.setup = WpsInfo.PBC;
                 connectedDevice = dev;
+
+                WifiP2pManager.ConnectionInfoListener mCIL = new WifiP2pManager.ConnectionInfoListener() {
+                    @Override
+                    public void onConnectionInfoAvailable(WifiP2pInfo info) {
+                        WifiReceiver.info = info;
+                    }
+                };
+                if(info != null && info.groupFormed)
+
                 mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
@@ -75,7 +86,7 @@ public class WifiReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        Log.d(TAG, "onReceive wird ausgeführt");
+        Log.d(TAG, "onReceive wird ausgefï¿½hrt");
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             // Check to see if Wi-Fi is enabled
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
@@ -97,7 +108,7 @@ public class WifiReceiver extends BroadcastReceiver {
             FutureTask futureTask = new FutureTask(new Callable() {
                 @Override
                 public Object call() throws Exception{
-                    Log.d(TAG, "Daten werden außen gesendet");
+                    Log.d(TAG, "Daten werden auï¿½en gesendet");
                     if (connectedDevice != null)
 
                     {
