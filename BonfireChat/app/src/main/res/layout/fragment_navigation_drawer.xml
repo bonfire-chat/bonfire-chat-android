@@ -9,7 +9,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_above="@+id/linearLayout" />
+        android:layout_above="@+id/linearLayout2" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -24,6 +24,23 @@
             android:layout_height="wrap_content"
             android:text="Share Identity"
             android:id="@+id/btnShareIdentityQR" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentStart="true"
+        android:id="@+id/linearLayout2"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/txt_nickname" />
     </LinearLayout>
 
 </RelativeLayout>
