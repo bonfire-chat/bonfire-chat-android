@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.bp.bonfirechat.helper;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 /**
  * Created by jonas on 16.06.15.
@@ -27,7 +27,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactDetailsActivity;
 
-public class NFCHelper extends Activity implements CreateNdefMessageCallback {
+public class NfcActivity extends Activity implements CreateNdefMessageCallback {
     NfcAdapter mNfcAdapter;
     TextView textView;
     BonfireData db;
