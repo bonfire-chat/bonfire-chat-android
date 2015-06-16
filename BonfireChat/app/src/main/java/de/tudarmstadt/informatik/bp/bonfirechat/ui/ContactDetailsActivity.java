@@ -84,20 +84,7 @@ public class ContactDetailsActivity extends Activity {
         }
 
         else if (id == R.id.action_create_conversation) {
-            // conversation with this contact already exists?
-            BonfireData db = BonfireData.getInstance(this);
-            Conversation conversation = db.getConversationByPeer(contact);
-            if (conversation == null) {
-                // add a new conversation
-                conversation = new Conversation(contact, contact.getNickname(), 0);
-                db.createConversation(conversation);
-            }
-            // start messages activity
-            Intent i = new Intent(this, MessagesActivity.class);
-            Log.i("ContactDetailsActivity", "starting MessagesActivity with ConversationId=" + conversation.rowid);
-            i.putExtra("ConversationId", conversation.rowid);
-            startActivity(i);
-
+            MessagesActivity.startConversationWithPeer(this, contact);
             return true;
         }
 
