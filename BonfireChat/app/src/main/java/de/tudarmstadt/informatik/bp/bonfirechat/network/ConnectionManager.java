@@ -224,7 +224,7 @@ public class ConnectionManager extends NonStopIntentService {
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
-            Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
+            Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname + "  msg="+envelope.message);
             try {
                 IProtocol protocol = chooseConnection();
                 if (null != protocol) {
@@ -259,9 +259,10 @@ public class ConnectionManager extends NonStopIntentService {
                 sendNotification("Deleted messages on server: " + extras.toString());
 
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // If it's a regular GCM message, do some work.
-                sendNotification("Received: " + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
+                GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
+                Log.i(TAG, "gcmProto="+gcmProto);
+                if (gcmProto == null) return;
+                gcmProto.onHandleGcmIntent(intent);
             }
         }
     }
@@ -302,7 +303,7 @@ public class ConnectionManager extends NonStopIntentService {
         }*/
         // ClientServer enabled and ready?
         if (preferences.getBoolean("enable_xmpp", true)) {
-            IProtocol p = getOrCreateConnection(ClientServerProtocol.class);
+            IProtocol p = getOrCreateConnection(GcmProtocol.class);
             if (p.canSend()) {
                 return p;
             }
