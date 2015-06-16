@@ -1,17 +1,9 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.style.UpdateLayout;
-import android.util.JsonReader;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,37 +11,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.content.Context;
-import android.widget.SearchView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.NFCHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 
 /**
  * contacts list
@@ -127,7 +98,7 @@ public class ContactsFragment extends Fragment {
             IntentIntegrator inte = new IntentIntegrator(getActivity());
             inte.initiateScan();
         } else if (item.getItemId() == R.id.action_scan_nfc) {
-            startActivity(new Intent(getActivity(), NFCHelper.class));
+            startActivity(new Intent(getActivity(), NfcActivity.class));
             return true;
         }
 
