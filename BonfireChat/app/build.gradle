@@ -54,9 +54,9 @@ findbugs {
 
 // change this to whatever your app's name is...
 project.archivesBaseName = 'bonfire'
- 
+
 android.applicationVariants.all { variant ->
-    def apkPath = variant.packageApplication.outputFile.parentFile
+    def apkPath = variant.outputs[0].outputFile.parentFile
     def baseName = project.archivesBaseName
  
     // if it's a release build, the type is implicit, imo, so add it otherwise
@@ -74,11 +74,11 @@ android.applicationVariants.all { variant ->
     }
  
     // if the variant will not be zipAligned, specify that
-    if (!variant.zipAlign) {
+    if (!variant.outputs[0].zipAlign) {
         baseName += '-unaligned'
     }
  
     // set the output file
-    variant.outputFile = new File(apkPath, "${baseName}.apk");
+    variant.outputs[0].outputFile = new File(apkPath, "${baseName}.apk");
 }
 
