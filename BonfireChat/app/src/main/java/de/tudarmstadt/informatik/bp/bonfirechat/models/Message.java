@@ -26,20 +26,24 @@ public class Message implements Serializable {
     public List<Contact> recipients;
     public IPublicIdentity sender;
     public String body;
-    public MessageDirection direction = MessageDirection.Unknown;
     public Date sentTime;
     public UUID uuid;
     public String transferProtocol;
     public String error;
 
-    public Message(String body, IPublicIdentity sender, MessageDirection dir, Date sentTime) {
-        this(body, sender, dir, sentTime, UUID.randomUUID());
+    public Message(String body, IPublicIdentity sender, Date sentTime, Contact recipient) {
+        this(body, sender, sentTime, UUID.randomUUID());
+        this.recipients.add(recipient);
     }
 
-    public Message(String body, IPublicIdentity sender, MessageDirection dir, Date sentTime, UUID rowid) {
+    public Message(String body, IPublicIdentity sender, Date sentTime, UUID rowid) {
         this.recipients = new ArrayList<>();
-        this.body = body; this.direction = dir; this.sentTime = sentTime; this.uuid = rowid;
+        this.body = body; this.sentTime = sentTime; this.uuid = rowid;
         this.sender = sender;
+    }
+
+    public MessageDirection direction() {
+        return (sender instanceof Identity) ? MessageDirection.Sent : MessageDirection.Received;
     }
 
     @Override
@@ -51,7 +55,6 @@ public class Message implements Serializable {
         ContentValues values = new ContentValues();
         if (this.sender != null && this.sender instanceof Contact) values.put("sender", ((Contact)this.sender).rowid);
         if (this.sender != null && this.sender instanceof Identity) values.put("sender", -1);
-        values.put("messageDirection", direction.ordinal());
         values.put("body", body);
         values.put("sentDate", DateHelper.formatDateTime(this.sentTime));
         values.put("uuid", uuid.toString());
@@ -69,7 +72,6 @@ public class Message implements Serializable {
         }
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
                 peer,
-                MessageDirection.values()[cursor.getInt(cursor.getColumnIndex("messageDirection"))],
                 date,
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("uuid"))));
     }
