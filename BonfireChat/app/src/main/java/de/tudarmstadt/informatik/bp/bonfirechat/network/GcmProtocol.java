@@ -1,7 +1,9 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.util.Base64;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -16,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,9 +45,32 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver
 public class GcmProtocol extends SocketProtocol {
     private static final String TAG = "GcmProtocol";
 
+    //FIXME TODO HACK
+    public static GcmProtocol instance;
+
     URL myEndpointUrl;
     public GcmProtocol(Context context) throws MalformedURLException {
         myEndpointUrl = new URL(BonfireData.API_ENDPOINT + "/notify.php");
+        instance = this;
+    }
+
+
+    public void onHandleGcmIntent(Intent intent) {
+        try {
+            String dataString = intent.getStringExtra("msg");
+            Log.i("GcmProtocol", "onHandleGcmIntent: "+ dataString);
+            //byte[] data = dataString.getBytes("ascii");
+            //Log.i("GcmProtocol", "onHandleGcmIntent: "+ StreamHelper.byteArrayToHexString(data));
+            ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
+            Envelope envelope = receiveEnvelope(bais);
+
+            listener.onMessageReceived(this, envelope);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e("GcmProtocol", "Unable to deserialize: "+e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -59,24 +85,25 @@ public class GcmProtocol extends SocketProtocol {
             BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
             for(byte[] pubkeyBytes : envelope.recipientsPublicKeys) {
                 String key = CryptoHelper.toBase64(pubkeyBytes);
-                out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"publickey\"\r\n\r\n" + key + "\r\n").getBytes("UTF-8"));
+                out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"publickey[]\"\r\n\r\n" + key + "\r\n").getBytes("UTF-8"));
             }
             out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"msg\"\r\n\r\n").getBytes("UTF-8"));
             sendEnvelope(out, envelope);
             out.write(("\r\n").getBytes("UTF-8"));
+            out.flush();
 
             //BufferedReader in = new BufferedReader(new InputStreamReader(new BufferedInputStream(urlConnection.getInputStream())));
             String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
-            Log.i(TAG, "successful sent message");
+            Log.i(TAG, "successfully sent message");
             Log.i(TAG, theString);
 
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(TAG, "Error sending message: " + e.toString());
+            String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+            throw new RuntimeException("Send Error: "+theErrMes);
         } finally {
             if(urlConnection == null) urlConnection.disconnect();
         }

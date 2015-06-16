@@ -66,8 +66,8 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.PEER_ID";
     public static final String EXTENDED_DATA_MESSAGE_TEXT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_TEXT";
-    public static final String EXTENDED_DATA_MESSAGE_ID =
-            "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_ID";
+    public static final String EXTENDED_DATA_MESSAGE_UUID =
+            "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_UUID";
     public static final String EXTENDED_DATA_ERROR =
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
 
@@ -75,11 +75,9 @@ public class ConnectionManager extends NonStopIntentService {
     // maximum hops for a message until it will be discarded
     public static final int MAX_HOP_COUNT = 20;
 
-    // buffer for storing which messages have already been sent
-    // those won't be sent again, to avoid routing loops
-    // as a circular buffer, old messages will gradually be forgotten,
-    // because they won't be sent again due to their hopCount anyway
-    private static RingBuffer<UUID> sentMessages = new RingBuffer<>(250);
+    // buffer for storing which messages have already been handled
+    // Those were either already sent in the first place, or received
+    private static RingBuffer<UUID> processedMessages = new RingBuffer<>(250);
 
     /**
      * Creates the ConnectionManager, called by Android creating the service
@@ -129,16 +127,24 @@ public class ConnectionManager extends NonStopIntentService {
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
-            // is this envelope sent to us?
-            if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
-                Message message = envelope.toMessage(ConnectionManager.this);
-                storeAndDisplayMessage(message);
-                // redistribute the envelope if there are further recipients
-                if (envelope.recipientsPublicKeys.size() > 1) {
+            // has this envelope not yet been processed?
+            if (!processedMessages.contains(envelope.uuid)) {
+                Log.i(TAG, "Received message from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
+                // remember this envelope
+                processedMessages.enqueue(envelope.uuid);
+                // is this envelope sent to us?
+                if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                    Log.d(TAG, "this message is for us.");
+                    Message message = envelope.toMessage(ConnectionManager.this);
+                    message.transferProtocol = sender.getClass().getName();
+                    storeAndDisplayMessage(message);
+                    // redistribute the envelope if there are further recipients
+                    if (envelope.recipientsPublicKeys.size() > 1) {
+                        redistributeEnvelope(envelope);
+                    }
+                } else {
                     redistributeEnvelope(envelope);
                 }
-            } else {
-                redistributeEnvelope(envelope);
             }
         }
 
@@ -152,7 +158,7 @@ public class ConnectionManager extends NonStopIntentService {
 
         private void storeAndDisplayMessage(Message message) {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);
-            Log.d(TAG, "received message : " + message.body);
+            Log.d(TAG, "display message: " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
             Conversation conversation = data.getConversationByPeer((Contact) message.sender);
             if (conversation == null) {
@@ -169,11 +175,11 @@ public class ConnectionManager extends NonStopIntentService {
             Log.d(TAG, "conversationId=" + conversation.rowid);
 
             data.createMessage(message, conversation);
-            Log.d(TAG, "message stored in db with id=" + message.rowid);
+            Log.d(TAG, "message stored in db with uuid=" + message.uuid);
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
-                    .putExtra(EXTENDED_DATA_MESSAGE_ID, message.rowid)
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, message.uuid)
                     .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             broadcastManager.sendBroadcast(localIntent);
@@ -194,6 +200,7 @@ public class ConnectionManager extends NonStopIntentService {
                             .setContentText(message.body)
                             .setContentIntent(pi)
                             .setSound(sound)
+                            .setAutoCancel(true)
                             .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
 
             NotificationManager mNotifyMgr =
@@ -239,14 +246,12 @@ public class ConnectionManager extends NonStopIntentService {
             }
 
             // if a message object is specified, this envelope was just generated on this phone
-            // notify UI
-            if (null != envelope.message) {
-                Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                        .putExtra(EXTENDED_DATA_MESSAGE_ID, envelope.message.rowid);
-                if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
+            // notify UI about success or failure
+            Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, envelope.uuid);
+            if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
-                LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
-            }
+            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
 
         } else if (!extras.isEmpty()) {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
@@ -259,9 +264,10 @@ public class ConnectionManager extends NonStopIntentService {
                 sendNotification("Deleted messages on server: " + extras.toString());
 
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // If it's a regular GCM message, do some work.
-                sendNotification("Received: " + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
+                GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
+                Log.i(TAG, "gcmProto=" + gcmProto);
+                if (gcmProto == null) return;
+                gcmProto.onHandleGcmIntent(intent);
             }
         }
     }
@@ -302,7 +308,7 @@ public class ConnectionManager extends NonStopIntentService {
         }*/
         // ClientServer enabled and ready?
         if (preferences.getBoolean("enable_xmpp", true)) {
-            IProtocol p = getOrCreateConnection(ClientServerProtocol.class);
+            IProtocol p = getOrCreateConnection(GcmProtocol.class);
             if (p.canSend()) {
                 return p;
             }
@@ -310,18 +316,16 @@ public class ConnectionManager extends NonStopIntentService {
         return null;
     }
 
+
     // static helper method to enqueue
     public static void sendEnvelope(Context ctx, Envelope envelope) {
-        // check whether this envelope has already been sent
-        if (!sentMessages.contains(envelope.uuid)) {
-            // remember this envelope
-            sentMessages.enqueue(envelope.uuid);
-            // and dispatch sending intent
-            Intent intent = new Intent(ctx, ConnectionManager.class);
-            intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
-            intent.putExtra("envelope", envelope);
-            ctx.startService(intent);
-        }
+        // remember this envelope
+        processedMessages.enqueue(envelope.uuid);
+        // and dispatch sending intent
+        Intent intent = new Intent(ctx, ConnectionManager.class);
+        intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
+        intent.putExtra("envelope", envelope);
+        ctx.startService(intent);
     }
 
     // you know, for convenience and stuff

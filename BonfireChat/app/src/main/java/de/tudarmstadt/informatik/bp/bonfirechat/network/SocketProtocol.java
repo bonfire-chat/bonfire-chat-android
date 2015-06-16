@@ -31,17 +31,14 @@ public abstract class SocketProtocol implements IProtocol {
         }
     }
 
-    protected Envelope receiveEnvelope(InputStream input) {
+    protected Envelope receiveEnvelope(InputStream input) throws IOException {
         try {
             ObjectInputStream stream = new ObjectInputStream(input);
             Envelope envelope = (Envelope) stream.readObject();
             return envelope;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch(ClassNotFoundException ex) {
+            throw new IOException("Unable to deserialize envelope, class not found ("+ex.getMessage() + ")");
         }
-        return null;
     }
 
     @Override
