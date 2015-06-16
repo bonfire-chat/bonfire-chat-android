@@ -14,6 +14,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 
 public class ContactDetailsActivity extends Activity {
 
@@ -71,7 +72,6 @@ public class ContactDetailsActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
-
             contact.setNickname(getEdit(R.id.txt_nickname).getText().toString());
             contact.setXmppId(getEdit(R.id.txt_xmppId).getText().toString());
             //contact.publicKey = getEdit(R.id.txt_publicKey).getText().toString();
@@ -80,6 +80,11 @@ public class ContactDetailsActivity extends Activity {
             db.updateContact(contact);
             finish();
 
+            return true;
+        }
+
+        else if (id == R.id.action_create_conversation) {
+            MessagesActivity.startConversationWithPeer(this, contact);
             return true;
         }
 

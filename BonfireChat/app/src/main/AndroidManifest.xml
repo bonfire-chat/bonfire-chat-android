@@ -39,6 +39,10 @@
 
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
 
+    <!-- NFC  -->
+    <uses-permission android:name="android.permission.NFC" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -96,7 +100,8 @@
         <activity
             android:name=".ui.IdentityActivity"
             android:label="@string/title_activity_identity"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:parentActivityName=".ui.MainActivity" >
         </activity>
         <activity
             android:name=".ui.SearchUserActivity"
@@ -107,6 +112,15 @@
                 android:value="de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".helper.NFCHelper"
+            android:label="@string/NFC">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="application/de.tudarmstadt.informatik.bp.bonfirechat"/>
+            </intent-filter>
+        </activity>
 
     </application>
 
