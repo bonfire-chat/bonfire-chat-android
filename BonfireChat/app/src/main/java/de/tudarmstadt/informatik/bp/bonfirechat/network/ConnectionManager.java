@@ -196,6 +196,7 @@ public class ConnectionManager extends NonStopIntentService {
                             .setContentText(message.body)
                             .setContentIntent(pi)
                             .setSound(sound)
+                            .setAutoCancel(true)
                             .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
 
             NotificationManager mNotifyMgr =
