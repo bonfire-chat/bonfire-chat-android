@@ -6,7 +6,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -28,7 +27,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactDetailsActivity;
 
-
 public class NFCHelper extends Activity implements CreateNdefMessageCallback {
     NfcAdapter mNfcAdapter;
     TextView textView;
@@ -41,8 +39,7 @@ public class NFCHelper extends Activity implements CreateNdefMessageCallback {
         db = BonfireData.getInstance(this);
         pubident = db.getDefaultIdentity();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.contacts_layout);
-        TextView textView = (TextView) findViewById(R.id.action_scan_nfc);
+        setContentView(R.layout.nfc_layout);
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
