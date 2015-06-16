@@ -6,5 +6,7 @@
     <item android:id="@+id/action_edit_title" android:title="Titel ändern"
          android:showAsAction="always" android:icon="@android:drawable/ic_menu_edit" />
     <item android:id="@+id/action_settings" android:title="Info"
-         android:showAsAction="never" />
+        android:showAsAction="never" />
+    <item android:id="@+id/action_tracert" android:title="Send Traceroute"
+        android:showAsAction="never" />
 </menu>

@@ -8,14 +8,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Trace;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import org.bouncycastle.util.Arrays;
 import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
@@ -130,8 +133,10 @@ public class ConnectionManager extends NonStopIntentService {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
             Log.i(TAG, "Received message from "+sender.getClass().getName()+"   uuid="+envelope.uuid.toString());
+            TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
             // is this envelope sent to us?
             if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                TracerouteHandler.publishTraceroute(envelope);
                 Message message = envelope.toMessage(ConnectionManager.this);
                 message.transferProtocol = sender.getClass().getName();
                 storeAndDisplayMessage(message);
@@ -230,6 +235,7 @@ public class ConnectionManager extends NonStopIntentService {
             Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
             try {
                 IProtocol protocol = chooseConnection();
+                TracerouteHandler.handleTraceroute(this, protocol, "Send", envelope);
                 if (null != protocol) {
                     protocol.sendMessage(envelope);
                 } else {
@@ -254,10 +260,10 @@ public class ConnectionManager extends NonStopIntentService {
             String messageType = gcm.getMessageType(intent);
 
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
-                sendNotification("Send error: " + extras.toString());
+                Log.w(TAG, "GCM: Send error: " + extras.toString());
 
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(intent.getAction())) {
-                sendNotification("Deleted messages on server: " + extras.toString());
+                Log.w(TAG, "GCM: Deleted messages on server: " + extras.toString());
 
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
@@ -268,23 +274,7 @@ public class ConnectionManager extends NonStopIntentService {
         }
     }
 
-    // Put the message into a notification and post it.
-    // This is just one simple example of what you might choose to do with
-    // a GCM message.
-    private void sendNotification(String msg) {
-        NotificationManager mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("GCM Notification")
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(msg))
-                        .setContentText(msg);
-
-        mNotificationManager.notify(2, mBuilder.build());
-    }
 
     private IProtocol chooseConnection() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
