@@ -66,8 +66,8 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.PEER_ID";
     public static final String EXTENDED_DATA_MESSAGE_TEXT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_TEXT";
-    public static final String EXTENDED_DATA_MESSAGE_ID =
-            "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_ID";
+    public static final String EXTENDED_DATA_MESSAGE_UUID =
+            "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_UUID";
     public static final String EXTENDED_DATA_ERROR =
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
 
@@ -129,6 +129,7 @@ public class ConnectionManager extends NonStopIntentService {
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
+            Log.i(TAG, "Received message from "+sender.getClass().getName()+"   uuid="+envelope.uuid.toString());
             // is this envelope sent to us?
             if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                 Message message = envelope.toMessage(ConnectionManager.this);
@@ -153,7 +154,7 @@ public class ConnectionManager extends NonStopIntentService {
 
         private void storeAndDisplayMessage(Message message) {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);
-            Log.d(TAG, "received message : " + message.body);
+            Log.d(TAG, "display message: " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
             Conversation conversation = data.getConversationByPeer((Contact) message.sender);
             if (conversation == null) {
@@ -174,7 +175,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
-                    .putExtra(EXTENDED_DATA_MESSAGE_ID, message.uuid)
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, message.uuid)
                     .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             broadcastManager.sendBroadcast(localIntent);
@@ -242,7 +243,7 @@ public class ConnectionManager extends NonStopIntentService {
             // if a message object is specified, this envelope was just generated on this phone
             // notify UI about success or failure
             Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_ID, envelope.uuid.toString());
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, envelope.uuid);
             if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
