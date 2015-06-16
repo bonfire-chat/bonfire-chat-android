@@ -2,42 +2,21 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
 
 /**
  * Created by mw on 15.06.15.

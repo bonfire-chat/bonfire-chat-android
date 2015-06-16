@@ -1,7 +1,9 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -53,7 +55,7 @@ public class IdentityActivity extends Activity  {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_contact_details, menu);
+        getMenuInflater().inflate(R.menu.menu_identity_details, menu);
         return true;
     }
 
@@ -79,6 +81,10 @@ public class IdentityActivity extends Activity  {
                 }
             }).start();
             finish();
+
+            SharedPreferences.Editor preferences = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            preferences.putString("my_nickname", identity.nickname);
+            preferences.commit();
 
             return true;
         }

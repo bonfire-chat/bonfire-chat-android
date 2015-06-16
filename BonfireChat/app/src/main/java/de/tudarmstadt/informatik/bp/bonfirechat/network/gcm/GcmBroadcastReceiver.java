@@ -17,7 +17,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**

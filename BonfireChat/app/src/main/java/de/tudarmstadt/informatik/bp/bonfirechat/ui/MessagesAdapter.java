@@ -37,7 +37,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).direction == Message.MessageDirection.Received ? 1 : 0;
+        return getItem(position).direction() == Message.MessageDirection.Received ? 1 : 0;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         ViewHolder v;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            switch (getItem(position).direction) {
+            switch (getItem(position).direction()) {
                 case Received:
                     convertView = inflater.inflate(R.layout.message_rowlayout_received, parent, false);
                     break;

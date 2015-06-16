@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +30,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
@@ -71,7 +75,7 @@ public class MessagesActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Message msg = messages.get(position);
-                Toast.makeText(MessagesActivity.this, "protocol="+msg.transferProtocol +"  "+ "error="+msg.error, Toast.LENGTH_LONG).show();
+                Toast.makeText(MessagesActivity.this, "protocol=" + msg.transferProtocol + "  " + "error=" + msg.error, Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -82,11 +86,10 @@ public class MessagesActivity extends Activity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        messages.add(new Message(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_TEXT)
-                                , conversation.getPeer(), Message.MessageDirection.Received, new Date(),
+                        appendMessage(new Message(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_TEXT)
+                                , conversation.getPeer(), new Date(),
                                 (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID)
                         ));
-                        ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
                     }
                 },
                 new IntentFilter(ConnectionManager.MSG_RECEIVED_BROADCAST_EVENT));
@@ -124,19 +127,24 @@ public class MessagesActivity extends Activity {
         public void onClick(View v) {
             EditText ed = (EditText) findViewById(R.id.textinput);
             String msg = ed.getText().toString();
-            Message message = new Message(msg, db.getDefaultIdentity(), Message.MessageDirection.Sent, new Date());
-            message.recipients.add(conversation.getPeer());
-            db.createMessage(message, conversation);
-            messages.add(message);
-            message.error = "Sending";
-            ListView lv = (ListView) findViewById(R.id.messages_view);
-            ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
             ed.setText("");
+
+            Message message = new Message(msg, db.getDefaultIdentity(), new Date(), conversation.getPeer());
+            message.error = "Sending";
+
+            db.createMessage(message, conversation);
+            appendMessage(message);
 
             Log.d(TAG, "sending message id " + message.uuid);
             ConnectionManager.sendMessage(MessagesActivity.this, message);
         }
     };
+
+    private void appendMessage(Message message) {
+        messages.add(message);
+        ListView lv = (ListView) findViewById(R.id.messages_view);
+        ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
+    }
 
 
     @Override
@@ -165,8 +173,8 @@ public class MessagesActivity extends Activity {
             }
             InputBox.Info(this, "Info", info);
             return true;
-        } else if (id == R.id.action_edit_title) {
 
+        } else if (id == R.id.action_edit_title) {
             InputBox.InputBox(this, "Name ändern", "",
                     conversation.getName(),
                     new InputBox.OnOkClickListener() {
@@ -178,8 +186,34 @@ public class MessagesActivity extends Activity {
                         }
                     });
             return true;
+
+        } else if (id == R.id.action_tracert) {
+            Message m = new Message("Tracert", db.getDefaultIdentity(), new Date(), conversation.getPeer());
+            Envelope e = Envelope.fromMessage(m);
+            e.flags = Envelope.FLAG_TRACEROUTE;
+            m.body += " " + BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString();
+            appendMessage(m);
+            Log.d(TAG, "sending tracert id " + e.uuid);
+            ConnectionManager.sendEnvelope(MessagesActivity.this, e);
+            //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString())));
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void startConversationWithPeer(Context ctx, Contact contact) {
+        // conversation with this contact already exists?
+        BonfireData db = BonfireData.getInstance(ctx);
+        Conversation conversation = db.getConversationByPeer(contact);
+        if (conversation == null) {
+            // add a new conversation
+            conversation = new Conversation(contact, contact.getNickname(), 0);
+            db.createConversation(conversation);
+        }
+        // start messages activity
+        Intent i = new Intent(ctx, MessagesActivity.class);
+        Log.i("ContactDetailsActivity", "starting MessagesActivity with ConversationId=" + conversation.rowid);
+        i.putExtra("ConversationId", conversation.rowid);
+        ctx.startActivity(i);
     }
 }

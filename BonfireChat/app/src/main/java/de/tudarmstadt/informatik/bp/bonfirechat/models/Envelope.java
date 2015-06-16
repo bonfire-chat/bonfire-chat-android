@@ -25,6 +25,11 @@ public class Envelope implements Serializable {
     public String senderNickname;
     public byte[] senderPublicKey;
     public byte[] encryptedBody;
+    public int flags;
+
+    public static final int FLAG_ENCRYPTED = 4;
+    public static final int FLAG_TRACEROUTE = 8;
+
 
     public Envelope(UUID uuid, int hopCount, Date sentTime, ArrayList<byte[]> recipientsPublicKeys, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
         this.uuid = uuid;
@@ -57,7 +62,6 @@ public class Envelope implements Serializable {
         return new Message(
                 new String(encryptedBody, Charset.forName("UTF-8")),
                 Contact.findOrCreate(ctx, senderPublicKey, senderNickname),
-                Message.MessageDirection.Received,
                 sentTime,
                 uuid);
     }
@@ -70,5 +74,9 @@ public class Envelope implements Serializable {
             }
         }
         return false;
+    }
+
+    public boolean hasFlag(int flag) {
+        return (flag & flags) == flag;
     }
 }
