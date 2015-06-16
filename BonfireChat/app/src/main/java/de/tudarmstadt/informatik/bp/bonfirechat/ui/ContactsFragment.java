@@ -150,7 +150,6 @@ public class ContactsFragment extends Fragment {
     }
 
     private void createConversationWithSelectedItems() {
-        BonfireData db = BonfireData.getInstance(getActivity());
         boolean[] mySelected = adapter.itemSelected;
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
