@@ -94,7 +94,7 @@ public class GcmProtocol extends SocketProtocol {
 
             //BufferedReader in = new BufferedReader(new InputStreamReader(new BufferedInputStream(urlConnection.getInputStream())));
             String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
-            Log.i(TAG, "successful sent message");
+            Log.i(TAG, "successfully sent message");
             Log.i(TAG, theString);
 
         } catch (UnsupportedEncodingException e) {

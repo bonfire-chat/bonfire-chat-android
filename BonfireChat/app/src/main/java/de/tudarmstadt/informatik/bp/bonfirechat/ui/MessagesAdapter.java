@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
@@ -60,13 +62,21 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         } else {
             v = (ViewHolder)convertView.getTag();
         }
-
-        v.messageBody.setText(getItem(position).body);
-        v.dateTime.setText((getItem(position).dateTime));
+        Message msg = getItem(position);
+        v.messageBody.setText(msg.body);
+        if (msg.error != null) {
+            v.dateTime.setText(msg.error);
+            v.dateTime.setTextColor(Color.RED);
+        } else {
+            v.dateTime.setText(DateHelper.formatTime(msg.sentTime));
+            v.dateTime.setTextColor(Color.GRAY);
+        }
         //lastMessage.setText(objects.get(position).getLastMessage());
         //icon.setImageResource(R.mipmap.ic_launcher);
 
         return convertView;
     }
+
+
 
 }
