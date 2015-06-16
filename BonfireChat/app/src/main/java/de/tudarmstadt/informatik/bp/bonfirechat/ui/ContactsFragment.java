@@ -45,6 +45,7 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.NFCHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
@@ -127,6 +128,9 @@ public class ContactsFragment extends Fragment {
         } else if (item.getItemId() == R.id.action_scan_qr) {
             IntentIntegrator inte = new IntentIntegrator(getActivity());
             inte.initiateScan();
+        } else if (item.getItemId() == R.id.action_scan_nfc) {
+            startActivity(new Intent(getActivity(), NFCHelper.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
