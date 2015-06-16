@@ -128,12 +128,13 @@ public class ConnectionManager extends NonStopIntentService {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
             // has this envelope not yet been processed?
-            if (processedMessages.contains(envelope.uuid)) {
+            if (!processedMessages.contains(envelope.uuid)) {
                 Log.i(TAG, "Received message from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
                 // remember this envelope
                 processedMessages.enqueue(envelope.uuid);
                 // is this envelope sent to us?
                 if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                    Log.d(TAG, "this message is for us.");
                     Message message = envelope.toMessage(ConnectionManager.this);
                     message.transferProtocol = sender.getClass().getName();
                     storeAndDisplayMessage(message);
