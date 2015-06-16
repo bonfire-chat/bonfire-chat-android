@@ -105,7 +105,7 @@ public class MainActivity extends Activity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
+        if (result != null && result.getContents() != null) {
             Intent ii = new Intent(this, ContactDetailsActivity.class);
             ii.setAction(Intent.ACTION_VIEW);
             ii.setData(Uri.parse(result.getContents()));
