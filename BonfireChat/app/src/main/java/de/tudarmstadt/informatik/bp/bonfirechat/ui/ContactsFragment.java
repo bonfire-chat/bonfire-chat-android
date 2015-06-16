@@ -102,10 +102,8 @@ public class ContactsFragment extends Fragment {
         contactsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Contact contact = adapter.getItem(position);
-                Intent intent = new Intent(getActivity(), ContactDetailsActivity.class);
-                intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, contact.rowid);
-                startActivity(intent);
+                // open up messages
+                MessagesActivity.startConversationWithPeer(ContactsFragment.this.getActivity(), adapter.getItem(position));
             }
         });
 
@@ -153,18 +151,15 @@ public class ContactsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void createConversationWithSelectedItems() {
-        BonfireData db = BonfireData.getInstance(getActivity());
+    private void detailsForSelectedItems() {
         boolean[] mySelected = adapter.itemSelected;
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
-                Conversation conversation = new Conversation(adapter.getItem(position), adapter.getItem(position).getNickname(), 0);
-                db.createConversation(conversation);
-                Intent i = new Intent(getActivity(), MessagesActivity.class);
-                Log.i("ConversationsFragment", "starting MessagesActivity with ConversationId=" + conversation.rowid);
-                i.putExtra("ConversationId", conversation.rowid);
-                startActivity(i);
+                Contact contact = adapter.getItem(position);
+                Intent intent = new Intent(getActivity(), ContactDetailsActivity.class);
+                intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, contact.rowid);
+                startActivity(intent);
                 break;
             }
         }
@@ -189,8 +184,8 @@ public class ContactsFragment extends Fragment {
                     deleteSelectedItems();
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-                case R.id.action_create_conversation:
-                    createConversationWithSelectedItems();
+                case R.id.action_contact_details:
+                    detailsForSelectedItems();
                     mode.finish();
                     return true;
                 default:
