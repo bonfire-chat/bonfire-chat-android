@@ -26,6 +26,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactDetailsActivity;
 
 
 public class NFCHelper extends Activity implements CreateNdefMessageCallback {
@@ -33,6 +34,7 @@ public class NFCHelper extends Activity implements CreateNdefMessageCallback {
     TextView textView;
     BonfireData db;
     IPublicIdentity pubident;
+    public static final String EXTRA_CONTACT_ID = "ContactId";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,10 @@ public class NFCHelper extends Activity implements CreateNdefMessageCallback {
         Log.d("TEST", new String(msg.getRecords()[0].getPayload()));
         Contact contact = contactFromUri(Uri.parse(new String(msg.getRecords()[0].getPayload())));
         db.createContact(contact);
+        Intent intent1 = new Intent(this, ContactDetailsActivity.class);
+        intent1.putExtra(EXTRA_CONTACT_ID, contact.rowid);
+        startActivity(intent1);
+        finish();
     }
 
     public static Contact contactFromUri(Uri url) {
