@@ -67,7 +67,9 @@ public class WifiReceiver extends BroadcastReceiver {
 
                 mManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
                 //String tmp = info==null ? "null" : info.toString();
-                Log.d(TAG,"Info ist:");
+                if (info != null) {
+                    Log.d(TAG, "Info ist: " + info);
+                }
                 if(info == null || !info.groupFormed) {
                     mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
                         @Override
@@ -109,79 +111,82 @@ public class WifiReceiver extends BroadcastReceiver {
                 mManager.requestPeers(mChannel, mWifiPeerListListener);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            Log.d(TAG, "Daten werden GANZ AUSSEN gesendet");
-            FutureTask futureTask = new FutureTask(new Callable() {
-                @Override
-                public Object call() throws Exception {
-                    Log.d(TAG, "Daten werden au�en gesendet");
-                    if (connectedDevice != null)
 
-                    {
-                        Log.d(TAG, "Daten werden gesendet");
-                        //WifiP2pGroup group = mManager.createGroup(mChannel,null);
-
-                        mManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
-
-                        String host = connectedDevice.deviceAddress;
-                        int port = 4242;
-                        int len;
-                        Socket socket = new Socket();
-                        //String msg = mWifiProtocol
-                        byte buf[] = new byte[1024];
-
-                        try {
-                            /**
-                             * Create a client socket with the host,
-                             * port, and timeout information.
-                             */
-                            socket.bind(null);
-                            socket.connect((new InetSocketAddress(info.groupOwnerAddress, port)), 500);
-
-                            /**
-                             * Create a byte stream from a JPEG file and pipe it to the output stream
-                             * of the socket. This data will be retrieved by the server device.
-                             */
-                            OutputStream outputStream = socket.getOutputStream();
-
-                            protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
-
-                            outputStream.close();
-
-                        } catch (IllegalArgumentException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        /**
-                         * Clean up any open sockets when done
-                         * transferring or if an exception occurred.
-                         */ finally {
-                            if (socket != null) {
-                                if (socket.isConnected()) {
-                                    try {
-                                        socket.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return null;
-                }
-            });
-            //todo wieviele Threats?
-            ExecutorService executorService = Executors.newFixedThreadPool(2);
-            executorService.execute(futureTask);
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action))
-
+            sendMessage();
         {
             // Respond to this device's wifi state changing
         }
 
 
+    }
+
+    public void sendMessage(){
+        Log.d(TAG, "Daten werden GANZ AUSSEN gesendet");
+        FutureTask futureTask = new FutureTask(new Callable() {
+            @Override
+            public Object call() throws Exception {
+                Log.d(TAG, "Daten werden au�en gesendet");
+                if (connectedDevice != null)
+
+                {
+                    Log.d(TAG, "Daten werden gesendet");
+                    //WifiP2pGroup group = mManager.createGroup(mChannel,null);
+
+                    mManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
+
+                    String host = connectedDevice.deviceAddress;
+                    int port = 4242;
+                    int len;
+                    Socket socket = new Socket();
+                    //String msg = mWifiProtocol
+
+
+                    try {
+                        /**
+                         * Create a client socket with the host,
+                         * port, and timeout information.
+                         */
+                        socket.setReuseAddress(true);
+                        //socket.bind(new InetSocketAddress(port));
+                        socket.connect((new InetSocketAddress(info.groupOwnerAddress, port)), 500);
+
+
+                        OutputStream outputStream = socket.getOutputStream();
+
+                        protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
+
+                        outputStream.close();
+
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    /**
+                     * Clean up any open sockets when done
+                     * transferring or if an exception occurred.
+                     */
+                    finally {
+                        if (socket != null) {
+                            if (socket.isConnected()) {
+                                try {
+                                    socket.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        });
+        //todo wieviele Threats?
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService.execute(futureTask);
     }
 
     private final String TAG = "WifiReceiver";
