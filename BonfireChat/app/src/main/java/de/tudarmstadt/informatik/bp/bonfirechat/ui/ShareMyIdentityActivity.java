@@ -6,6 +6,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -15,20 +16,25 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRCodeEncoder;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactDetailsActivity;
 
-public class NfcActivity extends Activity implements CreateNdefMessageCallback {
+public class ShareMyIdentityActivity extends Activity implements CreateNdefMessageCallback {
     NfcAdapter mNfcAdapter;
     TextView textView;
     BonfireData db;
@@ -50,6 +56,22 @@ public class NfcActivity extends Activity implements CreateNdefMessageCallback {
         }
         // Register callback
         mNfcAdapter.setNdefPushMessageCallback(this, this);
+
+        ((TextView)findViewById(R.id.txt_nickname)).setText(pubident.getNickname());
+
+        ImageView imageView = (ImageView) findViewById(R.id.qrCode);
+
+        int qrCodeDimention = 800;
+
+        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(QRcodeHelper.getIdentityURL(pubident), null,
+                "TEXT_TYPE", BarcodeFormat.QR_CODE.toString(), qrCodeDimention);
+
+        try {
+            Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+            imageView.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
