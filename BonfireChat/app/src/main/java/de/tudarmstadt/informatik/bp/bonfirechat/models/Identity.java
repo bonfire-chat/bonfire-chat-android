@@ -9,6 +9,9 @@ import android.util.Base64;
 import android.util.Log;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+
+import org.abstractj.kalium.keys.KeyPair;
+import org.abstractj.kalium.keys.PrivateKey;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -22,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,21 +37,22 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver
 public class Identity implements IPublicIdentity {
 
     private static final String TAG = "Identity";
-    public String nickname, privateKey, server, username, password, phone;
+    public String nickname, server, username, password, phone;
     public MyPublicKey publicKey;
+    public PrivateKey privateKey;
     public long rowid;
 
     public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password, String phone) {
         this.nickname = nickname; this.phone = phone; this.username = username; this.password = password;
-        this.privateKey = privateKey;
+        this.privateKey = new PrivateKey(privateKey);
         this.publicKey = MyPublicKey.deserialize(publicKey);
         this.server = server;
     }
 
     public static Identity generate(Context ctx) {
         KeyPair keyPair = CryptoHelper.generateKeyPair();
-        String pubkey = Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
-        String privkey = Base64.encodeToString(keyPair.getPrivate().getEncoded(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+        String pubkey = Base64.encodeToString(keyPair.getPublicKey().toBytes(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+        String privkey = keyPair.getPrivateKey().toString();
 
         Identity i= new Identity("", privkey, pubkey,
                 "teamwiki.de", "", String.valueOf(Math.random()*100000000000f), getMyPhoneNumber(ctx));
@@ -81,7 +84,7 @@ public class Identity implements IPublicIdentity {
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put("nickname", nickname);
-        values.put("privatekey", privateKey);
+        values.put("privatekey", privateKey.toString());
         values.put("publickey", publicKey.asBase64());
         values.put("server", server);
         values.put("username", username);
@@ -103,7 +106,7 @@ public class Identity implements IPublicIdentity {
         return id;
     }
 
-    public void registerWithServer() {
+    public String registerWithServer() {
 
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
@@ -123,18 +126,17 @@ public class Identity implements IPublicIdentity {
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
             Log.d(TAG, "registered with server : " + response.getStatusLine().toString());
-            Log.d(TAG, "registered with server : " + new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine());
+            String firstLine = new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine();
+            Log.d(TAG, "registered with server : " + firstLine);
 
-
-        } catch (ClientProtocolException e) {
+            if (response.getStatusLine().getStatusCode() != 200) {
+                return firstLine;
+            }
+            return null;
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return "Error: "+e.getMessage();
         }
-
-
     }
 
     private static String getMyPhoneNumber(Context ctx){

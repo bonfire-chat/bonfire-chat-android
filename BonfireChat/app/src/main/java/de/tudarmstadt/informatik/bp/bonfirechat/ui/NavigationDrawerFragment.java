@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Fragment;
 import android.app.Activity;
 import android.app.ActionBar;
+import android.content.Intent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -123,6 +125,12 @@ public class NavigationDrawerFragment extends Fragment {
                         BonfireData.getInstance(getActivity()).getDefaultIdentity());
             }
         });
+        rootView.findViewById(R.id.btnEditIdentity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), IdentityActivity.class));
+            }
+        });
         return rootView;
     }
 
@@ -143,8 +151,9 @@ public class NavigationDrawerFragment extends Fragment {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        ((TextView)rootView.findViewById(R.id.txt_nickname)).setText(
-                BonfireData.getInstance(getActivity()).getDefaultIdentity().getNickname());
+        Identity identity = BonfireData.getInstance(getActivity()).getDefaultIdentity();
+        if (identity != null)
+            ((TextView) rootView.findViewById(R.id.txt_nickname)).setText(identity.getNickname());
 
         // set up the drawer's list view with items and click listener
         ActionBar actionBar = getActionBar();

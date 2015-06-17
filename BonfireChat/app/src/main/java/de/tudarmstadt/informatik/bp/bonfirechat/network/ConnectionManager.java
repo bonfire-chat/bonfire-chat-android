@@ -6,6 +6,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -64,6 +65,8 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.CONVERSATION_ID";
     public static final String EXTENDED_DATA_PEER_ID =
             "de.tudarmstadt.informatik.bp.bonfirechat.PEER_ID";
+    public static final String EXTENDED_DATA_PROTOCOL_CLASS =
+            "de.tudarmstadt.informatik.bp.bonfirechat.PROTOCOL_CLASS";
     public static final String EXTENDED_DATA_MESSAGE_TEXT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_TEXT";
     public static final String EXTENDED_DATA_MESSAGE_UUID =
@@ -138,7 +141,7 @@ public class ConnectionManager extends NonStopIntentService {
                     Log.d(TAG, "this message is for us.");
                     TracerouteHandler.publishTraceroute(envelope);
                     Message message = envelope.toMessage(ConnectionManager.this);
-                    message.transferProtocol = sender.getClass().getName();
+                    message.setTransferProtocol(sender.getClass());
                     storeAndDisplayMessage(message);
                     // redistribute the envelope if there are further recipients
                     if (envelope.recipientsPublicKeys.size() > 1) {
@@ -197,7 +200,8 @@ public class ConnectionManager extends NonStopIntentService {
             Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ConnectionManager.this)
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                             .setContentTitle(conversation.title)
                             .setContentText(message.body)
                             .setContentIntent(pi)
@@ -234,8 +238,8 @@ public class ConnectionManager extends NonStopIntentService {
             Exception error = null;
             Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
             Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
+            IProtocol protocol = chooseConnection();
             try {
-                IProtocol protocol = chooseConnection();
                 TracerouteHandler.handleTraceroute(this, protocol, "Send", envelope);
                 if (null != protocol) {
                     protocol.sendMessage(envelope);
@@ -251,7 +255,8 @@ public class ConnectionManager extends NonStopIntentService {
             // if a message object is specified, this envelope was just generated on this phone
             // notify UI about success or failure
             Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, envelope.uuid);
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, envelope.uuid)
+                    .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, protocol.getClass());
             if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
@@ -317,6 +322,6 @@ public class ConnectionManager extends NonStopIntentService {
 
     // you know, for convenience and stuff
     public static void sendMessage(Context ctx, Message message) {
-        sendEnvelope(ctx, Envelope.fromMessage(message));
+        sendEnvelope(ctx, Envelope.fromMessage(message, true));
     }
 }

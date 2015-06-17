@@ -13,6 +13,7 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
@@ -22,7 +23,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 public class MessagesAdapter extends ArrayAdapter<Message> {
 
     class ViewHolder {
-        ImageView contactPhoto;
+        ImageView contactPhoto, encryptedIcon, protocolIcon;
         TextView messageBody, dateTime;
     }
 
@@ -58,6 +59,8 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.messageBody = (TextView) convertView.findViewById(R.id.message_body);
             v.dateTime = (TextView) convertView.findViewById(R.id.message_time);
             v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
+            v.encryptedIcon = (ImageView) convertView.findViewById(R.id.message_encrypted);
+            v.protocolIcon = (ImageView) convertView.findViewById(R.id.message_proto);
             convertView.setTag(v);
         } else {
             v = (ViewHolder)convertView.getTag();
@@ -71,6 +74,18 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.dateTime.setText(DateHelper.formatTime(msg.sentTime));
             v.dateTime.setTextColor(Color.GRAY);
         }
+        if (msg.hasFlag(Message.FLAG_ENCRYPTED)) {
+            v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
+            v.encryptedIcon.setColorFilter(Color.GRAY);
+        } else {
+            v.encryptedIcon.setImageResource(R.drawable.ic_lock_open_black_24dp);
+            v.encryptedIcon.setColorFilter(Color.RED);
+        }
+        v.protocolIcon.setVisibility(View.VISIBLE);
+        if (msg.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
+        else if (msg.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
+        else if (msg.hasFlag(Message.FLAG_PROTO_CLOUD)) v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
+        else v.protocolIcon.setVisibility(View.GONE);
         //lastMessage.setText(objects.get(position).getLastMessage());
         //icon.setImageResource(R.mipmap.ic_launcher);
 

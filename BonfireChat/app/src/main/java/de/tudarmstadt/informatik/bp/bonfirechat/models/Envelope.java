@@ -2,12 +2,18 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.Context;
 
+import org.abstractj.kalium.crypto.Box;
+import org.abstractj.kalium.crypto.Random;
+import org.abstractj.kalium.keys.PublicKey;
+
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 
 /**
  * Created by johannes on 15.06.15.
@@ -25,6 +31,7 @@ public class Envelope implements Serializable {
     public String senderNickname;
     public byte[] senderPublicKey;
     public byte[] encryptedBody;
+    public byte[] nonce;
     public int flags;
 
     public static final int FLAG_ENCRYPTED = 4;
@@ -42,7 +49,7 @@ public class Envelope implements Serializable {
     }
 
 
-    public static Envelope fromMessage(Message message) {
+    public static Envelope fromMessage(Message message, boolean encrypt) {
         ArrayList<byte[]> publicKeys = new ArrayList<>();
         for(Contact recipient: message.recipients) {
             publicKeys.add(recipient.getPublicKey().asByteArray());
@@ -55,14 +62,30 @@ public class Envelope implements Serializable {
                 message.sender.getNickname(),
                 message.sender.getPublicKey().asByteArray(),
                 message.body.getBytes(Charset.forName("UTF-8")));
+        if (encrypt) {
+            Identity sender = (Identity)message.sender;
+            Box crypto = new Box(new PublicKey(publicKeys.get(0)), sender.privateKey);
+            envelope.nonce = new Random().randomBytes(24);
+            envelope.encryptedBody = crypto.encrypt(envelope.nonce, envelope.encryptedBody);
+            envelope.flags |= FLAG_ENCRYPTED;
+        }
         return envelope;
     }
 
     public Message toMessage(Context ctx) {
+        byte[] body = encryptedBody;
+        int msgFlags = 0;
+        if (hasFlag(FLAG_ENCRYPTED)) {
+            Identity id = BonfireData.getInstance(ctx).getDefaultIdentity();
+            Box crypto = new Box(new PublicKey(senderPublicKey), id.privateKey);
+            body = crypto.decrypt(nonce, body);
+            msgFlags |= Message.FLAG_ENCRYPTED;
+        }
         return new Message(
-                new String(encryptedBody, Charset.forName("UTF-8")),
+                new String(body, Charset.forName("UTF-8")),
                 Contact.findOrCreate(ctx, senderPublicKey, senderNickname),
                 sentTime,
+                msgFlags,
                 uuid);
     }
 
