@@ -98,7 +98,7 @@ public class MainActivity extends Activity
     }
 
     public void navigateFragment(int position) {
-        mNavigationDrawerFragment.selectItem(0);
+        mNavigationDrawerFragment.selectItem(position);
     }
 
     @Override
