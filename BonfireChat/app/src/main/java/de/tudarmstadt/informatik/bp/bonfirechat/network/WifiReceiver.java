@@ -16,12 +16,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -47,6 +45,13 @@ public class WifiReceiver extends BroadcastReceiver {
 
     }
 
+    WifiP2pManager.ConnectionInfoListener mConnectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
+        @Override
+        public void onConnectionInfoAvailable(WifiP2pInfo info) {
+            WifiReceiver.info = info;
+        }
+    };
+
     WifiP2pManager.PeerListListener mWifiPeerListListener = new WifiP2pManager.PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peers) {
@@ -60,25 +65,22 @@ public class WifiReceiver extends BroadcastReceiver {
                 config.wps.setup = WpsInfo.PBC;
                 connectedDevice = dev;
 
-                WifiP2pManager.ConnectionInfoListener mCIL = new WifiP2pManager.ConnectionInfoListener() {
-                    @Override
-                    public void onConnectionInfoAvailable(WifiP2pInfo info) {
-                        WifiReceiver.info = info;
-                    }
-                };
-                if(info != null && info.groupFormed)
+                mManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
+                //String tmp = info==null ? "null" : info.toString();
+                Log.d(TAG,"Info ist:");
+                if(info == null || !info.groupFormed) {
+                    mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d(TAG, "successfully connected with " + connectedDevice);
+                        }
 
-                mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d(TAG, "successfully connected with " + connectedDevice);
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-                        Log.d(TAG, "could not connect with " +  connectedDevice + "with reason " + reason);
-                    }
-                });
+                        @Override
+                        public void onFailure(int reason) {
+                            Log.d(TAG, "could not connect with " + connectedDevice + "with reason " + reason);
+                        }
+                    });
+                }
             }
 
 
@@ -117,19 +119,8 @@ public class WifiReceiver extends BroadcastReceiver {
                     {
                         Log.d(TAG, "Daten werden gesendet");
                         //WifiP2pGroup group = mManager.createGroup(mChannel,null);
-/*
-                        mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
-                            @Override
-                            public void onGroupInfoAvailable(WifiP2pGroup group) {
 
-                            }
-
-                            @Override
-                            public void onConnectionInfoAvailable(WifiP2pInfo info) {
-                                WifiReceiver.owneraddress = info.groupOwnerAddress;
-                            }
-                        });
-*/
+                        mManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
 
                         String host = connectedDevice.deviceAddress;
                         int port = 4242;
@@ -144,7 +135,7 @@ public class WifiReceiver extends BroadcastReceiver {
                              * port, and timeout information.
                              */
                             socket.bind(null);
-                            socket.connect((new InetSocketAddress(getIPFromMac(host), port)), 500);
+                            socket.connect((new InetSocketAddress(info.groupOwnerAddress, port)), 500);
 
                             /**
                              * Create a byte stream from a JPEG file and pipe it to the output stream
