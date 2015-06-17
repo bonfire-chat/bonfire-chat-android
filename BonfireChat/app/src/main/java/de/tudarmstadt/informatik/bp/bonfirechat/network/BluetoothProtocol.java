@@ -206,6 +206,7 @@ public class BluetoothProtocol extends SocketProtocol {
         for (OutputStream stream : output) {
             sendEnvelope(stream, envelope);
         }
+        try {        Thread.sleep(50); }catch(InterruptedException ex){}
         disconnect();
     }
 

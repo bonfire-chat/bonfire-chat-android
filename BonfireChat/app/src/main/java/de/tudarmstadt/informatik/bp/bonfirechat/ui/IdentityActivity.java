@@ -1,13 +1,19 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
@@ -41,7 +47,9 @@ public class IdentityActivity extends Activity  {
         identity = db.getDefaultIdentity();
 
         getEdit(R.id.txt_nickname).setText(identity.nickname);
-        ((TextView)findViewById(R.id.textView3)).setText("Public Key Hash:\n"+identity.getPublicKey().asHash());
+        String pubkey = identity.getPublicKey().asBase64();
+        pubkey = pubkey.substring(0,23) + "\n" + pubkey.substring(24);
+        ((TextView)findViewById(R.id.textView3)).setText("Public Key:\n"+pubkey);
         getEdit(R.id.txt_phoneNumber).setText(identity.phone);
 
     }
@@ -72,13 +80,36 @@ public class IdentityActivity extends Activity  {
             identity.phone = getEdit(R.id.txt_phoneNumber).getText().toString();
             BonfireData db = BonfireData.getInstance(this);
             db.updateIdentity(identity);
-            new Thread(new Runnable() {
+
+            final AlertDialog progress =
+                new ProgressDialog.Builder(this)
+                    .setTitle("Registering ...")
+                    .setMessage("This will take only a few seconds.")
+                    .show();
+            new AsyncTask<Identity, Object, String>() {
                 @Override
-                public void run() {
-                    identity.registerWithServer();
+                protected String doInBackground(Identity... params) {
+                    return params[0].registerWithServer();
                 }
-            }).start();
-            finish();
+                @Override
+                protected void onPostExecute(String s) {
+                    progress.dismiss();
+                    if (s != null ) {
+                        new AlertDialog.Builder(IdentityActivity.this)
+                                .setTitle("Registering failed")
+                                .setMessage(s)
+                                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    } else {
+
+                        finish();
+                    }
+                }
+            }.execute(identity);
 
             SharedPreferences.Editor preferences = PreferenceManager.getDefaultSharedPreferences(this).edit();
             preferences.putString("my_nickname", identity.nickname);
