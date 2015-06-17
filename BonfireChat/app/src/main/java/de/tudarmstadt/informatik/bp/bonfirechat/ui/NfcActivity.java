@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactDetailsActivity;
@@ -53,16 +54,7 @@ public class NfcActivity extends Activity implements CreateNdefMessageCallback {
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        String url = null;
-        try {
-            url = "bonfire://contact?name=" + URLEncoder.encode(pubident.getNickname(), "utf-8")
-                    + "&jid=" + URLEncoder.encode(pubident.getXmppId())
-                    + "&tel=" + URLEncoder.encode(pubident.getPhoneNumber())
-                    + "&key=" + URLEncoder.encode(pubident.getPublicKey().asBase64());
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        String url = QRcodeHelper.getIdentityURL(pubident);
         NdefMessage msg = new NdefMessage(
                 new NdefRecord[] { NdefRecord.createMime(
                         "application/de.tudarmstadt.informatik.bp.bonfirechat", url.getBytes())

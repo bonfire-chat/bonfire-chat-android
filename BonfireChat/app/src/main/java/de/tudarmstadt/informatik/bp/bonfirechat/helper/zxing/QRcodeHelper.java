@@ -15,18 +15,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 public class QRcodeHelper {
 
     public static void shareQRcode(Activity ctx, IPublicIdentity pubident) {
-        try {
-            String url = "bonfire://contact?name=" + URLEncoder.encode(pubident.getNickname(), "utf-8")
-                    + "&jid=" + URLEncoder.encode(pubident.getXmppId())
-                    + "&tel=" + URLEncoder.encode(pubident.getPhoneNumber())
-                    + "&key=" + URLEncoder.encode(pubident.getPublicKey().asBase64());
+        String url = getIdentityURL(pubident);
 
-            IntentIntegrator integrator = new IntentIntegrator(ctx);
-            integrator.shareText(url);
+        IntentIntegrator integrator = new IntentIntegrator(ctx);
+        integrator.shareText(url);
 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
     }
 
     public static Contact contactFromUri(Uri url) {
@@ -34,6 +27,17 @@ public class QRcodeHelper {
                 url.getQueryParameter("name"), "", "", url.getQueryParameter("tel"),
                 url.getQueryParameter("key"), url.getQueryParameter("jid"), "", "", 0);
         return contact;
+    }
+
+    public static String getIdentityURL(IPublicIdentity pubident) {
+        try {
+            return "bonfire://contact?name=" + URLEncoder.encode(pubident.getNickname(), "utf-8")
+                    + "&jid=" + URLEncoder.encode(pubident.getXmppId(), "utf-8")
+                    + "&tel=" + URLEncoder.encode(pubident.getPhoneNumber(), "utf-8")
+                    + "&key=" + URLEncoder.encode(pubident.getPublicKey().asBase64(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
