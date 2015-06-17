@@ -10,6 +10,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
@@ -37,6 +38,7 @@ public class WifiProtocol extends SocketProtocol {
     public Message msg;
     public Contact contact;
     public static InetAddress mServerInetAdress;
+    public static ServerSocket mServerSocket;
 
 
     private static final String TAG = "WifiProtocol";
@@ -70,37 +72,53 @@ public class WifiProtocol extends SocketProtocol {
         this.msg = msg;
         this.contact = target;
 
-        Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
-        mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "Discovering of peers was successful!");
+        if ((WifiReceiver.info == null  || !WifiReceiver.info.groupFormed)){
+            Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
+            mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+                @Override
+                public void onSuccess() {
+                    Log.d(TAG, "Discovering of peers was successful!");
 
-            }
+                }
 
-            ;
+                ;
 
-            @Override
-            public void onFailure(int reason) {
-                Log.d(TAG, "the Reason the discovering of peers failed with reason " + reason);
-            }
+                @Override
+                public void onFailure(int reason) {
+                    Log.d(TAG, "the Reason the discovering of peers failed with reason " + reason);
+                }
 
-        });
+            });
+
+        }else {
+            mReceiver.sendMessage();
+
+
+        }
     }
 
 
 
 
-    private void registerWifiReceiverSocket(){
-        final ServerSocket mServerSocket = null;
+    private void registerWifiReceiverSocket() {
 
-        FutureTask futureTask = new FutureTask(new Callable(){
 
+        FutureTask futureTask = new FutureTask(new Callable() {
 
             @Override
-            public Object call() throws Exception{
+            public Object call() throws Exception {
                 Log.d(TAG, "do in Backround wird ausgeführt");
                 try {
+
+
+
+                    if (WifiProtocol.mServerSocket==null){
+                        WifiProtocol.mServerSocket = new ServerSocket(4242);
+                    }
+
+
+                    Log.d(TAG, "Server: Socket opened");
+
                     /**
                      * Create a server socket and wait for client connections. This
                      * call blocks until a connection is accepted from a client
@@ -108,28 +126,29 @@ public class WifiProtocol extends SocketProtocol {
 
 
 
-                    ServerSocket mServerSocket = new ServerSocket(4242);
-                    mServerSocket.setReuseAddress(true);
-                    WifiProtocol.mServerInetAdress  = mServerSocket.getInetAddress();
-                    Socket client = mServerSocket.accept();
+                        //WifiProtocol.mServerInetAdress = mServerSocket.getInetAddress();
+                        Socket client = WifiProtocol.mServerSocket.accept();
+                        Log.d(TAG, "Server: connection done");
 
-                    InputStream inputstream = client.getInputStream();
-                    WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
+                        InputStream inputstream = client.getInputStream();
+                        WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
 
-                    Message m = mySocketProtocol.deserializeMessage(inputstream);
-                    Log.d(TAG,"Die message war: " + m);
-                    listener.onMessageReceived(WifiProtocol.this,m);
+                        Message m = mySocketProtocol.deserializeMessage(inputstream);
+                        Log.d(TAG, "Die message war: " + m);
+                        listener.onMessageReceived(WifiProtocol.this, m);
 
+                    //mServerSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return null;
             }
-        }); //todo wieviele Threats?
+        });
+
+
+        //todo wieviele Threats?
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         executorService.execute(futureTask);
 
-
     }
-
 }
