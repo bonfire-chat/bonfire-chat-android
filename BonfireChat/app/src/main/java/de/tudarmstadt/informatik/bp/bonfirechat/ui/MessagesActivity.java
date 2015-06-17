@@ -42,7 +42,7 @@ public class MessagesActivity extends Activity {
     private static final String TAG = "MessagesActivity";
     List<Message> messages = new ArrayList<Message>();
     private Conversation conversation;
-    private BonfireData db = BonfireData.getInstance(this);
+    private final BonfireData db = BonfireData.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class MessagesActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_messages);
-        BonfireData db = BonfireData.getInstance(this);
+        //BonfireData db = BonfireData.getInstance(this);
         long convId = getIntent().getLongExtra("ConversationId", 0);
         conversation = db.getConversationById(convId);
         if (conversation == null) {
@@ -86,10 +86,8 @@ public class MessagesActivity extends Activity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        appendMessage(new Message(intent.getStringExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_TEXT)
-                                , conversation.getPeer(), new Date(),
-                                (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID)
-                        ));
+                        UUID uuid = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
+                        appendMessage(db.getMessageByUUID(uuid));
                     }
                 },
                 new IntentFilter(ConnectionManager.MSG_RECEIVED_BROADCAST_EVENT));
@@ -106,6 +104,7 @@ public class MessagesActivity extends Activity {
                                 } else {
                                     m.error = null;
                                 }
+                                m.setTransferProtocol((Class)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
                                 db.updateMessage(m);
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
@@ -119,7 +118,7 @@ public class MessagesActivity extends Activity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.i(TAG, "onNewIntent: "+intent);
+        Log.i(TAG, "onNewIntent: " + intent);
     }
 
     private View.OnClickListener onSendButtonClickListener = new View.OnClickListener() {
@@ -129,7 +128,7 @@ public class MessagesActivity extends Activity {
             String msg = ed.getText().toString();
             ed.setText("");
 
-            Message message = new Message(msg, db.getDefaultIdentity(), new Date(), conversation.getPeer());
+            Message message = new Message(msg, db.getDefaultIdentity(), new Date(), Message.FLAG_ENCRYPTED, conversation.getPeer());
             message.error = "Sending";
 
             db.createMessage(message, conversation);
@@ -188,8 +187,8 @@ public class MessagesActivity extends Activity {
             return true;
 
         } else if (id == R.id.action_tracert) {
-            Message m = new Message("TRACEROUTE\n", db.getDefaultIdentity(), new Date(), conversation.getPeer());
-            Envelope e = Envelope.fromMessage(m);
+            Message m = new Message("TRACEROUTE\n", db.getDefaultIdentity(), new Date(), 0, conversation.getPeer());
+            Envelope e = Envelope.fromMessage(m, false);
             e.flags = Envelope.FLAG_TRACEROUTE;
             m.body = "TRACEROUTE: " + BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString();
             appendMessage(m);

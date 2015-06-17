@@ -52,6 +52,13 @@
                 android:orientation="horizontal"
                 android:paddingTop="1dp" >
 
+                <ImageView android:id="@+id/message_encrypted"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_lock_black_24dp"/>
+                <ImageView android:id="@+id/message_proto"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp" />
                 <TextView
                     android:id="@+id/message_time"
                     android:layout_width="wrap_content"

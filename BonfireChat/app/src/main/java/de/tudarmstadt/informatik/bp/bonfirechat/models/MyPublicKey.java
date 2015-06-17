@@ -1,14 +1,10 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.abstractj.kalium.keys.PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jcajce.provider.config.ProviderConfiguration;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.KeyFactory;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
@@ -18,29 +14,29 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
  */
 public class MyPublicKey {
 
-    private BCECPublicKey thisKey;
+    private PublicKey thisKey;
 
-    public MyPublicKey(BCECPublicKey key) {
+    public MyPublicKey(PublicKey key) {
         thisKey = key;
     }
 
-    public BCECPublicKey get() {
+    public PublicKey get() {
         return thisKey;
     }
     public byte[] asByteArray() {
-        return thisKey.getEncoded();
+        return thisKey.toBytes();
     }
     public String asBase64() {
-        return CryptoHelper.toBase64(thisKey.getEncoded());
+        return CryptoHelper.toBase64(thisKey.toBytes());
     }
     public String asHash() {
-        return CryptoHelper.hash("MD5", thisKey.getEncoded());
+        return asBase64();
+        //return CryptoHelper.hash("MD5", thisKey.toBytes());
     }
 
     public static MyPublicKey deserialize(byte[] publicKey) {
         try {
-            KeyFactory fact = KeyFactory.getInstance("ECDSA", new BouncyCastleProvider());
-            return new MyPublicKey ((BCECPublicKey) fact.generatePublic(new X509EncodedKeySpec(publicKey)));
+            return new MyPublicKey(new PublicKey(publicKey));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
