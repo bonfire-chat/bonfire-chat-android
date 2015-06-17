@@ -16,6 +16,8 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,8 @@ import java.net.URLEncoder;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRCodeEncoder;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
@@ -124,5 +128,36 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
                 url.getQueryParameter("name"), "", "", url.getQueryParameter("tel"),
                 url.getQueryParameter("key"), url.getQueryParameter("jid"), "", "", 0);
         return contact;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sharemyidentity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_scan_qr) {
+            IntentIntegrator inte = new IntentIntegrator(this);
+            inte.initiateScan();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * handle results from qr code scanning
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null && result.getContents() != null) {
+            Intent ii = new Intent(this, ContactDetailsActivity.class);
+            ii.setAction(Intent.ACTION_VIEW);
+            ii.setData(Uri.parse(result.getContents()));
+            startActivity(ii);
+        }
     }
 }

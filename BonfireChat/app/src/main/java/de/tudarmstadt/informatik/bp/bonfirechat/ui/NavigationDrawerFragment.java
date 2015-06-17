@@ -120,9 +120,7 @@ public class NavigationDrawerFragment extends Fragment {
         rootView.findViewById(R.id.btnShareIdentityQR).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "btnShareIdentityQR");
-                QRcodeHelper.shareQRcode(getActivity(),
-                        BonfireData.getInstance(getActivity()).getDefaultIdentity());
+                startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
             }
         });
         rootView.findViewById(R.id.btnEditIdentity).setOnClickListener(new View.OnClickListener() {
