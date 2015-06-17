@@ -107,6 +107,8 @@ public class ConversationsFragment extends Fragment {
             // just open ContactsFragment, because that provides the intended functionality anyway
             // a list of contacts is shown, and upon clicking one a conversation is shown / added
             ((MainActivity) getActivity()).onNavigationDrawerItemSelected(1);
+        } else if (item.getItemId() == R.id.action_edit_identity) {
+            startActivity(new Intent(getActivity(), IdentityActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

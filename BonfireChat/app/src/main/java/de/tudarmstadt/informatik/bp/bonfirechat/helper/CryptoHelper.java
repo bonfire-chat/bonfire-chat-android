@@ -2,51 +2,21 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 
 import android.util.Base64;
 
-import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.crypto.ec.CustomNamedCurves;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.abstractj.kalium.keys.KeyPair;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.SecureRandom;
-import java.security.spec.X509EncodedKeySpec;
-
-import de.tudarmstadt.informatik.bp.bonfirechat.models.MyPublicKey;
 
 /**
  * Created by mw on 08.06.15.
  */
 public class CryptoHelper {
 
-    public static ECParameterSpec getEllipticCurveParameters() {
-        X9ECParameters ecP = CustomNamedCurves.getByName("curve25519");
-        ECParameterSpec ecSpec=new ECParameterSpec(ecP.getCurve(), ecP.getG(),
-                ecP.getN(), ecP.getH(), ecP.getSeed());
-        return ecSpec;
-    }
 
     public static KeyPair generateKeyPair() {
-        try {
-            Provider bcProvider = new BouncyCastleProvider();
-            KeyPairGenerator g = KeyPairGenerator.getInstance("ECDSA", bcProvider);
-            g.initialize(getEllipticCurveParameters(), new SecureRandom());
-            KeyPair keyPair = g.generateKeyPair();
-            return keyPair;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-            return null;
-        }
+        KeyPair keyPair = new KeyPair();
+        return keyPair;
     }
 
 

@@ -89,12 +89,13 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="org.xbill.dns_2.1.7" level="project" />
-    <orderEntry type="library" exported="" name="bcprov-jdk15on-152" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-22.1.1" level="project" />
-    <orderEntry type="library" exported="" name="asmack-android-8-4.0.7" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-3.1.59" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.1.1" level="project" />
+    <orderEntry type="library" exported="" name="org.xbill.dns_2.1.7" level="project" />
+    <orderEntry type="library" exported="" name="kalium-jni-1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="asmack-android-8-4.0.7" level="project" />
+    <orderEntry type="library" exported="" name="bcprov-jdk15on-152" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-22.1.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-22.1.1" level="project" />
   </component>
 </module>

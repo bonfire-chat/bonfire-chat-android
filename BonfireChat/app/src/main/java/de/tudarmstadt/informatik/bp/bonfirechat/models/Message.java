@@ -13,6 +13,8 @@ import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 
 /**
  * Created by johannes on 05.05.15.
@@ -30,16 +32,22 @@ public class Message implements Serializable {
     public UUID uuid;
     public String transferProtocol;
     public String error;
+    public int flags;
 
-    public Message(String body, IPublicIdentity sender, Date sentTime, Contact recipient) {
-        this(body, sender, sentTime, UUID.randomUUID());
+    public static final int FLAG_ENCRYPTED = 4;
+    public static final int FLAG_PROTO_BT = 16;
+    public static final int FLAG_PROTO_WIFI = 32;
+    public static final int FLAG_PROTO_CLOUD = 64;
+
+    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, Contact recipient) {
+        this(body, sender, sentTime, flags, UUID.randomUUID());
         this.recipients.add(recipient);
     }
 
-    public Message(String body, IPublicIdentity sender, Date sentTime, UUID rowid) {
-        this.recipients = new ArrayList<>();
+    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID rowid) {
+        this.sender = sender; this.recipients = new ArrayList<>();
         this.body = body; this.sentTime = sentTime; this.uuid = rowid;
-        this.sender = sender;
+        this.flags = flags;
     }
 
     public MessageDirection direction() {
@@ -58,7 +66,15 @@ public class Message implements Serializable {
         values.put("body", body);
         values.put("sentDate", DateHelper.formatDateTime(this.sentTime));
         values.put("uuid", uuid.toString());
+        values.put("flags", flags);
         return values;
+    }
+
+    public void setTransferProtocol(Class theClass) {
+        flags &= ~(FLAG_PROTO_BT | FLAG_PROTO_WIFI | FLAG_PROTO_CLOUD);
+        if (theClass.equals(GcmProtocol.class)) flags |= FLAG_PROTO_CLOUD;
+        if (theClass.equals(BluetoothProtocol.class)) flags |= FLAG_PROTO_BT;
+        //if (theClass.equals(WifiProtocol.class)) flags |= FLAG_PROTO_WIFI;
     }
 
     public static Message fromCursor(Cursor cursor, BonfireData db) {
@@ -73,6 +89,11 @@ public class Message implements Serializable {
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
                 peer,
                 date,
+                cursor.getInt(cursor.getColumnIndex("flags")),
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("uuid"))));
+    }
+
+    public boolean hasFlag(int flag) {
+        return (flags & flag) != 0;
     }
 }
