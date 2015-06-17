@@ -48,8 +48,8 @@ public class IdentityActivity extends Activity  {
 
         getEdit(R.id.txt_nickname).setText(identity.nickname);
         String pubkey = identity.getPublicKey().asBase64();
-        pubkey = pubkey.substring(0,23) + "\n" + pubkey.substring(24);
-        ((TextView)findViewById(R.id.textView3)).setText("Public Key:\n"+pubkey);
+        pubkey = pubkey.substring(0,21) + "\n" + pubkey.substring(22);
+        ((TextView)findViewById(R.id.txt_publicKey)).setText(pubkey);
         getEdit(R.id.txt_phoneNumber).setText(identity.phone);
 
     }
@@ -75,8 +75,6 @@ public class IdentityActivity extends Activity  {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             identity.nickname = getEdit(R.id.txt_nickname).getText().toString();
-            identity.username = getEdit(R.id.email).getText().toString();
-            identity.password = getEdit(R.id.password).getText().toString();
             identity.phone = getEdit(R.id.txt_phoneNumber).getText().toString();
             BonfireData db = BonfireData.getInstance(this);
             db.updateIdentity(identity);

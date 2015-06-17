@@ -98,7 +98,7 @@ public class ContactsFragment extends Fragment {
             IntentIntegrator inte = new IntentIntegrator(getActivity());
             inte.initiateScan();
         } else if (item.getItemId() == R.id.action_scan_nfc) {
-            startActivity(new Intent(getActivity(), NfcActivity.class));
+            startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
             return true;
         }
 
