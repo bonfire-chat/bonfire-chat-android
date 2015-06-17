@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
@@ -35,6 +36,7 @@ public class WifiProtocol extends SocketProtocol {
     WifiReceiver mReceiver;
     public Message msg;
     public Contact contact;
+    public static InetAddress mServerInetAdress;
 
 
     private static final String TAG = "WifiProtocol";
@@ -90,6 +92,7 @@ public class WifiProtocol extends SocketProtocol {
 
 
     private void registerWifiReceiverSocket(){
+        final ServerSocket mServerSocket = null;
 
         FutureTask futureTask = new FutureTask(new Callable(){
 
@@ -102,8 +105,13 @@ public class WifiProtocol extends SocketProtocol {
                      * Create a server socket and wait for client connections. This
                      * call blocks until a connection is accepted from a client
                      */
-                    ServerSocket serverSocket = new ServerSocket(4242);
-                    Socket client = serverSocket.accept();
+
+
+
+                    ServerSocket mServerSocket = new ServerSocket(4242);
+                    mServerSocket.setReuseAddress(true);
+                    WifiProtocol.mServerInetAdress  = mServerSocket.getInetAddress();
+                    Socket client = mServerSocket.accept();
 
                     InputStream inputstream = client.getInputStream();
                     WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
