@@ -97,10 +97,14 @@ public class MainActivity extends Activity
         actionBar.setTitle(mTitle);
     }
 
+    public void navigateFragment(int position) {
+        mNavigationDrawerFragment.selectItem(0);
+    }
+
     @Override
     public void onBackPressed() {
         if (currentFragment != 0) {
-            onNavigationDrawerItemSelected(0);
+            navigateFragment(0);
         } else {
             super.onBackPressed();
         }
