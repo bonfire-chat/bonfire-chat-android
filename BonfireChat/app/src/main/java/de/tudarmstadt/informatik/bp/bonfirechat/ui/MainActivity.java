@@ -31,6 +31,7 @@ public class MainActivity extends Activity
     private CharSequence mTitle;
 
     private ArrayList<Fragment> fragments;
+    private int currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +81,8 @@ public class MainActivity extends Activity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragments.get(position))
                 .commit();
-        onSectionAttached(position);
-    }
-
-    public void onSectionAttached(int id) {
-        switch (id) {
+        currentFragment = position;
+        switch (position) {
             case 0:
                 mTitle = getString(R.string.title_conversations);
                 break;
@@ -96,9 +94,16 @@ public class MainActivity extends Activity
                 break;
         }
         ActionBar actionBar = getActionBar();
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        //actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragment != 0) {
+            onNavigationDrawerItemSelected(0);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
