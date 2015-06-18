@@ -201,7 +201,7 @@ public class ConnectionManager extends NonStopIntentService {
             Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
             intent.putExtra("ConversationId", conversation.rowid);
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
-            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addParentStack(MessagesActivity.class);
             stackBuilder.addNextIntent(intent);
             PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
             //PendingIntent.getActivity(ConnectionManager.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
