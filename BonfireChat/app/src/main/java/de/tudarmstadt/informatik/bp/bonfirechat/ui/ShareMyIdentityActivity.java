@@ -18,6 +18,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,15 +52,17 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         pubident = db.getDefaultIdentity();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nfc_layout);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
-            finish();
-            return;
+            ((TextView)findViewById(R.id.nfcNotice)).setVisibility(View.GONE);
+        } else {
+            // Register callback
+            mNfcAdapter.setNdefPushMessageCallback(this, this);
         }
-        // Register callback
-        mNfcAdapter.setNdefPushMessageCallback(this, this);
 
         ((TextView)findViewById(R.id.txt_nickname)).setText(pubident.getNickname());
 
