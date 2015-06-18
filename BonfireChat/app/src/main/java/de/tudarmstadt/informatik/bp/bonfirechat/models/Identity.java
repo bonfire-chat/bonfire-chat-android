@@ -131,7 +131,7 @@ public class Identity implements IPublicIdentity {
             return theString;
         } catch (Exception e) {
             e.printStackTrace();
-            if (urlConnection != null) return e.toString();
+            if (urlConnection == null) return e.toString();
             return StreamHelper.convertStreamToString(urlConnection.getErrorStream());
         } finally {
             if(urlConnection != null) urlConnection.disconnect();
