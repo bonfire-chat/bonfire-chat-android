@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 
 import android.util.Base64;
 
+import org.abstractj.kalium.crypto.Random;
 import org.abstractj.kalium.keys.KeyPair;
 
 import java.io.UnsupportedEncodingException;
@@ -17,6 +18,10 @@ public class CryptoHelper {
     public static KeyPair generateKeyPair() {
         KeyPair keyPair = new KeyPair();
         return keyPair;
+    }
+
+    public static byte[] generateNonce() {
+        return new Random().randomBytes(24);
     }
 
 
