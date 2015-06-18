@@ -10,6 +10,9 @@ import android.util.Log;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 
+import org.abstractj.kalium.SodiumConstants;
+import org.abstractj.kalium.crypto.Box;
+import org.abstractj.kalium.crypto.Random;
 import org.abstractj.kalium.keys.KeyPair;
 import org.abstractj.kalium.keys.PrivateKey;
 import org.apache.http.HttpResponse;
@@ -21,14 +24,19 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
 
 /**
@@ -108,34 +116,42 @@ public class Identity implements IPublicIdentity {
 
     public String registerWithServer() {
 
-        // Create a new HttpClient and Post Header
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(BonfireData.API_ENDPOINT + "/register.php");
-
+        HttpURLConnection urlConnection = null;
         try {
 
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("nickname", nickname));
-            nameValuePairs.add(new BasicNameValuePair("xmppid", username));
-            nameValuePairs.add(new BasicNameValuePair("publickey", publicKey.asBase64()));
-            nameValuePairs.add(new BasicNameValuePair("phone", phone));
-            nameValuePairs.add(new BasicNameValuePair("gcmid", GcmBroadcastReceiver.regid));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            String plaintext = "nickname=" + URLEncoder.encode(nickname, "UTF-8")
+                    + "&xmppid=" + URLEncoder.encode(username, "UTF-8")
+                    + "&phone=" + URLEncoder.encode(phone, "UTF-8")
+                    + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
 
-            // Execute HTTP Post Request
-            HttpResponse response = httpclient.execute(httppost);
-            Log.d(TAG, "registered with server : " + response.getStatusLine().toString());
-            String firstLine = new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine();
-            Log.d(TAG, "registered with server : " + firstLine);
+            Box b = new Box(BonfireData.SERVER_PUBLICKEY, privateKey);
+            byte[] nonce = new Random().randomBytes(SodiumConstants.NONCE_BYTES);
+            String ciphertext = CryptoHelper.toBase64(b.encrypt(nonce, plaintext.getBytes("UTF-8")));
 
-            if (response.getStatusLine().getStatusCode() != 200) {
-                return firstLine;
-            }
-            return null;
+            String postData = "publickey=" + publicKey.asBase64()
+                    + "&nonce=" + CryptoHelper.toBase64(nonce)
+                    + "&data=" + ciphertext;
+
+            urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/register.php").openConnection();
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoOutput(true);
+            urlConnection.setChunkedStreamingMode(0);
+
+            BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            out.write(postData.getBytes("UTF-8"));
+            out.flush();
+
+            String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
+            Log.d(TAG, "registered with server : " + urlConnection.getResponseCode());
+            Log.i(TAG, theString);
+            if (urlConnection.getResponseCode() == 200) return null;
+            return theString;
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error: "+e.getMessage();
+            if (urlConnection == null) return e.toString();
+            return StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+        } finally {
+            if(urlConnection == null) urlConnection.disconnect();
         }
     }
 
