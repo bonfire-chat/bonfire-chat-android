@@ -8,33 +8,16 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-
-import org.abstractj.kalium.SodiumConstants;
 import org.abstractj.kalium.crypto.Box;
-import org.abstractj.kalium.crypto.Random;
 import org.abstractj.kalium.keys.KeyPair;
 import org.abstractj.kalium.keys.PrivateKey;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
@@ -125,7 +108,7 @@ public class Identity implements IPublicIdentity {
                     + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
 
             Box b = new Box(BonfireData.SERVER_PUBLICKEY, privateKey);
-            byte[] nonce = new Random().randomBytes(SodiumConstants.NONCE_BYTES);
+            byte[] nonce = CryptoHelper.generateNonce();
             String ciphertext = CryptoHelper.toBase64(b.encrypt(nonce, plaintext.getBytes("UTF-8")));
 
             String postData = "publickey=" + publicKey.asBase64()

@@ -1,19 +1,15 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.content.Context;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.bouncycastle.util.Arrays;
 
 import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 

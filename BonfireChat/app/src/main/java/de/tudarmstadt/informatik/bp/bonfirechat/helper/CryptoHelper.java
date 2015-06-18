@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 
 import android.util.Base64;
 
+import org.abstractj.kalium.SodiumConstants;
 import org.abstractj.kalium.crypto.Random;
 import org.abstractj.kalium.keys.KeyPair;
 
@@ -21,7 +22,7 @@ public class CryptoHelper {
     }
 
     public static byte[] generateNonce() {
-        return new Random().randomBytes(24);
+        return new Random().randomBytes(SodiumConstants.NONCE_BYTES);
     }
 
 
