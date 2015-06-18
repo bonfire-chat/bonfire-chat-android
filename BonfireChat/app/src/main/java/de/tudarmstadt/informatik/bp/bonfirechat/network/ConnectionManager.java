@@ -82,6 +82,14 @@ public class ConnectionManager extends NonStopIntentService {
     // Those were either already sent in the first place, or received
     private static RingBuffer<UUID> processedEnvelopes = new RingBuffer<>(250);
 
+
+
+    public static final Class[] registeredProtocols = new Class[]{
+            BluetoothProtocol.class,
+            // WiFiProtocol.class,
+            GcmProtocol.class };
+
+
     /**
      * Creates the ConnectionManager, called by Android creating the service
      */
@@ -224,20 +232,22 @@ public class ConnectionManager extends NonStopIntentService {
             id.registerWithServer();
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            if (preferences.getBoolean("enable_xmpp", true)) {
-                getOrCreateConnection(GcmProtocol.class);
-            }
-            if (preferences.getBoolean("enable_bluetooth", true)) {
-                getOrCreateConnection(BluetoothProtocol.class);
-            }
-            if (preferences.getBoolean("enable_wifi", true)) {
-                // getOrCreateConnection(WifiProtocol.class);
+            for(Class protocol : registeredProtocols) {
+                if (isProtocolEnabled(protocol)) {
+                    getOrCreateConnection(protocol);
+                }
             }
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
             Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
-            IProtocol protocol = chooseConnection();
+            IProtocol protocol = null;
+            // Handle protocol preference from intent
+            if (intent.hasExtra(EXTENDED_DATA_PROTOCOL_CLASS) && isProtocolEnabled((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS))) {
+                protocol = getOrCreateConnection((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS));
+                if (!protocol.canSend()) protocol = null;
+            }
+            if (protocol == null) protocol = chooseConnection();
             try {
                 TracerouteHandler.handleTraceroute(this, protocol, "Send", envelope);
                 if (null != protocol) {
@@ -279,29 +289,19 @@ public class ConnectionManager extends NonStopIntentService {
         }
     }
 
-
+    private boolean isProtocolEnabled(Class protocol) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getBoolean("enable_" + protocol.getSimpleName(), true);
+    }
 
     private IProtocol chooseConnection() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        // Bluetooth enabled and ready?
-        if (preferences.getBoolean("enable_bluetooth", true)) {
-            IProtocol p = getOrCreateConnection(BluetoothProtocol.class);
-            if (p.canSend()) {
-                return p;
-            }
-        }
-        // WiFi enabled and ready?
-        /*if (preferences.getBoolean("enable_wifi", true)) {
-            IProtocol p = getOrCreateConnection(WiFiProtocol.class);
-            if (p.canSend()) {
-                return p;
-            }
-        }*/
-        // ClientServer enabled and ready?
-        if (preferences.getBoolean("enable_xmpp", true)) {
-            IProtocol p = getOrCreateConnection(GcmProtocol.class);
-            if (p.canSend()) {
-                return p;
+        for(Class protocol : registeredProtocols) {
+            // Bluetooth enabled and ready?
+            if (isProtocolEnabled(protocol)) {
+                IProtocol p = getOrCreateConnection(protocol);
+                if (p.canSend()) {
+                    return p;
+                }
             }
         }
         return null;
