@@ -1,8 +1,10 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -34,7 +36,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 
 
 public class MessagesActivity extends Activity {
@@ -43,6 +47,7 @@ public class MessagesActivity extends Activity {
     List<Message> messages = new ArrayList<Message>();
     private Conversation conversation;
     private final BonfireData db = BonfireData.getInstance(this);
+    int preferredProtocol = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,9 +200,35 @@ public class MessagesActivity extends Activity {
             Log.d(TAG, "sending tracert id " + e.uuid);
             ConnectionManager.sendEnvelope(MessagesActivity.this, e);
             //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString())));
+        } else if (id == R.id.action_select_protocol) {
+            showSelectProtocol();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void showSelectProtocol() {
+        new AlertDialog.Builder(this)
+                .setSingleChoiceItems(new CharSequence[]{"Auto-select", "Bluetooth", "Wifi", "Server"},
+                        preferredProtocol,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        preferredProtocol = i;
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setTitle("Select protocol")
+        .show();
+    }
+
+    private Class getPreferredProtocol() {
+        switch(preferredProtocol) {
+            case 1: return BluetoothProtocol.class;
+            case 3: return GcmProtocol.class;
+            default: return null;
+        }
     }
 
     public static void startConversationWithPeer(Context ctx, Contact contact) {
