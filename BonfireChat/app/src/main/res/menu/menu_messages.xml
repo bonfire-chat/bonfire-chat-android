@@ -9,4 +9,6 @@
         android:showAsAction="never" />
     <item android:id="@+id/action_tracert" android:title="Send Traceroute"
         android:showAsAction="never" />
+    <item android:id="@+id/action_select_protocol" android:title="Protocol"
+        android:showAsAction="never" />
 </menu>
