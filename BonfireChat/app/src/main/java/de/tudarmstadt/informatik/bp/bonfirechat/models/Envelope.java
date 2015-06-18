@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 
 /**
  * Created by johannes on 15.06.15.
@@ -65,7 +66,7 @@ public class Envelope implements Serializable {
         if (encrypt) {
             Identity sender = (Identity)message.sender;
             Box crypto = new Box(new PublicKey(publicKeys.get(0)), sender.privateKey);
-            envelope.nonce = new Random().randomBytes(24);
+            envelope.nonce = CryptoHelper.generateNonce();
             envelope.encryptedBody = crypto.encrypt(envelope.nonce, envelope.encryptedBody);
             envelope.flags |= FLAG_ENCRYPTED;
         }
