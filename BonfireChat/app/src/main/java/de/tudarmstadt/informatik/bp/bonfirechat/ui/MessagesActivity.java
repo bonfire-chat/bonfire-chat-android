@@ -85,6 +85,8 @@ public class MessagesActivity extends Activity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+                        long conversationId = intent.getLongExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1);
+                        if (conversationId != conversation.rowid) return;
                         UUID uuid = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
                         appendMessage(db.getMessageByUUID(uuid));
                     }
