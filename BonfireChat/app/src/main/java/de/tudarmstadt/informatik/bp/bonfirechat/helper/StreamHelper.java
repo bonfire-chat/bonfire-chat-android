@@ -8,6 +8,7 @@ import java.util.Formatter;
 public class StreamHelper {
 
     public static String convertStreamToString(java.io.InputStream is) {
+        if (is == null) return "";
         java.util.Scanner s = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }
