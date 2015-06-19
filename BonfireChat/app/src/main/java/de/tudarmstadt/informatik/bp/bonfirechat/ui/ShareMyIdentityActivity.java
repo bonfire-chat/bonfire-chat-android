@@ -53,7 +53,7 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nfc_layout);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        
+
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
