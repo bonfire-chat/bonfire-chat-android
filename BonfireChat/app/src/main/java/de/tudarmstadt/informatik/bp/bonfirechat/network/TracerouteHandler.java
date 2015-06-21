@@ -3,8 +3,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 import android.content.Context;
 import android.util.Log;
 
-import org.bouncycastle.util.Arrays;
-
 import java.io.BufferedOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -23,9 +21,17 @@ public class TracerouteHandler {
     public static void handleTraceroute(Context ctx, IProtocol protocol, String mode, Envelope envelope) {
         if (!envelope.hasFlag(Envelope.FLAG_TRACEROUTE)) return;
         String traceMsg = mode + " via " + protocol.getClass().getSimpleName() + " by " + BonfireData.getInstance(ctx).getDefaultIdentity().getNickname() + "\n";
-        envelope.encryptedBody = Arrays.concatenate(envelope.encryptedBody, traceMsg.getBytes());
+        envelope.encryptedBody = concatByteArrays(envelope.encryptedBody, traceMsg.getBytes());
     }
 
+    public static byte[] concatByteArrays(byte[] a, byte[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        byte[] c= new byte[aLen+bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
+    }
 
     public static void publishTraceroute(Envelope envelope) {
         if (!envelope.hasFlag(Envelope.FLAG_TRACEROUTE)) return;
