@@ -62,38 +62,18 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/txt_phoneNumber"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="30dp" />
-
-    <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="vertical"
-
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentLeft="true" >
+        android:layout_marginTop="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Jabber Account:"
-            android:id="@+id/textView1"
+            android:text="Medium Text"
+            android:id="@+id/txt_publicKey"
+            android:layout_below="@+id/textView3"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/txt_nickname"
-            android:layout_marginTop="20dp" />
+            android:fontFamily="monospace" />
 
-        <EditText android:id="@+id/email" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="jabberid@server.org"
-            android:inputType="textEmailAddress" android:maxLines="1"
-            android:singleLine="true" />
-
-        <EditText android:id="@+id/password" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="@string/prompt_password"
-            android:imeActionId="@+id/login"
-            android:imeActionLabel="@string/action_sign_in_short"
-            android:imeOptions="actionUnspecified" android:inputType="textPassword"
-            android:maxLines="1" android:singleLine="true" />
-
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
 </ScrollView>
 

@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.app.ActionBar;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
@@ -28,6 +31,7 @@ public class MainActivity extends Activity
     private CharSequence mTitle;
 
     private ArrayList<Fragment> fragments;
+    private int currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +81,8 @@ public class MainActivity extends Activity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragments.get(position))
                 .commit();
-        onSectionAttached(position);
-    }
-
-    public void onSectionAttached(int id) {
-        switch (id) {
+        currentFragment = position;
+        switch (position) {
             case 0:
                 mTitle = getString(R.string.title_conversations);
                 break;
@@ -93,9 +94,34 @@ public class MainActivity extends Activity
                 break;
         }
         ActionBar actionBar = getActionBar();
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        //actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
 
+    public void navigateFragment(int position) {
+        mNavigationDrawerFragment.selectItem(position);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragment != 0) {
+            navigateFragment(0);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * handle results from qr code scanning
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null && result.getContents() != null) {
+            Intent ii = new Intent(this, ContactDetailsActivity.class);
+            ii.setAction(Intent.ACTION_VIEW);
+            ii.setData(Uri.parse(result.getContents()));
+            startActivity(ii);
+        }
+    }
 }

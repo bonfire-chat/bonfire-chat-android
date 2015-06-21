@@ -6,20 +6,19 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Kommunikationswege">
-        <CheckBoxPreference android:key="enable_bluetooth" android:defaultValue="true"
+        <CheckBoxPreference android:key="enable_BluetoothProtocol" android:defaultValue="true"
             android:title="Verwende Bluetooth"></CheckBoxPreference>
 
-        <CheckBoxPreference android:key="enable_wifi" android:defaultValue="true"
+        <CheckBoxPreference android:key="enable_WifiProtocol" android:defaultValue="true"
             android:title="Verwende Wi-Fi (AdHoc)"></CheckBoxPreference>
 
-        <CheckBoxPreference android:key="enable_xmpp" android:defaultValue="true"
+        <CheckBoxPreference android:key="enable_GcmProtocol" android:defaultValue="true"
             android:title="Verwende Mobile Daten / Wi-Fi"></CheckBoxPreference>
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Sonstiges">
         <PreferenceScreen android:title="Über BonfireChat">
-            <Preference android:title="Über BonfireChat" />
 
             <Preference android:title="Entwickelt an der TU Darmstadt"
                 android:summary="von Johannes, Jonas, Max, Matthias und Simon "/>

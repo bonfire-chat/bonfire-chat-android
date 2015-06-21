@@ -6,6 +6,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,10 +22,14 @@ import org.jivesoftware.smack.SmackAndroid;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity;
@@ -37,7 +42,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
 public class ConnectionManager extends NonStopIntentService {
 
     private static final String TAG = "ConnectionManager";
-    private static ConnectionManager instance;
 
     // action in Intents which are sent to the service
     public static final String GO_ONLINE_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.GO_ONLINE";
@@ -61,12 +65,30 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.CONVERSATION_ID";
     public static final String EXTENDED_DATA_PEER_ID =
             "de.tudarmstadt.informatik.bp.bonfirechat.PEER_ID";
+    public static final String EXTENDED_DATA_PROTOCOL_CLASS =
+            "de.tudarmstadt.informatik.bp.bonfirechat.PROTOCOL_CLASS";
     public static final String EXTENDED_DATA_MESSAGE_TEXT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_TEXT";
-    public static final String EXTENDED_DATA_MESSAGE_ID =
-            "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_ID";
+    public static final String EXTENDED_DATA_MESSAGE_UUID =
+            "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_UUID";
     public static final String EXTENDED_DATA_ERROR =
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
+
+
+    // maximum hops for a message until it will be discarded
+    public static final int MAX_HOP_COUNT = 20;
+
+    // buffer for storing which messages have already been handled
+    // Those were either already sent in the first place, or received
+    private static RingBuffer<UUID> processedEnvelopes = new RingBuffer<>(250);
+
+
+
+    public static final Class[] registeredProtocols = new Class[]{
+            BluetoothProtocol.class,
+            // WiFiProtocol.class,
+            GcmProtocol.class };
+
 
     /**
      * Creates the ConnectionManager, called by Android creating the service
@@ -84,18 +106,6 @@ public class ConnectionManager extends NonStopIntentService {
     }
 
     public static List<IProtocol> connections = new ArrayList<IProtocol>();
-
-
-    public Class getConnectionClassByName(String name) throws ClassNotFoundException {
-        return Class.forName("de.tudarmstadt.informatik.bp.bonfirechat.network."+name);
-    }
-
-    public IProtocol getConnection(Class typ) {
-        for(IProtocol p : connections) {
-            if (typ.isInstance(p)) return p;
-        }
-        return null;
-    }
 
     public IProtocol getOrCreateConnection(Class typ) {
         IProtocol p = getConnection(typ);
@@ -118,33 +128,72 @@ public class ConnectionManager extends NonStopIntentService {
         return p;
     }
 
+    private IProtocol getConnection(Class typ) {
+        for(IProtocol p : connections) {
+            if (typ.isInstance(p)) return p;
+        }
+        return null;
+    }
+
     private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
         @Override
-        public void onMessageReceived(IProtocol sender, Message message) {
+        public void onMessageReceived(IProtocol sender, Envelope envelope) {
+            // has this envelope not yet been processed?
+            if (!processedEnvelopes.contains(envelope.uuid)) {
+                Log.i(TAG, "Received envelope from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
+                TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
+                // remember this envelope
+                processedEnvelopes.enqueue(envelope.uuid);
+                // is this envelope sent to us?
+                if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                    Log.d(TAG, "this message is for us.");
+                    TracerouteHandler.publishTraceroute(envelope);
+                    Message message = envelope.toMessage(ConnectionManager.this);
+                    message.setTransferProtocol(sender.getClass());
+                    storeAndDisplayMessage(message);
+                    // redistribute the envelope if there are further recipients
+                    if (envelope.recipientsPublicKeys.size() > 1) {
+                        redistributeEnvelope(envelope);
+                    }
+                } else {
+                    redistributeEnvelope(envelope);
+                }
+            }
+        }
+
+        private void redistributeEnvelope(Envelope envelope) {
+            envelope.hopCount += 1;
+            // if the envelope has been sent less than 20 hops, redistribute it
+            if (envelope.hopCount < MAX_HOP_COUNT) {
+                sendEnvelope(ConnectionManager.this, envelope);
+            }
+        }
+
+        private void storeAndDisplayMessage(Message message) {
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);
-            Log.d(TAG, "received message : " + message.body);
+            Log.d(TAG, "display message: " + message.body);
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
-            Conversation conversation = data.getConversationByPeer(message.sender);
+            Conversation conversation = data.getConversationByPeer((Contact) message.sender);
             if (conversation == null) {
                 Log.d(TAG, "creating new conversation for peer "+message.sender.getNickname());
-                conversation = new Conversation(message.sender, message.sender.getNickname(), 0);
+                conversation = new Conversation((Contact) message.sender, message.sender.getNickname(), 0);
                 data.createConversation(conversation);
 
                 Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
-                                // Puts the status into the Intent
-                                .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
+                        // Puts the status into the Intent
+                        .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
                 broadcastManager.sendBroadcast(localIntent);
 
             }
             Log.d(TAG, "conversationId=" + conversation.rowid);
 
             data.createMessage(message, conversation);
-            Log.d(TAG, "message stored in db with id=" + message.rowid);
+            Log.d(TAG, "message stored in db with uuid=" + message.uuid);
 
             Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
-                    .putExtra(EXTENDED_DATA_PEER_ID, message.sender.rowid)
-                            .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, message.uuid)
+                    .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
             // Broadcasts the Intent to receivers in this app.
             broadcastManager.sendBroadcast(localIntent);
 
@@ -152,19 +201,21 @@ public class ConnectionManager extends NonStopIntentService {
             Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
             intent.putExtra("ConversationId", conversation.rowid);
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
-            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addParentStack(MessagesActivity.class);
             stackBuilder.addNextIntent(intent);
             PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
             //PendingIntent.getActivity(ConnectionManager.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
             Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ConnectionManager.this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(conversation.title)
-                    .setContentText(message.body)
-                    .setContentIntent(pi)
-                    .setSound(sound)
-                    .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
+                            .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                            .setContentTitle(conversation.title)
+                            .setContentText(message.body)
+                            .setContentIntent(pi)
+                            .setSound(sound)
+                            .setAutoCancel(true)
+                            .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
 
             NotificationManager mNotifyMgr =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -174,47 +225,47 @@ public class ConnectionManager extends NonStopIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         Bundle extras = intent.getExtras();
         BonfireData db = BonfireData.getInstance(this);
-
         if (intent.getAction() == GO_ONLINE_ACTION) {
             Identity id = db.getDefaultIdentity();
             id.registerWithServer();
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-
-            if (preferences.getBoolean("enable_xmpp", true)) {
-                ClientServerProtocol xmpp = (ClientServerProtocol) getOrCreateConnection(ClientServerProtocol.class);
-                xmpp.connectToServer(this);
-            }
-            if (preferences.getBoolean("enable_bluetooth", true)) {
-                getOrCreateConnection(BluetoothProtocol.class);
-            }
-            if (preferences.getBoolean("enable_wifi", true)) {
-                WifiProtocol mWifi = (WifiProtocol) getOrCreateConnection(WifiProtocol.class);
-
+            for(Class protocol : registeredProtocols) {
+                if (isProtocolEnabled(protocol)) {
+                    getOrCreateConnection(protocol);
+                }
             }
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
-            Message message = db.getMessageById(intent.getLongExtra("messageId", -1));
-            Log.d(TAG, "Loading message id "+intent.getLongExtra("messageId", -1)+" = "+message+" from "+message.sender.getNickname());
+            Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
+            Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
+            IProtocol protocol = null;
+            // Handle protocol preference from intent
+            if (intent.hasExtra(EXTENDED_DATA_PROTOCOL_CLASS) && isProtocolEnabled((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS))) {
+                protocol = getOrCreateConnection((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS));
+                if (!protocol.canSend()) protocol = null;
+            }
+            if (protocol == null) protocol = chooseConnection();
             try {
-                Class protocolClass = getConnectionClassByName(intent.getStringExtra("protocolName"));
+                TracerouteHandler.handleTraceroute(this, protocol, "Send", envelope);
+                if (null != protocol) {
+                    protocol.sendMessage(envelope);
+                } else {
+                    error = new RuntimeException("No connection available for sending :(");
+                }
 
-                IProtocol protocol = getConnection(protocolClass);
-                Log.d(TAG, "protocol : " + protocol);
-                protocol.sendMessage(db.getContactById(intent.getLongExtra("contactId", -1)),
-                        message);
-
-            }catch(Exception ex) {
+            } catch(Exception ex) {
                 ex.printStackTrace();
                 error = ex;
             }
 
+            // if a message object is specified, this envelope was just generated on this phone
+            // notify UI about success or failure
             Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_ID, message.rowid);
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, envelope.uuid)
+                    .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, protocol.getClass());
             if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
@@ -223,39 +274,53 @@ public class ConnectionManager extends NonStopIntentService {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
             String messageType = gcm.getMessageType(intent);
 
-            if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
-                sendNotification("Send error: " + extras.toString());
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_DELETED.equals(intent.getAction())) {
-                sendNotification("Deleted messages on server: " +
-                        extras.toString());
-                // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+            if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
+                Log.w(TAG, "GCM: Send error: " + extras.toString());
 
-                sendNotification("Received: " + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
+            } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(intent.getAction())) {
+                Log.w(TAG, "GCM: Deleted messages on server: " + extras.toString());
+
+            } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+                GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
+                Log.i(TAG, "gcmProto=" + gcmProto);
+                if (gcmProto == null) return;
+                gcmProto.onHandleGcmIntent(intent);
             }
         }
     }
 
-    // Put the message into a notification and post it.
-    // This is just one simple example of what you might choose to do with
-    // a GCM message.
-    private void sendNotification(String msg) {
-        NotificationManager mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
+    private boolean isProtocolEnabled(Class protocol) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getBoolean("enable_" + protocol.getSimpleName(), true);
+    }
+
+    private IProtocol chooseConnection() {
+        for(Class protocol : registeredProtocols) {
+            // Bluetooth enabled and ready?
+            if (isProtocolEnabled(protocol)) {
+                IProtocol p = getOrCreateConnection(protocol);
+                if (p.canSend()) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
 
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("GCM Notification")
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(msg))
-                        .setContentText(msg);
+    // static helper method to enqueue
+    public static void sendEnvelope(Context ctx, Envelope envelope) {
+        // remember this envelope
+        processedEnvelopes.enqueue(envelope.uuid);
+        // and dispatch sending intent
+        Intent intent = new Intent(ctx, ConnectionManager.class);
+        intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
+        intent.putExtra("envelope", envelope);
+        ctx.startService(intent);
+    }
 
-        mNotificationManager.notify(2, mBuilder.build());
+    // you know, for convenience and stuff
+    public static void sendMessage(Context ctx, Message message) {
+        sendEnvelope(ctx, Envelope.fromMessage(message, true));
     }
 }
