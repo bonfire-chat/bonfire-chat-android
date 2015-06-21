@@ -1,17 +1,9 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.style.UpdateLayout;
-import android.util.JsonReader;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,35 +11,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.content.Context;
-import android.widget.SearchView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 
 /**
  * contacts list
@@ -100,10 +73,8 @@ public class ContactsFragment extends Fragment {
         contactsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Contact contact = adapter.getItem(position);
-                Intent intent = new Intent(getActivity(), ContactDetailsActivity.class);
-                intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, contact.rowid);
-                startActivity(intent);
+                // open up messages
+                MessagesActivity.startConversationWithPeer(ContactsFragment.this.getActivity(), adapter.getItem(position));
             }
         });
 
@@ -120,16 +91,14 @@ public class ContactsFragment extends Fragment {
         int id = item.getItemId();
         final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
 
-        if (item.getItemId() == R.id.action_add_contact) {
-            Contact c = new Contact("");
-            bonfireData.createContact(c);
-            Intent intent = new Intent(this.getActivity(), ContactDetailsActivity.class);
-            intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, c.rowid);
-            startActivity(intent);
-            return true;
-
-        } else if (item.getItemId() == R.id.action_search) {
+        if (item.getItemId() == R.id.action_search) {
             startActivity(new Intent(getActivity(), SearchUserActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.action_scan_qr) {
+            IntentIntegrator inte = new IntentIntegrator(getActivity());
+            inte.initiateScan();
+        } else if (item.getItemId() == R.id.action_scan_nfc) {
+            startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
             return true;
         }
 
@@ -153,18 +122,15 @@ public class ContactsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void createConversationWithSelectedItems() {
-        BonfireData db = BonfireData.getInstance(getActivity());
+    private void detailsForSelectedItems() {
         boolean[] mySelected = adapter.itemSelected;
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
-                Conversation conversation = new Conversation(adapter.getItem(position), adapter.getItem(position).getNickname(), 0);
-                db.createConversation(conversation);
-                Intent i = new Intent(getActivity(), MessagesActivity.class);
-                Log.i("ConversationsFragment", "starting MessagesActivity with ConversationId=" + conversation.rowid);
-                i.putExtra("ConversationId", conversation.rowid);
-                startActivity(i);
+                Contact contact = adapter.getItem(position);
+                Intent intent = new Intent(getActivity(), ContactDetailsActivity.class);
+                intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, contact.rowid);
+                startActivity(intent);
                 break;
             }
         }
@@ -189,8 +155,8 @@ public class ContactsFragment extends Fragment {
                     deleteSelectedItems();
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-                case R.id.action_create_conversation:
-                    createConversationWithSelectedItems();
+                case R.id.action_contact_details:
+                    detailsForSelectedItems();
                     mode.finish();
                     return true;
                 default:

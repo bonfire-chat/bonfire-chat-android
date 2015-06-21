@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
@@ -20,32 +21,24 @@ public abstract class SocketProtocol implements IProtocol {
     protected Identity identity;
     protected OnMessageReceivedListener listener;
 
-    protected void serializeMessage(OutputStream output, Contact target, Message message) {
+    protected void sendEnvelope(OutputStream output, Envelope envelope) {
         try {
-            if (message.sender == null) {
-                message.sender = new Contact("catcher");
-            }
-            Log.e("424242", "Get your seats up, gentlemen! Preparing to send that message. Sender object is: " + message.sender);
+            Log.d("SocketProtocol", "Sending envelope  uuid=" + envelope.uuid.toString() + "   from=" + envelope.senderNickname);
             ObjectOutputStream stream = new ObjectOutputStream(output);
-            stream.writeObject(target);
-            stream.writeObject(message);
+            stream.writeObject(envelope);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    protected Message deserializeMessage(InputStream input) {
+    protected Envelope receiveEnvelope(InputStream input) throws IOException {
         try {
             ObjectInputStream stream = new ObjectInputStream(input);
-            Contact target = (Contact) stream.readObject();
-            Message message = (Message) stream.readObject();
-            return message;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Envelope envelope = (Envelope) stream.readObject();
+            return envelope;
+        } catch(ClassNotFoundException ex) {
+            throw new IOException("Unable to deserialize envelope, class not found ("+ex.getMessage() + ")");
         }
-        return null;
     }
 
     @Override

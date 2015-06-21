@@ -20,4 +20,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_save">Speichern</string>
     <string name="title_activity_search_user">SearchUserActivity</string>
+
+    <string name="share_my_identity">Kontaktdaten teilen</string>
 </resources>

@@ -1,5 +1,50 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:choiceMode="singleChoice"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ListView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:choiceMode="singleChoice" android:id="@+id/listView"
     android:divider="@android:color/transparent" android:dividerHeight="0dp"
-    android:background="#cccc" tools:context=".NavigationDrawerFragment" />
+    android:background="#cccc" tools:context=".NavigationDrawerFragment"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/linearLayout2" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/linearLayout2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="#b236002a">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/txt_nickname"
+            android:padding="11dp"
+            android:layout_weight="1"
+            android:textColor="#ffffff" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnShareIdentityQR"
+            android:src="@drawable/ic_share_black_24dp"
+            android:tint="#ffffff"
+            style="@android:style/Widget.ActionButton"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnEditIdentity"
+            android:src="@drawable/ic_build_black_24dp"
+            android:tint="#ffffff"
+            style="@android:style/Widget.ActionButton" />
+    </LinearLayout>
+
+</RelativeLayout>

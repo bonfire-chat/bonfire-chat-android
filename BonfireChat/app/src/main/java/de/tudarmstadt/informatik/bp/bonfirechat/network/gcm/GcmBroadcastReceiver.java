@@ -17,7 +17,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
@@ -33,10 +32,15 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "received Gcm Broadcast : "+intent.getAction());
         Log.i(TAG, intent.getExtras().toString());
-        // Explicitly specify that GcmIntentService will handle the intent.
+
+        // The intent containing the data received from GCM is sent to
+        // ConnectionManager.onHandleIntent, which in turn calls
+        // GcmProtocol.onHandleGcmIntent.
         ComponentName comp = new ComponentName(context.getPackageName(),
                 ConnectionManager.class.getName());
-        // Start the service, keeping the device awake while it is launching.
+
+        // this is used to make sure the phone stays awake while
+        // processing the intent (wake-lock)
         startWakefulService(context, (intent.setComponent(comp)));
         setResultCode(Activity.RESULT_OK);
     }

@@ -7,7 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.abstractj.kalium.keys.PublicKey;
+
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
@@ -31,7 +35,8 @@ public class BonfireData extends SQLiteOpenHelper{
 	/**
 	 * URL of the rendezvous server API endpoint
 	 */
-	public static final String API_ENDPOINT = "https://bonfire.projects.teamwiki.net";
+    public static final String API_ENDPOINT = "https://bonfire.projects.teamwiki.net";
+    public static final PublicKey SERVER_PUBLICKEY = new PublicKey("7c2bbc4c4d292479de59a1168f3b102ac9869b9ee00beb92745571e36bbb0b43");
 
 	private static BonfireData instance;
 
@@ -43,7 +48,7 @@ public class BonfireData extends SQLiteOpenHelper{
     private SQLiteOpenHelper helper;
 
     private BonfireData(Context context) {
-        super(context, "CommunicationData", null, 9);
+        super(context, "CommunicationData", null, 13);
 
     }
 
@@ -52,7 +57,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, phoneNumber TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
         db.execSQL("CREATE TABLE if not exists " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
-        db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(conversation INT NOT NULL, sender INT NOT NULL, messageDirection INTEGER NOT NULL, body TEXT, dateTime TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(uuid TEXT NOT NULL PRIMARY KEY, conversation INT NOT NULL, sender INT NOT NULL, flags INTEGER NOT NULL, protocol TEXT, body TEXT, sentDate TEXT, insertDate INT)");
         db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT, phone TEXT)");
 
     }
@@ -79,8 +84,8 @@ public class BonfireData extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = message.getContentValues();
         values.put("conversation", conversation.rowid);
-        message.rowid = db.insert(MESSAGES, null, values);
-        //db.close();
+        values.put("insertDate", (new Date()).getTime());
+        db.insert(MESSAGES, null, values);
     }
 
     public Identity getDefaultIdentity() {
@@ -135,10 +140,10 @@ public class BonfireData extends SQLiteOpenHelper{
         return conversation;
     }
 
-    public Message getMessageById(long rowid){
+    public Message getMessageByUUID(UUID id){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Message> messages = new ArrayList<>();
-        Cursor cursor = db.query(MESSAGES, ALL_COLS, "rowid=?", new String[]  {String.valueOf(rowid)}, null, null, null);
+        Cursor cursor = db.query(MESSAGES, null, "uuid=?", new String[]  {id.toString()}, null, null, null);
         if (!cursor.moveToNext()) return null;
         Message message = Message.fromCursor(cursor, this);
         //db.close();
@@ -147,7 +152,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Message> getMessages(Conversation conversation){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Message> messages = new ArrayList<>();
-        Cursor messageCursor = db.query(MESSAGES, ALL_COLS, "conversation=?", new String[]{String.valueOf(conversation.rowid)}, null, null, null);
+        Cursor messageCursor = db.query(MESSAGES, null, "conversation=?", new String[]{String.valueOf(conversation.rowid)}, null, null, "insertDate ASC");
         while(messageCursor.moveToNext()){
             messages.add(Message.fromCursor(messageCursor, this));
         }
@@ -211,6 +216,13 @@ public class BonfireData extends SQLiteOpenHelper{
         if (!cursor.moveToNext()) return null;
         return Contact.fromCursor(cursor);
     }
+    public Contact getContactByPublicKey(String publicKey){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Contact> contacts = new ArrayList<>();
+        Cursor cursor = db.query(CONTACTS, ALL_COLS, "publicKey = ?", new String[]{ publicKey }, null, null, null);
+        if (!cursor.moveToNext()) return null;
+        return Contact.fromCursor(cursor);
+    }
     public Contact getContactById(long id){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();
@@ -239,7 +251,7 @@ public class BonfireData extends SQLiteOpenHelper{
     }
     public void updateMessage(Message message) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(MESSAGES, message.getContentValues(), " rowid = ? ", new String[]{String.valueOf(message.rowid)});
+        db.update(MESSAGES, message.getContentValues(), " uuid = ? ", new String[]{String.valueOf(message.uuid)});
     }
     public void updateIdentity(Identity identity) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -2,84 +2,81 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import org.abstractj.kalium.crypto.Box;
+import org.abstractj.kalium.keys.KeyPair;
+import org.abstractj.kalium.keys.PrivateKey;
+
+import java.io.BufferedOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
 
 /**
  * Created by mw on 18.05.15.
  */
-public class Identity {
+public class Identity implements IPublicIdentity {
 
     private static final String TAG = "Identity";
-    public String nickname, privateKey, publicKey, server, username, password, phone;
+    public String nickname, server, username, password, phone;
+    public MyPublicKey publicKey;
+    public PrivateKey privateKey;
     public long rowid;
 
     public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password, String phone) {
-        this.nickname = nickname; this.privateKey = privateKey; this.publicKey = publicKey; this.phone = phone;
-        this.server = server; this.username = username; this.password = password;
+        this.nickname = nickname; this.phone = phone; this.username = username; this.password = password;
+        this.privateKey = new PrivateKey(privateKey);
+        this.publicKey = MyPublicKey.deserialize(publicKey);
+        this.server = server;
     }
 
     public static Identity generate(Context ctx) {
-        // TODO generate a real key pair
-        Identity i= new Identity("", String.valueOf(Math.random()*100000000000f), String.valueOf(Math.random()*100000000000f),
+        KeyPair keyPair = CryptoHelper.generateKeyPair();
+        String pubkey = Base64.encodeToString(keyPair.getPublicKey().toBytes(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+        String privkey = keyPair.getPrivateKey().toString();
+
+        Identity i= new Identity("", privkey, pubkey,
                 "teamwiki.de", "", String.valueOf(Math.random()*100000000000f), getMyPhoneNumber(ctx));
         return i;
     }
 
-    public String getPublicKeyHash() {
-        return Identity.hash("MD5", this.publicKey);
-        //return Identity.hash("SHA-256", this.publicKey);
+
+    public MyPublicKey getPublicKey() {
+        return publicKey;
     }
 
-    public static String hash(String algorithm, String string) {
-        MessageDigest digest = null;
-        try {
-            digest = MessageDigest.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e1) {
-            e1.printStackTrace();
-            return null;
-        }
-        digest.reset();
-        try {
-            return Base64.encodeToString(digest.digest(string.getBytes("UTF-8")), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
+
+    @Override
+    public String getNickname() {
+        return nickname;
+    }
+
+    @Override
+    public String getXmppId() {
+        return username;
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phone;
     }
 
 
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put("nickname", nickname);
-        values.put("privatekey", privateKey);
-        values.put("publickey", publicKey);
+        values.put("privatekey", privateKey.toString());
+        values.put("publickey", publicKey.asBase64());
         values.put("server", server);
         values.put("username", username);
         values.put("password", password);
@@ -100,38 +97,45 @@ public class Identity {
         return id;
     }
 
-    public void registerWithServer() {
+    public String registerWithServer() {
 
-        // Create a new HttpClient and Post Header
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(BonfireData.API_ENDPOINT + "/register.php");
-
+        HttpURLConnection urlConnection = null;
         try {
 
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("nickname", nickname));
-            nameValuePairs.add(new BasicNameValuePair("xmppid", username));
-            nameValuePairs.add(new BasicNameValuePair("publickey", publicKey));
-            nameValuePairs.add(new BasicNameValuePair("phone", phone));
-            nameValuePairs.add(new BasicNameValuePair("gcmid", GcmBroadcastReceiver.regid));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            String plaintext = "nickname=" + URLEncoder.encode(nickname, "UTF-8")
+                    + "&xmppid=" + URLEncoder.encode(username, "UTF-8")
+                    + "&phone=" + URLEncoder.encode(phone, "UTF-8")
+                    + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
 
-            // Execute HTTP Post Request
-            HttpResponse response = httpclient.execute(httppost);
-            Log.d(TAG, "registered with server : " + response.getStatusLine().toString());
-            Log.d(TAG, "registered with server : " + new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine());
+            Box b = new Box(BonfireData.SERVER_PUBLICKEY, privateKey);
+            byte[] nonce = CryptoHelper.generateNonce();
+            String ciphertext = CryptoHelper.toBase64(b.encrypt(nonce, plaintext.getBytes("UTF-8")));
 
+            String postData = "publickey=" + publicKey.asBase64()
+                    + "&nonce=" + CryptoHelper.toBase64(nonce)
+                    + "&data=" + ciphertext;
 
-        } catch (ClientProtocolException e) {
+            urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/register.php").openConnection();
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoOutput(true);
+            urlConnection.setChunkedStreamingMode(0);
+
+            BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            out.write(postData.getBytes("UTF-8"));
+            out.flush();
+
+            String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
+            Log.d(TAG, "registered with server : " + urlConnection.getResponseCode());
+            Log.i(TAG, theString);
+            if (urlConnection.getResponseCode() == 200) return null;
+            return theString;
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (urlConnection == null) return e.toString();
+            return StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+        } finally {
+            if(urlConnection != null) urlConnection.disconnect();
         }
-
-
     }
 
     private static String getMyPhoneNumber(Context ctx){
