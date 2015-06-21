@@ -106,7 +106,7 @@ public class WifiProtocol extends SocketProtocol {
 
             @Override
             public Object call() throws Exception {
-                Log.d(TAG, "do in Backround wird ausgeführt");
+                Log.d(TAG, "do in Backround wird ausgefuehrt");
                 try {
 
 
