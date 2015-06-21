@@ -15,6 +15,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.WifiProtocol;
 
 /**
  * Created by johannes on 05.05.15.
@@ -74,7 +75,7 @@ public class Message implements Serializable {
         flags &= ~(FLAG_PROTO_BT | FLAG_PROTO_WIFI | FLAG_PROTO_CLOUD);
         if (theClass.equals(GcmProtocol.class)) flags |= FLAG_PROTO_CLOUD;
         if (theClass.equals(BluetoothProtocol.class)) flags |= FLAG_PROTO_BT;
-        //if (theClass.equals(WifiProtocol.class)) flags |= FLAG_PROTO_WIFI;
+        if (theClass.equals(WifiProtocol.class)) flags |= FLAG_PROTO_WIFI;
     }
 
     public static Message fromCursor(Cursor cursor, BonfireData db) {
