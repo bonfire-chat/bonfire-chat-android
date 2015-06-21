@@ -7,7 +7,6 @@ import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
@@ -32,16 +31,16 @@ public class WifiReceiver extends BroadcastReceiver {
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     private WifiP2pDevice connectedDevice;
-    private WifiProtocol protocol;
+    private WifiProtocol mProtocol;
 
     public static WifiP2pInfo info;
 
 
-    public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiProtocol protocol) {
+    public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiProtocol mProtocol) {
         super();
         this.mManager = manager;
         this.mChannel = channel;
-        this.protocol = protocol;
+        this.mProtocol = mProtocol;
 
     }
 
@@ -155,7 +154,7 @@ public class WifiReceiver extends BroadcastReceiver {
 
                         OutputStream outputStream = socket.getOutputStream();
 
-                        protocol.serializeMessage(outputStream, protocol.contact, protocol.msg);
+                        mProtocol.sendEnvelope(outputStream, mProtocol.envelope);
 
                         outputStream.close();
 

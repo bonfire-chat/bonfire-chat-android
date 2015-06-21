@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
@@ -35,8 +36,7 @@ public class WifiProtocol extends SocketProtocol {
     WifiP2pManager.Channel mChannel;
     IntentFilter mIntentFilter;
     WifiReceiver mReceiver;
-    public Message msg;
-    public Contact contact;
+    public Envelope envelope;
     public static InetAddress mServerInetAdress;
     public static ServerSocket mServerSocket;
 
@@ -68,9 +68,8 @@ public class WifiProtocol extends SocketProtocol {
     }
 
     @Override
-    public void sendMessage(Contact target, Message msg) {
-        this.msg = msg;
-        this.contact = target;
+    public void sendMessage(Envelope e) {
+        this.envelope = e;
 
         if ((WifiReceiver.info == null  || !WifiReceiver.info.groupFormed)){
             Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
@@ -128,14 +127,16 @@ public class WifiProtocol extends SocketProtocol {
 
                         //WifiProtocol.mServerInetAdress = mServerSocket.getInetAddress();
                         Socket client = WifiProtocol.mServerSocket.accept();
+                        InetSocketAddress receiveraddress = (InetSocketAddress) client.getRemoteSocketAddress();
+                        receiveraddress.getAddress();
                         Log.d(TAG, "Server: connection done");
 
                         InputStream inputstream = client.getInputStream();
                         WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
 
-                        Message m = mySocketProtocol.deserializeMessage(inputstream);
-                        Log.d(TAG, "Die message war: " + m);
-                        listener.onMessageReceived(WifiProtocol.this, m);
+                        Envelope e = mySocketProtocol.receiveEnvelope(inputstream);
+                        Log.d(TAG, "Die message war: " + e);
+                        listener.onMessageReceived(WifiProtocol.this, e);
 
                     //mServerSocket.close();
                 } catch (IOException e) {
@@ -150,5 +151,10 @@ public class WifiProtocol extends SocketProtocol {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         executorService.execute(futureTask);
 
+    }
+
+    @Override
+    public boolean canSend() {
+        return true;
     }
 }
