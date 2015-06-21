@@ -8,53 +8,53 @@
 \usepackage{hyperref}
 
 \newcommand{\titlerow}[2]{
-	\begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
-		\colchunk[1]{#1:}
-		\colchunk[2]{#2}
-	\end{parcolumns}
-	\vspace{0.2cm}
+  \begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
+    \colchunk[1]{#1:}
+    \colchunk[2]{#2}
+  \end{parcolumns}
+  \vspace{0.2cm}
 }
 
 \title{Entwicklung eines adaptiven Chat-Systems}
 \subtitle{Qualitätssicherungsdokument}
 \subsubtitle{%
-	\titlerow{Gruppe 9}{%
-		Johannes Lauinger <johannes.lauinger@gmail.com>\\
-		Jonas Mönnig <jonas.moennig@gmx.de>\\
-		Mattias Hofmann <chaterMH@web.de>\\
-		Maximilian Weller <maximilian.weller@stud.tu-darmstadt.de>\\
-                Simon-Konstantin Thiem <simon-konstantin.thiem@stud.tu-darmstadt.de>}
-	\titlerow{Teamleiter}{Benjamin Tumele <B.Tumele@gmx.de>}
-	\titlerow{Auftraggeber}{%
-		Alexander Frömmgen <froemmge@dvs.tu-darmstadt.de>\\
-		Fachgebiet Datenbanken und Verteilte Systeme\\
-		Fachbereich Informatik\\
-                Jens Heuschkel <jens.heuschkel@tk.informatik.tu-darmstadt.de>\\
-                Fachgebiet Telekooperation\\
-                Fachbereich Informatik}
-	\titlerow{Abgabedatum}{xx.xx.xxxx}}
+  \titlerow{Gruppe 9}{%
+    Johannes Lauinger <johannes.lauinger@gmail.com>\\
+    Jonas Mönnig <jonas.moennig@gmx.de>\\
+    Mattias Hofmann <chaterMH@web.de>\\
+    Maximilian Weller <maximilian.weller@stud.tu-darmstadt.de>\\
+    Simon-Konstantin Thiem <simon-konstantin.thiem@stud.tu-darmstadt.de>}
+  \titlerow{Teamleiter}{Benjamin Tumele <B.Tumele@gmx.de>}
+  \titlerow{Auftraggeber}{%
+    Alexander Frömmgen <froemmge@dvs.tu-darmstadt.de>\\
+    Fachgebiet Datenbanken und Verteilte Systeme\\
+    Fachbereich Informatik\\
+    Jens Heuschkel <jens.heuschkel@tk.informatik.tu-darmstadt.de>\\
+    Fachgebiet Telekooperation\\
+    Fachbereich Informatik}
+  \titlerow{Abgabedatum}{xx.xx.xxxx}}
 \institution{Bachelor-Praktikum SoSe~2015\\Fachbereich Informatik}
 
 \begin{document}
 
-	\maketitle
-	\tableofcontents
+  \maketitle
+  \tableofcontents
 
-	\chapter{Einleitung}
-		Ein Leben ohne die Kommunikation über das Handynetz ist heutzutage nahezu unvorstellbar. Die Anzahl an übertragenen Nachrichten zwischen zwei mobilen Geräten ist auf Rekordhöhe und es wird prognostiziert, dass diese weiter steigen wird. Die Kommunikation über das Handynetz ist jedoch auf einen bestimmten Frequenzbereich beschränkt. Die Möglichkeit, mehr Nachrichten darüber zu übertragen ist nur durch die Entwicklung neuer Methoden erreichbar. Diese versuchen, das aktuelle Frequenzband effizienter auszunutzen (Siehe die LTE-Frequenzbandausnutzung im Vergleich zu der bei UMTS). Doch bei Events, bei denen sich große Menschenmassen auf wenig Platz versammeln, ist dies nicht genug. Es kommt dort häufig zu Ausfällen im Handynetz. \\
+  \chapter{Einleitung}
+    Mobile Kommunikation ist in der heutigen Zeit selbstverständlich. Noch nie wurden mehr Nachrichten zwischen mobilen Geräten übertragen. Ein großes Problem, welches dabei auftritt, ist dass das Handynetz auf einen bestimmten Frequenzbereich beschränkt ist. Die Möglichkeit, mehr Nachrichten zu übertragen ist fast nur noch durch die Entwicklung neuer Methoden erreichbar, die versuchen, das aktuelle Frequenzband effizienter auszunutzen (siehe die LTE-Frequenzbandausnutzung im Vergleich zu der bei UMTS). Doch bei Events, bei denen sich große Menschenmassen auf geringem Platz versammeln, ist selbst das nicht ausreichend. Es kommt dort häufig zu Ausfällen im Handynetz. \\
 
-		Die Idee des Projektes ist es, bei solchen Veranstaltungen trotz Ausfalls des Mobilfunkverkehrs weiterhin die Möglichkeit zur Kommunikation zwischen zwei Parteien zu gewährleisten. Dies soll sich, neben der bisher verbreiteten Möglichkeit über eine Client-Server-Infrastruktur zu kommunizieren, auf weitere Methoden erstrecken. Es soll ein adaptives Chatsystem für Android entwickelt werden, dass je nach Verfügbarkeit in der Lage ist, auch über Bluetooth und über WiFi eine Peer-to-Peer-Kommunikation zwischen mehreren Parteien zu ermöglichen. \\
+    Die Idee des Projektes ist es, bei solchen Veranstaltungen trotz Ausfalls des Mobilfunkverkehrs weiterhin die Möglichkeit zur Kommunikation zwischen zwei Parteien zu gewährleisten. Dies soll sich, neben der bisher verbreiteten Möglichkeit über eine Client-Server-Infrastruktur zu kommunizieren, auf weitere Methoden erstrecken. Es soll ein adaptives Chatsystem für Android entwickelt werden, das je nach Verfügbarkeit in der Lage ist, auch über Bluetooth und über WiFi eine Peer-to-Peer-Kommunikation, also unabhängig von zentralen Netzen, zwischen mehreren Parteien zu ermöglichen. \\
 
-		Ziel ist es, die App 2016 auf dem Darmstädter Schlossgrabenfest benutzen zu können. Dort kamen in den Vorjahren über 100 000 Menschen gleichzeitig zu Besuch und brachten dadurch das Handynetz in starke Schwierigkeiten.\\
+    Ziel ist es, die App 2016 auf dem Darmstädter Schlossgrabenfest benutzen zu können. Dort kamen in den Vorjahren über 100 000 Menschen gleichzeitig zu Besuch und brachten dadurch das Handynetz in starke Schwierigkeiten.\\
 
-		Wir wollen eine Plattform schaffen, über die man peer-to-peer, also unabhängig von zentralen Netzen, kommunizieren kann. So soll es auch ohne funktionierende Internetverbindung möglich sein, Netzwerkpakete über mehrere (mobile) Geräte bis zum Empfänger der Nachricht weiterzureichen, und diesem zuzustellen. Des Weiteren soll die App in der Lage sein, die Nachricht über einen Teilnehmer des peer-to-peer Netzwerkes, der über eine Internetverbindung verfügt, zu senden, damit dieser das Paket an den Server übermitteln kann. So ist auch Kommunikation mit Chatpartnern, die sich außerhalb des eigenen peer-to-peer Netzwerk befinden, möglich.\\
+    Wir wollen eine Plattform schaffen, über die man peer-to-peer kommunizieren kann. So soll es auch ohne funktionierende Internetverbindung möglich sein, Netzwerkpakete über mehrere (mobile) Geräte bis zum Empfänger der Nachricht weiterzureichen, und diesem zuzustellen. Weiterhin soll die App in der Lage sein, die Nachricht über einen Teilnehmer des peer-to-peer Netzwerkes, der über eine Internetverbindung verfügt, zu senden, damit dieser das Paket an den Server übermitteln kann. So ist auch Kommunikation mit Chatpartnern, die sich außerhalb des eigenen peer-to-peer Netzwerk befinden, möglich.\\
 
-		Die App soll vom Funktionsumfang den am weitesten verbreiteten Messenger-Apps, wie zum Beispiel WhatsApp, ähneln, vorerst beschränken wir uns aber bei der Entwicklung auf einfache Textnachrichten in normalen eins-zu-eins-Chats.\\
+    Die App soll vom Funktionsumfang den am weitesten verbreiteten Messenger-Apps, wie zum Beispiel WhatsApp, ähneln, vorerst beschränken wir uns aber bei der Entwicklung auf einfache Textnachrichten in normalen eins-zu-eins-Chats.\\
 
-	\chapter{Qualitätsziele}
+  \chapter{Qualitätsziele}
         \section{Wartbarkeit}
 
-		Da die Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen, um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln, ist es notwendig, dass unser Programm wartbar ist. Darüber hinaus erhöht eine gute Wartbarkeit die Produktivität durch kürzere Wartungszeiten, wodurch der Projektfortschritt beschleunigt wird.\\
+    Da die Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen, um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln, ist es notwendig, dass unser Programm wartbar ist. Darüber hinaus erhöht eine gute Wartbarkeit die Produktivität durch kürzere Wartungszeiten, wodurch der Projektfortschritt beschleunigt wird.\\
 
                 Zur Sicherstellung der Wartbarkeit ist es unter anderem wichtig, auf Lesbarkeit und geringe Codekomplexität zu achten. Dabei unterstützt uns das statische Codeanalysetool Checkstyle. Checkstyle überprüft den Code auf die Einhaltung verschiedenster Programmierrichtlinien und generiert automatisch Berichte. Besonderen Fokus beim Auswerten der Berichte wollen wir dabei auf die von Checkstyle errechneten Codemetriken legen, da diese in direktem Zusammenhang zur Codekomplexität, und daher zur Wartbarkeit stehen. Die Javadoc-Überprüfungen von Checkstyle werden wir jedoch nicht durchführen lassen, da die Auftraggeber keinen Wert auf ausführliches Javadoc legen.\\
 
@@ -70,9 +70,9 @@
         \section{Robustheit}
 
 \appendix
-	\chapter{Anhang}
-		(Am Ende des Projekts nachzureichen)\\
-		Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
-		Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
+  \chapter{Anhang}
+    (Am Ende des Projekts nachzureichen)\\
+    Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
+    Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
 
 \end{document}
