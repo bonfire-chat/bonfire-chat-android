@@ -1,11 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import org.abstractj.kalium.keys.PublicKey;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import java.security.KeyFactory;
-import java.security.spec.X509EncodedKeySpec;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 

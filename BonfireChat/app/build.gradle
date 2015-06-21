@@ -38,7 +38,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/bcprov-jdk15on-152.jar')
     compile files('libs/asmack-android-8-4.0.7.jar')
     compile files('libs/org.xbill.dns_2.1.7.jar')
     compile files('libs/kalium-jni-1.0.0-SNAPSHOT.jar')
