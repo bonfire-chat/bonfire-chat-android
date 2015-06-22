@@ -34,6 +34,7 @@ public class WifiReceiver extends BroadcastReceiver {
     private WifiProtocol mProtocol;
 
     public static WifiP2pInfo info;
+    public InetSocketAddress receiverAddress;
 
 
     public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiProtocol mProtocol) {
@@ -78,7 +79,7 @@ public class WifiReceiver extends BroadcastReceiver {
 
                         @Override
                         public void onFailure(int reason) {
-                            Log.d(TAG, "could not connect with " + connectedDevice + "with reason " + reason);
+                            Log.d(TAG, "could not connect with " + connectedDevice.deviceName + " with reason " + reason);
                         }
                     });
                 }
@@ -122,69 +123,73 @@ public class WifiReceiver extends BroadcastReceiver {
     }
 
     public void sendMessage(){
-        Log.d(TAG, "Daten werden GANZ AUSSEN gesendet");
+        Log.d(TAG, "Daten werden GANZ AUSSEN gesendet && info ist :");
         FutureTask futureTask = new FutureTask(new Callable() {
             @Override
             public Object call() throws Exception {
-                Log.d(TAG, "Daten werden au�en gesendet");
-                if (connectedDevice != null)
+                Log.d(TAG, "Daten werden au�en gesendet ");
 
-                {
-                    Log.d(TAG, "Daten werden gesendet");
-                    //WifiP2pGroup group = mManager.createGroup(mChannel,null);
+                Log.d(TAG, "Daten werden gesendet");
+                //WifiP2pGroup group = mManager.createGroup(mChannel,null);
 
-                    mManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
-
-                    String host = connectedDevice.deviceAddress;
-                    int port = 4242;
-                    int len;
-                    Socket socket = new Socket();
-                    //String msg = mWifiProtocol
+                mManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
 
 
-                    try {
-                        /**
-                         * Create a client socket with the host,
-                         * port, and timeout information.
-                         */
-                        socket.setReuseAddress(true);
-                        //socket.bind(new InetSocketAddress(port));
+                int port = 4242;
+                int len;
+                Socket socket = new Socket();
+                //String msg = mWifiProtocol
+
+
+                try {
+                    /**
+                     * Create a client socket with the host,
+                     * port, and timeout information.
+                     */
+                    socket.setReuseAddress(true);
+                    //socket.bind(new InetSocketAddress(port));
+                    if (receiverAddress != null) {
+                        Log.d(TAG, "ReceiverIp ist : " + receiverAddress.getAddress());
+                        socket.connect(new InetSocketAddress(receiverAddress.getAddress(), port), 500);
+
+                    } else if (!info.isGroupOwner) {
                         socket.connect((new InetSocketAddress(info.groupOwnerAddress, port)), 500);
-
-
+                    }
+                    if(socket.isConnected()) {
                         OutputStream outputStream = socket.getOutputStream();
 
                         mProtocol.sendEnvelope(outputStream, mProtocol.envelope);
 
                         outputStream.close();
-
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
 
-                    /**
-                     * Clean up any open sockets when done
-                     * transferring or if an exception occurred.
-                     */
-                    finally {
-                        if (socket != null) {
-                            if (socket.isConnected()) {
-                                try {
-                                    socket.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                /**
+                 * Clean up any open sockets when done
+                 * transferring or if an exception occurred.
+                 */ finally {
+                    if (socket != null) {
+                        if (socket.isConnected()) {
+                            try {
+                                socket.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
                 }
-                return null;
-            }
+
+
+            return null;
+        }
         });
         //todo wieviele Threats?
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(8);
         executorService.execute(futureTask);
     }
 
