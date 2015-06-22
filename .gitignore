@@ -5,3 +5,5 @@ QS-Dokument.pdf
 *.out
 .htconfig.php
 *.MPG
+.DS_Store
+*~
