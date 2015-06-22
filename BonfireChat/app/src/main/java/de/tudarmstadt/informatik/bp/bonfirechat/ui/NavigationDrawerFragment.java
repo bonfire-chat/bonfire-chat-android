@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Fragment;
 import android.app.Activity;
 import android.app.ActionBar;
+import android.content.Intent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,8 +21,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -39,6 +45,7 @@ public class NavigationDrawerFragment extends Fragment {
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+    private static final String TAG = "NavigationDrawerFrag";
 
     /**
      * A pointer to the current callbacks instance (the Activity).
@@ -52,6 +59,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
+    private View rootView;
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
@@ -89,8 +97,9 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+        rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+
+        mDrawerListView = (ListView) rootView.findViewById(R.id.listView);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -107,7 +116,20 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_settings),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+
+        rootView.findViewById(R.id.btnShareIdentityQR).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
+            }
+        });
+        rootView.findViewById(R.id.btnEditIdentity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), IdentityActivity.class));
+            }
+        });
+        return rootView;
     }
 
     public boolean isDrawerOpen() {
@@ -126,27 +148,18 @@ public class NavigationDrawerFragment extends Fragment {
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        Identity identity = BonfireData.getInstance(getActivity()).getDefaultIdentity();
+        if (identity != null)
+            ((TextView) rootView.findViewById(R.id.txt_nickname)).setText(identity.getNickname());
+
         // set up the drawer's list view with items and click listener
-
         ActionBar actionBar = getActionBar();
-        /*actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-
-        //actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the navigation drawer and the action bar app icon.
-        */
-
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        //actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
         actionBar.setHomeButtonEnabled(true);
-        //actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setLogo(R.mipmap.ic_launcher);
         actionBar.setIcon(R.drawable.ic_drawer);
-        //actionBar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
@@ -202,7 +215,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private void selectItem(int position) {
+    public void selectItem(int position) {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);

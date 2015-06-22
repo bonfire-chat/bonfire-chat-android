@@ -1,0 +1,10 @@
+<?php
+$DB_HOST="localhost";
+$DB_NAME="bonfire";
+$DB_USER="bonfire";
+$DB_PASS="";
+
+define("SECRETKEY", ""); // generate by running php5 setup.php
+define("PUBLICKEY", "");
+
+

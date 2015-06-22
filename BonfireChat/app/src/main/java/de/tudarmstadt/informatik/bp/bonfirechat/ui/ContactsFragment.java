@@ -1,14 +1,9 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.style.UpdateLayout;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,22 +11,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 
 /**
  * contacts list
@@ -44,9 +33,6 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        BonfireData db = BonfireData.getInstance(getActivity());
-        List<Contact> contacts = db.getContacts();
-        adapter = new ContactsAdapter(this.getActivity(), contacts);
 
     }
 
@@ -58,6 +44,15 @@ public class ContactsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        BonfireData db = BonfireData.getInstance(getActivity());
+        List<Contact> contacts = db.getContacts();
+        adapter = new ContactsAdapter(this.getActivity(), contacts);
+        contactsList.setAdapter(adapter);
+    }
+
     ActionMode mActionMode;
     ListView contactsList;
     @Override
@@ -66,18 +61,20 @@ public class ContactsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         contactsList = (ListView) rootView.findViewById(R.id.contactsList);
+/*
+        BonfireData db = BonfireData.getInstance(getActivity());
+        List<Contact> contacts = db.getContacts();
+        adapter = new ContactsAdapter(this.getActivity(), contacts);
         contactsList.setAdapter(adapter);
-
+*/
         contactsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         contactsList.setMultiChoiceModeListener(multiChoiceListener);
 
         contactsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Contact contact = adapter.getItem(position);
-                Intent intent = new Intent(getActivity(), ContactDetailsActivity.class);
-                intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, contact.rowid);
-                startActivity(intent);
+                // open up messages
+                MessagesActivity.startConversationWithPeer(ContactsFragment.this.getActivity(), adapter.getItem(position));
             }
         });
 
@@ -94,14 +91,14 @@ public class ContactsFragment extends Fragment {
         int id = item.getItemId();
         final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
 
-        if (item.getItemId() == R.id.action_add_contact) {
-            InputBox.InputBox(getActivity(), getString(R.string.new_contact), getString(R.string.search_contact_by_name), "",
-                    new InputBox.OnOkClickListener() {
-                        @Override
-                        public void onOkClicked(String input) {
-                            addContact(input);
-                        }
-                    });
+        if (item.getItemId() == R.id.action_search) {
+            startActivity(new Intent(getActivity(), SearchUserActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.action_scan_qr) {
+            IntentIntegrator inte = new IntentIntegrator(getActivity());
+            inte.initiateScan();
+        } else if (item.getItemId() == R.id.action_scan_nfc) {
+            startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
             return true;
         }
 
@@ -110,14 +107,6 @@ public class ContactsFragment extends Fragment {
 
 
 
-    void addContact(String name) {
-        // TODO: insert sophisticated contact existing check
-        if (!name.isEmpty()) {
-            Contact contact = new Contact(name);
-            adapter.add(contact);
-            BonfireData.getInstance(getActivity()).createContact(contact);
-        }
-    }
 
     private void deleteSelectedItems() {
         BonfireData db = BonfireData.getInstance(getActivity());
@@ -133,18 +122,15 @@ public class ContactsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void createConversationWithSelectedItems() {
-        BonfireData db = BonfireData.getInstance(getActivity());
+    private void detailsForSelectedItems() {
         boolean[] mySelected = adapter.itemSelected;
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
-                Conversation conversation = new Conversation(adapter.getItem(position), adapter.getItem(position).getNickname(), 0);
-                db.createConversation(conversation);
-                Intent i = new Intent(getActivity(), MessagesActivity.class);
-                Log.i("ConversationsFragment", "starting MessagesActivity with ConversationId=" + conversation.rowid);
-                i.putExtra("ConversationId", conversation.rowid);
-                startActivity(i);
+                Contact contact = adapter.getItem(position);
+                Intent intent = new Intent(getActivity(), ContactDetailsActivity.class);
+                intent.putExtra(ContactDetailsActivity.EXTRA_CONTACT_ID, contact.rowid);
+                startActivity(intent);
                 break;
             }
         }
@@ -169,8 +155,8 @@ public class ContactsFragment extends Fragment {
                     deleteSelectedItems();
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-                case R.id.action_create_conversation:
-                    createConversationWithSelectedItems();
+                case R.id.action_contact_details:
+                    detailsForSelectedItems();
                     mode.finish();
                     return true;
                 default:

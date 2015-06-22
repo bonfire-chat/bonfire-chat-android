@@ -16,13 +16,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.UUID;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 
 /**
  * Created by johannes on 22.05.15.
@@ -37,7 +33,7 @@ public class BluetoothProtocol extends SocketProtocol {
     private List<BluetoothDevice> nearby;
     private List<BluetoothSocket> sockets;
     private List<OutputStream> output;
-    private List<ConnectionHandler> connections;
+    private List<IncomingConnectionHandler> connections;
     private Handler searchLoopHandler;
 
     BluetoothProtocol(Context ctx) {
@@ -156,7 +152,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
                     BluetoothSocket socket = server.accept();
-                    ConnectionHandler handler = new ConnectionHandler(socket);
+                    IncomingConnectionHandler handler = new IncomingConnectionHandler(socket);
                     connections.add(handler);
                 }
 
@@ -166,11 +162,11 @@ public class BluetoothProtocol extends SocketProtocol {
         }
     });
 
-    public class ConnectionHandler extends Thread {
+    public class IncomingConnectionHandler extends Thread {
         BluetoothSocket socket;
         InputStream input;
 
-        public ConnectionHandler(BluetoothSocket socket) {
+        public IncomingConnectionHandler(BluetoothSocket socket) {
             this.socket = socket;
             try {
                 input = socket.getInputStream();
@@ -182,12 +178,18 @@ public class BluetoothProtocol extends SocketProtocol {
 
         @Override
         public void run() {
-            Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
-            Message message = deserializeMessage(input);
-            Log.d(TAG, "Recieved message: " + message.peer.getNickname() + ": " + message.body);
-            message.direction = Message.MessageDirection.Received;
-            message.dateTime = DateHelper.getNowString();
-            listener.onMessageReceived(BluetoothProtocol.this, message);
+            try {
+                Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
+                Envelope envelope = receiveEnvelope(input);
+                Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
+
+                // hand over to the onMessageReceivedListener, which will take account for displaying
+                // the message and/or redistribute it to further recipients
+                listener.onMessageReceived(BluetoothProtocol.this, envelope);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -196,13 +198,20 @@ public class BluetoothProtocol extends SocketProtocol {
     // ###########################################################################
 
     @Override
-    public void sendMessage(Contact target, Message message) {
+    public void sendMessage(Envelope envelope) {
         Log.d(TAG, "broadcasting message via Bluetooth");
 
+        // send the envelope
         connect();
         for (OutputStream stream : output) {
-            serializeMessage(stream, target, message);
+            sendEnvelope(stream, envelope);
         }
+        try {        Thread.sleep(50); }catch(InterruptedException ex){}
         disconnect();
+    }
+
+    @Override
+    public boolean canSend() {
+        return true;
     }
 }
