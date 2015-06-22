@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="Account">
+        <Preference android:title="Account bearbeiten" android:key="edit_account"/>
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Kommunikationswege">
-        <CheckBoxPreference android:key="enable_bluetooth"
+        <CheckBoxPreference android:key="enable_BluetoothProtocol" android:defaultValue="true"
             android:title="Verwende Bluetooth"></CheckBoxPreference>
 
-        <CheckBoxPreference android:key="enable_wifi"
+        <CheckBoxPreference android:key="enable_WifiProtocol" android:defaultValue="true"
             android:title="Verwende Wi-Fi (AdHoc)"></CheckBoxPreference>
 
-        <CheckBoxPreference android:key="enable_xmpp"
+        <CheckBoxPreference android:key="enable_GcmProtocol" android:defaultValue="true"
             android:title="Verwende Mobile Daten / Wi-Fi"></CheckBoxPreference>
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Sonstiges">
         <PreferenceScreen android:title="Über BonfireChat">
-            <Preference android:title="Über BonfireChat" />
 
             <Preference android:title="Entwickelt an der TU Darmstadt"
                 android:summary="von Johannes, Jonas, Max, Matthias und Simon "/>
@@ -26,6 +29,10 @@
 
         </PreferenceScreen>
 
+        <Preference android:title="Update" android:summary="Letzten Dev-Build laden" android:key="update_dev"/>
+
     </PreferenceCategory>
+
+
 
 </PreferenceScreen>

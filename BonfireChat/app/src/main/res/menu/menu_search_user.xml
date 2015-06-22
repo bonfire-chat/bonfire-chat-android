@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="de.tudarmstadt.informatik.bp.bonfirechat.ui.SearchUserActivity">
+    <item android:id="@+id/menu_search" android:title="Suchen"
+        android:showAsAction="always" android:icon="@android:drawable/ic_menu_search"
+        android:actionViewClass="android.widget.SearchView"/>
+</menu>

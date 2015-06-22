@@ -2,3 +2,8 @@ QS-Dokument.pdf
 *.aux
 *.log
 *.toc
+*.out
+.htconfig.php
+*.MPG
+.DS_Store
+*~

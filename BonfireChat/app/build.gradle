@@ -38,9 +38,49 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/bcprov-jdk15on-152.jar')
     compile files('libs/asmack-android-8-4.0.7.jar')
     compile files('libs/org.xbill.dns_2.1.7.jar')
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile "com.google.android.gms:play-services:3.1.+"
+    compile files('libs/kalium-jni-1.0.0-SNAPSHOT.jar')
+    compile 'com.android.support:appcompat-v7:22.+'
+    compile 'com.google.android.gms:play-services:3.1.+'
+    compile 'com.google.zxing:core:3.0.0'
+    compile 'com.android.support:support-v4:22.1.1'
 }
+
+apply plugin: 'findbugs'
+
+
+findbugs {
+    excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
+}
+
+// change this to whatever your app's name is...
+project.archivesBaseName = 'bonfire'
+
+android.applicationVariants.all { variant ->
+    def apkPath = variant.outputs[0].outputFile.parentFile
+    def baseName = project.archivesBaseName
+ 
+    // if it's a release build, the type is implicit, imo, so add it otherwise
+    if (variant.name != 'release') {
+        baseName += "-${variant.buildType.name}"
+    }
+ 
+    // add version name and version code
+    baseName += "-v${variant.mergedFlavor.versionName}-${variant.mergedFlavor.versionCode}"
+ 
+    // if built on jenkins ci, add jenkins build number:
+    def buildNumber = System.getenv('BUILD_NUMBER')
+    if (buildNumber && buildNumber.size() > 0) {
+        baseName += "-b${buildNumber}"
+    }
+ 
+    // if the variant will not be zipAligned, specify that
+    if (!variant.outputs[0].zipAlign) {
+        baseName += '-unaligned'
+    }
+ 
+    // set the output file
+    variant.outputs[0].outputFile = new File(apkPath, "${baseName}.apk");
+}
+
