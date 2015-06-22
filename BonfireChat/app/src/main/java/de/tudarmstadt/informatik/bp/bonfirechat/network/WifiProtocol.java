@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -88,6 +89,7 @@ public class WifiProtocol extends SocketProtocol {
                 }
 
             });
+            mReceiver.sendMessage();
 
         }else {
             mReceiver.sendMessage();
@@ -127,16 +129,21 @@ public class WifiProtocol extends SocketProtocol {
 
                         //WifiProtocol.mServerInetAdress = mServerSocket.getInetAddress();
                         Socket client = WifiProtocol.mServerSocket.accept();
-                        InetSocketAddress receiveraddress = (InetSocketAddress) client.getRemoteSocketAddress();
-                        receiveraddress.getAddress();
+                        mReceiver.receiverAddress = (InetSocketAddress) client.getRemoteSocketAddress();
+
                         Log.d(TAG, "Server: connection done");
 
                         InputStream inputstream = client.getInputStream();
                         WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
+                        Envelope e;
 
-                        Envelope e = mySocketProtocol.receiveEnvelope(inputstream);
+                        e = mySocketProtocol.receiveEnvelope(inputstream);
                         Log.d(TAG, "Die message war: " + e);
+                    Log.d(TAG,"Der Empfänger ist " +  CryptoHelper.toBase64(e.recipientsPublicKeys.get(0)));
+
                         listener.onMessageReceived(WifiProtocol.this, e);
+
+
 
                     //mServerSocket.close();
                 } catch (IOException e) {
