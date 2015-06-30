@@ -45,6 +45,8 @@ dependencies {
     compile 'com.google.android.gms:play-services:3.1.+'
     compile 'com.google.zxing:core:3.0.0'
     compile 'com.android.support:support-v4:22.1.1'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
 }
 
 apply plugin: 'findbugs'
@@ -60,26 +62,26 @@ project.archivesBaseName = 'bonfire'
 android.applicationVariants.all { variant ->
     def apkPath = variant.outputs[0].outputFile.parentFile
     def baseName = project.archivesBaseName
- 
+
     // if it's a release build, the type is implicit, imo, so add it otherwise
     if (variant.name != 'release') {
         baseName += "-${variant.buildType.name}"
     }
- 
+
     // add version name and version code
     baseName += "-v${variant.mergedFlavor.versionName}-${variant.mergedFlavor.versionCode}"
- 
+
     // if built on jenkins ci, add jenkins build number:
     def buildNumber = System.getenv('BUILD_NUMBER')
     if (buildNumber && buildNumber.size() > 0) {
         baseName += "-b${buildNumber}"
     }
- 
+
     // if the variant will not be zipAligned, specify that
     if (!variant.outputs[0].zipAlign) {
         baseName += '-unaligned'
     }
- 
+
     // set the output file
     variant.outputs[0].outputFile = new File(apkPath, "${baseName}.apk");
 }
