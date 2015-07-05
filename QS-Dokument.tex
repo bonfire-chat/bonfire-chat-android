@@ -32,7 +32,7 @@
     Jens Heuschkel <jens.heuschkel@tk.informatik.tu-darmstadt.de>\\
     Fachgebiet Telekooperation\\
     Fachbereich Informatik}
-  \titlerow{Abgabedatum}{xx.xx.xxxx}}
+  \titlerow{Abgabedatum}{06.07.2015}}
 \institution{Bachelor-Praktikum SoSe~2015\\Fachbereich Informatik}
 
 \begin{document}
@@ -50,28 +50,36 @@
     In Zusammenarbeit mit unseren Auftraggebern haben wir beschlossen, bei der Entwicklung der Anwendung besonders auf Wartbarkeit, Korrektheit und Robustheit zu achten. Im Folgenden sollen nun diese Qualitätsziele und die Maßnahmen zur Sicherstellung genauer vorgestellt werden.
 
     \section{Wartbarkeit durch Codequalität}
-      Im Rahmen des Projekts konzentrieren wir uns auf Wartbarkeit der Anwendung durch hohe Codequalität. Diese ist nötig, da unsere Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen, um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln müssen. Darüber hinaus erhöht eine gute Wartbarkeit die Produktivität durch kürzere Wartungszeiten, wodurch der Projektfortschritt beschleunigt wird.\\\\
+      Im Rahmen des Projekts konzentrieren wir uns auf Wartbarkeit der Anwendung durch hohe Codequalität. Diese ist nötig, da unsere Auftraggeber die fertige App nächstes Jahr auf dem Schlossgrabenfest einsetzen wollen, um Daten über die Ausfallsicherheit von Netzen zu sammeln und sie dafür möglicherweise weiterentwickeln müssen.\\\\
+      \textbf{Checkstyle}\\
       Zur Sicherstellung der hohen Codequalität ist es unter anderem wichtig, auf Lesbarkeit und geringe Codekomplexität zu achten. Dabei unterstützt uns das statische Codeanalysetool Checkstyle. Checkstyle überprüft den Code auf die Einhaltung verschiedenster Programmierrichtlinien und generiert automatisch Berichte. Besonderen Fokus beim Auswerten der Berichte legen wir dabei auf die von Checkstyle errechneten Codemetriken, da diese in direktem Zusammenhang zur Codekomplexität, und daher zur Wartbarkeit stehen. Die Javadoc-Überprüfungen von Checkstyle führen wir jedoch nicht aus, da die Auftraggeber keinen Wert auf ausführliches Javadoc legen.\\\\
-      Die Ausführung von Checkstyle stellen wir durch die Integration in das Continuous-Integration-Tool Jenkins sicher. Damit werden die Berichte automatisch bei jedem Push in das Git-Repostitory erstellt, und sind für jeden einsehbar. Sollten Probleme, beispielweise hohe Komplexität oder schlechter Programmierstil, auftreten, werden diese durch den Verursacher behoben. Dieser ist am letzten Commit eindeutig ersichtlich.\\\\
-      Weiterhin führen wir ab dem vierten Sprint Meeting regelmäßig alle zwei Wochen zusammen mit den Auftraggebern Code-Reviews durch. Dabei wenden wir den Over-the-Shoulder-Ansatz an. Das bedeutet, dass unsere Auftraggeber sich den Code von einem Entwickler erläutern lassen und Anmerkungen und Fragen einbringen. So werden einerseits Schwächen aufgedeckt und behoben, was unter anderem die Codequalität unterstützt, als auch die Wartbarkeit im Allgemeinen gesteigert und die Zufriedenheit der Auftraggeber erhöht, da diese direkten Einfluss auf den Code haben.\\\\
-      Bei den Code Reviews setzen wir eine Checkliste ein, um sicherzustellen, dass der Ablauf des Reviews formal korrekt abläuft. Diese Checkliste stellt gleichzeitig eine Dokumentation und einen Beleg für die Durchführung der Maßnahme dar.\\\\
-      Zuletzt erarbeiten und pflegen wir eine gute technische Dokumentation über die Designentscheidungen und den Aufbau des Codes. Diese wird nicht im Code selbst geführt, sondern als externe Datei im Repository. Fügt ein Entwickler eine neue Funktion hinzu oder ändert das aktuelle Design, dokumentiert er diese umfassend.
+      Die Ausführung von Checkstyle stellen wir durch die Integration in das Continuous-Integration-Tool Jenkins sicher. Damit werden die Berichte automatisch bei jedem Push in das Git-Repostitory erstellt, und sind für jeden einsehbar. Sollten Probleme, beispielweise hohe Komplexität oder schlechter Programmierstil, auftreten, werden diese innerhalb von zwei Tagen durch den Verursacher behoben. Dieser ist am letzten Commit eindeutig ersichtlich.\\\\
+      \textbf{Code Reviews}\\
+      Weiterhin führen wir ab dem vierten Sprint Meeting regelmäßig alle zwei Wochen zusammen mit den Auftraggebern Code Reviews durch. Dabei wenden wir den Over-the-Shoulder-Ansatz an. Das bedeutet, dass unsere Auftraggeber sich den Code von einem Entwickler erläutern lassen und Anmerkungen und Fragen einbringen. So werden einerseits Schwächen aufgedeckt und behoben, was unter anderem die Codequalität unterstützt, als auch die Wartbarkeit im Allgemeinen gesteigert und die Zufriedenheit der Auftraggeber erhöht, da diese direkten Einfluss auf den Code haben.\\\\
+      Bei den Code Reviews setzen wir eine Checkliste ein, um sicherzustellen, dass der Ablauf des Reviews formal korrekt abläuft. Diese Checkliste stellt gleichzeitig eine Dokumentation und einen Beleg für die Durchführung der Maßnahme dar. Gefundene Probleme werden von dem Entwickler innerhalb des nächsten Sprints behoben, der die entsprechende Funktion implementiert hat.\\\\
+      \textbf{Dokumentation}\\
+      Zuletzt erarbeiten und pflegen wir eine gute technische Dokumentation über die Designentscheidungen und den Aufbau des Codes. Diese wird nicht im Code selbst geführt, sondern als externe Datei im Repository. Fügt ein Entwickler eine neue Funktion hinzu oder ändert das aktuelle Design, dokumentiert er diese umfassend.\\\\
+      Alle zwei Wochen führen wir im Team gemeinsam ein Review der Dokumentation durch, bei dem sichergestellt wird, dass alle Funktionen ausreichend dokumentiert sind. Ist dies nicht der Fall, ergänzt der Entwickler, der das entsprechende Feature implementiert hat, die Dokumentation bis zum nächsten Review.\\\\
+      Durch die Dokumentation wird Wissen im Team an zentraler Stelle gesammelt. Damit verhindern wir zum Beispiel, bereits aus guten Gründen verworfene Entscheidungsmöglichkeiten erneut in Betracht zu ziehen. Weiterhin wird später Entwicklern, die neu in das Team kommen, die Einarbeitung in das Projekt erleichtert.
 
     \section{Korrektheit}
       Da die Benutzer der App potenziell wichtige Nachrichten versenden, verlassen sie sich auf die korrekte Funktionsweise der Anwendung. Wir führen entsprechend Maßnahmen durch, um beispielsweise die korrekte Speicherung von Nachrichten und Kontakten sowie die fehlerfreie Verschlüsselung und Übertragung von Nachrichten zu garantieren.\\\\
-      Zur Sicherstellung der Korrektheit führen wir regelmäßige automatisierte Tests mit JUnit durch. Fügt ein Entwickler eine Funktion hinzu, welche automatisiert testbar ist, schreibt er auch einen JUnit Test dafür. Die Ausführung der Tests wird durch Jenkins sichergestellt. Schlägt ein Test fehl, behebt der verantwortliche Entwickler den Fehler. Dieser ist anhand des letzten Commits ersichtlich.\\\\
-      Weiterhin setzen wir das statische Codeanalysetool FindBugs ein, um Fehler im Code frühzeitig zu entdecken. FindBugs ist ebenfalls in Jenkins integriert, sodass bei jedem Push ins Repository automatisch in Bericht erstellt wird. Werden Fehler gefunden, behebt diese ebenfalls der durch die History ersichtliche Entwickler, der den Fehler produziert hat.
+      \textbf{Automatisierte Tests}\\
+      Zur Sicherstellung der Korrektheit führen wir regelmäßige automatisierte Tests mit JUnit durch. Die Ausführung der Tests in Jenkins integriert. Wir testen die Packages helper, data und models. Die Klassen für das UI und die Netzwerkkommunikation testen wir dagegen manuell, da dafür schlecht simulierbare Benutzereingaben bzw. mehrere Geräte notwendig sind.\\\\
+      Um einzelne Funktionen isoliert testen zu können, setzen wir das Mocking-Framework Mockito ein. Die Testabdeckung messen wir mit dem Werkzeug EclEmma.\\\\
+      Fügt ein Entwickler eine Funktion hinzu, welche automatisiert testbar ist, schreibt er auch einen JUnit Test dafür. Die Ausführung der Tests wird durch Jenkins sichergestellt. Schlägt ein Test fehl, behebt der verantwortliche Entwickler den Fehler. Dieser ist anhand des letzten Commits ersichtlich. Die Tests müssen innerhalb von zwei Tagen wieder bestanden werden.\\\\
+      \textbf{FindBugs}\\
+      Weiterhin setzen wir das statische Codeanalysetool FindBugs ein, um Fehler im Code frühzeitig zu entdecken. FindBugs ist ebenfalls in Jenkins integriert, sodass bei jedem Push ins Repository automatisch in Bericht erstellt wird, der manuell abgerufen wird. Werden Fehler gefunden, behebt diese ebenfalls der durch die History ersichtliche Entwickler, der den Fehler produziert hat innerhalb von zwei Tagen.
 
     \section{Robustheit}
       Da die App für Situationen entwickelt wird, in denen die herkömmlichen Funknetzwerke bereits nicht mehr verfügbar sind, muss sie besonders robust funktionieren. Bei einer großen Anzahl von Geräten und Nachrichten sollen Verbindungen immer noch stets zuverlässig aufgebaut werden und Nachrichten ihr Ziel erreichen. Hierfür legen wir Wert auf eine hohe Fehlertoleranz und die Beachtung von Sonderfällen bei der Implementierung.\\\\
-      Um Robustheit sicherzustellen, setzen wir manuelle Tests ein. Dabei arbeiten wir einem vordefinierten Testplan ab, dessen Testfälle das Verhalten der App bei ungewöhnlicher Belastung untersuchen. Insbesondere testen wir, ob Nachrichten über mehrere Geräte zuverlässig ankommen. Diesen Testplan führt regelmäßig alle zwei Wochen ein Entwickler durch, der mit einem Würfel bestimmt wird.\\\\
-      Außerdem setzen wir Tools ein, mit denen Übertragungsstörungen im Netzwerk simuliert werden können. Damit testen wir, wie sich die Anwendung verhält, wenn Daten in einem unerwarteten Format, beispielsweise nicht vollständig, empfangen werden. Dies wird als Teil des manuellen Testplans regelmäßig durchgeführt und dokumentiert.\\\\
-      Wird ein Testfall nicht bestanden, prüfen wir, welcher Entwickler die fehlerhafte Funktion implementiert hat. Dieser behebt anschließend, falls nötig mit Hilfe des gesamten Teams, die Fehler und führt die Tests anschließend erneut durch.
+      \textbf{Manuelle Tests}\\
+      Um Robustheit sicherzustellen, setzen wir manuelle Tests ein. Dabei arbeiten wir einen vordefinierten Testplan ab, dessen Testfälle das Verhalten der App bei ungewöhnlich hoher Belastung untersuchen. Insbesondere testen wir, ob Nachrichten über mehrere Geräte zuverlässig ankommen. Wir verwenden hierfür mindestens zehn Geräte, um ein realistischeres und größeres Testszenario zu schaffen. Diesen Testplan führt regelmäßig alle drei Wochen ein Entwickler durch. Dabei rotieren wir diese Aufgabe im Team.\\\\
+      Wird ein Testfall nicht bestanden, prüfen wir, welcher Entwickler die fehlerhafte Funktion implementiert hat. Dieser behebt anschließend, falls nötig mit Hilfe des gesamten Teams, innerhalb von einer Woche die Fehler und führt die Tests anschließend erneut durch.
 
 \appendix
   \chapter{Anhang}
     (Am Ende des Projekts nachzureichen)\\
     Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
-    Weitere Anforderungen sind den Unterlagen und der Vorlesung zur Projektbegleitung zu entnehmen.
 
 \end{document}
