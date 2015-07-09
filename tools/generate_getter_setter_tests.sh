@@ -6,6 +6,7 @@ while read line
 do
   for type in Get Set
   do
+    echo "@Test"
     echo "public void test$type$(echo $line | cut -d: -f1 | perl -ne 'print ucfirst($_)')(){"
     if [ $type == "Set" ] 
     then
