@@ -25,18 +25,14 @@ public class StatsEntry {
         this(new Date(), 0, 0, 0, 0, 0, 0, 0);
     }
     public StatsEntry(Date timestamp, int batteryLevel, float powerUsage, int messagesSent, int messageReceived, float lat, float lng, long rowid) {
-        this.timestamp = timestamp;
-        this.batteryLevel = batteryLevel;
-        this.powerUsage = powerUsage;
-        this.messagesSent = messagesSent;
-        this.messageReceived = messageReceived;
+        this.timestamp = timestamp; //worx
+        this.batteryLevel = batteryLevel; //worx
+        this.powerUsage = powerUsage; //worx
+        this.messagesSent = messagesSent; //worx
+        this.messageReceived = messageReceived; //worx
         this.lat = lat;
         this.lng = lng;
-        this.rowid = rowid;
-    }
-
-    public void updateTimestamp() {
-        timestamp = new Date();
+        this.rowid = rowid; //worx
     }
 
     public ContentValues getContentValues() {
