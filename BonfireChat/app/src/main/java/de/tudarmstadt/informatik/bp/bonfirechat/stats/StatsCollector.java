@@ -24,18 +24,18 @@ public class StatsCollector extends BroadcastReceiver {
 
     private static final String TAG = "StatsCollector";
 
+    public static final long PUBLISH_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
+
     // action in Intents which are sent to the service
     public static final String PUBLISH_STATS_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.PUBLISH_STATS";
-
-    public static final long PUBLISH_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
 
     /*
      * handle stats intents
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        final BonfireData db = BonfireData.getInstance(context);
-        final StatsEntry stats = CurrentStats.getInstance();
+        BonfireData db = BonfireData.getInstance(context);
+        StatsEntry stats = CurrentStats.getInstance();
 
         Log.i(TAG, "publishing latest stats data...");
 
@@ -43,11 +43,14 @@ public class StatsCollector extends BroadcastReceiver {
         stats.updateTimestamp();
         db.addStatsEntry(stats);
 
-        // publish stats object to the server API
-        new AsyncTask<Void, Void, Void>() {
+        publishStats(stats, db);
+    }
 
+    private void publishStats(final StatsEntry stats, final BonfireData db) {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
+                // publish stats object to the server API
                 String postData = "timestamp=" + DateHelper.formatDateTime(stats.timestamp)
                         + "&batterylevel=" + stats.batteryLevel
                         + "&powerusage=" + stats.powerUsage
