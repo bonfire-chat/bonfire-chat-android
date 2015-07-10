@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.bp.bonfirechat.models;
+package de.tudarmstadt.informatik.bp.bonfirechat.stats;
 
 import android.content.ContentValues;
 import android.database.Cursor;

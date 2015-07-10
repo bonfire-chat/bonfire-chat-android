@@ -17,7 +17,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.StatsEntry;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry;
 
 /**
  * Created by simon on 05.05.15.
