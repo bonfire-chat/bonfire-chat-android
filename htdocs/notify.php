@@ -2,7 +2,6 @@
 require_once "init.php";
     error_log("POST: ".print_r($_POST,true));
 
-
 if (!isset($_POST["publickey"])) errorResult(400, "pubkey missing");
 
 $pubKeys = $_POST["publickey"];
@@ -20,7 +19,7 @@ foreach($pubKeys as $key) {
         errorResult(400, "invalid pubkey");
     }
 
-    error_log("success: recipient found with pkhash=".$info["publickey_hash"].", nick=$info[nickname], tel=$info[phone]");
+    error_log("success: recipient found with pk=".$info["publickey"].", nick=$info[nickname], tel=$info[phone]");
 
     $url = 'https://android.googleapis.com/gcm/send';
     $data = array(
