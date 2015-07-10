@@ -32,6 +32,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
 
@@ -149,6 +150,8 @@ public class ConnectionManager extends NonStopIntentService {
                     Message message = envelope.toMessage(ConnectionManager.this);
                     message.setTransferProtocol(sender.getClass());
                     storeAndDisplayMessage(message);
+                    // update statistics
+                    CurrentStats.getInstance().messageReceived += 1;
                     // redistribute the envelope if there are further recipients
                     if (envelope.recipientsPublicKeys.size() > 1) {
                         redistributeEnvelope(envelope);
@@ -267,6 +270,9 @@ public class ConnectionManager extends NonStopIntentService {
             if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+
+            // update statistics
+            CurrentStats.getInstance().messagesSent += 1;
 
         } else if (!extras.isEmpty()) {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);

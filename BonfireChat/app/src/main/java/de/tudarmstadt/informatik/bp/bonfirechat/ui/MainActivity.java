@@ -1,13 +1,16 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.app.ActionBar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -18,6 +21,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 
 
 public class MainActivity extends Activity
@@ -55,6 +60,7 @@ public class MainActivity extends Activity
 
         GcmBroadcastReceiver.registerForGcm(this);
         initializeNetwork();
+        initializeStats();
     }
 
     private void initializeNetwork() {
@@ -72,6 +78,18 @@ public class MainActivity extends Activity
         Intent intent = new Intent(this, ConnectionManager.class);
         intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
         this.startService(intent);
+    }
+
+    private void initializeStats() {
+        CurrentStats.getInstance();
+        Intent statsPublishIntent = new Intent(this, StatsCollector.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, statsPublishIntent, 0);
+
+        AlarmManager manager = (AlarmManager)getSystemService(this.ALARM_SERVICE);
+        int interval = 5000;
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+        Toast.makeText(this, "Periodic stats upload alarm set.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
