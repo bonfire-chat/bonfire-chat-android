@@ -100,8 +100,6 @@ public class ConnectionManager extends NonStopIntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        Toast.makeText(this, "ConnectionManager created", Toast.LENGTH_SHORT).show();
         SmackAndroid.init(this);
     }
 
