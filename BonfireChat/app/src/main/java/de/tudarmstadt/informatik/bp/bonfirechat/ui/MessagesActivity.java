@@ -191,7 +191,7 @@ public class MessagesActivity extends Activity {
             Message m = new Message("TRACEROUTE\n", db.getDefaultIdentity(), new Date(), 0, conversation.getPeer());
             Envelope e = Envelope.fromMessage(m, false);
             e.flags = Envelope.FLAG_TRACEROUTE;
-            m.body = "TRACEROUTE: " + BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString();
+            m.body = "TRACEROUTE: " + BonfireData.API_ENDPOINT + "/traceroute?uuid=" + e.uuid.toString();
             appendMessage(m);
             Log.d(TAG, "sending tracert id " + e.uuid);
             ConnectionManager.sendEnvelope(MessagesActivity.this, e);

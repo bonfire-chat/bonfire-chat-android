@@ -37,7 +37,7 @@ public class BonfireData extends SQLiteOpenHelper{
     /**
 	 * URL of the rendezvous server API endpoint
 	 */
-    public static final String API_ENDPOINT = "https://bonfire.projects.teamwiki.net";
+    public static final String API_ENDPOINT = "https://bonfire.projects.teamwiki.net/api/v1";
     public static final PublicKey SERVER_PUBLICKEY = new PublicKey("7c2bbc4c4d292479de59a1168f3b102ac9869b9ee00beb92745571e36bbb0b43");
 
     private static BonfireData instance;

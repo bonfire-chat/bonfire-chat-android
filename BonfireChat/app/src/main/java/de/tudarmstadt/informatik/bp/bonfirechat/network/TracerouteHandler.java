@@ -37,7 +37,7 @@ public class TracerouteHandler {
         if (!envelope.hasFlag(Envelope.FLAG_TRACEROUTE)) return;
         HttpURLConnection urlConnection = null;
         try {
-            urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/traceroute.php").openConnection();
+            urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/traceroute").openConnection();
             urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=Je8PPsja_x");
             urlConnection.setDoOutput(true);
             urlConnection.setChunkedStreamingMode(0);

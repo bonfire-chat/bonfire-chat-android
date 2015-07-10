@@ -101,7 +101,7 @@ public class SearchUserActivity extends Activity {
             String keyword = "%"+params[0]+"%";
 
             try {
-                HttpGet httppost = new HttpGet(BonfireData.API_ENDPOINT + "/search.php?nickname=" + URLEncoder.encode(keyword, "UTF-8"));
+                HttpGet httppost = new HttpGet(BonfireData.API_ENDPOINT + "/search?nickname=" + URLEncoder.encode(keyword, "UTF-8"));
                 HttpResponse response = httpclient.execute(httppost);
                 java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent()).useDelimiter("\\A");
                 JSONTokener tokener = new JSONTokener(s.next());
