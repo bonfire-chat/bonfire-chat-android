@@ -7,3 +7,5 @@ QS-Dokument.pdf
 *.MPG
 .DS_Store
 *~
+bower_components/
+log.txt
