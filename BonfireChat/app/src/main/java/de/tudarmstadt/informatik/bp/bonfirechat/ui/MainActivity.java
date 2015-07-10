@@ -93,12 +93,12 @@ public class MainActivity extends Activity
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, statsPublishIntent, 0);
 
         AlarmManager manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        int interval = StatsCollector.PUBLISH_INTERVAL;
+        long interval = StatsCollector.PUBLISH_INTERVAL;
 
         manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
         Log.i(TAG, "Periodic stats upload interval alarm set.");
 
-        registerReceiver(new StatsCollector(), new IntentFilter(StatsCollector.PUBLISH_STATS_ACTION));
+        registerReceiver(new StatsCollector(this), new IntentFilter(StatsCollector.PUBLISH_STATS_ACTION));
     }
 
     @Override

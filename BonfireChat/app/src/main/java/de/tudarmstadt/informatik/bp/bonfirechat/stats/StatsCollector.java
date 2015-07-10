@@ -4,18 +4,19 @@ import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.NonStopIntentService;
 
 /**
  * Created by johannes on 10.07.15.
@@ -24,10 +25,25 @@ public class StatsCollector extends BroadcastReceiver {
 
     private static final String TAG = "StatsCollector";
 
-    public static final long PUBLISH_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
+    public static final long PUBLISH_INTERVAL = 1000;//AlarmManager.INTERVAL_HALF_HOUR;
 
     // action in Intents which are sent to the service
     public static final String PUBLISH_STATS_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.PUBLISH_STATS";
+
+    private StatsEntry stats;
+
+    private int batteryLastLevel;
+    private long batteryLastMeasured;
+
+    public StatsCollector(Context ctx) {
+        // get global stats object
+        stats = CurrentStats.getInstance();
+        // initialize measurement
+        batteryLastLevel = stats.batteryLevel;
+        batteryLastMeasured = System.currentTimeMillis();
+        // listen for battery status
+        ctx.registerReceiver(this.batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    }
 
     /*
      * handle stats intents
@@ -35,18 +51,16 @@ public class StatsCollector extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         BonfireData db = BonfireData.getInstance(context);
-        StatsEntry stats = CurrentStats.getInstance();
-
         Log.i(TAG, "publishing latest stats data...");
 
         // save latest stats data to local database
-        stats.updateTimestamp();
+        updateStats();
         db.addStatsEntry(stats);
 
-        publishStats(stats, db);
+        publishStats(db);
     }
 
-    private void publishStats(final StatsEntry stats, final BonfireData db) {
+    private void publishStats(final BonfireData db) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -82,5 +96,25 @@ public class StatsCollector extends BroadcastReceiver {
                 return null;
             }
         }.execute();
+    }
+
+    private BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            stats.batteryLevel = level;
+            Log.d(TAG, "updating stats: setting battery level to " + level);
+        }
+    };
+
+    private void updateStats() {
+        stats.timestamp = new Date();
+        Log.d(TAG, "time delta: " + (System.currentTimeMillis() - batteryLastMeasured));
+        stats.powerUsage = ((float)batteryLastLevel - (float)stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000*60*60;
+        Log.d(TAG, "delta calc: " + stats.powerUsage);
+        if (stats.powerUsage < 0) stats.powerUsage = 0;
+
+        batteryLastLevel = stats.batteryLevel;
+        batteryLastMeasured = System.currentTimeMillis();
     }
 }
