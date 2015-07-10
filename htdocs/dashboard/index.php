@@ -15,8 +15,11 @@
     <div class="container" ng-controller="DashboardController as dashboard">
       <nav class="navbar navbar-default">
         <div class="navbar-header">
-        	<a class="navbar-brand" href="javascript:">Bonfire Dashboard</a>
+          <a class="navbar-brand" href="javascript:">Bonfire Dashboard</a>
         </div>
+        <ul class="nav navbar-nav pull-right">
+          <li><a href="../">Zurück zur Homepage</a></li>
+        </ul>
       </nav>
 
       <div class="row">
