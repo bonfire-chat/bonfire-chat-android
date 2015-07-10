@@ -115,11 +115,9 @@ public class StatsCollector extends BroadcastReceiver {
         batteryLastMeasured = System.currentTimeMillis();
 
         GpsTracker gps = GpsTracker.getInstance();
-        Log.d(TAG, "trying to get location: ");
         if (gps.canGetLocation()) {
             stats.lat = (float) gps.getLatitude();
             stats.lng = (float) gps.getLongitude();
-            Log.d(TAG, "lat: " + stats.lat + ", lng: " + stats.lng);
         }
     }
 }
