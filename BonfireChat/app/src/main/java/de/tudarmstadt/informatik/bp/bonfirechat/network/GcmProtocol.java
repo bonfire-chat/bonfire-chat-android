@@ -29,7 +29,7 @@ public class GcmProtocol extends SocketProtocol {
 
     URL myEndpointUrl;
     public GcmProtocol(Context context) throws MalformedURLException {
-        myEndpointUrl = new URL(BonfireData.API_ENDPOINT + "/notify.php");
+        myEndpointUrl = new URL(BonfireData.API_ENDPOINT + "/notify");
         instance = this;
     }
 

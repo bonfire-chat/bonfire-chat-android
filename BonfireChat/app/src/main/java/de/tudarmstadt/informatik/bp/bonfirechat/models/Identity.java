@@ -115,7 +115,7 @@ public class Identity implements IPublicIdentity {
                     + "&nonce=" + CryptoHelper.toBase64(nonce)
                     + "&data=" + ciphertext;
 
-            urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/register.php").openConnection();
+            urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/register").openConnection();
             urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             urlConnection.setDoOutput(true);
             urlConnection.setChunkedStreamingMode(0);
