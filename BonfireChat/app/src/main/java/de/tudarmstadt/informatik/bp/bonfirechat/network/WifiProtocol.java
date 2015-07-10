@@ -139,7 +139,7 @@ public class WifiProtocol extends SocketProtocol {
 
                         e = mySocketProtocol.receiveEnvelope(inputstream);
                         Log.d(TAG, "Die message war: " + e);
-                    Log.d(TAG,"Der Empf‰nger ist " +  CryptoHelper.toBase64(e.recipientsPublicKeys.get(0)));
+                        Log.d(TAG,"Der Empf√§nger ist " +  CryptoHelper.toBase64(e.recipientsPublicKeys.get(0)));
 
                         listener.onMessageReceived(WifiProtocol.this, e);
 
