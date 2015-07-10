@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.stats;
 
+import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +26,7 @@ public class StatsCollector extends BroadcastReceiver {
 
     private static final String TAG = "StatsCollector";
 
-    public static final long PUBLISH_INTERVAL = 1000;//AlarmManager.INTERVAL_HALF_HOUR;
+    public static final long PUBLISH_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
 
     // action in Intents which are sent to the service
     public static final String PUBLISH_STATS_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.PUBLISH_STATS";
@@ -107,13 +108,16 @@ public class StatsCollector extends BroadcastReceiver {
     };
 
     private void updateStats() {
+        // bump time
         stats.timestamp = new Date();
 
+        // update calculated battery consumption
         stats.powerUsage = ((float)batteryLastLevel - (float)stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000*60*60;
         if (stats.powerUsage < 0) stats.powerUsage = 0;
         batteryLastLevel = stats.batteryLevel;
         batteryLastMeasured = System.currentTimeMillis();
 
+        // update location
         GpsTracker gps = GpsTracker.getInstance();
         if (gps.canGetLocation()) {
             stats.lat = (float) gps.getLatitude();
