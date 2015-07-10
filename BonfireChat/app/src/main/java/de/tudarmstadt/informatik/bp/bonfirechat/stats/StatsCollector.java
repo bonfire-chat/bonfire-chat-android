@@ -1,6 +1,5 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.stats;
 
-import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 
 /**
  * Created by johannes on 10.07.15.
@@ -31,7 +31,6 @@ public class StatsCollector extends BroadcastReceiver {
     public static final String PUBLISH_STATS_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.PUBLISH_STATS";
 
     private StatsEntry stats;
-
     private int batteryLastLevel;
     private long batteryLastMeasured;
 
@@ -109,12 +108,18 @@ public class StatsCollector extends BroadcastReceiver {
 
     private void updateStats() {
         stats.timestamp = new Date();
-        Log.d(TAG, "time delta: " + (System.currentTimeMillis() - batteryLastMeasured));
-        stats.powerUsage = ((float)batteryLastLevel - (float)stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000*60*60;
-        Log.d(TAG, "delta calc: " + stats.powerUsage);
-        if (stats.powerUsage < 0) stats.powerUsage = 0;
 
+        stats.powerUsage = ((float)batteryLastLevel - (float)stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000*60*60;
+        if (stats.powerUsage < 0) stats.powerUsage = 0;
         batteryLastLevel = stats.batteryLevel;
         batteryLastMeasured = System.currentTimeMillis();
+
+        GpsTracker gps = GpsTracker.getInstance();
+        Log.d(TAG, "trying to get location: ");
+        if (gps.canGetLocation()) {
+            stats.lat = (float) gps.getLatitude();
+            stats.lng = (float) gps.getLongitude();
+            Log.d(TAG, "lat: " + stats.lat + ", lng: " + stats.lng);
+        }
     }
 }
