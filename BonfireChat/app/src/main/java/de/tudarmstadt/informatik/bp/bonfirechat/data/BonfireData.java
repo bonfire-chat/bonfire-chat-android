@@ -17,6 +17,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.StatsEntry;
 
 /**
  * Created by simon on 05.05.15.
@@ -26,19 +27,20 @@ public class BonfireData extends SQLiteOpenHelper{
     private static final String CONTACTS = "contacts";
     private static final String CONVERSATIONS = "conversations";
     private static final String MESSAGES = "messages";
-    private static final String IDENTITIES = "identity";
+    private static final String STATS = "stats";
 
+    private static final String IDENTITIES = "identity";
     // rowid is not included in "*" by default
     private static final String[] ALL_COLS = new String[]{ "rowid", "*" };
-    private static final String TAG = "BonfireData";
 
-	/**
+    private static final String TAG = "BonfireData";
+    /**
 	 * URL of the rendezvous server API endpoint
 	 */
     public static final String API_ENDPOINT = "https://bonfire.projects.teamwiki.net";
     public static final PublicKey SERVER_PUBLICKEY = new PublicKey("7c2bbc4c4d292479de59a1168f3b102ac9869b9ee00beb92745571e36bbb0b43");
 
-	private static BonfireData instance;
+    private static BonfireData instance;
 
     public static BonfireData getInstance(Context ctx) {
         if (instance == null) instance = new BonfireData(ctx);
@@ -52,32 +54,41 @@ public class BonfireData extends SQLiteOpenHelper{
 
     }
 
-
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, phoneNumber TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT)");
         db.execSQL("CREATE TABLE if not exists " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
         db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(uuid TEXT NOT NULL PRIMARY KEY, conversation INT NOT NULL, sender INT NOT NULL, flags INTEGER NOT NULL, protocol TEXT, body TEXT, sentDate TEXT, insertDate INT)");
         db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT, phone TEXT)");
-
+        db.execSQL("CREATE TABLE if not exists " + STATS + "(timestamp DATETIME, created_at DATETIME, batterylevel INT, powerusage FLOAT, messages_sent INT, messages_received INT, lat FLOAT, lng FLOAT)");
     }
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+        if (oldVersion >= newVersion)
+            return;
+
+        db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
+        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
+        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);
+
+        onCreate(db);
+    }
+
 
     public void createContact(Contact contact){
         SQLiteDatabase db = getWritableDatabase();
         contact.rowid = db.insert(CONTACTS, null, contact.getContentValues());
-        //db.close();
     }
 
     public void createIdentity(Identity identity){
         SQLiteDatabase db = getWritableDatabase();
         identity.rowid = db.insert(IDENTITIES, null, identity.getContentValues());
-        //db.close();
     }
 
     public void createConversation(Conversation conversation){
         SQLiteDatabase db = getWritableDatabase();
         conversation.rowid = db.insert(CONVERSATIONS, null, conversation.getContentValues());
-        //db.close();
     }
 
     public void createMessage(Message message, Conversation conversation){
@@ -95,7 +106,6 @@ public class BonfireData extends SQLiteOpenHelper{
         if (cursor.moveToNext()) {
             i = Identity.fromCursor(cursor);
         }
-        //db.close();
         return i;
     }
 
@@ -109,7 +119,6 @@ public class BonfireData extends SQLiteOpenHelper{
             conversation.addMessages(this.getMessages(conversation));
             conversations.add(conversation);
         }
-        //db.close();
         return conversations;
     }
 
@@ -121,7 +130,6 @@ public class BonfireData extends SQLiteOpenHelper{
         if(conversationCursor.moveToNext()){
             conversation = Conversation.fromCursor(peer, conversationCursor);
         }
-        //db.close();
         return conversation;
     }
     public Conversation getConversationById(long rowid){
@@ -136,7 +144,6 @@ public class BonfireData extends SQLiteOpenHelper{
                     getContactById(peerId),
                     conversationCursor);
         }
-        //db.close();
         return conversation;
     }
 
@@ -146,7 +153,6 @@ public class BonfireData extends SQLiteOpenHelper{
         Cursor cursor = db.query(MESSAGES, null, "uuid=?", new String[]  {id.toString()}, null, null, null);
         if (!cursor.moveToNext()) return null;
         Message message = Message.fromCursor(cursor, this);
-        //db.close();
         return message;
     }
     public ArrayList<Message> getMessages(Conversation conversation){
@@ -156,26 +162,18 @@ public class BonfireData extends SQLiteOpenHelper{
         while(messageCursor.moveToNext()){
             messages.add(Message.fromCursor(messageCursor, this));
         }
-        //db.close();
         return messages;
     }
 
     public boolean deleteContact(Contact contact){
 
         SQLiteDatabase db = this.getWritableDatabase();
-        try
-        {
+        try {
             db.delete(CONTACTS, "rowid=?", new String[] { String.valueOf(contact.rowid) });
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             e.printStackTrace();
         }
-        finally
-        {
-            //db.close();
-        }
-        ;
         return true;
 
     }
@@ -183,20 +181,13 @@ public class BonfireData extends SQLiteOpenHelper{
     public boolean deleteConversation(Conversation conversation){
 
         SQLiteDatabase db = this.getWritableDatabase();
-        try
-        {
+        try {
             db.delete(CONVERSATIONS, "rowid=?", new String[] { String.valueOf(conversation.rowid) });
             db.delete(MESSAGES, "conversation=?", new String[] { String.valueOf(conversation.rowid) });
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             e.printStackTrace();
         }
-        finally
-        {
-            //db.close();
-        }
-        ;
         return true;
 
     }
@@ -231,20 +222,6 @@ public class BonfireData extends SQLiteOpenHelper{
         return Contact.fromCursor(cursor);
     }
 
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        if (oldVersion >= newVersion)
-            return;
-
-        db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
-        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
-        db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
-        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);
-
-        onCreate(db);
-    }
-
     public void updateContact(Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(CONTACTS, contact.getContentValues(), " rowid = ? ", new String[]{String.valueOf(contact.rowid)});
@@ -260,5 +237,19 @@ public class BonfireData extends SQLiteOpenHelper{
     public void updateConversation(Conversation conversation) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(CONVERSATIONS, conversation.getContentValues(), " rowid = ? ", new String[]{String.valueOf(conversation.rowid)});
+    }
+
+    public void addStatsEntry(StatsEntry stats) {
+        SQLiteDatabase db = getWritableDatabase();
+        stats.rowid = db.insert(STATS, null, stats.getContentValues());
+    }
+    public StatsEntry getLatestStatsEntry() {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(STATS, ALL_COLS, null, null, null, null, null);
+        if (!cursor.moveToLast()) {
+            Log.i(TAG, "no latest stats object found in database. Creating a new one...");
+            return new StatsEntry();
+        }
+        return StatsEntry.fromCursor(cursor);
     }
 }
