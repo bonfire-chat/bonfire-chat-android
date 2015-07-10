@@ -30,7 +30,7 @@ if ($stmt->rowCount()) {
     
 } else {
     error_log("inserting record pkhash=$pubkey  nick=$data[nickname]");
-    $stmt = $db->prepare("INSERT INTO users (nickname, xmppid, publickey, phone, gcmid, created, last_updated, ip) VALUES(?,?,?,?,?,?,NOW(),NOW(),?)");
+    $stmt = $db->prepare("INSERT INTO users (nickname, xmppid, publickey, phone, gcmid, created, last_updated, ip) VALUES(?,?,?,?,?,NOW(),NOW(),?)");
     $ok=$stmt->execute(array($data["nickname"], $data["xmppid"], $pubkey, $data["phone"], $data["gcmid"], $_SERVER["REMOTE_ADDR"]));
     if (!$ok) { error_log(print_r($stmt->errorInfo(),true)); errorResult(500, "Error: ".$stmt->errorInfo()[2]); }
     echo "ok";
