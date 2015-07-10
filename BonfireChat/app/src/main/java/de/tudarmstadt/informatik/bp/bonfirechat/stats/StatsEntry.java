@@ -14,7 +14,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
  */
 public class StatsEntry {
     public Date timestamp;
-    public Date created_at;
     public int batteryLevel;
     public float powerUsage;
     public int messagesSent;
@@ -23,11 +22,10 @@ public class StatsEntry {
     public long rowid;
 
     public StatsEntry() {
-        this(new Date(), new Date(), 0, 0, 0, 0, 0, 0, 0);
+        this(new Date(), 0, 0, 0, 0, 0, 0, 0);
     }
-    public StatsEntry(Date timestamp, Date created_at, int batteryLevel, float powerUsage, int messagesSent, int messageReceived, float lat, float lng, long rowid) {
+    public StatsEntry(Date timestamp, int batteryLevel, float powerUsage, int messagesSent, int messageReceived, float lat, float lng, long rowid) {
         this.timestamp = timestamp;
-        this.created_at = created_at;
         this.batteryLevel = batteryLevel;
         this.powerUsage = powerUsage;
         this.messagesSent = messagesSent;
@@ -37,10 +35,13 @@ public class StatsEntry {
         this.rowid = rowid;
     }
 
+    public void updateTimestamp() {
+        timestamp = new Date();
+    }
+
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put("timestamp", DateHelper.formatDateTime(timestamp));
-        values.put("created_at", DateHelper.formatDateTime(created_at));
         values.put("batterylevel", batteryLevel);
         values.put("powerusage", powerUsage);
         values.put("messages_sent", messagesSent);
@@ -54,7 +55,6 @@ public class StatsEntry {
         try {
             StatsEntry stats = new StatsEntry(
                     DateHelper.parseDateTime(cursor.getString(cursor.getColumnIndex("timestamp"))),
-                    DateHelper.parseDateTime(cursor.getString(cursor.getColumnIndex("created_at"))),
                     cursor.getInt(cursor.getColumnIndex("batterylevel")),
                     cursor.getFloat(cursor.getColumnIndex("powerusage")),
                     cursor.getInt(cursor.getColumnIndex("messages_sent")),

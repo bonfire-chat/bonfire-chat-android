@@ -5,11 +5,14 @@ import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.app.ActionBar;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,6 +30,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private static final String TAG = "MainActivity";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -81,15 +86,19 @@ public class MainActivity extends Activity
     }
 
     private void initializeStats() {
-        CurrentStats.getInstance();
-        Intent statsPublishIntent = new Intent(this, StatsCollector.class);
+        BonfireData db = BonfireData.getInstance(this);
+        CurrentStats.setInstance(db.getLatestStatsEntry());
+
+        Intent statsPublishIntent = new Intent(StatsCollector.PUBLISH_STATS_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, statsPublishIntent, 0);
 
-        AlarmManager manager = (AlarmManager)getSystemService(this.ALARM_SERVICE);
-        int interval = 5000;
+        AlarmManager manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        int interval = StatsCollector.PUBLISH_INTERVAL;
 
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
-        Toast.makeText(this, "Periodic stats upload alarm set.", Toast.LENGTH_SHORT).show();
+        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+        Log.i(TAG, "Periodic stats upload interval alarm set.");
+
+        registerReceiver(new StatsCollector(), new IntentFilter(StatsCollector.PUBLISH_STATS_ACTION));
     }
 
     @Override
