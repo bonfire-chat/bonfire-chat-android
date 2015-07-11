@@ -10,7 +10,7 @@ import java.util.Date;
 public class DateHelper {
 
     public static String getNowString() {
-        return new SimpleDateFormat("HH:mm:ss").format(new Date());
+        return formatTime(new Date());
     }
 
     public static String formatTime(Date date) {
