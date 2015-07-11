@@ -1,0 +1,33 @@
+\documentclass[accentcolor=tud2d,12pt,paper=a4,colorbacktitle]{tudexercise}
+
+\usepackage[utf8]{inputenc}
+\usepackage{ngerman}
+
+\title{Code Review}
+\subtitle{BonfireChat}
+\subsubtitle{Bachelorpraktikum 2015}
+
+\begin{document}
+
+  \maketitle
+
+  \begin{enumerate}
+    \item Is the functionality correct?
+    \item Are the classes named suitably?
+    \item Are the functions named suitably?
+    \item How's the datastructure being used? Is it the correct DS or it needs improvement?
+    \item If it contain functions that can be reused later then are there Utils created for them?
+    \item Can it use already available Util functions?
+    \item Are all the input arguments being validated?
+    \item How will the functionalities affect the performance of the app - time and memory?
+    \item Is it absolutely necessary to run it on UI thread or would a background thread suffice?
+    \item Are all the fail points handled?
+    \item Does it degrade gracefully in case of unknown failures?
+    \item Are the app-doing level standards being followed?
+    \item Are the operations thread safe?
+    \item What pieces of the component can be executed in parallel?
+    \item Are the layouts suitable for all the screen dimensions?
+    \item What classes would become obsolete after this implementation?
+  \end{enumerate}
+
+\end{document}
