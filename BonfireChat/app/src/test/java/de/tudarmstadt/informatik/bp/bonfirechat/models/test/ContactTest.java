@@ -19,7 +19,6 @@ import org.abstractj.kalium.keys.KeyPair;
 @RunWith(MockitoJUnitRunner.class)
 public class ContactTest {
 
-    public org.abstractj.kalium.keys.PublicKey publicKeyMock;
     Contact contact;
 
     @Before
