@@ -52,4 +52,11 @@ public class MessageTest {
         message.setTransferProtocol(BluetoothProtocol.class);
         assertEquals(Message.FLAG_ENCRYPTED | Message.FLAG_PROTO_BT & ~(Message.FLAG_PROTO_CLOUD | Message.FLAG_PROTO_WIFI), message.flags);
     }
+
+    @Test
+    public void testHasFlag(){
+        message.setTransferProtocol(BluetoothProtocol.class);
+        assertTrue(message.hasFlag(Message.FLAG_PROTO_BT));
+        assertFalse(message.hasFlag(Message.FLAG_PROTO_CLOUD));
+    }
 }
