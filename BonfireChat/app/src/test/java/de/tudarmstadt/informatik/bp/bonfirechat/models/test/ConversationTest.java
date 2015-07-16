@@ -79,7 +79,11 @@ public class ConversationTest {
         when(cursor.getColumnIndex("rowid")).thenReturn(2);
         when(cursor.getInt(2)).thenReturn(42);
         when(cursor.getColumnIndex("conversationType")).thenReturn(3);
-        when(cursor.getInt(3)).thenReturn(1);
+        when(cursor.getInt(3)).thenReturn(0);
+        Conversation conv = Conversation.fromCursor(null, cursor);
+        assertEquals(conv.title, "theTitle");
+        assertEquals(conv.rowid, 42);
+        assertEquals(conv.conversationType, Conversation.ConversationType.Single);
     }
 
 }
