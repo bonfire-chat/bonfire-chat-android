@@ -1,12 +1,22 @@
-\documentclass[accentcolor=tud4c,colorbacktitle]{tudbeamer}
+\documentclass[accentcolor=tud2d,colorbacktitle]{tudbeamer}
 
 \usepackage{ngerman}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{multicol}
+\usepackage[most]{tcolorbox}
 
 \title{Entwicklung eines adaptiven Chat-Systems}
 \author{Johannes Lauinger, Jonas Mönnig, Matthias Hofmann, Max Weller, Simon-Konstantin Thiem}
+\date{17.07.2015}
+
+\newtcolorbox{mybox}[2][]{
+  fit height from=2.8cm to 2.8cm,
+  arc=0pt, outer arc=0pt,
+  enhanced,
+  colback=#2!40,
+  colframe=black!40
+}
 
 \begin{document}
 
@@ -34,13 +44,36 @@
 
   \begin{frame}
     \frametitle{Projektfortschritt}
-    \begin{itemize}
-      \item Nachrichten verschicken über Bluetooth, WiFi Direct und Google Cloud Messaging
-      \item Ende-zu-Ende-Verschlüsselung
-      \item Kontaktdaten austauschen
-      \item Flooding der Nachrichten
-      \item Dashboard mit Statistiken
-    \end{itemize}
+    \begin{multicols}{2}
+    \begin{mybox}{red}
+        \begin{itemize}
+          \item Nachrichten verschicken
+            \includegraphics[height=1cm]{bluetooth.png}
+            \includegraphics[height=1cm]{wifi.png}
+            \includegraphics[height=1cm]{cloud.png}
+          \item Flooding der Nachrichten
+        \end{itemize}
+      \end{mybox}
+      \begin{mybox}{blue}
+        \begin{itemize}
+          \item Kontaktdaten austauschen
+            \includegraphics[height=1cm]{nfc.png}
+            \includegraphics[height=1cm]{qrcode.png}
+        \end{itemize}
+      \end{mybox}
+      \begin{mybox}{green}
+        \begin{itemize}
+          \item Ende-zu-Ende-Verschlüsselung
+            \includegraphics[height=1cm]{lock.png}
+        \end{itemize}
+      \end{mybox}
+      \begin{mybox}{yellow}
+        \begin{itemize}
+          \item GUI
+          \item Dashboard mit Statistiken
+        \end{itemize}
+      \end{mybox}
+    \end{multicols}
   \end{frame}
 
   \begin{frame}
@@ -51,7 +84,7 @@
       \item unterstützte Technologie der Handys
     \end{itemize}
     \begin{itemize}
-      \item insgesamt voraussichtlich umsetzbar
+      \item insgesamt aber voraussichtlich umsetzbar
     \end{itemize}
   \end{frame}
 
@@ -146,14 +179,14 @@
 
 
   \begin{frame}
-    \frametitle{Danke für die Aufmerksamkeit!}
+    \frametitle{Bachelorprojekt BonfireChat}
     \begin{center}
       \huge{Fragen \& Antworten}
     \end{center}
     \vspace{0.5cm}
     \begin{multicols}{2}
       \begin{itemize}
-        \item Was ist Bonfire?
+        \item Was ist BonfireChat?
           \begin{itemize}
             \item Peer-to-peer und Internet
             \item Bluetooth und WiFi Direct
