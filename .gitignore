@@ -1,9 +1,14 @@
 QS-Dokument.pdf
 code-review-checklist.pdf
+vortrag.pdf
+folien_von_jonas.pdf
 *.aux
 *.log
 *.toc
 *.out
+*.len
+*.nav
+*.snm
 .htconfig.php
 *.MPG
 .DS_Store
