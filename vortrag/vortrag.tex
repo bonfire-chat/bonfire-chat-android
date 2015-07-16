@@ -3,6 +3,7 @@
 \usepackage{ngerman}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{multicol}
 
 \title{Entwicklung eines adaptiven Chat-Systems}
 \author{Johannes Lauinger, Jonas Mönnig, Matthias Hofmann, Max Weller, Simon-Konstantin Thiem}
@@ -141,10 +142,28 @@
 
   \begin{frame}
     \frametitle{Danke für die Aufmerksamkeit!}
-    \vspace{2cm}
     \begin{center}
       \huge{Fragen \& Antworten}
     \end{center}
+    \vspace{0.5cm}
+    \begin{multicols}{2}
+      \begin{itemize}
+        \item Was ist Bonfire?
+          \begin{itemize}
+            \item Peer-to-peer und Internet
+            \item Bluetooth und WiFi Direct
+            \item Routing durch AdHoc-Mesh-Netzwerk
+            \item Kontaktaustausch: NFC, QR-Codes, Internet als Fallback
+          \end{itemize}
+        \item Qualitätsziele
+          \begin{itemize}
+            \item Wartbarkeit durch Codequalität
+            \item Korrektheit
+            \item Robustheit
+          \end{itemize}
+          \vspace{1cm}
+      \end{itemize}
+    \end{multicols}
   \end{frame}
 
 \end{document}
