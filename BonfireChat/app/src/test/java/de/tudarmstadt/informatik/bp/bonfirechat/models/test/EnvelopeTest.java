@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.MyPublicKey;
 
@@ -63,5 +64,13 @@ public class EnvelopeTest {
         assertEquals("nickname", newEnvelope.senderNickname);
         assertEquals(recipient, newEnvelope.senderPublicKey);
         assertEquals(0, newEnvelope.flags);
+    }
+
+    @Test
+    public void testHasFlag(){
+        assertFalse(envelope.hasFlag(Message.FLAG_ENCRYPTED));
+        assertFalse(envelope.hasFlag(Message.FLAG_PROTO_BT));
+        assertFalse(envelope.hasFlag(Message.FLAG_PROTO_CLOUD));
+        assertFalse(envelope.hasFlag(Message.FLAG_PROTO_WIFI));
     }
 }
