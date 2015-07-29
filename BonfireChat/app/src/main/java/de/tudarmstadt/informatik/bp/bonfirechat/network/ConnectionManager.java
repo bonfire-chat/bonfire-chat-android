@@ -13,7 +13,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -29,11 +28,10 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
-import de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
 
 /**

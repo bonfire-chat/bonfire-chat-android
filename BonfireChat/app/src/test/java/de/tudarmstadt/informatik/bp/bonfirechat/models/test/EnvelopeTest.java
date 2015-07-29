@@ -10,14 +10,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.MyPublicKey;
 

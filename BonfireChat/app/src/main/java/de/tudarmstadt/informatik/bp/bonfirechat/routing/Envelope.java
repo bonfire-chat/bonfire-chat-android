@@ -1,12 +1,10 @@
-package de.tudarmstadt.informatik.bp.bonfirechat.models;
+package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import android.content.Context;
 
 import org.abstractj.kalium.crypto.Box;
-import org.abstractj.kalium.crypto.Random;
 import org.abstractj.kalium.keys.PublicKey;
 
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +13,9 @@ import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by johannes on 15.06.15.
@@ -22,7 +23,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
  * An Envelope represents a message on its way. Envelopes are for being sent and recieved and
  * should describe a message uniquely, including network parameters.
  */
-public class Envelope implements Serializable {
+public class Envelope extends PayloadPacket {
 
     public UUID uuid;
     public int hopCount;

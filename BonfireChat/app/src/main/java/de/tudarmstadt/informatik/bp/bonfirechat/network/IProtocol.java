@@ -1,6 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
 /**

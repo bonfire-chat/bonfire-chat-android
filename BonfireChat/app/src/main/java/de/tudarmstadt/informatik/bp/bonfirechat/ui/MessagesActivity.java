@@ -28,7 +28,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;

@@ -12,8 +12,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 

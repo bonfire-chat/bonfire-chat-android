@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by mw on 05.05.2015.

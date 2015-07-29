@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.AsyncTask;
 import android.os.Looper;
 import android.util.Log;
 
@@ -19,9 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
 /**
  * Created by Simon on 22.05.2015.
