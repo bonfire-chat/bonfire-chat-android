@@ -9,7 +9,7 @@ import java.net.URL;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
 /**
  * Created by mw on 16.06.15.
