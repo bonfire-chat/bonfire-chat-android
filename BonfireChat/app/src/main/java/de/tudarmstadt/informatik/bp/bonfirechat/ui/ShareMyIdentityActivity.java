@@ -68,10 +68,10 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
 
         ImageView imageView = (ImageView) findViewById(R.id.qrCode);
 
-        int qrCodeDimention = 800;
+        int qrCodeDimension = 800;
 
         QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(QRcodeHelper.getIdentityURL(pubident), null,
-                "TEXT_TYPE", BarcodeFormat.QR_CODE.toString(), qrCodeDimention);
+                "TEXT_TYPE", BarcodeFormat.QR_CODE.toString(), qrCodeDimension);
 
         try {
             Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
