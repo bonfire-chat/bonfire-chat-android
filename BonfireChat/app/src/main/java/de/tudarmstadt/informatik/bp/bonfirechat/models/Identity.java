@@ -28,16 +28,18 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver
 public class Identity implements IPublicIdentity {
 
     private static final String TAG = "Identity";
-    public String nickname, server, username, password, phone;
-    public MyPublicKey publicKey;
-    public PrivateKey privateKey;
+
+    // the publickey is the globally unique identifier for a person/device
+    final public MyPublicKey publicKey;
+    final public PrivateKey privateKey;
+    public String nickname;
+    public String phone;
     public long rowid;
 
-    public Identity(String nickname, String privateKey, String publicKey, String server, String username, String password, String phone) {
-        this.nickname = nickname; this.phone = phone; this.username = username; this.password = password;
+    public Identity(String nickname, String privateKey, String publicKey, String phone) {
+        this.nickname = nickname; this.phone = phone;
         this.privateKey = new PrivateKey(privateKey);
         this.publicKey = MyPublicKey.deserialize(publicKey);
-        this.server = server;
     }
 
     public static Identity generate(Context ctx) {
@@ -45,8 +47,7 @@ public class Identity implements IPublicIdentity {
         String pubkey = Base64.encodeToString(keyPair.getPublicKey().toBytes(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
         String privkey = keyPair.getPrivateKey().toString();
 
-        Identity i= new Identity("", privkey, pubkey,
-                "teamwiki.de", "", String.valueOf(Math.random()*100000000000f), getMyPhoneNumber(ctx));
+        Identity i= new Identity("", privkey, pubkey, getMyPhoneNumber(ctx));
         return i;
     }
 
@@ -62,11 +63,6 @@ public class Identity implements IPublicIdentity {
     }
 
     @Override
-    public String getXmppId() {
-        return username;
-    }
-
-    @Override
     public String getPhoneNumber() {
         return phone;
     }
@@ -77,9 +73,6 @@ public class Identity implements IPublicIdentity {
         values.put("nickname", nickname);
         values.put("privatekey", privateKey.toString());
         values.put("publickey", publicKey.asBase64());
-        values.put("server", server);
-        values.put("username", username);
-        values.put("password", password);
         values.put("phone", phone);
         return values;
     }
@@ -89,9 +82,6 @@ public class Identity implements IPublicIdentity {
         Identity id = new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
                 cursor.getString(cursor.getColumnIndex("privatekey")),
                 cursor.getString(cursor.getColumnIndex("publickey")),
-                cursor.getString(cursor.getColumnIndex("server")),
-                cursor.getString(cursor.getColumnIndex("username")),
-                cursor.getString(cursor.getColumnIndex("password")),
                 cursor.getString(cursor.getColumnIndex("phone")));
         id.rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
         return id;
@@ -103,7 +93,6 @@ public class Identity implements IPublicIdentity {
         try {
 
             String plaintext = "nickname=" + URLEncoder.encode(nickname, "UTF-8")
-                    + "&xmppid=" + URLEncoder.encode(username, "UTF-8")
                     + "&phone=" + URLEncoder.encode(phone, "UTF-8")
                     + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
 
