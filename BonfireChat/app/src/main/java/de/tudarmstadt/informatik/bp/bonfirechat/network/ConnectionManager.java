@@ -81,7 +81,7 @@ public class ConnectionManager extends NonStopIntentService {
 
     // buffer for storing which messages have already been handled
     // Those were either already sent in the first place, or received
-    private static RingBuffer<UUID> processedEnvelopes = new RingBuffer<>(250);
+    private static final RingBuffer<UUID> processedEnvelopes = new RingBuffer<>(250);
 
 
 
@@ -144,18 +144,14 @@ public class ConnectionManager extends NonStopIntentService {
                 // remember this envelope
                 processedEnvelopes.enqueue(envelope.uuid);
                 // is this envelope sent to us?
-                if (envelope.containsRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                if (envelope.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                     Log.d(TAG, "this message is for us.");
                     TracerouteHandler.publishTraceroute(envelope);
-                    Message message = envelope.toMessage(ConnectionManager.this);
+                    final Message message = envelope.toMessage(ConnectionManager.this);
                     message.setTransferProtocol(sender.getClass());
                     storeAndDisplayMessage(message);
                     // update statistics
                     CurrentStats.getInstance().messageReceived += 1;
-                    // redistribute the envelope if there are further recipients
-                    if (envelope.recipientsPublicKeys.size() > 1) {
-                        redistributeEnvelope(envelope);
-                    }
                 } else {
                     redistributeEnvelope(envelope);
                 }
@@ -180,7 +176,7 @@ public class ConnectionManager extends NonStopIntentService {
                 conversation = new Conversation((Contact) message.sender, message.sender.getNickname(), 0);
                 data.createConversation(conversation);
 
-                Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
+                final Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)
                         // Puts the status into the Intent
                         .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
                 broadcastManager.sendBroadcast(localIntent);
@@ -191,7 +187,7 @@ public class ConnectionManager extends NonStopIntentService {
             data.createMessage(message, conversation);
             Log.d(TAG, "message stored in db with uuid=" + message.uuid);
 
-            Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
+            final Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
                     .putExtra(EXTENDED_DATA_MESSAGE_UUID, message.uuid)
                     .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
@@ -199,15 +195,15 @@ public class ConnectionManager extends NonStopIntentService {
             broadcastManager.sendBroadcast(localIntent);
 
 
-            Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
+            final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
             intent.putExtra("ConversationId", conversation.rowid);
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
+            final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
             stackBuilder.addParentStack(MessagesActivity.class);
             stackBuilder.addNextIntent(intent);
-            PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+            final PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
             //PendingIntent.getActivity(ConnectionManager.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
-            NotificationCompat.Builder mBuilder =
+            final Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
+            final NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ConnectionManager.this)
                             .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
@@ -218,7 +214,7 @@ public class ConnectionManager extends NonStopIntentService {
                             .setAutoCancel(true)
                             .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
 
-            NotificationManager mNotifyMgr =
+            final NotificationManager mNotifyMgr =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             mNotifyMgr.notify(1, mBuilder.build());
         }
@@ -226,21 +222,22 @@ public class ConnectionManager extends NonStopIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Bundle extras = intent.getExtras();
-        BonfireData db = BonfireData.getInstance(this);
+        final Bundle extras = intent.getExtras();
+        final BonfireData db = BonfireData.getInstance(this);
         if (intent.getAction() == GO_ONLINE_ACTION) {
-            Identity id = db.getDefaultIdentity();
+            final Identity id = db.getDefaultIdentity();
             id.registerWithServer();
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             for(Class protocol : registeredProtocols) {
                 if (isProtocolEnabled(protocol)) {
                     getOrCreateConnection(protocol);
                 }
             }
+
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
-            Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
+            final Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
             Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
             IProtocol protocol = null;
             // Handle protocol preference from intent
@@ -254,17 +251,18 @@ public class ConnectionManager extends NonStopIntentService {
                 if (null != protocol) {
                     protocol.sendMessage(envelope);
                 } else {
-                    error = new RuntimeException("No connection available for sending :(");
+                    throw new RuntimeException("No connection available for sending :(");
                 }
 
             } catch(Exception ex) {
                 ex.printStackTrace();
+                // store exception to notify UI
                 error = ex;
             }
 
             // if a message object is specified, this envelope was just generated on this phone
             // notify UI about success or failure
-            Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
+            final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_MESSAGE_UUID, envelope.uuid)
                     .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, protocol.getClass());
             if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
@@ -275,8 +273,8 @@ public class ConnectionManager extends NonStopIntentService {
             CurrentStats.getInstance().messagesSent += 1;
 
         } else if (!extras.isEmpty()) {
-            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-            String messageType = gcm.getMessageType(intent);
+            final GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+            final String messageType = gcm.getMessageType(intent);
 
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {
                 Log.w(TAG, "GCM: Send error: " + extras.toString());
@@ -285,7 +283,7 @@ public class ConnectionManager extends NonStopIntentService {
                 Log.w(TAG, "GCM: Deleted messages on server: " + extras.toString());
 
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
+                final GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
                 Log.i(TAG, "gcmProto=" + gcmProto);
                 if (gcmProto == null) return;
                 gcmProto.onHandleGcmIntent(intent);
@@ -294,7 +292,7 @@ public class ConnectionManager extends NonStopIntentService {
     }
 
     private boolean isProtocolEnabled(Class protocol) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         return preferences.getBoolean("enable_" + protocol.getSimpleName(), true);
     }
 
@@ -317,7 +315,7 @@ public class ConnectionManager extends NonStopIntentService {
         // remember this envelope
         processedEnvelopes.enqueue(envelope.uuid);
         // and dispatch sending intent
-        Intent intent = new Intent(ctx, ConnectionManager.class);
+        final Intent intent = new Intent(ctx, ConnectionManager.class);
         intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
         intent.putExtra("envelope", envelope);
         ctx.startService(intent);
