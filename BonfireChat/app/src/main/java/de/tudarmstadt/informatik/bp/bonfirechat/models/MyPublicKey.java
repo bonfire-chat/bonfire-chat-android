@@ -9,7 +9,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
  */
 public class MyPublicKey {
 
-    private PublicKey thisKey;
+    private final PublicKey thisKey;
 
     public MyPublicKey(PublicKey key) {
         thisKey = key;
@@ -26,7 +26,6 @@ public class MyPublicKey {
     }
     public String asHash() {
         return asBase64();
-        //return CryptoHelper.hash("MD5", thisKey.toBytes());
     }
 
     public static MyPublicKey deserialize(byte[] publicKey) {
