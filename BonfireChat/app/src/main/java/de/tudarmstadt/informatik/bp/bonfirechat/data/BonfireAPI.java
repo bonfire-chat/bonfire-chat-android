@@ -9,14 +9,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Envelope;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.MyPublicKey;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
 /**
  * Created by mw on 29.07.15.
