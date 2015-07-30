@@ -10,8 +10,8 @@ import java.util.List;
  * Created by johannes on 05.05.15.
  */
 public class Conversation {
-    private Contact peer;
-    private ArrayList<Message> messages;
+    private final Contact peer;
+    private final ArrayList<Message> messages;
     public long rowid;
     public String title;
     public ConversationType conversationType = ConversationType.Single;

@@ -19,13 +19,13 @@ public class EchoProtocol implements IProtocol {
     @Override
     public void sendMessage(Envelope envelope) {
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(this);
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            Envelope myNewEnvelope = (Envelope) ois.readObject();
+            final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            final ObjectInputStream ois = new ObjectInputStream(bais);
+            final Envelope myNewEnvelope = (Envelope) ois.readObject();
             listener.onMessageReceived(this, myNewEnvelope);
         } catch (IOException e) {
         } catch (ClassNotFoundException e) {
