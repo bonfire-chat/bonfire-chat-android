@@ -9,7 +9,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
  * Created by johannes on 30.07.15.
  */
 public class RoutingManager {
-    public static List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
+
+    public List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
         if (packet.isFlooding()) {
             // send to all available peers
             return peers;

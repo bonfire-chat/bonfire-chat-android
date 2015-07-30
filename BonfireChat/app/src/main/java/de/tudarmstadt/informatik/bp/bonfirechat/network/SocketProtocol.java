@@ -10,6 +10,7 @@ import java.io.OutputStream;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
  * Created by johannes on 22.05.15.
@@ -37,6 +38,25 @@ public abstract class SocketProtocol implements IProtocol {
             return envelope;
         } catch(ClassNotFoundException ex) {
             throw new IOException("Unable to deserialize envelope, class not found ("+ex.getMessage() + ")");
+        }
+    }
+
+    protected void sendPacket(OutputStream output, Packet packet) {
+        try {
+            final ObjectOutputStream stream = new ObjectOutputStream(output);
+            stream.writeObject(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected Packet receivePacket (InputStream input) throws IOException {
+        try {
+            final ObjectInputStream stream = new ObjectInputStream(input);
+            final Packet packet = (Packet) stream.readObject();
+            return packet;
+        } catch(ClassNotFoundException ex) {
+            throw new IOException("Unable to deserialize packet, class not found ("+ex.getMessage() + ")");
         }
     }
 

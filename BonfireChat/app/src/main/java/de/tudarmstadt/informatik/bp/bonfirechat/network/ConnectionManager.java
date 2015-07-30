@@ -33,6 +33,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
 
@@ -81,7 +83,9 @@ public class ConnectionManager extends NonStopIntentService {
 
     // buffer for storing which messages have already been handled
     // Those were either already sent in the first place, or received
-    private static final RingBuffer<UUID> processedEnvelopes = new RingBuffer<>(250);
+    private static final RingBuffer<UUID> processedPackets = new RingBuffer<>(250);
+
+    private static RoutingManager routingManager = new RoutingManager();
 
     // currently visible peers
     private static final List<Peer> peers = new ArrayList<>();
@@ -116,6 +120,7 @@ public class ConnectionManager extends NonStopIntentService {
                 p = (IProtocol) typ.getDeclaredConstructor(Context.class).newInstance(ConnectionManager.this);
                 p.setIdentity(BonfireData.getInstance(this).getDefaultIdentity());
                 p.setOnMessageReceivedListener(messageListener);
+                p.setOnPeerDiscoveredListener(peerListener);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -166,13 +171,15 @@ public class ConnectionManager extends NonStopIntentService {
 
     private OnMessageReceivedListener messageListener = new OnMessageReceivedListener() {
         @Override
-        public void onMessageReceived(IProtocol sender, Envelope envelope) {
+        public void onMessageReceived(IProtocol sender, Packet packet) {
             // has this envelope not yet been processed?
-            if (!processedEnvelopes.contains(envelope.uuid)) {
+            if (!processedPackets.contains(packet.uuid)) {
+                // TODO johannes: Aufspaltung nach Pakettyp
+                Envelope envelope = (Envelope) packet;
                 Log.i(TAG, "Received envelope from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
                 TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
                 // remember this envelope
-                processedEnvelopes.enqueue(envelope.uuid);
+                processedPackets.enqueue(envelope.uuid);
                 // is this envelope sent to us?
                 if (envelope.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                     Log.d(TAG, "this message is for us.");
@@ -267,8 +274,8 @@ public class ConnectionManager extends NonStopIntentService {
 
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
-            final Envelope envelope = (Envelope) intent.getSerializableExtra("envelope");
-            Log.d(TAG, "Loading envelope with uuid "+envelope.uuid+": from "+envelope.senderNickname);
+            final Packet packet = (Packet) intent.getSerializableExtra("packet");
+            Log.d(TAG, "Loading envelope with uuid "+packet.uuid+": from "+((Envelope)packet).senderNickname);
             IProtocol protocol = null;
             // Handle protocol preference from intent
             if (intent.hasExtra(EXTENDED_DATA_PROTOCOL_CLASS) && isProtocolEnabled((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS))) {
@@ -277,9 +284,11 @@ public class ConnectionManager extends NonStopIntentService {
             }
             if (protocol == null) protocol = chooseConnection();
             try {
-                TracerouteHandler.handleTraceroute(this, protocol, "Send", envelope);
+                TracerouteHandler.handleTraceroute(this, protocol, "Send", (Envelope) packet);
                 if (null != protocol) {
-                    protocol.sendMessage(envelope);
+                    // let RoutingManager decide where to send the packet to
+                    List<Peer> chosenPeers = routingManager.chooseRecipients(packet, peers);
+                    protocol.sendPacket(packet, chosenPeers);
                 } else {
                     throw new RuntimeException("No connection available for sending :(");
                 }
@@ -293,7 +302,7 @@ public class ConnectionManager extends NonStopIntentService {
             // if a message object is specified, this envelope was just generated on this phone
             // notify UI about success or failure
             final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, envelope.uuid)
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid)
                     .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, protocol.getClass());
             if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
 
@@ -341,17 +350,20 @@ public class ConnectionManager extends NonStopIntentService {
 
 
     // static helper method to enqueue
-    public static void sendEnvelope(Context ctx, Envelope envelope) {
+    public static void sendPacket(Context ctx, Packet packet) {
         // remember this envelope
-        processedEnvelopes.enqueue(envelope.uuid);
+        processedPackets.enqueue(packet.uuid);
         // and dispatch sending intent
         final Intent intent = new Intent(ctx, ConnectionManager.class);
         intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
-        intent.putExtra("envelope", envelope);
+        intent.putExtra("packet", packet);
         ctx.startService(intent);
     }
 
     // you know, for convenience and stuff
+    public static void sendEnvelope(Context ctx, Envelope envelope) {
+        sendPacket(ctx, envelope);
+    }
     public static void sendMessage(Context ctx, Message message) {
         sendEnvelope(ctx, Envelope.fromMessage(message, true));
     }
