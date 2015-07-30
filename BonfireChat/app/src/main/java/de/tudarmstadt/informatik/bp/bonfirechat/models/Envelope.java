@@ -24,13 +24,14 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
  */
 public class Envelope implements Serializable {
 
-    public UUID uuid;
+    public final UUID uuid;
+
     public int hopCount;
-    public Date sentTime;
-    public ArrayList<byte[]> recipientsPublicKeys;
+    public final Date sentTime;
+    public final byte[] recipientPublicKey;
     //TODO eventuell rauswerfen
-    public String senderNickname;
-    public byte[] senderPublicKey;
+    public final String senderNickname;
+    public final byte[] senderPublicKey;
     public byte[] encryptedBody;
     public byte[] nonce;
     public int flags;
@@ -39,11 +40,11 @@ public class Envelope implements Serializable {
     public static final int FLAG_TRACEROUTE = 8;
 
 
-    public Envelope(UUID uuid, int hopCount, Date sentTime, ArrayList<byte[]> recipientsPublicKeys, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
+    public Envelope(UUID uuid, int hopCount, Date sentTime, byte[] recipientPublicKey, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
         this.uuid = uuid;
         this.hopCount = hopCount;
         this.sentTime = sentTime;
-        this.recipientsPublicKeys = recipientsPublicKeys;
+        this.recipientPublicKey = recipientPublicKey;
         this.senderNickname = senderNickname;
         this.senderPublicKey = senderPublicKey;
         this.encryptedBody = encryptedBody;
@@ -51,21 +52,18 @@ public class Envelope implements Serializable {
 
 
     public static Envelope fromMessage(Message message, boolean encrypt) {
-        ArrayList<byte[]> publicKeys = new ArrayList<>();
-        for(Contact recipient: message.recipients) {
-            publicKeys.add(recipient.getPublicKey().asByteArray());
-        }
+        byte[] publicKey = message.recipients.get(0).getPublicKey().asByteArray();
         Envelope envelope = new Envelope(
                 message.uuid,
                 0,
                 new Date(),
-                publicKeys,
+                publicKey,
                 message.sender.getNickname(),
                 message.sender.getPublicKey().asByteArray(),
                 message.body.getBytes(Charset.forName("UTF-8")));
         if (encrypt) {
             Identity sender = (Identity)message.sender;
-            Box crypto = new Box(new PublicKey(publicKeys.get(0)), sender.privateKey);
+            Box crypto = new Box(new PublicKey(publicKey), sender.privateKey);
             envelope.nonce = CryptoHelper.generateNonce();
             envelope.encryptedBody = crypto.encrypt(envelope.nonce, envelope.encryptedBody);
             envelope.flags |= FLAG_ENCRYPTED;
@@ -91,13 +89,8 @@ public class Envelope implements Serializable {
     }
 
 
-    public boolean containsRecipient(Identity id) {
-        for (byte[] publicKey: recipientsPublicKeys) {
-            if (Arrays.equals(publicKey, id.publicKey.asByteArray())) {
-                return true;
-            }
-        }
-        return false;
+    public boolean hasRecipient(Identity id) {
+        return (Arrays.equals(recipientPublicKey, id.publicKey.asByteArray()));
     }
 
     public boolean hasFlag(int flag) {

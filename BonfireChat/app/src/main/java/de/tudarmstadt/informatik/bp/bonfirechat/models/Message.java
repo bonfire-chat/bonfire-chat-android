@@ -21,16 +21,13 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.WifiProtocol;
  * Created by johannes on 05.05.15.
  */
 public class Message implements Serializable {
-    public enum MessageDirection {
-        Unknown,
-        Sent,
-        MessageDirection, Received
-    }
-    public List<Contact> recipients;
-    public IPublicIdentity sender;
+
+    public final UUID uuid;
+
+    public final List<Contact> recipients;
+    public final IPublicIdentity sender;
     public String body;
-    public Date sentTime;
-    public UUID uuid;
+    public final Date sentTime;
     public String transferProtocol;
     public String error;
     public int flags;
@@ -97,4 +94,11 @@ public class Message implements Serializable {
     public boolean hasFlag(int flag) {
         return (flags & flag) != 0;
     }
+
+    public enum MessageDirection {
+        Unknown,
+        Sent,
+        MessageDirection, Received
+    }
+
 }
