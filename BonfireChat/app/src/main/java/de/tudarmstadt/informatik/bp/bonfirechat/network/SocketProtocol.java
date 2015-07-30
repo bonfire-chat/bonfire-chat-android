@@ -22,7 +22,7 @@ public abstract class SocketProtocol implements IProtocol {
     protected void sendEnvelope(OutputStream output, Envelope envelope) {
         try {
             Log.d("SocketProtocol", "Sending envelope  uuid=" + envelope.uuid.toString() + "   from=" + envelope.senderNickname);
-            ObjectOutputStream stream = new ObjectOutputStream(output);
+            final ObjectOutputStream stream = new ObjectOutputStream(output);
             stream.writeObject(envelope);
         } catch (IOException e) {
             e.printStackTrace();
@@ -31,8 +31,8 @@ public abstract class SocketProtocol implements IProtocol {
 
     protected Envelope receiveEnvelope(InputStream input) throws IOException {
         try {
-            ObjectInputStream stream = new ObjectInputStream(input);
-            Envelope envelope = (Envelope) stream.readObject();
+            final ObjectInputStream stream = new ObjectInputStream(input);
+            final Envelope envelope = (Envelope) stream.readObject();
             return envelope;
         } catch(ClassNotFoundException ex) {
             throw new IOException("Unable to deserialize envelope, class not found ("+ex.getMessage() + ")");

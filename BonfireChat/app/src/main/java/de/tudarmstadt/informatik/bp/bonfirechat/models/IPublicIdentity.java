@@ -8,6 +8,5 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 public interface IPublicIdentity {
     MyPublicKey getPublicKey();
     String getNickname();
-    String getXmppId();
     String getPhoneNumber();
 }

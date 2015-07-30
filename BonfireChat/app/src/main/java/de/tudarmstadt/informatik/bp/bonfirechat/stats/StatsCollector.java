@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
@@ -76,7 +77,7 @@ public class StatsCollector extends BroadcastReceiver {
 
                 HttpURLConnection urlConnection = null;
                 try {
-                    urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/stats").openConnection();
+                    urlConnection = (HttpURLConnection) new URL(BonfireAPI.API_ENDPOINT + "/stats").openConnection();
                     urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     urlConnection.setDoOutput(true);
                     urlConnection.setChunkedStreamingMode(0);

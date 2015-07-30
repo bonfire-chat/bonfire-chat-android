@@ -13,11 +13,15 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
  * Created by johannes on 05.05.15.
  */
 public class Contact implements Serializable, IPublicIdentity {
+
+    // the publickey is the globally unique identifier for a person/device
+    public MyPublicKey publicKey;
+
     private String nickname;
     private String firstName;
     private String lastName;
     public String phoneNumber;
-    public MyPublicKey publicKey;
+
     public String xmppId;
     public String wifiMacAddress;
     public String bluetoothMacAddress;
