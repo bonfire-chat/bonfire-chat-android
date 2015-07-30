@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
@@ -96,7 +97,7 @@ public class Identity implements IPublicIdentity {
                     + "&phone=" + URLEncoder.encode(phone, "UTF-8")
                     + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
 
-            Box b = new Box(BonfireData.SERVER_PUBLICKEY, privateKey);
+            Box b = new Box(BonfireAPI.SERVER_PUBLICKEY, privateKey);
             byte[] nonce = CryptoHelper.generateNonce();
             String ciphertext = CryptoHelper.toBase64(b.encrypt(nonce, plaintext.getBytes("UTF-8")));
 
@@ -104,7 +105,7 @@ public class Identity implements IPublicIdentity {
                     + "&nonce=" + CryptoHelper.toBase64(nonce)
                     + "&data=" + ciphertext;
 
-            urlConnection = (HttpURLConnection) new URL(BonfireData.API_ENDPOINT + "/register").openConnection();
+            urlConnection = (HttpURLConnection) new URL(BonfireAPI.API_ENDPOINT + "/register").openConnection();
             urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             urlConnection.setDoOutput(true);
             urlConnection.setChunkedStreamingMode(0);

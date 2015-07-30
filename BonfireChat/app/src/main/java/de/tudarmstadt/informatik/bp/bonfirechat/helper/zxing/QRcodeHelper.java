@@ -32,7 +32,6 @@ public class QRcodeHelper {
     public static String getIdentityURL(IPublicIdentity pubident) {
         try {
             return "bonfire://contact?name=" + URLEncoder.encode(pubident.getNickname(), "utf-8")
-                    + "&jid=" + URLEncoder.encode(pubident.getXmppId(), "utf-8")
                     + "&tel=" + URLEncoder.encode(pubident.getPhoneNumber(), "utf-8")
                     + "&key=" + URLEncoder.encode(pubident.getPublicKey().asBase64(), "utf-8");
         } catch (UnsupportedEncodingException e) {

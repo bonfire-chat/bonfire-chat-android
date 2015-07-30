@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
@@ -146,7 +147,7 @@ public class ConnectionManager extends NonStopIntentService {
                 // is this envelope sent to us?
                 if (envelope.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                     Log.d(TAG, "this message is for us.");
-                    TracerouteHandler.publishTraceroute(envelope);
+                    BonfireAPI.publishTraceroute(envelope);
                     final Message message = envelope.toMessage(ConnectionManager.this);
                     message.setTransferProtocol(sender.getClass());
                     storeAndDisplayMessage(message);
