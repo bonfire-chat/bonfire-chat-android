@@ -17,7 +17,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 public abstract class SocketProtocol implements IProtocol {
 
     protected Identity identity;
-    protected OnMessageReceivedListener listener;
+    protected OnMessageReceivedListener messageListener;
+    protected OnPeerDiscoveredListener peerListener;
 
     protected void sendEnvelope(OutputStream output, Envelope envelope) {
         try {
@@ -46,7 +47,12 @@ public abstract class SocketProtocol implements IProtocol {
 
     @Override
     public void setOnMessageReceivedListener(OnMessageReceivedListener listener) {
-        this.listener = listener;
+        this.messageListener = listener;
+    }
+
+    @Override
+    public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
+        this.peerListener = listener;
     }
 
 }

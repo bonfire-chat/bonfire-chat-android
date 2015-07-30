@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -82,7 +83,9 @@ public class ConnectionManager extends NonStopIntentService {
     // Those were either already sent in the first place, or received
     private static final RingBuffer<UUID> processedEnvelopes = new RingBuffer<>(250);
 
-
+    // currently visible peers
+    private static final List<Peer> peers = new ArrayList<>();
+    private static Handler handler = new Handler();
 
     public static final Class[] registeredProtocols = new Class[]{
             BluetoothProtocol.class,
@@ -101,6 +104,7 @@ public class ConnectionManager extends NonStopIntentService {
     public void onCreate() {
         super.onCreate();
         SmackAndroid.init(this);
+        removeOutdatedPeersThread.run();
     }
 
     public static List<IProtocol> connections = new ArrayList<IProtocol>();
@@ -111,7 +115,7 @@ public class ConnectionManager extends NonStopIntentService {
             try {
                 p = (IProtocol) typ.getDeclaredConstructor(Context.class).newInstance(ConnectionManager.this);
                 p.setIdentity(BonfireData.getInstance(this).getDefaultIdentity());
-                p.setOnMessageReceivedListener(listener);
+                p.setOnMessageReceivedListener(messageListener);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -133,7 +137,34 @@ public class ConnectionManager extends NonStopIntentService {
         return null;
     }
 
-    private OnMessageReceivedListener listener = new OnMessageReceivedListener() {
+    private OnPeerDiscoveredListener peerListener = new OnPeerDiscoveredListener() {
+        @Override
+        public void discoveredPeer(byte[] address) {
+            int index = peers.indexOf(address);
+            // is this peer already known to us?
+            if (index != -1) {
+                peers.get(index).updateLastSeen();
+            }
+            // otherwise add it
+            else {
+                peers.add(new Peer(address));
+            }
+        }
+    };
+
+    private Runnable removeOutdatedPeersThread = new Runnable() {
+        @Override
+        public void run() {
+            for (Peer peer: peers) {
+                if (peer.isOutdated()) {
+                    peers.remove(peer);
+                }
+            }
+            handler.postDelayed(removeOutdatedPeersThread, 1000 * 60 * 5); // every 5 minutes
+        }
+    };
+
+    private OnMessageReceivedListener messageListener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Envelope envelope) {
             // has this envelope not yet been processed?

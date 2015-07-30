@@ -10,5 +10,6 @@ public interface IProtocol {
     void sendMessage(Envelope envelope);
     void setIdentity(Identity identity);
     void setOnMessageReceivedListener(OnMessageReceivedListener listener);
+    void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener);
     boolean canSend();
 }
