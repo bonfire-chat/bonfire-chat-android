@@ -3,11 +3,13 @@ package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
+
 /**
  * Created by johannes on 30.07.15.
  */
 public class RoutingManager {
-    public static List<byte[]> chooseRecipients(Packet packet, List<byte[]> peers) {
+    public static List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
         if (packet.isFlooding()) {
             // send to all available peers
             return peers;
@@ -15,8 +17,8 @@ public class RoutingManager {
             // just return next hop, regardless of whether we see it
             // avoids need for discovering peers.
             // in case of an exception the sender will initiate a retransmission
-            List<byte[]> r = new ArrayList<>(1);
-            r.add(packet.getNextHop());
+            List<Peer> r = new ArrayList<>(1);
+            r.add(new Peer(packet.getNextHop()));
             return r;
         }
     }

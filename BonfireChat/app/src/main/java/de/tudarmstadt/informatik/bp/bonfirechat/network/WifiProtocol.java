@@ -138,7 +138,7 @@ public class WifiProtocol extends SocketProtocol {
                         Log.d(TAG, "Die message war: " + e);
                         Log.d(TAG,"Der Empfänger ist " +  CryptoHelper.toBase64(e.recipientPublicKey));
 
-                        listener.onMessageReceived(WifiProtocol.this, e);
+                        messageListener.onMessageReceived(WifiProtocol.this, e);
 
 
 

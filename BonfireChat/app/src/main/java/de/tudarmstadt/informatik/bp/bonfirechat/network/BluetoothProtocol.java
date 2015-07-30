@@ -185,7 +185,7 @@ public class BluetoothProtocol extends SocketProtocol {
 
                 // hand over to the onMessageReceivedListener, which will take account for displaying
                 // the message and/or redistribute it to further recipients
-                listener.onMessageReceived(BluetoothProtocol.this, envelope);
+                messageListener.onMessageReceived(BluetoothProtocol.this, envelope);
             } catch (IOException e) {
                 e.printStackTrace();
             }

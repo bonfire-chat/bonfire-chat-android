@@ -43,7 +43,7 @@ public class GcmProtocol extends SocketProtocol {
             final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
             final Envelope envelope = receiveEnvelope(bais);
 
-            listener.onMessageReceived(this, envelope);
+            messageListener.onMessageReceived(this, envelope);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -43,6 +43,9 @@ public class EchoProtocol implements IProtocol {
     }
 
     @Override
+    public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) { }
+
+    @Override
     public boolean canSend() {
         return true;
     }
