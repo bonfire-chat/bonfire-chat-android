@@ -122,7 +122,7 @@ public class ConnectionManager extends NonStopIntentService {
             try {
                 p = (IProtocol) typ.getDeclaredConstructor(Context.class).newInstance(ConnectionManager.this);
                 p.setIdentity(BonfireData.getInstance(this).getDefaultIdentity());
-                p.setOnMessageReceivedListener(messageListener);
+                p.setOnPacketReceivedListener(packetListener);
                 p.setOnPeerDiscoveredListener(peerListener);
             } catch (InstantiationException e) {
                 e.printStackTrace();
@@ -172,9 +172,9 @@ public class ConnectionManager extends NonStopIntentService {
         }
     };
 
-    private OnMessageReceivedListener messageListener = new OnMessageReceivedListener() {
+    private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
         @Override
-        public void onMessageReceived(IProtocol sender, Packet packet) {
+        public void onPacketReceived(IProtocol sender, Packet packet) {
             // has this packet not yet been processed?
             if (!processedPackets.contains(packet.uuid)) {
                 // remember this packet

@@ -2,7 +2,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import java.util.List;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
@@ -12,7 +11,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 public interface IProtocol {
     void sendPacket(Packet packet, List<Peer> peers);
     void setIdentity(Identity identity);
-    void setOnMessageReceivedListener(OnMessageReceivedListener listener);
+    void setOnPacketReceivedListener(OnPacketReceivedListener listener);
     void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener);
     boolean canSend();
 }

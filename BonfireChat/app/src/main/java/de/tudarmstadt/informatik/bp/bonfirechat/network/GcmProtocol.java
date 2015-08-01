@@ -5,19 +5,12 @@ import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
 /**
@@ -43,7 +36,7 @@ public class GcmProtocol extends SocketProtocol {
             final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
             final Envelope envelope = receiveEnvelope(bais);
 
-            messageListener.onMessageReceived(this, envelope);
+            packetListener.onPacketReceived(this, envelope);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {

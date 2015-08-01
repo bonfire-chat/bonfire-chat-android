@@ -1,14 +1,11 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
@@ -18,7 +15,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 public abstract class SocketProtocol implements IProtocol {
 
     protected Identity identity;
-    protected OnMessageReceivedListener messageListener;
+    protected OnPacketReceivedListener packetListener;
     protected OnPeerDiscoveredListener peerListener;
 
     protected void send(OutputStream output, Packet packet) {
@@ -46,8 +43,8 @@ public abstract class SocketProtocol implements IProtocol {
     }
 
     @Override
-    public void setOnMessageReceivedListener(OnMessageReceivedListener listener) {
-        this.messageListener = listener;
+    public void setOnPacketReceivedListener(OnPacketReceivedListener listener) {
+        this.packetListener = listener;
     }
 
     @Override
