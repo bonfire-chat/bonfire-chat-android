@@ -85,10 +85,6 @@ public class Envelope extends PayloadPacket {
     }
 
 
-    public boolean hasRecipient(Identity id) {
-        return (Arrays.equals(recipientPublicKey, id.publicKey.asByteArray()));
-    }
-
     public boolean hasFlag(int flag) {
         return (flag & flags) == flag;
     }
