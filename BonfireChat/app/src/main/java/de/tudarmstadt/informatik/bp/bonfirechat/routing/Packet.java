@@ -80,4 +80,10 @@ public abstract class Packet implements Serializable {
         return (Arrays.equals(recipientPublicKey, id.publicKey.asByteArray()));
     }
 
+    public boolean equals(Packet packet){
+        if(uuid.equals(packet.uuid) && type == packet.type )
+            return true;
+        return false;
+    }
+
 }

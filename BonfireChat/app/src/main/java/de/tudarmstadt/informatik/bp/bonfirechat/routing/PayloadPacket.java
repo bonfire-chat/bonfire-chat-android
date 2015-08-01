@@ -15,6 +15,16 @@ public abstract class PayloadPacket extends Packet {
         this.transmissionCount = 1;
     }
 
+    public int getTransmissionCount(){
+        return transmissionCount;
+    }
+
+    public boolean equals(PayloadPacket packet){
+        if(super.equals(packet) && transmissionCount == packet.getTransmissionCount())
+            return true;
+        return false;
+    }
+
     public boolean isRetransmission() {
         return transmissionCount > 1;
     }
