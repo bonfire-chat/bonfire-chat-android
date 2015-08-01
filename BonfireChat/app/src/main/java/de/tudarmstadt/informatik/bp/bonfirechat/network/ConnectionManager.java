@@ -34,6 +34,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
@@ -174,7 +175,19 @@ public class ConnectionManager extends NonStopIntentService {
         public void onMessageReceived(IProtocol sender, Packet packet) {
             // has this envelope not yet been processed?
             if (!processedPackets.contains(packet.uuid)) {
-                // TODO johannes: Aufspaltung nach Pakettyp
+                // is it  a payload packet?
+                if (packet.getType() == PacketType.Payload) {
+
+                }
+                // is it an ACK packet?
+                else if (packet.getType() == PacketType.Ack) {
+
+                }
+                // otherwise it's an unknown packet type
+                else {
+                    // TODO: team: evaluate: throw Exception instead?
+                    Log.e(TAG, "received packet of unknown type");
+                }
                 Envelope envelope = (Envelope) packet;
                 Log.i(TAG, "Received envelope from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
                 TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);

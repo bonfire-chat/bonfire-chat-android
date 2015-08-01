@@ -26,7 +26,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 public class Envelope extends PayloadPacket {
 
     public final Date sentTime;
-    public final byte[] recipientPublicKey;
     //TODO eventuell rauswerfen
     public final String senderNickname;
     public final byte[] senderPublicKey;
@@ -39,10 +38,9 @@ public class Envelope extends PayloadPacket {
 
 
     public Envelope(UUID uuid, int hopCount, Date sentTime, byte[] recipientPublicKey, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
-        super(uuid);
+        super(recipientPublicKey, uuid);
         this.hopCount = hopCount;
         this.sentTime = sentTime;
-        this.recipientPublicKey = recipientPublicKey;
         this.senderNickname = senderNickname;
         this.senderPublicKey = senderPublicKey;
         this.encryptedBody = encryptedBody;
