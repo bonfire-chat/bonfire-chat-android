@@ -31,6 +31,9 @@ public abstract class Packet implements Serializable {
 
     public int hopCount;
 
+    public Packet() {
+        this(new byte[0], UUID.randomUUID());
+    }
     public Packet(byte[] recipientPublicKey, UUID uuid) {
         this(recipientPublicKey, uuid, new ArrayList<byte[]>());
     }
