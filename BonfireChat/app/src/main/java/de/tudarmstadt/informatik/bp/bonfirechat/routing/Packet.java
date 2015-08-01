@@ -2,8 +2,11 @@ package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
 /**
  * Created by johannes on 29.07.15.
@@ -69,4 +72,9 @@ public abstract class Packet implements Serializable {
     public boolean isFlooding() {
         return path.isEmpty();
     }
+
+    public boolean hasRecipient(Identity id) {
+        return (Arrays.equals(recipientPublicKey, id.publicKey.asByteArray()));
+    }
+
 }

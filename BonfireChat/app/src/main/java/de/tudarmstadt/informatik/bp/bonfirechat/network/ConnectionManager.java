@@ -30,11 +30,13 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
@@ -173,46 +175,56 @@ public class ConnectionManager extends NonStopIntentService {
     private OnMessageReceivedListener messageListener = new OnMessageReceivedListener() {
         @Override
         public void onMessageReceived(IProtocol sender, Packet packet) {
-            // has this envelope not yet been processed?
+            // has this packet not yet been processed?
             if (!processedPackets.contains(packet.uuid)) {
-                // is it  a payload packet?
-                if (packet.getType() == PacketType.Payload) {
-
-                }
-                // is it an ACK packet?
-                else if (packet.getType() == PacketType.Ack) {
-
-                }
-                // otherwise it's an unknown packet type
-                else {
-                    // TODO: team: evaluate: throw Exception instead?
-                    Log.e(TAG, "received packet of unknown type");
-                }
-                Envelope envelope = (Envelope) packet;
-                Log.i(TAG, "Received envelope from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
-                TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
-                // remember this envelope
-                processedPackets.enqueue(envelope.uuid);
-                // is this envelope sent to us?
-                if (envelope.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
-                    Log.d(TAG, "this message is for us.");
-                    BonfireAPI.publishTraceroute(envelope);
-                    final Message message = envelope.toMessage(ConnectionManager.this);
-                    message.setTransferProtocol(sender.getClass());
-                    storeAndDisplayMessage(message);
-                    // update statistics
-                    CurrentStats.getInstance().messageReceived += 1;
+                // remember this packet
+                processedPackets.enqueue(packet.uuid);
+                // is this packet sent to us?
+                if (packet.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                    Log.d(TAG, "this packet is for us.");
+                    // is it  a payload packet?
+                    if (packet.getType() == PacketType.Payload) {
+                        handlePayloadPacket((PayloadPacket) packet, sender);
+                    }
+                    // is it an ACK packet?
+                    else if (packet.getType() == PacketType.Ack) {
+                        handleAckPacket((AckPacket) packet);
+                    }
+                    // otherwise it's an unknown packet type
+                    else {
+                        // TODO: team: evaluate: throw Exception instead?
+                        Log.e(TAG, "received packet of unknown type");
+                    }
                 } else {
-                    redistributeEnvelope(envelope);
+                    redistributePacket(packet);
                 }
             }
         }
 
-        private void redistributeEnvelope(Envelope envelope) {
-            envelope.hopCount += 1;
+        private void handlePayloadPacket(PayloadPacket packet, IProtocol sender) {
+            // turn it into an Envelope, as those are the only supported PayloadPackets
+            Envelope envelope = (Envelope) packet;
+            Log.i(TAG, "Received envelope from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
+            // traceroute stuff
+            TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
+            BonfireAPI.publishTraceroute(envelope);
+            // unpack the Envelope to a Message and handle it
+            final Message message = envelope.toMessage(ConnectionManager.this);
+            message.setTransferProtocol(sender.getClass());
+            storeAndDisplayMessage(message);
+            // update statistics
+            CurrentStats.getInstance().messageReceived += 1;
+        }
+
+        private void handleAckPacket (AckPacket packet) {
+            // TODO: anyone: handle ACK packet appropriately
+        }
+
+        private void redistributePacket(Packet packet) {
+            packet.hopCount += 1;
             // if the envelope has been sent less than 20 hops, redistribute it
-            if (envelope.hopCount < MAX_HOP_COUNT) {
-                sendEnvelope(ConnectionManager.this, envelope);
+            if (packet.hopCount < MAX_HOP_COUNT) {
+                sendPacket(ConnectionManager.this, packet);
             }
         }
 
