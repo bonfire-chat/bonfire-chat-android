@@ -19,22 +19,23 @@ public abstract class Packet implements Serializable {
     // indicates type of this packet, for further casting
     protected PacketType type;
 
+    // recipient of this packet
+    public final byte[] recipientPublicKey;
+
     // previous and next hops
     private List<byte[]> path;
     private List<byte[]> nextHops;
 
     public int hopCount;
 
-    public Packet() {
-        this(UUID.randomUUID(), new ArrayList<byte[]>());
+    public Packet(byte[] recipientPublicKey, UUID uuid) {
+        this(recipientPublicKey, uuid, new ArrayList<byte[]>());
     }
-    public Packet(UUID uuid) {
-        this(uuid, new ArrayList<byte[]>());
+    public Packet(byte[] recipientPublicKey, List<byte[]> nextHops) {
+        this(recipientPublicKey, UUID.randomUUID(), nextHops);
     }
-    public Packet(List<byte[]> nextHops) {
-        this(UUID.randomUUID(), nextHops);
-    }
-    public Packet(UUID uuid, List<byte[]> nextHops) {
+    public Packet(byte[] recipientPublicKey, UUID uuid, List<byte[]> nextHops) {
+        this.recipientPublicKey = recipientPublicKey;
         this.uuid = uuid;
         this.nextHops = nextHops;
         this.path = new ArrayList<>();
