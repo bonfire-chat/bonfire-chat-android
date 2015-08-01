@@ -29,6 +29,8 @@ public abstract class Packet implements Serializable {
     private List<byte[]> path;
     private List<byte[]> nextHops;
 
+    private long timeSent;
+
     public int hopCount;
 
     public Packet() {
@@ -40,6 +42,15 @@ public abstract class Packet implements Serializable {
     public Packet(byte[] recipientPublicKey, List<byte[]> nextHops) {
         this(recipientPublicKey, UUID.randomUUID(), nextHops);
     }
+
+    public long getTimeSent() {
+        return timeSent;
+    }
+
+    public void setTimeSent(long timeSent) {
+        this.timeSent = timeSent;
+    }
+
     public Packet(byte[] recipientPublicKey, UUID uuid, List<byte[]> nextHops) {
         this.recipientPublicKey = recipientPublicKey;
         this.uuid = uuid;

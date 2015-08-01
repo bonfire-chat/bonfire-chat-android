@@ -21,7 +21,9 @@ import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
@@ -87,6 +89,8 @@ public class ConnectionManager extends NonStopIntentService {
     // buffer for storing which messages have already been handled
     // Those were either already sent in the first place, or received
     private static final RingBuffer<Packet> processedPackets = new RingBuffer<>(250);
+
+    private static final Queue<Packet> sentButNotAckedPackets = new LinkedList<>();
 
     private static RoutingManager routingManager = new RoutingManager();
 
@@ -175,11 +179,6 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
         @Override
         public void onPacketReceived(IProtocol sender, Packet packet) {
-            // TODO: this won't work because payload packets and its corresponding ACK packets
-            // TODO: currently share the same uuid.
-            // TODO: we need to implement a mechanism to check whether duplicates of the same
-            // TODO: packets have arrived, but at the same time distinguish between original
-            // TODO: packets, ACKs and retransmissions
             // has this packet not yet been processed?
             if (!processedPackets.contains(packet)) {
                 // remember this packet
@@ -321,6 +320,9 @@ public class ConnectionManager extends NonStopIntentService {
                     // let RoutingManager decide where to send the packet to
                     List<Peer> chosenPeers = routingManager.chooseRecipients(packet, peers);
                     protocol.sendPacket(packet, chosenPeers);
+
+                    packet.setTimeSent(System.currentTimeMillis());
+                    sentButNotAckedPackets.add(packet);
                 } else {
                     throw new RuntimeException("No connection available for sending :(");
                 }
