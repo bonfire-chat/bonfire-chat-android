@@ -9,9 +9,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
  * Created by mw on 15.06.15.
@@ -34,9 +36,9 @@ public class GcmProtocol extends SocketProtocol {
             //byte[] data = dataString.getBytes("ascii");
             //Log.i("GcmProtocol", "onHandleGcmIntent: "+ StreamHelper.byteArrayToHexString(data));
             final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
-            final Envelope envelope = receiveEnvelope(bais);
+            final Packet packet = receive(bais);
 
-            packetListener.onPacketReceived(this, envelope);
+            packetListener.onPacketReceived(this, packet);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -46,12 +48,12 @@ public class GcmProtocol extends SocketProtocol {
     }
 
     @Override
-    public void sendMessage(Envelope envelope) {
+    public void sendPacket(Packet packet, List<Peer> peers) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            sendEnvelope(out, envelope);
+            send(out, packet);
 
-            BonfireAPI.sendGcmMessage(envelope.recipientPublicKey, out.toByteArray());
+            BonfireAPI.sendGcmMessage(packet.recipientPublicKey, out.toByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
