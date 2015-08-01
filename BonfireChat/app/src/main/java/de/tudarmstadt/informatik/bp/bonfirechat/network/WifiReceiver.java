@@ -163,7 +163,7 @@ public class WifiReceiver extends BroadcastReceiver {
                     if(socket.isConnected()) {
                         OutputStream outputStream = socket.getOutputStream();
 
-                        mProtocol.sendEnvelope(outputStream, mProtocol.envelope);
+                        mProtocol.send(outputStream, mProtocol.packet);
 
                         outputStream.close();
                     }
