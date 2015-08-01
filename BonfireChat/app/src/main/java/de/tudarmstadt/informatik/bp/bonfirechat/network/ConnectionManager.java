@@ -86,7 +86,7 @@ public class ConnectionManager extends NonStopIntentService {
 
     // buffer for storing which messages have already been handled
     // Those were either already sent in the first place, or received
-    private static final RingBuffer<UUID> processedPackets = new RingBuffer<>(250);
+    private static final RingBuffer<Packet> processedPackets = new RingBuffer<>(250);
 
     private static RoutingManager routingManager = new RoutingManager();
 
@@ -181,9 +181,9 @@ public class ConnectionManager extends NonStopIntentService {
             // TODO: packets have arrived, but at the same time distinguish between original
             // TODO: packets, ACKs and retransmissions
             // has this packet not yet been processed?
-            if (!processedPackets.contains(packet.uuid)) {
+            if (!processedPackets.contains(packet)) {
                 // remember this packet
-                processedPackets.enqueue(packet.uuid);
+                processedPackets.enqueue(packet);
                 // is this packet sent to us?
                 if (packet.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                     Log.d(TAG, "this packet is for us.");
@@ -384,7 +384,7 @@ public class ConnectionManager extends NonStopIntentService {
     // static helper method to enqueue
     public static void sendPacket(Context ctx, Packet packet) {
         // remember this packet
-        processedPackets.enqueue(packet.uuid);
+        processedPackets.enqueue(packet);
         // and dispatch sending intent
         final Intent intent = new Intent(ctx, ConnectionManager.class);
         intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
