@@ -14,7 +14,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
  */
 public class EchoProtocol implements IProtocol {
 
-    OnMessageReceivedListener listener;
+    OnPacketReceivedListener listener;
 
     @Override
     public void sendMessage(Envelope envelope) {
@@ -26,7 +26,7 @@ public class EchoProtocol implements IProtocol {
             final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
             final ObjectInputStream ois = new ObjectInputStream(bais);
             final Envelope myNewEnvelope = (Envelope) ois.readObject();
-            listener.onMessageReceived(this, myNewEnvelope);
+            listener.onPacketReceived(this, myNewEnvelope);
         } catch (IOException e) {
         } catch (ClassNotFoundException e) {
         }
@@ -38,7 +38,7 @@ public class EchoProtocol implements IProtocol {
     }
 
     @Override
-    public void setOnMessageReceivedListener(OnMessageReceivedListener listener) {
+    public void setOnPacketReceivedListener(OnPacketReceivedListener listener) {
         this.listener = listener;
     }
 
