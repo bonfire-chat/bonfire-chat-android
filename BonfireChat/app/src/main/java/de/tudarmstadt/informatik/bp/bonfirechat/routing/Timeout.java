@@ -7,6 +7,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 
 /**
  * Created by jonas on 01.08.15.
+ * The purpose of this class is to be given the sentButNotAckedPackages Queue of ConnectionManager
+ * and initiating necessary retransmits
  */
 public class Timeout extends Thread{
 
