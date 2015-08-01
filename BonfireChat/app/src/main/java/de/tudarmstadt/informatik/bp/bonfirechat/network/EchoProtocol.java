@@ -5,9 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
  * Created by mw on 05.05.2015.
@@ -17,7 +19,7 @@ public class EchoProtocol implements IProtocol {
     OnPacketReceivedListener listener;
 
     @Override
-    public void sendMessage(Envelope envelope) {
+    public void sendPacket(Packet packet, List<Peer> peers) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream oos = new ObjectOutputStream(baos);
