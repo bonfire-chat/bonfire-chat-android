@@ -221,9 +221,10 @@ public class ConnectionManager extends NonStopIntentService {
         }
 
         private void handleAckPacket (AckPacket packet) {
-            // TODO: anyone: handle ACK packet appropriately
-            // TODO: probably best to introduce a second (Ring?)Buffer to store messages that have
-            // TODO: not yet been acked.
+            for(Packet packet1 : sentButNotAckedPackets){
+                if(packet1.uuid.equals(packet.uuid))
+                    sentButNotAckedPackets.remove(packet1);
+            }
         }
 
         private void redistributePacket(Packet packet) {

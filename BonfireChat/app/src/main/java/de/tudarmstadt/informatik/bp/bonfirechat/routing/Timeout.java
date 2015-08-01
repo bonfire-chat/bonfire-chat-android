@@ -31,6 +31,7 @@ public class Timeout extends Thread{
         while (true) {
             try {
                 Packet currentPacket = queue.element();
+                //sleep until next expected timeout
                 sleep(System.currentTimeMillis() - (currentPacket.getTimeSent() + timeout));
                 if (currentPacket.equals(queue.element())){
                     //TODO: Hier Retransmission durchführen
