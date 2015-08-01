@@ -21,27 +21,7 @@ public abstract class SocketProtocol implements IProtocol {
     protected OnMessageReceivedListener messageListener;
     protected OnPeerDiscoveredListener peerListener;
 
-    protected void sendEnvelope(OutputStream output, Envelope envelope) {
-        try {
-            Log.d("SocketProtocol", "Sending envelope  uuid=" + envelope.uuid.toString() + "   from=" + envelope.senderNickname);
-            final ObjectOutputStream stream = new ObjectOutputStream(output);
-            stream.writeObject(envelope);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    protected Envelope receiveEnvelope(InputStream input) throws IOException {
-        try {
-            final ObjectInputStream stream = new ObjectInputStream(input);
-            final Envelope envelope = (Envelope) stream.readObject();
-            return envelope;
-        } catch(ClassNotFoundException ex) {
-            throw new IOException("Unable to deserialize envelope, class not found ("+ex.getMessage() + ")");
-        }
-    }
-
-    protected void sendPacket(OutputStream output, Packet packet) {
+    protected void send(OutputStream output, Packet packet) {
         try {
             final ObjectOutputStream stream = new ObjectOutputStream(output);
             stream.writeObject(packet);
@@ -50,7 +30,7 @@ public abstract class SocketProtocol implements IProtocol {
         }
     }
 
-    protected Packet receivePacket (InputStream input) throws IOException {
+    protected Packet receive (InputStream input) throws IOException {
         try {
             final ObjectInputStream stream = new ObjectInputStream(input);
             final Packet packet = (Packet) stream.readObject();

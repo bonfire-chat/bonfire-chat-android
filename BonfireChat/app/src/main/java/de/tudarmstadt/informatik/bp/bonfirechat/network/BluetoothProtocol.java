@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
  * Created by johannes on 22.05.15.
@@ -180,12 +181,12 @@ public class BluetoothProtocol extends SocketProtocol {
         public void run() {
             try {
                 Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
-                Envelope envelope = receiveEnvelope(input);
-                Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
+                Packet packet = receive(input);
+                Log.d(TAG, "Recieved packet with uuid " + packet.uuid);
 
                 // hand over to the onMessageReceivedListener, which will take account for displaying
                 // the message and/or redistribute it to further recipients
-                messageListener.onMessageReceived(BluetoothProtocol.this, envelope);
+                messageListener.onMessageReceived(BluetoothProtocol.this, packet);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -198,13 +199,13 @@ public class BluetoothProtocol extends SocketProtocol {
     // ###########################################################################
 
     @Override
-    public void sendMessage(Envelope envelope) {
-        Log.d(TAG, "broadcasting message via Bluetooth");
+    public void sendPacket(Packet packet, List<Peer> peers) {
+        Log.d(TAG, "sending packet to peers via Bluetooth");
 
-        // send the envelope
+         // send the envelope
         connect();
         for (OutputStream stream : output) {
-            sendEnvelope(stream, envelope);
+            send(stream, packet);
         }
         try {        Thread.sleep(50); }catch(InterruptedException ex){}
         disconnect();
