@@ -175,6 +175,11 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
         @Override
         public void onPacketReceived(IProtocol sender, Packet packet) {
+            // TODO: this won't work because payload packets and its corresponding ACK packets
+            // TODO: currently share the same uuid.
+            // TODO: we need to implement a mechanism to check whether duplicates of the same
+            // TODO: packets have arrived, but at the same time distinguish between original
+            // TODO: packets, ACKs and retransmissions
             // has this packet not yet been processed?
             if (!processedPackets.contains(packet.uuid)) {
                 // remember this packet
@@ -204,7 +209,7 @@ public class ConnectionManager extends NonStopIntentService {
         private void handlePayloadPacket(PayloadPacket packet, IProtocol sender) {
             // turn it into an Envelope, as those are the only supported PayloadPackets
             Envelope envelope = (Envelope) packet;
-            Log.i(TAG, "Received envelope from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
+            Log.i(TAG, "Received packet from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
             // traceroute stuff
             TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
             BonfireAPI.publishTraceroute(envelope);
@@ -218,11 +223,13 @@ public class ConnectionManager extends NonStopIntentService {
 
         private void handleAckPacket (AckPacket packet) {
             // TODO: anyone: handle ACK packet appropriately
+            // TODO: probably best to introduce a second (Ring?)Buffer to store messages that have
+            // TODO: not yet been acked.
         }
 
         private void redistributePacket(Packet packet) {
             packet.hopCount += 1;
-            // if the envelope has been sent less than 20 hops, redistribute it
+            // if the packet has been sent less than 20 hops, redistribute it
             if (packet.hopCount < MAX_HOP_COUNT) {
                 sendPacket(ConnectionManager.this, packet);
             }
@@ -300,7 +307,7 @@ public class ConnectionManager extends NonStopIntentService {
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             Exception error = null;
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
-            Log.d(TAG, "Loading envelope with uuid "+packet.uuid+": from "+((Envelope)packet).senderNickname);
+            Log.d(TAG, "Loading packet with uuid "+packet.uuid+": from "+((Envelope)packet).senderNickname);
             IProtocol protocol = null;
             // Handle protocol preference from intent
             if (intent.hasExtra(EXTENDED_DATA_PROTOCOL_CLASS) && isProtocolEnabled((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS))) {
@@ -324,7 +331,7 @@ public class ConnectionManager extends NonStopIntentService {
                 error = ex;
             }
 
-            // if a message object is specified, this envelope was just generated on this phone
+            // if a message object is specified, this packet was just generated on this phone
             // notify UI about success or failure
             final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid)
@@ -376,7 +383,7 @@ public class ConnectionManager extends NonStopIntentService {
 
     // static helper method to enqueue
     public static void sendPacket(Context ctx, Packet packet) {
-        // remember this envelope
+        // remember this packet
         processedPackets.enqueue(packet.uuid);
         // and dispatch sending intent
         final Intent intent = new Intent(ctx, ConnectionManager.class);

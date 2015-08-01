@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,6 +20,7 @@ import java.util.concurrent.FutureTask;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
  * Created by Simon on 22.05.2015.
@@ -34,7 +36,7 @@ public class WifiProtocol extends SocketProtocol {
     WifiP2pManager.Channel mChannel;
     IntentFilter mIntentFilter;
     WifiReceiver mReceiver;
-    public Envelope envelope;
+    public Packet packet;
     public static InetAddress mServerInetAdress;
     public static ServerSocket mServerSocket;
 
@@ -66,8 +68,9 @@ public class WifiProtocol extends SocketProtocol {
     }
 
     @Override
-    public void sendMessage(Envelope e) {
-        this.envelope = e;
+    public void sendPacket(Packet p, List<Peer> peers) {
+        // TODO: send packet only to specified recipients
+        this.packet = p;
 
         if ((WifiReceiver.info == null  || !WifiReceiver.info.groupFormed)){
             Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
@@ -132,13 +135,13 @@ public class WifiProtocol extends SocketProtocol {
 
                         InputStream inputstream = client.getInputStream();
                         WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
-                        Envelope e;
+                        Packet p;
 
-                        e = mySocketProtocol.receiveEnvelope(inputstream);
-                        Log.d(TAG, "Die message war: " + e);
-                        Log.d(TAG,"Der Empfänger ist " +  CryptoHelper.toBase64(e.recipientPublicKey));
+                        p = mySocketProtocol.receive(inputstream);
+                        Log.d(TAG, "Die message war: " + p);
+                        Log.d(TAG,"Der Empfänger ist " +  CryptoHelper.toBase64(p.recipientPublicKey));
 
-                        packetListener.onPacketReceived(WifiProtocol.this, e);
+                        packetListener.onPacketReceived(WifiProtocol.this, p);
 
 
 

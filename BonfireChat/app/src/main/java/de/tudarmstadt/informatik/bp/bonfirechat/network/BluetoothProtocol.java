@@ -201,12 +201,18 @@ public class BluetoothProtocol extends SocketProtocol {
     public void sendPacket(Packet packet, List<Peer> peers) {
         Log.d(TAG, "sending packet to peers via Bluetooth");
 
-         // send the envelope
+        // TODO: anyone: send packet only to specified peers. Just try sending it to
+        // TODO: the addresses, no discovering necessary
+         // send the packet
         connect();
         for (OutputStream stream : output) {
             send(stream, packet);
         }
-        try {        Thread.sleep(50); }catch(InterruptedException ex){}
+        try {
+            // keep the connection open for a short time to avoid exceptions
+            // caused by a closed socket
+            Thread.sleep(50);
+        } catch(InterruptedException ex){}
         disconnect();
     }
 
