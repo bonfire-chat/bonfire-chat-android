@@ -18,13 +18,9 @@ public abstract class SocketProtocol implements IProtocol {
     protected OnPacketReceivedListener packetListener;
     protected OnPeerDiscoveredListener peerListener;
 
-    protected void send(OutputStream output, Packet packet) {
-        try {
-            final ObjectOutputStream stream = new ObjectOutputStream(output);
-            stream.writeObject(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void send(OutputStream output, Packet packet) throws IOException {
+        final ObjectOutputStream stream = new ObjectOutputStream(output);
+        stream.writeObject(packet);
     }
 
     protected Packet receive (InputStream input) throws IOException {
