@@ -1,5 +1,5 @@
 angular.module("dashboard", ["chart.js"])
-    .controller("DashboardController", ["$scope", "$http", function ($scope, $http) {
+    .controller("DashboardController", ["$scope", "$http", "$interval", function ($scope, $http, $interval) {
 
 	$scope.curDevice = null;
 	
@@ -32,7 +32,8 @@ angular.module("dashboard", ["chart.js"])
 
 	$http.get("/api/v1/stats?mode=devices").then(function(result) {
 	    $scope.devices = result.data;
-//	});
+
+	
 
 	// Initialize position map
 	var map = L.map("map").setView([49.87168, 8.66083], 13);
@@ -40,12 +41,45 @@ angular.module("dashboard", ["chart.js"])
 	var myMapLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/' + mapboxId + '/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoibHVlbGlzdGFuIiwiYSI6InFsbmR0bUEifQ.4TLJEcdIV4X_j9H8fspQrQ', { attribution: 'Mapbox | &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' });
 	myMapLayer.addTo(map);
 	
-//	$http.get("/api/v1/stats?mode=device").success(function(result) {
+
 	    var devices = result.data;
 	    for(var i in devices) {
 		var d = devices[i];
 		L.marker([+d.lat, +d.lng]).addTo(map);
 	    }
 	});
-    }]);
+    }])
+
+.controller("TraceController", ["$scope", "$http", "$interval", function ($scope, $http, $interval) {
+
+	
+    $interval(function() {
+	$http.get("/api/v1/traceroute").success(function(ok) {
+	    $scope.traceroutes = ok;
+	});
+	if ($scope.currentUuid) $scope.loadTrace($scope.currentUuid);
+    }, 5000);
+    
+    $scope.currentUuid = "";
+    $scope.loadTrace = function(uuid) {
+	$scope.currentUuid = uuid;
+	$http.get("/api/v1/traceroute?uuid=" + uuid).success(function (html) {
+	    $scope.tracecontent = html;
+	});
+    }
+
+    
+
+
+}])
+
+.config(function($filterProvider) {
+   $filterProvider.register("shorten", function() {
+	return function(x) {
+		return x.substr(0,8);
+	};
+   });
+})
+
+;
     
