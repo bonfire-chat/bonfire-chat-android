@@ -19,7 +19,7 @@ public class EchoProtocol implements IProtocol {
     OnPacketReceivedListener listener;
 
     @Override
-    public void sendPacket(Packet packet, List<Peer> peers) {
+    public void sendPacket(Packet packet, Peer peer) {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -50,5 +50,10 @@ public class EchoProtocol implements IProtocol {
     @Override
     public boolean canSend() {
         return true;
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

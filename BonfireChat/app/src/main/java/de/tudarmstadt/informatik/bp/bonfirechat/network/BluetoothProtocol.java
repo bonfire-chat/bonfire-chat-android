@@ -31,16 +31,12 @@ public class BluetoothProtocol extends SocketProtocol {
 
     private Context ctx;
     private BluetoothAdapter adapter;
-    private List<BluetoothDevice> nearby;
-    private List<BluetoothSocket> sockets;
     private Handler searchLoopHandler;
 
     private Hashtable<String, ConnectionHandler> connections = new Hashtable<>();
 
     BluetoothProtocol(Context ctx) {
         this.ctx = ctx;
-        nearby = new ArrayList<>();
-        sockets = new ArrayList<>();
         searchLoopHandler = new Handler();
 
         adapter = BluetoothAdapter.getDefaultAdapter();
@@ -80,7 +76,7 @@ public class BluetoothProtocol extends SocketProtocol {
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                nearby.add(device);
+                peerListener.discoveredPeer(BluetoothProtocol.this, Peer.addressFromString(device.getAddress()));
                 Log.d(TAG, "device found: " + device.getName() + " - " + device.getAddress());
             }
         }
@@ -101,7 +97,6 @@ public class BluetoothProtocol extends SocketProtocol {
             adapter.cancelDiscovery();
         }
         Log.d(TAG, "starting discovery");
-        nearby.clear();
         adapter.startDiscovery();
     }
 
@@ -128,9 +123,11 @@ public class BluetoothProtocol extends SocketProtocol {
         BluetoothSocket socket;
         InputStream input;
         OutputStream output;
+        byte[] peerMacAddress;
 
         public ConnectionHandler(BluetoothSocket socket) {
             this.socket = socket;
+            peerMacAddress = Peer.addressFromString(socket.getRemoteDevice().getAddress());
             try {
                 input = socket.getInputStream();
                 output = socket.getOutputStream();
@@ -147,7 +144,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 while(true) {
                     Packet packet = receive(input);
                     Log.d(TAG, "Recieved packet with uuid " + packet.uuid);
-
+                    packet.addPathNode(peerMacAddress);
                     // hand over to the onMessageReceivedListener, which will take account for displaying
                     // the message and/or redistribute it to further recipients
                     packetListener.onPacketReceived(BluetoothProtocol.this, packet);
@@ -201,17 +198,16 @@ public class BluetoothProtocol extends SocketProtocol {
     // ###########################################################################
 
     @Override
-    public void sendPacket(Packet packet, List<Peer> peers) {
+    public void sendPacket(Packet packet, Peer peer) {
         Log.d(TAG, "sending packet to peers via Bluetooth");
         if (adapter.isDiscovering()) {
             adapter.cancelDiscovery();
         }
 
-        // send packet only to specified peers. Just try sending it to
+        // send packet only to specified peer. Just try sending it to
         // the addresses, no discovering necessary to send the packet
-        for (Peer peer : peers) {
-            ConnectionHandler socket = connectToDevice(adapter.getRemoteDevice(peer.getAddress()));
-            if (socket == null) continue;
+        ConnectionHandler socket = connectToDevice(adapter.getRemoteDevice(peer.getAddress()));
+        if (socket != null) {
             socket.sendNetworkPacket(packet);
         }
 
@@ -223,5 +219,17 @@ public class BluetoothProtocol extends SocketProtocol {
     @Override
     public boolean canSend() {
         return true;
+    }
+
+    @Override
+    public void shutdown() {
+        // stop discovering
+        searchLoopHandler.removeCallbacksAndMessages(null);
+        if (adapter.isDiscovering()) adapter.cancelDiscovery();
+
+        // close all connections
+        for(ConnectionHandler c : connections.values()) {
+            c.teardown();
+        }
     }
 }

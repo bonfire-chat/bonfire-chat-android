@@ -39,7 +39,7 @@ public class EnvelopeTest {
     public void initTests(){
         uuid = new UUID(0,0);
         date = new Date(42000);
-        envelope = new Envelope(uuid, 42, date, recipient, "senderNickname", senderPublicKey, encryptedBody);
+        envelope = new Envelope(uuid, date, recipient, "senderNickname", senderPublicKey, encryptedBody);
         KeyPair keyPairMock = Mockito.mock(KeyPair.class);
         org.abstractj.kalium.keys.PublicKey publicKeyMock = Mockito.mock(org.abstractj.kalium.keys.PublicKey.class);
         when(keyPairMock.getPublicKey()).thenReturn(publicKeyMock);
@@ -54,7 +54,6 @@ public class EnvelopeTest {
         message = new Message("body", contact, date, Message.FLAG_PROTO_BT, contact);
         Envelope newEnvelope = Envelope.fromMessage(message, false);
         assertEquals(message.uuid, newEnvelope.uuid);
-        assertEquals(0, newEnvelope.hopCount);
         assertEquals(recipient, newEnvelope.recipientPublicKey);
         assertEquals("nickname", newEnvelope.senderNickname);
         assertEquals(recipient, newEnvelope.senderPublicKey);

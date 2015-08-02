@@ -54,7 +54,7 @@ public class BonfireAPI {
             return theString;
         } catch (IOException e) {
             String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
-            throw new IOException("HTTP Post request failed, Exception: "+e.getMessage()+", Body: "+theErrMes);
+            throw new IOException("HTTP Post request failed, Exception: "+e.toString()+", Body: "+theErrMes);
         } finally {
             if(urlConnection == null) urlConnection.disconnect();
         }

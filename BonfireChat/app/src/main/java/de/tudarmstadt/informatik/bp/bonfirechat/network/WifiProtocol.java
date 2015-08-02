@@ -68,9 +68,9 @@ public class WifiProtocol extends SocketProtocol {
     }
 
     @Override
-    public void sendPacket(Packet p, List<Peer> peers) {
+    public void sendPacket(Packet packet, Peer peer) {
         // TODO: send packet only to specified recipients
-        this.packet = p;
+        this.packet = packet;
 
         if ((WifiReceiver.info == null  || !WifiReceiver.info.groupFormed)){
             Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
@@ -160,8 +160,14 @@ public class WifiProtocol extends SocketProtocol {
 
     }
 
+
     @Override
     public boolean canSend() {
         return true;
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

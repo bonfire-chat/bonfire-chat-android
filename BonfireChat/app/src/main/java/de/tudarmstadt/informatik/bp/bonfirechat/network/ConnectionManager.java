@@ -21,10 +21,7 @@ import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
@@ -32,13 +29,14 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
@@ -60,6 +58,8 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.MSG_RECEIVED_BROADCAST";
     public static final String MSG_SENT_BROADCAST_EVENT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MSG_SENT_BROADCAST";
+    public static final String MSG_ACKED_BROADCAST_EVENT =
+            "de.tudarmstadt.informatik.bp.bonfirechat.MSG_ACKED_BROADCAST";
     public static final String CONNECTED_BROADCAST_EVENT =
             "de.tudarmstadt.informatik.bp.bonfirechat.CONNECTED_BROADCAST";
     public static final String CONNECTION_CLOSED_BROADCAST_EVENT =
@@ -90,7 +90,6 @@ public class ConnectionManager extends NonStopIntentService {
     // Those were either already sent in the first place, or received
     private static final RingBuffer<Packet> processedPackets = new RingBuffer<>(250);
 
-    private static final Queue<Packet> sentButNotAckedPackets = new LinkedList<>();
 
     private static RoutingManager routingManager = new RoutingManager();
 
@@ -149,17 +148,30 @@ public class ConnectionManager extends NonStopIntentService {
         return null;
     }
 
+    private void closeConnection(Class typ) {
+        for(IProtocol p : connections) {
+            if (typ.isInstance(p)) {
+                connections.remove(p);
+                p.shutdown();
+            }
+        }
+        for (Peer p : peers) {
+            if (p.getProtocolClass().equals(typ))
+                peers.remove(p);
+        }
+    }
+
     private OnPeerDiscoveredListener peerListener = new OnPeerDiscoveredListener() {
         @Override
-        public void discoveredPeer(byte[] address) {
+        public void discoveredPeer(IProtocol sender, byte[] address) {
             int index = peers.indexOf(address);
             // is this peer already known to us?
             if (index != -1) {
-                peers.get(index).updateLastSeen();
+                peers.get(index).updateLastSeen(sender.getClass());
             }
             // otherwise add it
             else {
-                peers.add(new Peer(address));
+                peers.add(new Peer(sender.getClass(), address));
             }
         }
     };
@@ -183,6 +195,8 @@ public class ConnectionManager extends NonStopIntentService {
             if (!processedPackets.contains(packet)) {
                 // remember this packet
                 processedPackets.enqueue(packet);
+                // remember path to sender
+                routingManager.registerPath(packet);
                 // is this packet sent to us?
                 if (packet.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
                     Log.d(TAG, "this packet is for us.");
@@ -221,16 +235,19 @@ public class ConnectionManager extends NonStopIntentService {
         }
 
         private void handleAckPacket (AckPacket packet) {
-            for(Packet packet1 : sentButNotAckedPackets){
-                if(packet1.uuid.equals(packet.uuid))
-                    sentButNotAckedPackets.remove(packet1);
-            }
+            // cancel the pending retransmission for this packet
+            Retransmission.cancel(packet.acknowledgesUUID);
+
+            // notify the ui that the recipient has acknowledged this message
+            final Intent localIntent = new Intent(MSG_ACKED_BROADCAST_EVENT)
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID);
+
+            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
         }
 
         private void redistributePacket(Packet packet) {
-            packet.hopCount += 1;
             // if the packet has been sent less than 20 hops, redistribute it
-            if (packet.hopCount < MAX_HOP_COUNT) {
+            if (packet.getHopCount() < MAX_HOP_COUNT) {
                 sendPacket(ConnectionManager.this, packet);
             }
         }
@@ -301,45 +318,42 @@ public class ConnectionManager extends NonStopIntentService {
             for(Class protocol : registeredProtocols) {
                 if (isProtocolEnabled(protocol)) {
                     getOrCreateConnection(protocol);
+                } else {
+                    closeConnection(protocol);
                 }
             }
 
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
-            Exception error = null;
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
-            Log.d(TAG, "Loading packet with uuid "+packet.uuid+": from "+((Envelope)packet).senderNickname);
-            IProtocol protocol = null;
-            // Handle protocol preference from intent
-            if (intent.hasExtra(EXTENDED_DATA_PROTOCOL_CLASS) && isProtocolEnabled((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS))) {
-                protocol = getOrCreateConnection((Class)intent.getSerializableExtra(EXTENDED_DATA_PROTOCOL_CLASS));
-                if (!protocol.canSend()) protocol = null;
-            }
-            if (protocol == null) protocol = chooseConnection();
-            try {
-                TracerouteHandler.handleTraceroute(this, protocol, "Send", (Envelope) packet);
-                if (null != protocol) {
-                    // let RoutingManager decide where to send the packet to
-                    List<Peer> chosenPeers = routingManager.chooseRecipients(packet, peers);
-                    protocol.sendPacket(packet, chosenPeers);
+            Log.d(TAG, "Loading packet with uuid " + packet.uuid + ": from " + ((Envelope) packet).senderNickname);
 
-                    packet.setTimeSent(System.currentTimeMillis());
-                    sentButNotAckedPackets.add(packet);
-                } else {
-                    throw new RuntimeException("No connection available for sending :(");
+            if (packet instanceof PayloadPacket && packet.getHopCount() == 0)
+                Retransmission.add(this, (PayloadPacket)packet, 20000);
+
+            // let RoutingManager decide where to send the packet to
+            List<Peer> chosenPeers = routingManager.chooseRecipients(packet, peers);
+            if (chosenPeers == null) {
+                Log.e(TAG, "don't  know how to send this packet: "+packet.toString());
+                return;
+            }
+            for(Peer peer : chosenPeers) {
+                try {
+                    Class protocolClass = peer.getProtocolClass();
+                    IProtocol protocol = getConnection(protocolClass);
+                    if (protocol != null && protocol.canSend()) {
+                        protocol.sendPacket(packet, peer);
+                    }
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                    Log.e(TAG, "Unable to send packet via peer:"+peer.toString());
                 }
-
-            } catch(Exception ex) {
-                ex.printStackTrace();
-                // store exception to notify UI
-                error = ex;
             }
+            packet.setTimeSent(System.currentTimeMillis());
 
             // if a message object is specified, this packet was just generated on this phone
-            // notify UI about success or failure
+            // notify UI that sending has started
             final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid)
-                    .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, protocol.getClass());
-            if (error != null) localIntent.putExtra(EXTENDED_DATA_ERROR, error.toString());
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid);
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
 
@@ -384,10 +398,18 @@ public class ConnectionManager extends NonStopIntentService {
     }
 
 
+    private void acknowledgePacket(Envelope packetToAck) {
+        AckPacket ack = new AckPacket(packetToAck.uuid, packetToAck.senderPublicKey);
+        ack.setDSR(packetToAck.getPath());
+        sendPacket(this, ack);
+    }
+
+
     // static helper method to enqueue
     public static void sendPacket(Context ctx, Packet packet) {
         // remember this packet
         processedPackets.enqueue(packet);
+
         // and dispatch sending intent
         final Intent intent = new Intent(ctx, ConnectionManager.class);
         intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
@@ -395,8 +417,19 @@ public class ConnectionManager extends NonStopIntentService {
         ctx.startService(intent);
     }
 
-    // you know, for convenience and stuff
+    /**
+     * this should not be called on a retransmission as it adds the current node as path node
+     * @param ctx
+     * @param envelope
+     */
     public static void sendEnvelope(Context ctx, Envelope envelope) {
+        if (envelope.getHopCount() > 0) throw new IllegalArgumentException("This method only sends fresh envelopes");
+
+        // retrieve best path to target from RoutingManager, if known. otherwise use flooding
+        List<byte[]> hopsToTarget = routingManager.getPath(envelope);
+        if (hopsToTarget == null) envelope.setFlooding();
+        else envelope.setDSR(hopsToTarget);
+
         sendPacket(ctx, envelope);
     }
     public static void sendMessage(Context ctx, Message message) {

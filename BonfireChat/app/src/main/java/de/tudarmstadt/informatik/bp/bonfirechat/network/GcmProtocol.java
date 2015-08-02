@@ -24,8 +24,12 @@ public class GcmProtocol extends SocketProtocol {
     //FIXME TODO HACK
     public static GcmProtocol instance;
 
+    public final byte[] serverFakeMacAddress;
+
     public GcmProtocol(Context context) {
         instance = this;
+        this.serverFakeMacAddress = Peer.addressFromString("CA:FE:CA:FE:CA:FE");
+        peerListener.discoveredPeer(this, serverFakeMacAddress);
     }
 
 
@@ -37,7 +41,7 @@ public class GcmProtocol extends SocketProtocol {
             //Log.i("GcmProtocol", "onHandleGcmIntent: "+ StreamHelper.byteArrayToHexString(data));
             final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
             final Packet packet = receive(bais);
-
+            packet.addPathNode(serverFakeMacAddress);
             packetListener.onPacketReceived(this, packet);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -48,7 +52,7 @@ public class GcmProtocol extends SocketProtocol {
     }
 
     @Override
-    public void sendPacket(Packet packet, List<Peer> peers) {
+    public void sendPacket(Packet packet, Peer peers) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             send(out, packet);
@@ -62,5 +66,10 @@ public class GcmProtocol extends SocketProtocol {
     @Override
     public boolean canSend() {
         return true;
+    }
+
+    @Override
+    public void shutdown() {
+        // do nothing...
     }
 }
