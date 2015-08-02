@@ -80,7 +80,6 @@ public class Identity implements IPublicIdentity {
     }
 
     public static Identity fromCursor(Cursor cursor){
-        Log.d("Identity", TextUtils.join(",", cursor.getColumnNames()));
         Identity id = new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
                 cursor.getString(cursor.getColumnIndex("privatekey")),
                 cursor.getString(cursor.getColumnIndex("publickey")),
