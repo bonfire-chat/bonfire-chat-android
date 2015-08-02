@@ -16,6 +16,7 @@ import java.io.BufferedOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Hashtable;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
@@ -89,8 +90,6 @@ public class Identity implements IPublicIdentity {
     }
 
     public String registerWithServer() {
-
-        HttpURLConnection urlConnection = null;
         try {
 
             String plaintext = "nickname=" + URLEncoder.encode(nickname, "UTF-8")
@@ -101,30 +100,15 @@ public class Identity implements IPublicIdentity {
             byte[] nonce = CryptoHelper.generateNonce();
             String ciphertext = CryptoHelper.toBase64(b.encrypt(nonce, plaintext.getBytes("UTF-8")));
 
-            String postData = "publickey=" + publicKey.asBase64()
-                    + "&nonce=" + CryptoHelper.toBase64(nonce)
-                    + "&data=" + ciphertext;
-
-            urlConnection = (HttpURLConnection) new URL(BonfireAPI.API_ENDPOINT + "/register").openConnection();
-            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            urlConnection.setDoOutput(true);
-            urlConnection.setChunkedStreamingMode(0);
-
-            BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            out.write(postData.getBytes("UTF-8"));
-            out.flush();
-
-            String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
-            Log.d(TAG, "registered with server : " + urlConnection.getResponseCode());
-            Log.i(TAG, theString);
-            if (urlConnection.getResponseCode() == 200) return null;
-            return theString;
+            Hashtable<String, byte[]> body = new Hashtable<>();
+            body.put("publickey", BonfireAPI.encode(publicKey.asBase64()));
+            body.put("nonce", BonfireAPI.encode(CryptoHelper.toBase64(nonce)));
+            body.put("data", BonfireAPI.encode(ciphertext));
+            BonfireAPI.httpPost("register", body);
+            return "";
         } catch (Exception e) {
             e.printStackTrace();
-            if (urlConnection == null) return e.toString();
-            return StreamHelper.convertStreamToString(urlConnection.getErrorStream());
-        } finally {
-            if(urlConnection != null) urlConnection.disconnect();
+            return e.toString();
         }
     }
 
