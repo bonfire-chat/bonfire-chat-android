@@ -29,9 +29,14 @@ public class GcmProtocol extends SocketProtocol {
     public GcmProtocol(Context context) {
         instance = this;
         this.serverFakeMacAddress = Peer.addressFromString("CA:FE:CA:FE:CA:FE");
-        peerListener.discoveredPeer(this, serverFakeMacAddress);
     }
 
+    @Override
+    public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
+        super.setOnPeerDiscoveredListener(listener);
+
+        listener.discoveredPeer(this, serverFakeMacAddress);
+    }
 
     public void onHandleGcmIntent(Intent intent) {
         try {

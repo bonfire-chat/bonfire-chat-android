@@ -22,6 +22,7 @@ public class Peer {
     public Peer(Class protocol, byte[] address) {
         this.address = address;
         this.lastSeen = System.currentTimeMillis();
+        this.protocol = protocol;
     }
 
     public byte[] getAddress() {
