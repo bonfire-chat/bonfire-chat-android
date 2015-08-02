@@ -164,15 +164,16 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPeerDiscoveredListener peerListener = new OnPeerDiscoveredListener() {
         @Override
         public void discoveredPeer(IProtocol sender, byte[] address) {
+            Peer found = new Peer(sender.getClass(), address);
             Log.d(TAG, "Peer was discovered by "+sender.toString()+" : "+Peer.formatMacAddress(address));
-            int index = peers.indexOf(address);
+            int index = peers.indexOf(found);
             // is this peer already known to us?
             if (index != -1) {
                 peers.get(index).updateLastSeen(sender.getClass());
             }
             // otherwise add it
             else {
-                peers.add(new Peer(sender.getClass(), address));
+                peers.add(found);
             }
         }
     };
@@ -200,7 +201,7 @@ public class ConnectionManager extends NonStopIntentService {
                 routingManager.registerPath(packet);
                 // is this packet sent to us?
                 if (packet.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
-                    Log.d(TAG, "this packet is for us.");
+                    Log.d(TAG, "this packet is for us. ");
                     // is it  a payload packet?
                     if (packet.getType() == PacketType.Payload) {
                         handlePayloadPacket((PayloadPacket) packet, sender);

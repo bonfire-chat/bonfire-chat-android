@@ -145,7 +145,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 Log.d(TAG, "Client connected: " + formattedMacAddress);
                 while(true) {
                     Packet packet = receive(input);
-                    Log.d(TAG, "Recieved packet with uuid " + packet.uuid);
+                    Log.d(TAG, "Received " + packet.toString());
                     packet.addPathNode(peerMacAddress);
                     // hand over to the onMessageReceivedListener, which will take account for displaying
                     // the message and/or redistribute it to further recipients
