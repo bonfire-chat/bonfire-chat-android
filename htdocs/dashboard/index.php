@@ -12,17 +12,20 @@
     <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
   </head>
   <body>
-    <div class="container" ng-controller="DashboardController as dashboard">
+    <div class="container">
       <nav class="navbar navbar-default">
         <div class="navbar-header">
           <a class="navbar-brand" href="javascript:">Bonfire Dashboard</a>
         </div>
-        <ul class="nav navbar-nav pull-right">
-          <li><a href="../">Zurück zur Homepage</a></li>
+        <ul class="nav navbar-nav">
+	  <li><a href="/dashboard?p=main">Dashboard</a></li>
+	  <li><a href="/dashboard?p=trace">Trace</a></li>
+          <li class="pull-right"><a href="../">Zurück zur Homepage</a></li>
         </ul>
       </nav>
 
-      <div class="row">
+<?php if ($_GET["p"] == "main"): ?>
+      <div class="row" ng-controller="DashboardController as dashboard">
       	<div class="col-md-5">
       	  <div class="panel panel-default">
       	    <div class="panel-heading">Power Usage over Time</div>
@@ -48,6 +51,38 @@
       	  </ul>
       	</div>
       </div>
+<?php endif; ?>
+
+<?php if ($_GET["p"] == "trace"): ?>
+
+<div class="row" ng-controller="TraceController ">
+
+        <div class="col-md-2">
+          <ul class="nav nav-pills nav-stacked">
+            <li ng-repeat="tr in traceroutes" ng-class="{ active: tr.uuid == currentUuid }">
+              <a href="javascript://" ng-click="loadTrace(tr.uuid)">{{tr.uuid|shorten}}</a>
+            </li>
+          </ul>
+        </div>
+<div class="col-md-10">
+<div ng-hide="traceroutes">Eile mit Weile</div>
+<div id="trcontent">
+
+<table class="table">
+<tr ng-repeat="line in tracecontent">
+<td>{{line.reporter}}</td><td>{{line.action}}</td>
+<td>{{line.client_ts|date:"HH:mm:ss"}}</td><td>{{line.protocol}}</td><td>{{line.peer}}</td><td>{{line.traceroute}}</td>
+</tr></table>
+
+</div>
+</div>
+</div>
+<?php endif; ?>
+<style>
+#trcontent span { display: block; font-size: 8pt; background: #eee; }
+#trcontent span time {float: right; }
+</style>
+
     </div>
 
     <script src="bower_components/angular/angular.min.js"></script>
