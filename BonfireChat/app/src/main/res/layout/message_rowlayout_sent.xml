@@ -63,6 +63,12 @@
                     android:layout_height="14dp"
                     android:tint="#888"
                     android:paddingRight="2dp" />
+                <ImageView android:id="@+id/message_ack"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:tint="#4b4"
+                    android:paddingRight="2dp"
+                    android:src="@drawable/ic_check_black_24dp" />
                 <TextView
                     android:id="@+id/message_time"
                     android:layout_width="wrap_content"

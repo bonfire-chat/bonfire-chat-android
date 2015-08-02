@@ -101,11 +101,7 @@ public class MessagesActivity extends Activity {
                         Log.i(TAG, "MSG_SENT: " + sentUUID.toString() + " - " + intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
                         for(Message m : messages) {
                             if (m.uuid.equals(sentUUID)) {
-                                if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
-                                    m.error = "ERR: "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
-                                } else {
-                                    m.error = null;
-                                }
+                                m.error = "Sent";
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
                                 db.updateMessage(m);
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
@@ -122,8 +118,25 @@ public class MessagesActivity extends Activity {
                         UUID ackedUUID = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
                         Log.i(TAG, "MSG_ACKED: "+ackedUUID.toString());
 
-                        //TODO mw Nachricht suchen und Haken anzeigen, Protokoll(e) anzeigen
-                        //m.setTransferProtocol((Class)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
+                        // bestätigte Nachricht suchen
+                        for(Message m : messages) {
+                            if (m.uuid.equals(ackedUUID)) {
+                                // Haken anzeigen
+                                m.flags |= Message.FLAG_ACKNOWLEDGED;
+                                // Protokoll(e) anzeigen
+                                // TODO wenn mehrere Protokolle verwendet, evtl mehrere Icons?
+                                m.setTransferProtocol((Class)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
+                                m.error = null;
+
+                                // TODO: DB Update in ConnectionManager verlagern, damit es auch stattfindet
+                                // wenn die zugehörige Conversation nicht im vordergrund ist
+                                BonfireData db = BonfireData.getInstance(MessagesActivity.this);
+                                db.updateMessage(m);
+
+                                ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
+                                return;
+                            }
+                        }
                     }
                 },
                 new IntentFilter(ConnectionManager.MSG_ACKED_BROADCAST_EVENT));

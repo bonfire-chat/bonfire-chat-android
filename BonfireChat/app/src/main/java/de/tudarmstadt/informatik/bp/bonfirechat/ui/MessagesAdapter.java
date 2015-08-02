@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 public class MessagesAdapter extends ArrayAdapter<Message> {
 
     class ViewHolder {
-        ImageView contactPhoto, encryptedIcon, protocolIcon;
+        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon;
         TextView messageBody, dateTime;
     }
 
@@ -44,16 +45,17 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         ViewHolder v;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = new ViewHolder();
             switch (getItem(position).direction()) {
                 case Received:
                     convertView = inflater.inflate(R.layout.message_rowlayout_received, parent, false);
                     break;
                 case Sent:
                     convertView = inflater.inflate(R.layout.message_rowlayout_sent, parent, false);
+                    v.ackIcon = (ImageView) convertView.findViewById(R.id.message_ack);
                     break;
             }
 
-            v = new ViewHolder();
             v.messageBody = (TextView) convertView.findViewById(R.id.message_body);
             v.dateTime = (TextView) convertView.findViewById(R.id.message_time);
             v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
@@ -79,6 +81,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.encryptedIcon.setImageResource(R.drawable.ic_lock_open_black_24dp);
             v.encryptedIcon.setColorFilter(Color.RED);
         }
+        if (v.ackIcon != null) v.ackIcon.setVisibility(msg.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
         v.protocolIcon.setVisibility(View.VISIBLE);
         if (msg.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
         else if (msg.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
