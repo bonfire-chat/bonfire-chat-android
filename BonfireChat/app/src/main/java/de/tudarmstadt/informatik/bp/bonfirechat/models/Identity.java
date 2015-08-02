@@ -105,7 +105,7 @@ public class Identity implements IPublicIdentity {
             body.put("nonce", BonfireAPI.encode(CryptoHelper.toBase64(nonce)));
             body.put("data", BonfireAPI.encode(ciphertext));
             BonfireAPI.httpPost("register", body);
-            return "";
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return e.toString();
