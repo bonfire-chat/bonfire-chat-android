@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,16 +33,14 @@ public class BluetoothProtocol extends SocketProtocol {
     private BluetoothAdapter adapter;
     private List<BluetoothDevice> nearby;
     private List<BluetoothSocket> sockets;
-    private List<OutputStream> output;
-    private List<IncomingConnectionHandler> connections;
     private Handler searchLoopHandler;
+
+    private Hashtable<String, ConnectionHandler> connections = new Hashtable<>();
 
     BluetoothProtocol(Context ctx) {
         this.ctx = ctx;
-        output = new ArrayList<>();
         nearby = new ArrayList<>();
         sockets = new ArrayList<>();
-        connections = new ArrayList<>();
         searchLoopHandler = new Handler();
 
         adapter = BluetoothAdapter.getDefaultAdapter();
@@ -73,43 +72,6 @@ public class BluetoothProtocol extends SocketProtocol {
         listeningThread.start();
     }
 
-    private void connect() {
-        if (adapter.isDiscovering()) {
-            Log.d(TAG, "stopping discovery for connecting");
-            adapter.cancelDiscovery();
-        }
-        sockets.clear();
-        output.clear();
-        // create local copy to prevent ConcurrentModificationException (thread safe)
-        BluetoothDevice[] localNearby = nearby.toArray(new BluetoothDevice[0]);
-        for (BluetoothDevice device : localNearby) {
-            try {
-                BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);
-                socket.connect();
-                sockets.add(socket);
-                output.add(socket.getOutputStream());
-            } catch (IOException e) {
-                // do nothing, this exception will occur a lot because there will be Bluetooth
-                // devices nearby that do not run BonfireChat, resulting in no suitable
-                // ServerSocket to accept this connection
-            }
-        }
-    }
-
-    private void disconnect() {
-        for (BluetoothSocket socket: sockets) {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        nearby.clear();
-        if (!adapter.isDiscovering()) {
-            Log.d(TAG, "starting discovery after disconnecting");
-            adapter.startDiscovery();
-        }
-    }
 
     public BroadcastReceiver onDeviceFoundReceiver = new BroadcastReceiver() {
         @Override
@@ -152,8 +114,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
                     BluetoothSocket socket = server.accept();
-                    IncomingConnectionHandler handler = new IncomingConnectionHandler(socket);
-                    connections.add(handler);
+                    ConnectionHandler handler = new ConnectionHandler(socket);
                 }
 
             } catch (IOException e) {
@@ -162,14 +123,16 @@ public class BluetoothProtocol extends SocketProtocol {
         }
     });
 
-    public class IncomingConnectionHandler extends Thread {
+    public class ConnectionHandler extends Thread {
         BluetoothSocket socket;
         InputStream input;
+        OutputStream output;
 
-        public IncomingConnectionHandler(BluetoothSocket socket) {
+        public ConnectionHandler(BluetoothSocket socket) {
             this.socket = socket;
             try {
                 input = socket.getInputStream();
+                output = socket.getOutputStream();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -179,17 +142,55 @@ public class BluetoothProtocol extends SocketProtocol {
         @Override
         public void run() {
             try {
-                Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
-                Envelope envelope = receiveEnvelope(input);
-                Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
+                while(true) {
+                    Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
+                    Envelope envelope = receiveEnvelope(input);
+                    Log.d(TAG, "Recieved envelope with uuid " + envelope.uuid + " from: " + envelope.senderNickname);
 
-                // hand over to the onMessageReceivedListener, which will take account for displaying
-                // the message and/or redistribute it to further recipients
-                listener.onMessageReceived(BluetoothProtocol.this, envelope);
+                    // hand over to the onMessageReceivedListener, which will take account for displaying
+                    // the message and/or redistribute it to further recipients
+                    listener.onMessageReceived(BluetoothProtocol.this, envelope);
+                }
             } catch (IOException e) {
+                // do nothing, this exception will occur a lot because there will be Bluetooth
+                // devices nearby that do not run BonfireChat, resulting in no suitable
+                // ServerSocket to accept this connection
                 e.printStackTrace();
+                teardown();
             }
+        }
+        public void sendNetworkPacket(final Envelope envelope) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (ConnectionHandler.this.output) {
+                        sendEnvelope(ConnectionHandler.this.output, envelope);
+                    }
+                }
+            }).start();
+        }
+        private void teardown() {
+            connections.remove(this);
+            try {
+                socket.close();
+            } catch (IOException e) {/*ignore*/}
+        }
+    }
 
+    ConnectionHandler connectToDevice(BluetoothDevice device) {
+        try {
+            if (connections.containsKey(device.getAddress()))
+                return connections.get(device.getAddress());
+
+            BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);
+            socket.connect();
+            ConnectionHandler handler = new ConnectionHandler(socket);
+            connections.put(device.getAddress(), handler);
+            return handler;
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to connect to bluetooth device "+device.getAddress()+", ignoring");
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -199,15 +200,21 @@ public class BluetoothProtocol extends SocketProtocol {
 
     @Override
     public void sendMessage(Envelope envelope) {
-        Log.d(TAG, "broadcasting message via Bluetooth");
-
-        // send the envelope
-        connect();
-        for (OutputStream stream : output) {
-            sendEnvelope(stream, envelope);
+        if (adapter.isDiscovering()) {
+            adapter.cancelDiscovery();
         }
-        try {        Thread.sleep(50); }catch(InterruptedException ex){}
-        disconnect();
+
+        // create local copy to prevent ConcurrentModificationException (thread safe)
+        BluetoothDevice[] localNearby = nearby.toArray(new BluetoothDevice[0]);
+        for (BluetoothDevice device : localNearby) {
+            ConnectionHandler socket = connectToDevice(device);
+            if (socket == null) continue;
+            socket.sendNetworkPacket(envelope);
+        }
+
+        if (!adapter.isDiscovering()) {
+            adapter.startDiscovery();
+        }
     }
 
     @Override
