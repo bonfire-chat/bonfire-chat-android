@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
@@ -56,6 +57,7 @@ public class Retransmission implements Runnable{
     public void run(){
         packet.incrementTransmissionCount();
         packet.setFlooding();
+        Log.i(TAG, "timed out, retransmitting "+packet.toString());
         ConnectionManager.sendPacket(context, packet);
     }
 
