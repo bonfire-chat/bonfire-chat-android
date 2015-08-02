@@ -1,5 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,7 +102,11 @@ public abstract class Packet implements Serializable {
         return (Arrays.equals(recipientPublicKey, id.publicKey.asByteArray()));
     }
 
-    public boolean equals(Packet packet){
+    @Override
+    public boolean equals(Object otherObject){
+        if (otherObject == null || !(otherObject instanceof Packet)) return false;
+        Packet packet = (Packet) otherObject;
+        Log.d("Packet", "checking for equality a=" + this.toString() + "  b=" + packet.toString());
         if(uuid.equals(packet.uuid) && type == packet.type )
             return true;
         return false;
@@ -108,6 +114,6 @@ public abstract class Packet implements Serializable {
 
     @Override
     public String toString() {
-        return "Packet(" + uuid.toString() + ", routing=" + String.valueOf(routingMode) + ", hopCount=" + String.valueOf(path.size()) + ")";
+        return "Packet(" + getType().toString() + ", " + uuid.toString() + ", routing=" + String.valueOf(routingMode) + ", hopCount=" + String.valueOf(path.size()) + ")";
     }
 }
