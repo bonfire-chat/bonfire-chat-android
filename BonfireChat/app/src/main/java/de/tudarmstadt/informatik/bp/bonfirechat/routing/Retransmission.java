@@ -20,6 +20,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
  */
 public class Retransmission implements Runnable{
 
+    private static final String TAG="Retransmission";
     private static final Hashtable<UUID, Retransmission> pendingRetransmissions = new Hashtable<>();
 
     private PayloadPacket packet;

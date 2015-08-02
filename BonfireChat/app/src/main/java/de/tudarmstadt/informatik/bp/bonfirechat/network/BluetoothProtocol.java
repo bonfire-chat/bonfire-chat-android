@@ -124,10 +124,12 @@ public class BluetoothProtocol extends SocketProtocol {
         InputStream input;
         OutputStream output;
         byte[] peerMacAddress;
+        String formattedMacAddress;
 
         public ConnectionHandler(BluetoothSocket socket) {
             this.socket = socket;
-            peerMacAddress = Peer.addressFromString(socket.getRemoteDevice().getAddress());
+            formattedMacAddress = socket.getRemoteDevice().getAddress();
+            peerMacAddress = Peer.addressFromString(formattedMacAddress);
             try {
                 input = socket.getInputStream();
                 output = socket.getOutputStream();
@@ -140,7 +142,7 @@ public class BluetoothProtocol extends SocketProtocol {
         @Override
         public void run() {
             try {
-                Log.d(TAG, "Client connected: " + socket.getRemoteDevice().getAddress());
+                Log.d(TAG, "Client connected: " + formattedMacAddress);
                 while(true) {
                     Packet packet = receive(input);
                     Log.d(TAG, "Recieved packet with uuid " + packet.uuid);
@@ -161,12 +163,12 @@ public class BluetoothProtocol extends SocketProtocol {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "sendNetworkPacket to "+socket.getRemoteDevice().getAddress()+" | "+packet.toString());
+                    Log.d(TAG, "sendNetworkPacket to "+formattedMacAddress+" | "+packet.toString());
                     synchronized (ConnectionHandler.this.output) {
                         try {
                             send(ConnectionHandler.this.output, packet);
                         } catch(IOException ex) {
-                            Log.w(TAG, "Could not send to "+socket.getRemoteDevice().getAddress()+" : "+packet.toString());
+                            Log.w(TAG, "Could not send to "+formattedMacAddress+" : "+packet.toString());
                             Log.w(TAG, ex.getMessage());
                             // Connection is broken, remove from list
                             teardown();
@@ -176,7 +178,7 @@ public class BluetoothProtocol extends SocketProtocol {
             }).start();
         }
         private void teardown() {
-            connections.remove(this);
+            connections.remove(formattedMacAddress);
             try {
                 socket.close();
             } catch (IOException e) {/*ignore*/}
