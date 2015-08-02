@@ -18,6 +18,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Sonstiges">
+
+        <CheckBoxPreference android:key="debugSendToDashboard" android:defaultValue="false"
+            android:title="Debuginfos an Dashboard senden"></CheckBoxPreference>
+
+
         <PreferenceScreen android:title="Über BonfireChat">
 
             <Preference android:title="Entwickelt an der TU Darmstadt"

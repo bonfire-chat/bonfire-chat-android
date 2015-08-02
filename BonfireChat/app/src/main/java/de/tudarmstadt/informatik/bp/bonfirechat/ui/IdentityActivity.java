@@ -76,7 +76,7 @@ public class IdentityActivity extends Activity  {
         if (id == R.id.action_save) {
             identity.nickname = getEdit(R.id.txt_nickname).getText().toString();
             identity.phone = getEdit(R.id.txt_phoneNumber).getText().toString();
-            BonfireData db = BonfireData.getInstance(this);
+            final BonfireData db = BonfireData.getInstance(this);
             db.updateIdentity(identity);
 
             final AlertDialog progress =
@@ -87,7 +87,9 @@ public class IdentityActivity extends Activity  {
             new AsyncTask<Identity, Object, String>() {
                 @Override
                 protected String doInBackground(Identity... params) {
-                    return params[0].registerWithServer();
+                    String ok = params[0].registerWithServer();
+                    db.updateIdentity(params[0]);
+                    return ok;
                 }
                 @Override
                 protected void onPostExecute(String s) {
