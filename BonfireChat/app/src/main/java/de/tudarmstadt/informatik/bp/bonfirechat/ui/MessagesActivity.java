@@ -88,7 +88,7 @@ public class MessagesActivity extends Activity {
                     public void onReceive(Context context, Intent intent) {
                         long conversationId = intent.getLongExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1);
                         if (conversationId != conversation.rowid) return;
-                        UUID uuid = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
+                        UUID uuid = (UUID) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
                         appendMessage(db.getMessageByUUID(uuid));
                     }
                 },
@@ -98,7 +98,7 @@ public class MessagesActivity extends Activity {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         UUID sentUUID = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
-                        Log.i(TAG, "MSG_SENT: "+sentUUID.toString()+" - "+intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
+                        Log.i(TAG, "MSG_SENT: " + sentUUID.toString() + " - " + intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
                         for(Message m : messages) {
                             if (m.uuid.equals(sentUUID)) {
                                 if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
@@ -106,7 +106,6 @@ public class MessagesActivity extends Activity {
                                 } else {
                                     m.error = null;
                                 }
-                                m.setTransferProtocol((Class)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
                                 db.updateMessage(m);
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
@@ -116,6 +115,18 @@ public class MessagesActivity extends Activity {
                     }
                 },
                 new IntentFilter(ConnectionManager.MSG_SENT_BROADCAST_EVENT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        UUID ackedUUID = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
+                        Log.i(TAG, "MSG_ACKED: "+ackedUUID.toString());
+
+                        //TODO mw Nachricht suchen und Haken anzeigen, Protokoll(e) anzeigen
+                        //m.setTransferProtocol((Class)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
+                    }
+                },
+                new IntentFilter(ConnectionManager.MSG_ACKED_BROADCAST_EVENT));
     }
 
     @Override
