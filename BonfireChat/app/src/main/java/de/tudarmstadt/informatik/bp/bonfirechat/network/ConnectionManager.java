@@ -99,7 +99,7 @@ public class ConnectionManager extends NonStopIntentService {
 
     public static final Class[] registeredProtocols = new Class[]{
             BluetoothProtocol.class,
-            WifiProtocol.class,
+            //WifiProtocol.class,
             GcmProtocol.class };
 
 
@@ -164,6 +164,7 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPeerDiscoveredListener peerListener = new OnPeerDiscoveredListener() {
         @Override
         public void discoveredPeer(IProtocol sender, byte[] address) {
+            Log.d(TAG, "Peer was discovered by "+sender.toString()+" : "+Peer.formatMacAddress(address));
             int index = peers.indexOf(address);
             // is this peer already known to us?
             if (index != -1) {
@@ -325,7 +326,7 @@ public class ConnectionManager extends NonStopIntentService {
 
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
-            Log.d(TAG, "Loading packet with uuid " + packet.uuid + ": from " + ((Envelope) packet).senderNickname);
+            Log.d(TAG, "Loading packet " + packet.toString());
 
             if (packet instanceof PayloadPacket && packet.getHopCount() == 0)
                 Retransmission.add(this, (PayloadPacket)packet, 20000);
@@ -333,7 +334,7 @@ public class ConnectionManager extends NonStopIntentService {
             // let RoutingManager decide where to send the packet to
             List<Peer> chosenPeers = routingManager.chooseRecipients(packet, peers);
             if (chosenPeers == null) {
-                Log.e(TAG, "don't  know how to send this packet: "+packet.toString());
+                Log.e(TAG, "don't know how to send this packet: "+packet.toString());
                 return;
             }
             for(Peer peer : chosenPeers) {
@@ -341,8 +342,9 @@ public class ConnectionManager extends NonStopIntentService {
                     Class protocolClass = peer.getProtocolClass();
                     IProtocol protocol = getConnection(protocolClass);
                     if (protocol != null && protocol.canSend()) {
+                        Log.i(TAG, "Sending via " + peer.toString());
                         protocol.sendPacket(packet, peer);
-                    }
+                    } else throw new IllegalAccessException("Protocol "+protocolClass.getSimpleName()+" not ready");
                 } catch(Exception ex) {
                     ex.printStackTrace();
                     Log.e(TAG, "Unable to send packet via peer:"+peer.toString());
