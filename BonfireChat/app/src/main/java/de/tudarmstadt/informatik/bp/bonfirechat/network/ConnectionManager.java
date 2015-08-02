@@ -231,6 +231,8 @@ public class ConnectionManager extends NonStopIntentService {
             final Message message = envelope.toMessage(ConnectionManager.this);
             message.setTransferProtocol(sender.getClass());
             storeAndDisplayMessage(message);
+            // send ACK
+            acknowledgePacket(envelope);
             // update statistics
             CurrentStats.getInstance().messageReceived += 1;
         }
