@@ -166,14 +166,16 @@ public class ConnectionManager extends NonStopIntentService {
         public void discoveredPeer(IProtocol sender, byte[] address) {
             Peer found = new Peer(sender.getClass(), address);
             Log.d(TAG, "Peer was discovered by "+sender.toString()+" : "+Peer.formatMacAddress(address));
-            int index = peers.indexOf(found);
-            // is this peer already known to us?
-            if (index != -1) {
-                peers.get(index).updateLastSeen(sender.getClass());
-            }
-            // otherwise add it
-            else {
-                peers.add(found);
+            synchronized (peers) {
+                int index = peers.indexOf(found);
+                // is this peer already known to us?
+                if (index != -1) {
+                    peers.get(index).updateLastSeen(sender.getClass());
+                }
+                // otherwise add it
+                else {
+                    peers.add(found);
+                }
             }
         }
     };
@@ -181,9 +183,11 @@ public class ConnectionManager extends NonStopIntentService {
     private Runnable removeOutdatedPeersThread = new Runnable() {
         @Override
         public void run() {
-            for (Peer peer: peers) {
-                if (peer.isOutdated()) {
-                    peers.remove(peer);
+            synchronized (peers) {
+                for (Peer peer : peers) {
+                    if (peer.isOutdated()) {
+                        peers.remove(peer);
+                    }
                 }
             }
             handler.postDelayed(removeOutdatedPeersThread, 1000 * 60 * 5); // every 5 minutes
@@ -193,6 +197,7 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
         @Override
         public void onPacketReceived(IProtocol sender, Packet packet) {
+            Log.d(TAG, "onPacketReceived: " + sender.getClass().getSimpleName() + ", " + packet.toString());
             // has this packet not yet been processed?
             if (!processedPackets.contains(packet)) {
                 // remember this packet
@@ -224,7 +229,7 @@ public class ConnectionManager extends NonStopIntentService {
         private void handlePayloadPacket(PayloadPacket packet, IProtocol sender) {
             // turn it into an Envelope, as those are the only supported PayloadPackets
             Envelope envelope = (Envelope) packet;
-            Log.i(TAG, "Received packet from " + sender.getClass().getName() + "   uuid=" + envelope.uuid.toString());
+            Log.i(TAG, "handling PayloadPacket");
             // traceroute stuff
             TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, "Recv", envelope);
             BonfireAPI.publishTraceroute(envelope);
