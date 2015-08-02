@@ -29,7 +29,7 @@ public class RoutingManager {
     public List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
         if (packet.isFlooding()) {
             // send to all available peers
-            return peers;
+            return (ArrayList) ((ArrayList)peers).clone();
         } else if (packet.getNextHop() != null) {
             List<Peer> r = new ArrayList<>(1);
             for(Peer peer : peers) {

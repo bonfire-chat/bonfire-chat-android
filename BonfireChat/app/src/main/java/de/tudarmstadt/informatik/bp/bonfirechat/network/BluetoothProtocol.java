@@ -166,6 +166,8 @@ public class BluetoothProtocol extends SocketProtocol {
                         try {
                             send(ConnectionHandler.this.output, packet);
                         } catch(IOException ex) {
+                            Log.w(TAG, "Could not send to "+socket.getRemoteDevice().getAddress()+" : "+packet.toString());
+                            Log.w(TAG, ex.getMessage());
                             // Connection is broken, remove from list
                             teardown();
                         }
