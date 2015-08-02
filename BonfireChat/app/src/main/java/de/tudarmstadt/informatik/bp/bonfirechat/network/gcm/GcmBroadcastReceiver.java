@@ -17,6 +17,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
@@ -87,7 +88,9 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
                     prefs.apply();
 
                     BonfireData db = BonfireData.getInstance(context);
-                    db.getDefaultIdentity().registerWithServer();
+                    Identity id = db.getDefaultIdentity();
+                    id.registerWithServer();
+                    db.updateIdentity(id);
 
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();

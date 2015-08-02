@@ -26,6 +26,8 @@ public abstract class Packet implements Serializable {
 
     // recipient of this packet
     public final byte[] recipientPublicKey;
+    // sender of this packet
+    public final byte[] senderPublicKey;
 
     // previous and next hops
     private List<byte[]> path;
@@ -47,7 +49,8 @@ public abstract class Packet implements Serializable {
         this.timeSent = timeSent;
     }
 
-    public Packet(byte[] recipientPublicKey, UUID uuid) {
+    public Packet(byte[] senderPublicKey, byte[] recipientPublicKey, UUID uuid) {
+        this.senderPublicKey = senderPublicKey;
         this.recipientPublicKey = recipientPublicKey;
         this.uuid = uuid;
         this.path = new ArrayList<>();
@@ -67,14 +70,14 @@ public abstract class Packet implements Serializable {
 
     public byte[] getNextHop() {
         if (routingMode == ROUTING_MODE_DSR)
-            return nextHops.get(0);
+            return nextHops.get(nextHops.size() - 1);
         else
             return null;
     }
 
     public void removeNextHop() {
         if (routingMode != ROUTING_MODE_DSR) throw new IllegalStateException("Not a DSR packet");
-        nextHops.remove(0);
+        nextHops.remove(nextHops.size() - 1);
     }
 
     public void addPathNode(byte[] id) {
@@ -106,7 +109,6 @@ public abstract class Packet implements Serializable {
     public boolean equals(Object otherObject){
         if (otherObject == null || !(otherObject instanceof Packet)) return false;
         Packet packet = (Packet) otherObject;
-        Log.d("Packet", "checking for equality a=" + this.toString() + "  b=" + packet.toString());
         if(uuid.equals(packet.uuid) && type == packet.type )
             return true;
         return false;

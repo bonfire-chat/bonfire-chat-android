@@ -11,8 +11,8 @@ public abstract class PayloadPacket extends Packet {
     // counts how many times this packet has been retransmitted. First transmissions use 1.
     private int transmissionCount;
 
-    public PayloadPacket(byte[] recipientPublicKey, UUID uuid) {
-        super(recipientPublicKey, uuid);
+    public PayloadPacket(byte[] senderPublicKey, byte[] recipientPublicKey, UUID uuid) {
+        super(senderPublicKey, recipientPublicKey, uuid);
         this.type = PacketType.Payload;
         this.transmissionCount = 1;
     }

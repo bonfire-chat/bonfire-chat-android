@@ -31,6 +31,7 @@ public class GcmProtocol extends SocketProtocol {
         this.serverFakeMacAddress = Peer.addressFromString("CA:FE:CA:FE:CA:FE");
     }
 
+
     @Override
     public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
         super.setOnPeerDiscoveredListener(listener);
@@ -41,16 +42,23 @@ public class GcmProtocol extends SocketProtocol {
     public void onHandleGcmIntent(Intent intent) {
         try {
             final String dataString = intent.getStringExtra("msg");
+            final String senderId = intent.getStringExtra("senderId");
             Log.i("GcmProtocol", "onHandleGcmIntent: "+ dataString);
             //byte[] data = dataString.getBytes("ascii");
             //Log.i("GcmProtocol", "onHandleGcmIntent: "+ StreamHelper.byteArrayToHexString(data));
             final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
             final Packet packet = receive(bais);
+
+            //TODO: HACK - this should better be done by the server
+            if (packet.getNextHop() != null) packet.removeNextHop();
+            packet.addPathNode(senderId.getBytes());
+            //end todo
+
             packet.addPathNode(serverFakeMacAddress);
             packetListener.onPacketReceived(this, packet);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("GcmProtocol", "Unable to deserialize: "+e.getMessage());
             e.printStackTrace();
         }
@@ -62,7 +70,14 @@ public class GcmProtocol extends SocketProtocol {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             send(out, packet);
 
-            BonfireAPI.sendGcmMessage(packet.recipientPublicKey, out.toByteArray());
+            //TODO this should better be done by the server
+            String nextHopId = "";
+            if (packet.getNextHop() != null) {
+                nextHopId = new String(packet.getNextHop());
+            }
+            //end todo
+
+            BonfireAPI.sendGcmMessage(identity, packet.recipientPublicKey, nextHopId, out.toByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }

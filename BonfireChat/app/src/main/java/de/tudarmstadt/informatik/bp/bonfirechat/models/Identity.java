@@ -36,10 +36,12 @@ public class Identity implements IPublicIdentity {
     final public PrivateKey privateKey;
     public String nickname;
     public String phone;
+    public int serverUid;
     public long rowid;
 
-    public Identity(String nickname, String privateKey, String publicKey, String phone) {
+    public Identity(String nickname, int serverUid, String privateKey, String publicKey, String phone) {
         this.nickname = nickname; this.phone = phone;
+        this.serverUid = serverUid;
         this.privateKey = new PrivateKey(privateKey);
         this.publicKey = MyPublicKey.deserialize(publicKey);
     }
@@ -49,7 +51,7 @@ public class Identity implements IPublicIdentity {
         String pubkey = Base64.encodeToString(keyPair.getPublicKey().toBytes(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
         String privkey = keyPair.getPrivateKey().toString();
 
-        Identity i= new Identity("", privkey, pubkey, getMyPhoneNumber(ctx));
+        Identity i= new Identity("", 0, privkey, pubkey, getMyPhoneNumber(ctx));
         return i;
     }
 
@@ -58,6 +60,9 @@ public class Identity implements IPublicIdentity {
         return publicKey;
     }
 
+    public int getServerUid() {
+        return serverUid;
+    }
 
     @Override
     public String getNickname() {
@@ -73,6 +78,7 @@ public class Identity implements IPublicIdentity {
     public ContentValues getContentValues(){
         ContentValues values = new ContentValues();
         values.put("nickname", nickname);
+        values.put("username", serverUid);
         values.put("privatekey", privateKey.toString());
         values.put("publickey", publicKey.asBase64());
         values.put("phone", phone);
@@ -81,6 +87,7 @@ public class Identity implements IPublicIdentity {
 
     public static Identity fromCursor(Cursor cursor){
         Identity id = new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
+                cursor.getInt(cursor.getColumnIndex("username")),
                 cursor.getString(cursor.getColumnIndex("privatekey")),
                 cursor.getString(cursor.getColumnIndex("publickey")),
                 cursor.getString(cursor.getColumnIndex("phone")));
@@ -103,8 +110,13 @@ public class Identity implements IPublicIdentity {
             body.put("publickey", BonfireAPI.encode(publicKey.asBase64()));
             body.put("nonce", BonfireAPI.encode(CryptoHelper.toBase64(nonce)));
             body.put("data", BonfireAPI.encode(ciphertext));
-            BonfireAPI.httpPost("register", body);
-            return null;
+            String result = BonfireAPI.httpPost("register", body).trim();
+            if (result.startsWith("ok=")) {
+                serverUid = Integer.valueOf(result.substring(3));
+                return null;
+            } else {
+                return result;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return e.toString();

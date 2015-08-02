@@ -39,6 +39,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
 
 /**
@@ -155,9 +156,11 @@ public class ConnectionManager extends NonStopIntentService {
                 p.shutdown();
             }
         }
-        for (Peer p : peers) {
-            if (p.getProtocolClass().equals(typ))
-                peers.remove(p);
+        synchronized (peers) {
+            for (Peer p : peers) {
+                if (p.getProtocolClass().equals(typ))
+                    peers.remove(p);
+            }
         }
     }
 
@@ -197,6 +200,7 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
         @Override
         public void onPacketReceived(IProtocol sender, Packet packet) {
+            StatsCollector.publishMessageHop(sender.getClass(), "RECV", null, packet);
             Log.d(TAG, "onPacketReceived: " + sender.getClass().getSimpleName() + ", " + packet.toString());
             // has this packet not yet been processed?
             if (!processedPackets.contains(packet)) {
@@ -213,7 +217,7 @@ public class ConnectionManager extends NonStopIntentService {
                     }
                     // is it an ACK packet?
                     else if (packet.getType() == PacketType.Ack) {
-                        handleAckPacket((AckPacket) packet);
+                        handleAckPacket((AckPacket) packet, sender);
                     }
                     // otherwise it's an unknown packet type
                     else {
@@ -236,6 +240,7 @@ public class ConnectionManager extends NonStopIntentService {
             // unpack the Envelope to a Message and handle it
             final Message message = envelope.toMessage(ConnectionManager.this);
             message.setTransferProtocol(sender.getClass());
+            // TODO if message is already in database, do not display push notification again
             storeAndDisplayMessage(message);
             // send ACK
             acknowledgePacket(envelope);
@@ -243,13 +248,14 @@ public class ConnectionManager extends NonStopIntentService {
             CurrentStats.getInstance().messageReceived += 1;
         }
 
-        private void handleAckPacket (AckPacket packet) {
+        private void handleAckPacket (AckPacket packet, IProtocol sender) {
             // cancel the pending retransmission for this packet
             Retransmission.cancel(packet.acknowledgesUUID);
 
             // notify the ui that the recipient has acknowledged this message
             final Intent localIntent = new Intent(MSG_ACKED_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID);
+                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID)
+                    .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, sender.getClass());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
         }
@@ -279,7 +285,11 @@ public class ConnectionManager extends NonStopIntentService {
             }
             Log.d(TAG, "conversationId=" + conversation.rowid);
 
-            data.createMessage(message, conversation);
+            long id = data.createMessage(message, conversation);
+            if (id == -1) {
+                Log.e(TAG, "Unable to insert message to db, ignoring");
+                return;
+            }
             Log.d(TAG, "message stored in db with uuid=" + message.uuid);
 
             final Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)
@@ -322,6 +332,7 @@ public class ConnectionManager extends NonStopIntentService {
         if (intent.getAction() == GO_ONLINE_ACTION) {
             final Identity id = db.getDefaultIdentity();
             id.registerWithServer();
+            db.updateIdentity(id);
 
             final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             for(Class protocol : registeredProtocols) {
@@ -350,6 +361,7 @@ public class ConnectionManager extends NonStopIntentService {
                     Class protocolClass = peer.getProtocolClass();
                     IProtocol protocol = getConnection(protocolClass);
                     if (protocol != null && protocol.canSend()) {
+                        StatsCollector.publishMessageHop(protocolClass, "SEND", peer, packet);
                         Log.i(TAG, "Sending via " + peer.toString());
                         protocol.sendPacket(packet, peer);
                     } else throw new IllegalAccessException("Protocol "+protocolClass.getSimpleName()+" not ready");
@@ -409,7 +421,7 @@ public class ConnectionManager extends NonStopIntentService {
 
 
     private void acknowledgePacket(Envelope packetToAck) {
-        AckPacket ack = new AckPacket(packetToAck.uuid, packetToAck.senderPublicKey);
+        AckPacket ack = new AckPacket(packetToAck.uuid, packetToAck.recipientPublicKey, packetToAck.senderPublicKey);
         ack.setDSR(packetToAck.getPath());
         sendPacket(this, ack);
     }

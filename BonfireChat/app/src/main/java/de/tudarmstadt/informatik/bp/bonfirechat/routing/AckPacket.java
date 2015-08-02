@@ -9,8 +9,8 @@ import java.util.UUID;
 public class AckPacket extends Packet {
     public UUID acknowledgesUUID;
 
-    public AckPacket(UUID ackUUID, byte[] recipientPublicKey) {
-        super(recipientPublicKey, UUID.randomUUID());
+    public AckPacket(UUID ackUUID, byte[] senderPublicKey, byte[] recipientPublicKey) {
+        super(senderPublicKey, recipientPublicKey, UUID.randomUUID());
         this.type = PacketType.Ack;
         this.acknowledgesUUID = ackUUID;
     }
