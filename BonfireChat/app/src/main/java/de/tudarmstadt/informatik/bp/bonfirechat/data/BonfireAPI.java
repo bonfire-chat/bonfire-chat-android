@@ -89,7 +89,7 @@ public class BonfireAPI {
         Hashtable<String, byte[]> body = new Hashtable<>();
         body.put("publickey[]", encode(key));
         body.put("msg", serializedEnvelope);
-        httpPost(METHOD_TRACEROUTE, body);
+        httpPost(METHOD_SEND_MESSAGE, body);
     }
 
 
