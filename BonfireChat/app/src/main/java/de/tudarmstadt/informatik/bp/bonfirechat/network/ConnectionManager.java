@@ -214,7 +214,7 @@ public class ConnectionManager extends NonStopIntentService {
                         Log.e(TAG, "received packet of unknown type");
                     }
                 } else {
-                    redistributePacket(packet);
+                    forwardPacket(packet);
                 }
             }
         }
@@ -245,7 +245,7 @@ public class ConnectionManager extends NonStopIntentService {
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
         }
 
-        private void redistributePacket(Packet packet) {
+        private void forwardPacket(Packet packet) {
             // if the packet has been sent less than 20 hops, redistribute it
             if (packet.getHopCount() < MAX_HOP_COUNT) {
                 sendPacket(ConnectionManager.this, packet);
