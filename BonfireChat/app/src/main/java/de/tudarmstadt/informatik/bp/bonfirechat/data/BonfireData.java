@@ -87,12 +87,12 @@ public class BonfireData extends SQLiteOpenHelper{
         conversation.rowid = db.insert(CONVERSATIONS, null, conversation.getContentValues());
     }
 
-    public void createMessage(Message message, Conversation conversation){
+    public long createMessage(Message message, Conversation conversation){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = message.getContentValues();
         values.put("conversation", conversation.rowid);
         values.put("insertDate", (new Date()).getTime());
-        db.insert(MESSAGES, null, values);
+        return db.insert(MESSAGES, null, values);
     }
 
     public Identity getDefaultIdentity() {

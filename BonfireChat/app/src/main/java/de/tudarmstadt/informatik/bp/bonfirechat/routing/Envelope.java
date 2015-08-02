@@ -37,7 +37,7 @@ public class Envelope extends PayloadPacket {
     public static final int FLAG_TRACEROUTE = 8;
 
     public Envelope(UUID uuid, Date sentTime, byte[] recipientPublicKey, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
-        super(recipientPublicKey, uuid);
+        super(senderPublicKey, recipientPublicKey, uuid);
         this.sentTime = sentTime;
         this.senderNickname = senderNickname;
         this.senderPublicKey = senderPublicKey;

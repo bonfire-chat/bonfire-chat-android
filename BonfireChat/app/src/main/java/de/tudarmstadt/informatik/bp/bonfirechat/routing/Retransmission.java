@@ -1,16 +1,12 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
 import java.util.Hashtable;
-import java.util.NoSuchElementException;
-import java.util.Queue;
 import java.util.UUID;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
