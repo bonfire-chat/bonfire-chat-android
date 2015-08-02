@@ -36,10 +36,8 @@ public class Envelope extends PayloadPacket {
     public static final int FLAG_ENCRYPTED = 4;
     public static final int FLAG_TRACEROUTE = 8;
 
-
-    public Envelope(UUID uuid, int hopCount, Date sentTime, byte[] recipientPublicKey, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
+    public Envelope(UUID uuid, Date sentTime, byte[] recipientPublicKey, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
         super(recipientPublicKey, uuid);
-        this.hopCount = hopCount;
         this.sentTime = sentTime;
         this.senderNickname = senderNickname;
         this.senderPublicKey = senderPublicKey;
@@ -51,7 +49,6 @@ public class Envelope extends PayloadPacket {
         byte[] publicKey = message.recipients.get(0).getPublicKey().asByteArray();
         Envelope envelope = new Envelope(
                 message.uuid,
-                0,
                 new Date(),
                 publicKey,
                 message.sender.getNickname(),
@@ -84,8 +81,12 @@ public class Envelope extends PayloadPacket {
                 uuid);
     }
 
-
     public boolean hasFlag(int flag) {
         return (flag & flags) == flag;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ":Envelope(fromNick=" + senderNickname + ")";
     }
 }

@@ -31,17 +31,11 @@ public abstract class Packet implements Serializable {
 
     private long timeSent;
 
-    public int hopCount;
+    private int routingMode = ROUTING_MODE_NONE;
 
-    public Packet() {
-        this(new byte[0], UUID.randomUUID());
-    }
-    public Packet(byte[] recipientPublicKey, UUID uuid) {
-        this(recipientPublicKey, uuid, new ArrayList<byte[]>());
-    }
-    public Packet(byte[] recipientPublicKey, List<byte[]> nextHops) {
-        this(recipientPublicKey, UUID.randomUUID(), nextHops);
-    }
+    public static final int ROUTING_MODE_NONE = 0;
+    public static final int ROUTING_MODE_FLOODING = 1;
+    public static final int ROUTING_MODE_DSR = 2;
 
     public long getTimeSent() {
         return timeSent;
@@ -51,12 +45,10 @@ public abstract class Packet implements Serializable {
         this.timeSent = timeSent;
     }
 
-    public Packet(byte[] recipientPublicKey, UUID uuid, List<byte[]> nextHops) {
+    public Packet(byte[] recipientPublicKey, UUID uuid) {
         this.recipientPublicKey = recipientPublicKey;
         this.uuid = uuid;
-        this.nextHops = nextHops;
         this.path = new ArrayList<>();
-        this.hopCount = 0;
     }
 
     public PacketType getType() {
@@ -72,10 +64,14 @@ public abstract class Packet implements Serializable {
     }
 
     public byte[] getNextHop() {
-        return nextHops.get(0);
+        if (routingMode == ROUTING_MODE_DSR)
+            return nextHops.get(0);
+        else
+            return null;
     }
 
     public void removeNextHop() {
+        if (routingMode != ROUTING_MODE_DSR) throw new IllegalStateException("Not a DSR packet");
         nextHops.remove(0);
     }
 
@@ -84,7 +80,20 @@ public abstract class Packet implements Serializable {
     }
 
     public boolean isFlooding() {
-        return path.isEmpty();
+        return routingMode == ROUTING_MODE_FLOODING;
+    }
+
+    public void setFlooding() {
+        this.routingMode = ROUTING_MODE_FLOODING;
+        this.nextHops = new ArrayList<byte[]>();
+    }
+    public void setDSR(List<byte[]> nextHops) {
+        this.routingMode = ROUTING_MODE_DSR;
+        this.nextHops = nextHops;
+    }
+
+    public int getHopCount() {
+        return path.size();
     }
 
     public boolean hasRecipient(Identity id) {
@@ -97,4 +106,8 @@ public abstract class Packet implements Serializable {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "Packet(" + uuid.toString() + ", routing=" + String.valueOf(routingMode) + ", hopCount=" + String.valueOf(path.size()) + ")";
+    }
 }

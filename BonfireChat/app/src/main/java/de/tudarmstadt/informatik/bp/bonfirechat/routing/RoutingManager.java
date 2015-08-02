@@ -1,8 +1,10 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 
 /**
@@ -10,17 +12,37 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
  */
 public class RoutingManager {
 
+    private Hashtable<byte[], List<byte[]>> shortestPaths = new Hashtable<>();
+
+    public void registerPath(Packet packet) {
+        shortestPaths.put(packet.recipientPublicKey, packet.getPath());
+    }
+
+    public List<byte[]> getPath(Packet packet) {
+        if (shortestPaths.containsKey(packet.recipientPublicKey)) {
+            return shortestPaths.get(packet.recipientPublicKey);
+        } else {
+            return null;
+        }
+    }
+
     public List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
         if (packet.isFlooding()) {
             // send to all available peers
             return peers;
-        } else {
-            // just return next hop, regardless of whether we see it
-            // avoids need for discovering peers.
-            // in case of an exception the sender will initiate a retransmission
+        } else if (packet.getNextHop() != null) {
             List<Peer> r = new ArrayList<>(1);
-            r.add(new Peer(packet.getNextHop()));
+            for(Peer peer : peers) {
+                if (peer.equals(packet.getNextHop())) {
+                    r.add(peer);
+                }
+            }
+            // if no matching peer was discovered, just be lazy and try to send it via bluetooth
+            if (r.size() == 0)
+                r.add(new Peer(BluetoothProtocol.class, packet.getNextHop()));
             return r;
+        } else {
+            return null;
         }
     }
 }

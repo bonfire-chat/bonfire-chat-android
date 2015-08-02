@@ -14,11 +14,12 @@ public class Peer {
 
     // Bluetooth MAC address
     private byte[] address;
+    private Class protocol;
 
     // timestamp of this peer beeing available for the last time
     private long lastSeen;
 
-    public Peer(byte[] address) {
+    public Peer(Class protocol, byte[] address) {
         this.address = address;
         this.lastSeen = System.currentTimeMillis();
     }
@@ -27,8 +28,13 @@ public class Peer {
         return address;
     }
 
-    public void updateLastSeen() {
+    public Class getProtocolClass() {
+        return protocol;
+    }
+
+    public void updateLastSeen(Class protocol) {
         lastSeen = System.currentTimeMillis();
+        this.protocol = protocol;
     }
 
     public boolean isOutdated() {
@@ -45,5 +51,27 @@ public class Peer {
         else {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Peer(" + protocol.getSimpleName() + ", " + formatMacAddress(address) + ")";
+    }
+
+    public static String formatMacAddress(byte[] macAddress) {
+        return String.format("%02x:%02x:%02x:%02x:%02x:%02x",
+                macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
+    }
+
+    public static byte[] addressFromString(String formattedMacAddress) {
+        String[] a = formattedMacAddress.split(":");
+        return new byte[] {
+                (byte) Integer.valueOf(a[0], 16).intValue(),
+                (byte) Integer.valueOf(a[1], 16).intValue(),
+                (byte) Integer.valueOf(a[2], 16).intValue(),
+                (byte) Integer.valueOf(a[3], 16).intValue(),
+                (byte) Integer.valueOf(a[4], 16).intValue(),
+                (byte) Integer.valueOf(a[5], 16).intValue()
+        };
     }
 }

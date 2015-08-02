@@ -31,4 +31,11 @@ public abstract class PayloadPacket extends Packet {
     public void incrementTransmissionCount() {
         transmissionCount += 1;
     }
+
+
+    @Override
+    public String toString() {
+        return super.toString() + ":Payload(retr=" + String.valueOf(transmissionCount) + ")";
+    }
+
 }
