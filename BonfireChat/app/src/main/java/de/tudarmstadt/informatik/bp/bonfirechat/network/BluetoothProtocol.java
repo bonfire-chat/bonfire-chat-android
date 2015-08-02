@@ -163,7 +163,12 @@ public class BluetoothProtocol extends SocketProtocol {
                 public void run() {
                     Log.d(TAG, "sendNetworkPacket to "+socket.getRemoteDevice().getAddress()+" | "+packet.toString());
                     synchronized (ConnectionHandler.this.output) {
-                        send(ConnectionHandler.this.output, packet);
+                        try {
+                            send(ConnectionHandler.this.output, packet);
+                        } catch(IOException ex) {
+                            // Connection is broken, remove from list
+                            teardown();
+                        }
                     }
                 }
             }).start();

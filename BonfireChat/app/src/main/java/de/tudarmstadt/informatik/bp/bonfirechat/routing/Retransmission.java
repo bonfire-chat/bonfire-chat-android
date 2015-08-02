@@ -34,6 +34,7 @@ public class Retransmission implements Runnable{
      */
     private Retransmission(Context ctx, PayloadPacket packet, long timeout){
         this.packet = packet;
+        this.context = ctx;
         handler = new Handler();
         handler.postDelayed(this, timeout);
     }
