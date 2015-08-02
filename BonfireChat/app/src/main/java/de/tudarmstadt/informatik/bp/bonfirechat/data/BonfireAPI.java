@@ -34,7 +34,7 @@ public class BonfireAPI {
     public static final String METHOD_TRACEROUTE = "traceroute";
     public static final String METHOD_SEND_MESSAGE = "notify";
 
-    public static void httpPost(String apiMethod, Hashtable<String, byte[]> body) throws IOException {
+    public static String httpPost(String apiMethod, Hashtable<String, byte[]> body) throws IOException {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = (HttpURLConnection) new URL(API_ENDPOINT + "/" + apiMethod).openConnection();
@@ -51,9 +51,9 @@ public class BonfireAPI {
             out.flush();
 
             final String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
-            Log.i(TAG, "successfully published traceroute");
+            Log.i(TAG, "successful HTTP Post request to "+apiMethod);
             Log.i(TAG, theString);
-
+            return theString;
         } catch (IOException e) {
             String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
             throw new IOException("HTTP Post request failed, Exception: "+e.getMessage()+", Body: "+theErrMes);
