@@ -91,10 +91,10 @@ public class ConnectionManager extends NonStopIntentService {
     // Those were either already sent in the first place, or received
     private static final RingBuffer<Packet> processedPackets = new RingBuffer<>(250);
 
-    private static RoutingManager routingManager = new RoutingManager();
+    public static final RoutingManager routingManager = new RoutingManager();
 
     // currently visible peers
-    private static final List<Peer> peers = new ArrayList<>();
+    public static final List<Peer> peers = new ArrayList<>();
     private static Handler handler = new Handler();
 
     public static final Class[] registeredProtocols = new Class[]{
