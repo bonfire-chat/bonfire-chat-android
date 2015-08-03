@@ -19,10 +19,13 @@ public class Peer {
     // timestamp of this peer beeing available for the last time
     private long lastSeen;
 
-    public Peer(Class protocol, byte[] address) {
+    public String debugInfo;
+
+    public Peer(Class protocol, byte[] address, String debugInfo) {
         this.address = address;
         this.lastSeen = System.currentTimeMillis();
         this.protocol = protocol;
+        this.debugInfo = debugInfo;
     }
 
     public byte[] getAddress() {
@@ -60,7 +63,7 @@ public class Peer {
 
     @Override
     public String toString() {
-        return "Peer(" + protocol.getSimpleName() + ", " + formatMacAddress(address) + ")";
+        return "Peer(" + protocol.getSimpleName() + ", " + formatMacAddress(address) + ", "+debugInfo+")";
     }
 
     public static String formatMacAddress(byte[] macAddress) {

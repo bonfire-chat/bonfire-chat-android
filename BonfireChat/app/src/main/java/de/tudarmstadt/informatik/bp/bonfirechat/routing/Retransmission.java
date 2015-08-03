@@ -37,6 +37,7 @@ public class Retransmission implements Runnable{
         this.packet = packet;
         this.context = ctx;
         handler = new Handler();
+        Log.d(TAG, "Scheduling retransmission in "+timeout+" ms : "+packet.toString());
         handler.postDelayed(this, timeout);
     }
 
