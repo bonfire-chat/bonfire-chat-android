@@ -10,14 +10,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
@@ -44,6 +49,10 @@ public class BluetoothProtocol extends SocketProtocol {
         ensureBluetoothUp();
     }
 
+    public Set<Map.Entry<String,ConnectionHandler>> getConnections() {
+        return connections.entrySet();
+    }
+
     private boolean ensureBluetoothUp() {
         if (adapter == null) {
             Log.d(TAG, "device does not support Bluetooth");
@@ -56,6 +65,7 @@ public class BluetoothProtocol extends SocketProtocol {
             new android.os.Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    Toast.makeText(ctx, "initalizing bluetooth...", Toast.LENGTH_SHORT).show();
                     initializeBluetooth();
                 }
             }, 7500);
@@ -77,8 +87,14 @@ public class BluetoothProtocol extends SocketProtocol {
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                peerListener.discoveredPeer(BluetoothProtocol.this, Peer.addressFromString(device.getAddress()));
-                Log.d(TAG, "device found: " + device.getName() + " - " + device.getAddress());
+                String name = device.getName();
+                Log.d(TAG, "device found: " + name + " - " + device.getAddress());
+
+                //TODO HACK: ignore non-bonfire devices...
+                //maybe blacklisting after n unsuccessful socket.connect
+                if (name.contains("BEACON")) return;
+
+                peerListener.discoveredPeer(BluetoothProtocol.this, Peer.addressFromString(device.getAddress()), name);
             }
         }
     };
@@ -109,9 +125,14 @@ public class BluetoothProtocol extends SocketProtocol {
 
                 BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
-                    BluetoothSocket socket = server.accept();
-                    ConnectionHandler handler = new ConnectionHandler(socket);
-                    connections.put(socket.getRemoteDevice().getAddress(), handler);
+                    try {
+                        BluetoothSocket socket = server.accept();
+                        ConnectionHandler handler = new ConnectionHandler(socket);
+                        connections.put(socket.getRemoteDevice().getAddress(), handler);
+                    } catch(IOException ex) {
+                        Log.e(TAG, "ConnectionHandler constructor fail");
+                        ex.printStackTrace();
+                    }
                 }
 
             } catch (IOException e) {
@@ -122,22 +143,19 @@ public class BluetoothProtocol extends SocketProtocol {
     });
 
     public class ConnectionHandler extends Thread {
-        BluetoothSocket socket;
-        InputStream input;
-        OutputStream output;
-        byte[] peerMacAddress;
-        String formattedMacAddress;
-
-        public ConnectionHandler(BluetoothSocket socket) {
+        final BluetoothSocket socket;
+        final InputStream input;
+        final ObjectOutputStream stream;
+        final byte[] peerMacAddress;
+        final String formattedMacAddress;
+        int sent=0,received=0;
+        public ConnectionHandler(BluetoothSocket socket) throws IOException {
             this.socket = socket;
             formattedMacAddress = socket.getRemoteDevice().getAddress();
             peerMacAddress = Peer.addressFromString(formattedMacAddress);
-            try {
-                input = socket.getInputStream();
-                output = socket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            input = socket.getInputStream();
+            OutputStream output = socket.getOutputStream();
+            stream = new ObjectOutputStream(output);
             this.start();
         }
 
@@ -154,14 +172,14 @@ public class BluetoothProtocol extends SocketProtocol {
                     // hand over to the onMessageReceivedListener, which will take account for displaying
                     // the message and/or redistribute it to further recipients
                     packetListener.onPacketReceived(BluetoothProtocol.this, packet);
+                    received++;
                 }
             } catch(ClassNotFoundException ex) {
                 Log.e(TAG, "Unable to deserialize packet, class not found ("+ex.getMessage() + "), closing connection!");
                 teardown();
             } catch (IOException e) {
-                // do nothing, this exception will occur a lot because there will be Bluetooth
-                // devices nearby that do not run BonfireChat, resulting in no suitable
-                // ServerSocket to accept this connection
+                // On connection errors, tear down this connection and remove from the list
+                // of active connections.
                 e.printStackTrace();
                 teardown();
             }
@@ -171,11 +189,13 @@ public class BluetoothProtocol extends SocketProtocol {
                 @Override
                 public void run() {
                     Log.d(TAG, "sendNetworkPacket to "+formattedMacAddress+" | "+packet.toString());
-                    synchronized (ConnectionHandler.this.output) {
+                    synchronized (ConnectionHandler.this.stream) {
                         try {
-                            send(ConnectionHandler.this.output, packet);
+                            stream.writeObject(packet);
+                            stream.flush();
+                            sent++;
                         } catch(IOException ex) {
-                            Log.w(TAG, "Could not send to "+formattedMacAddress+" : "+packet.toString());
+                            Log.w(TAG, "ConnectionHandler: Could not send to "+formattedMacAddress+" : "+packet.toString());
                             Log.w(TAG, ex.getMessage());
                             // Connection is broken, remove from list
                             teardown();
@@ -185,10 +205,16 @@ public class BluetoothProtocol extends SocketProtocol {
             }).start();
         }
         private void teardown() {
+            Log.w(TAG,"ConnectionHandler: tearing down "+formattedMacAddress);
             connections.remove(formattedMacAddress);
             try {
                 socket.close();
             } catch (IOException e) {/*ignore*/}
+        }
+
+        @Override
+        public String toString() {
+            return "BT.ConnectionHandler("+formattedMacAddress+", sent="+sent+", received="+received+")";
         }
     }
 
@@ -203,6 +229,9 @@ public class BluetoothProtocol extends SocketProtocol {
             connections.put(device.getAddress(), handler);
             return handler;
         } catch (IOException e) {
+            // do nothing, this exception will occur a lot because there will be Bluetooth
+            // devices nearby that do not run BonfireChat, resulting in no suitable
+            // ServerSocket to accept this connection
             Log.e(TAG, "Unable to connect to bluetooth device "+device.getAddress()+", ignoring");
             e.printStackTrace();
             return null;
@@ -216,9 +245,12 @@ public class BluetoothProtocol extends SocketProtocol {
     @Override
     public void sendPacket(Packet packet, Peer peer) {
         Log.d(TAG, "sending packet to peers via Bluetooth");
+        // Prevent discovery start while sending
+        searchLoopHandler.removeCallbacksAndMessages(null);
         if (adapter.isDiscovering()) {
             adapter.cancelDiscovery();
         }
+
 
         // send packet only to specified peer. Just try sending it to
         // the addresses, no discovering necessary to send the packet
@@ -227,9 +259,8 @@ public class BluetoothProtocol extends SocketProtocol {
             socket.sendNetworkPacket(packet);
         }
 
-        if (!adapter.isDiscovering()) {
-            adapter.startDiscovery();
-        }
+        // Start discovery again after five seconds, if sendPacket is not called in the mean time.
+        searchLoopHandler.postDelayed(searchDevicesThread, 5555);
     }
 
     @Override
@@ -247,5 +278,10 @@ public class BluetoothProtocol extends SocketProtocol {
         for(ConnectionHandler c : connections.values()) {
             c.teardown();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "BluetoothProtocol(name="+this.adapter.getName()+", mac=" + this.adapter.getAddress() + ")";
     }
 }

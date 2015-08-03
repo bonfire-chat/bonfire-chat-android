@@ -26,6 +26,7 @@ import java.util.UUID;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
@@ -75,7 +76,7 @@ public class MessagesActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Message msg = messages.get(position);
-                Toast.makeText(MessagesActivity.this, "protocol=" + msg.transferProtocol + "  " + "error=" + msg.error, Toast.LENGTH_LONG).show();
+                Toast.makeText(MessagesActivity.this,  "uuid=" + msg.uuid.toString() + ", flags=" +msg.flags + ",  " + "error=" + msg.error, Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -229,6 +230,10 @@ public class MessagesActivity extends Activity {
             //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString())));
         } else if (id == R.id.action_select_protocol) {
             showSelectProtocol();
+        } else if (id == R.id.action_show_debug) {
+            String debug = NetworkOptions.getDebugInfo();
+            Log.d("DEBUG", debug);
+            InputBox.Info(this, "Debug", debug);
         }
 
         return super.onOptionsItemSelected(item);

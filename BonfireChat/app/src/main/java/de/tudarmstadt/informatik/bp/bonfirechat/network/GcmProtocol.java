@@ -36,7 +36,7 @@ public class GcmProtocol extends SocketProtocol {
     public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
         super.setOnPeerDiscoveredListener(listener);
 
-        listener.discoveredPeer(this, serverFakeMacAddress);
+        listener.discoveredPeer(this, serverFakeMacAddress, "(SERVER)");
     }
 
     public void onHandleGcmIntent(Intent intent) {
