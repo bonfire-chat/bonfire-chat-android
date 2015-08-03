@@ -26,6 +26,7 @@ import java.util.List;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
@@ -82,15 +83,13 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_UUID";
     public static final String EXTENDED_DATA_ERROR =
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
+    public static final String EXTENDED_DATA_RETRANSMISSION_COUNT =
+            "de.tudarmstadt.informatik.bp.bonfirechat.RETRANSMISSION_COUNT";
 
-
-    // maximum hops for a message until it will be discarded
-    public static final int MAX_HOP_COUNT = 20;
 
     // buffer for storing which messages have already been handled
     // Those were either already sent in the first place, or received
     private static final RingBuffer<Packet> processedPackets = new RingBuffer<>(250);
-
 
     private static RoutingManager routingManager = new RoutingManager();
 
@@ -262,7 +261,7 @@ public class ConnectionManager extends NonStopIntentService {
 
         private void forwardPacket(Packet packet) {
             // if the packet has been sent less than 20 hops, redistribute it
-            if (packet.getHopCount() < MAX_HOP_COUNT) {
+            if (packet.getHopCount() < NetworkOptions.MAX_HOPS) {
                 sendPacket(ConnectionManager.this, packet);
             }
         }
@@ -347,11 +346,11 @@ public class ConnectionManager extends NonStopIntentService {
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
             Log.d(TAG, "Loading packet " + packet.toString());
 
-            if (packet instanceof PayloadPacket && packet.getHopCount() == 0)
-                Retransmission.add(this, (PayloadPacket)packet, 20000);
-
-            // let RoutingManager decide where to send the packet to
-            List<Peer> chosenPeers = routingManager.chooseRecipients(packet, peers);
+            List<Peer> chosenPeers;
+            synchronized (peers) {
+                // let RoutingManager decide where to send the packet to
+                chosenPeers = routingManager.chooseRecipients(packet, peers);
+            }
             if (chosenPeers == null) {
                 Log.e(TAG, "don't know how to send this packet: "+packet.toString());
                 return;
@@ -372,12 +371,19 @@ public class ConnectionManager extends NonStopIntentService {
             }
             packet.setTimeSent(System.currentTimeMillis());
 
-            // if a message object is specified, this packet was just generated on this phone
-            // notify UI that sending has started
-            final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
-                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid);
 
-            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+            if (packet instanceof PayloadPacket && packet.getHopCount() == 0) {
+                Retransmission.add(this, (PayloadPacket)packet,
+                        ((PayloadPacket) packet).getTransmissionCount() * NetworkOptions.RETRANSMISSION_TIMEOUT);
+
+                // if a message object is specified, this packet was just generated on this phone
+                // notify UI that sending has started
+                final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
+                        .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid)
+                        .putExtra(EXTENDED_DATA_RETRANSMISSION_COUNT, ((PayloadPacket) packet).getTransmissionCount());
+
+                LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+            }
 
             // update statistics
             CurrentStats.getInstance().messagesSent += 1;

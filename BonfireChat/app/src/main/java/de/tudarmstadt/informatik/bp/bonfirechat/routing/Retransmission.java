@@ -1,12 +1,15 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.Hashtable;
 import java.util.UUID;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
@@ -53,6 +56,16 @@ public class Retransmission implements Runnable{
 
     public void run(){
         packet.incrementTransmissionCount();
+        if (packet.getTransmissionCount() > NetworkOptions.MAX_RETRANSMISSIONS) {
+            Log.e(TAG, "Maximum retransmission count exceeded, ignoring message");
+
+            final Intent localIntent = new Intent(ConnectionManager.MSG_SENT_BROADCAST_EVENT)
+                    .putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, packet.uuid)
+                    .putExtra(ConnectionManager.EXTENDED_DATA_ERROR, "max_retr_exceeded");
+
+            LocalBroadcastManager.getInstance(context).sendBroadcast(localIntent);
+            return;
+        }
         packet.setFlooding();
         Log.i(TAG, "timed out, retransmitting "+packet.toString());
         ConnectionManager.sendPacket(context, packet);
