@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -114,6 +115,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 }
 
             } catch (IOException e) {
+                Log.e(TAG, "MEEP MEEP MEEP: Exception in Blueooth Listener Thread, bluetooth connections won't work until app restart! ");
                 e.printStackTrace();
             }
         }
@@ -143,14 +145,19 @@ public class BluetoothProtocol extends SocketProtocol {
         public void run() {
             try {
                 Log.d(TAG, "Client connected: " + formattedMacAddress);
+
+                final ObjectInputStream stream = new ObjectInputStream(input);
                 while(true) {
-                    Packet packet = receive(input);
+                    final Packet packet = (Packet) stream.readObject();
                     Log.d(TAG, "Received " + packet.toString());
                     packet.addPathNode(peerMacAddress);
                     // hand over to the onMessageReceivedListener, which will take account for displaying
                     // the message and/or redistribute it to further recipients
                     packetListener.onPacketReceived(BluetoothProtocol.this, packet);
                 }
+            } catch(ClassNotFoundException ex) {
+                Log.e(TAG, "Unable to deserialize packet, class not found ("+ex.getMessage() + "), closing connection!");
+                teardown();
             } catch (IOException e) {
                 // do nothing, this exception will occur a lot because there will be Bluetooth
                 // devices nearby that do not run BonfireChat, resulting in no suitable

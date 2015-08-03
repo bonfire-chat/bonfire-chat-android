@@ -81,6 +81,10 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.encryptedIcon.setImageResource(R.drawable.ic_lock_open_black_24dp);
             v.encryptedIcon.setColorFilter(Color.RED);
         }
+        if (msg.hasFlag(Message.FLAG_FAILED)) {
+            v.encryptedIcon.setImageResource(R.drawable.ic_warning_black_24dp);
+            v.encryptedIcon.setColorFilter(Color.MAGENTA);
+        }
         if (v.ackIcon != null) v.ackIcon.setVisibility(msg.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
         v.protocolIcon.setVisibility(View.VISIBLE);
         if (msg.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);

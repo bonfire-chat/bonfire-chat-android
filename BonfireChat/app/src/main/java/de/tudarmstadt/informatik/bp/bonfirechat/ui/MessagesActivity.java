@@ -101,7 +101,13 @@ public class MessagesActivity extends Activity {
                         Log.i(TAG, "MSG_SENT: " + sentUUID.toString() + " - " + intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
                         for(Message m : messages) {
                             if (m.uuid.equals(sentUUID)) {
-                                m.error = "Sent";
+                                if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
+                                    m.error = intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
+                                    m.flags |= Message.FLAG_FAILED;
+                                } else {
+                                    m.error = "Sent(" + (String.valueOf(intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, -1))) + ")";
+                                }
+
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
                                 db.updateMessage(m);
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();

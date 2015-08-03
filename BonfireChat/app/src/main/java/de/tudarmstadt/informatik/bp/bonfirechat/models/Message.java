@@ -37,6 +37,8 @@ public class Message implements Serializable {
     public static final int FLAG_PROTO_BT = 16;
     public static final int FLAG_PROTO_WIFI = 32;
     public static final int FLAG_PROTO_CLOUD = 64;
+    public static final int FLAG_FAILED = 128;
+
 
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, Contact recipient) {
         this(body, sender, sentTime, flags, UUID.randomUUID());

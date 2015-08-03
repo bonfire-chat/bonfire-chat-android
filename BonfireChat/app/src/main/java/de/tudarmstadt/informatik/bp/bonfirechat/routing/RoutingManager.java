@@ -34,25 +34,23 @@ public class RoutingManager {
     }
 
     public List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
-        synchronized (peers) {
-            if (packet.isFlooding()) {
-                // send to all available peers
-                return (ArrayList) ((ArrayList) peers).clone();
-            } else if (packet.getNextHop() != null) {
-                List<Peer> r = new ArrayList<>(1);
-                for (Peer peer : peers) {
-                    if (peer.equals(packet.getNextHop())) {
-                        r.add(peer);
-                    }
+        if (packet.isFlooding()) {
+            // send to all available peers
+            return (ArrayList) ((ArrayList) peers).clone();
+        } else if (packet.getNextHop() != null) {
+            List<Peer> r = new ArrayList<>(1);
+            for (Peer peer : peers) {
+                if (peer.equals(packet.getNextHop())) {
+                    r.add(peer);
                 }
-                // if no matching peer was discovered, just be lazy and try to send it via bluetooth
-                if (r.size() == 0)
-                    r.add(new Peer(BluetoothProtocol.class, packet.getNextHop()));
-                packet.removeNextHop();
-                return r;
-            } else {
-                return null;
             }
+            // if no matching peer was discovered, just be lazy and try to send it via bluetooth
+            if (r.size() == 0)
+                r.add(new Peer(BluetoothProtocol.class, packet.getNextHop()));
+            packet.removeNextHop();
+            return r;
+        } else {
+            return null;
         }
     }
 }

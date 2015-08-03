@@ -21,6 +21,7 @@ public abstract class SocketProtocol implements IProtocol {
     protected void send(OutputStream output, Packet packet) throws IOException {
         final ObjectOutputStream stream = new ObjectOutputStream(output);
         stream.writeObject(packet);
+        stream.flush();
     }
 
     protected Packet receive (InputStream input) throws IOException {

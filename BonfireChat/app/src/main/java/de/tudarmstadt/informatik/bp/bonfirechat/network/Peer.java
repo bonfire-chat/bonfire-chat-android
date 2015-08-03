@@ -39,9 +39,13 @@ public class Peer {
     }
 
     public boolean isOutdated() {
+        //TODO implement some flag for peers that will never be outdated....
+        if (protocol.getSimpleName().equals("GcmProtocol")) return false;
+
         return lastSeen + OUTDATED_TTL < System.currentTimeMillis();
     }
 
+    @Override
     public boolean equals(Object other) {
         if (other instanceof byte[]) {
             return Arrays.equals(address, (byte[]) other);
