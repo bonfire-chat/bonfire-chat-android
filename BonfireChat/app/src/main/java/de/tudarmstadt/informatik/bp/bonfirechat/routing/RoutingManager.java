@@ -59,7 +59,7 @@ public class RoutingManager {
             }
             // if no matching peer was discovered, just be lazy and try to send it via bluetooth
             if (r.size() == 0)
-                r.add(new Peer(BluetoothProtocol.class, packet.getNextHop()));
+                r.add(new Peer(BluetoothProtocol.class, packet.getNextHop(), "(dynamic)"));
             packet.removeNextHop();
             return r;
         } else {

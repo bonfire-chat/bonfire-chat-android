@@ -1,5 +1,12 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.data;
 
+import java.util.Map;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.IProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
+
 /**
  * Created by mw on 03.08.15.
  */
@@ -12,5 +19,26 @@ public class NetworkOptions {
 
     public static final int RETRANSMISSION_TIMEOUT = 20000;
 
+
+
+    public static String getDebugInfo() {
+        StringBuilder debug = new StringBuilder();
+        for(IProtocol c : ConnectionManager.connections) {
+            debug.append("\nProtocol: "+c.toString());
+            if (c instanceof BluetoothProtocol) {
+                BluetoothProtocol proto = (BluetoothProtocol)c;
+                for(Map.Entry<String,BluetoothProtocol.ConnectionHandler> h : proto.getConnections()) {
+                    debug.append("\n- Conn: "+h.getKey()+" = "+h.getValue().toString());
+                }
+            }
+        }
+        debug.append("\n");
+        debug.append(ConnectionManager.routingManager.toString());
+        debug.append("\n");
+        for(Peer p : ConnectionManager.peers) {
+            debug.append("\n"+p.toString());
+        }
+        return debug.toString();
+    }
 
 }

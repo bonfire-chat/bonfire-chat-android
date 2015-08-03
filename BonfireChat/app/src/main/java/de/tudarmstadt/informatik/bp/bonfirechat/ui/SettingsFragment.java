@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import java.util.Map;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
@@ -76,25 +77,9 @@ public class SettingsFragment extends PreferenceFragment {
         findPreference("debugShow").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                StringBuilder debug = new StringBuilder();
-                for(IProtocol c : ConnectionManager.connections) {
-                    debug.append("\nProtocol: "+c.toString());
-                    if (c instanceof BluetoothProtocol) {
-                        BluetoothProtocol proto = (BluetoothProtocol)c;
-                        for(Map.Entry<String,BluetoothProtocol.ConnectionHandler> h : proto.getConnections()) {
-                            debug.append("\n- Conn: "+h.getKey()+" = "+h.getValue().toString());
-                        }
-                    }
-                }
-                debug.append("\n");
-                debug.append(ConnectionManager.routingManager.toString());
-                debug.append("\n");
-                for(Peer p : ConnectionManager.peers) {
-                    debug.append("\n"+p.toString());
-                }
-
-                Log.d("DEBUG", debug.toString());
-                InputBox.Info(getActivity(), "Debug", debug.toString());
+                String debug = NetworkOptions.getDebugInfo();
+                Log.d("DEBUG", debug);
+                InputBox.Info(getActivity(), "Debug", debug);
                 return true;
             }
         });
