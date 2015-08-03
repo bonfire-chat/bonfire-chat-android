@@ -91,10 +91,10 @@ public class ConnectionManager extends NonStopIntentService {
     // Those were either already sent in the first place, or received
     private static final RingBuffer<Packet> processedPackets = new RingBuffer<>(250);
 
-    private static RoutingManager routingManager = new RoutingManager();
+    public static final RoutingManager routingManager = new RoutingManager();
 
     // currently visible peers
-    private static final List<Peer> peers = new ArrayList<>();
+    public static final List<Peer> peers = new ArrayList<>();
     private static Handler handler = new Handler();
 
     public static final Class[] registeredProtocols = new Class[]{
@@ -165,9 +165,9 @@ public class ConnectionManager extends NonStopIntentService {
 
     private OnPeerDiscoveredListener peerListener = new OnPeerDiscoveredListener() {
         @Override
-        public void discoveredPeer(IProtocol sender, byte[] address) {
-            Peer found = new Peer(sender.getClass(), address);
-            Log.d(TAG, "Peer was discovered by "+sender.toString()+" : "+Peer.formatMacAddress(address));
+        public void discoveredPeer(IProtocol sender, byte[] address, String debugInfo) {
+            Peer found = new Peer(sender.getClass(), address, debugInfo);
+            Log.d(TAG, "Peer was discovered by "+sender.toString()+" : "+Peer.formatMacAddress(address) + "   " + debugInfo);
             synchronized (peers) {
                 int index = peers.indexOf(found);
                 // is this peer already known to us?
@@ -199,7 +199,7 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
         @Override
         public void onPacketReceived(IProtocol sender, Packet packet) {
-            StatsCollector.publishMessageHop(sender.getClass(), "RECV", null, packet);
+            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet)?"RIGN":"RECV", null, packet);
             Log.d(TAG, "onPacketReceived: " + sender.getClass().getSimpleName() + ", " + packet.toString());
             // has this packet not yet been processed?
             if (!processedPackets.contains(packet)) {

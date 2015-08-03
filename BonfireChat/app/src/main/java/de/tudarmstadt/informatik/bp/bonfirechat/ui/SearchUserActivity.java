@@ -126,6 +126,7 @@ public class SearchUserActivity extends Activity {
         @Override
         protected void onPostExecute(Contact[] contacts) {
             adapter.clear();
+            if (contacts == null) return;
             for(Contact contact : contacts) {
                 adapter.add(contact);
             }
