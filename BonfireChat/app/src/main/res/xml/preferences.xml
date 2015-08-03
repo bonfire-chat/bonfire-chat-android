@@ -23,6 +23,10 @@
             android:title="Debuginfos an Dashboard senden"></CheckBoxPreference>
 
 
+        <Preference android:key="debugShow"
+            android:title="Zeige interne Informationen"></Preference>
+
+
         <PreferenceScreen android:title="Über BonfireChat">
 
             <Preference android:title="Entwickelt an der TU Darmstadt"

@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
@@ -23,6 +24,18 @@ public class RoutingManager {
         for(byte[] a : packet.getPath()) pathDebug += " -> " + Peer.formatMacAddress(a);
         Log.i("RoutingManager", "registerPath to " + key + " " + pathDebug);
         shortestPaths.put(key, packet.getPath());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append("RoutingManager:\n");
+        for(Map.Entry<String, List<byte[]>> e : shortestPaths.entrySet()) {
+            s.append("- Path to " + e.getKey() + " ");
+            for(byte[] a : e.getValue()) s.append(" -> " + Peer.formatMacAddress(a));
+            s.append("\n");
+        }
+        return s.toString();
     }
 
     public List<byte[]> getPath(Packet packet) {

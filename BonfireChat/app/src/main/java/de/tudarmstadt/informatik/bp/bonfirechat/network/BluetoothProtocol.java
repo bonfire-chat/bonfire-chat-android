@@ -14,10 +14,14 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
@@ -42,6 +46,10 @@ public class BluetoothProtocol extends SocketProtocol {
 
         adapter = BluetoothAdapter.getDefaultAdapter();
         ensureBluetoothUp();
+    }
+
+    public Set<Map.Entry<String,ConnectionHandler>> getConnections() {
+        return connections.entrySet();
     }
 
     private boolean ensureBluetoothUp() {
@@ -77,8 +85,14 @@ public class BluetoothProtocol extends SocketProtocol {
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String name = device.getName();
+                Log.d(TAG, "device found: " + name + " - " + device.getAddress());
+
+                //TODO HACK: ignore non-bonfire devices...
+                //maybe blacklisting after n unsuccessful socket.connect
+                if (name.contains("BEACON")) return;
+
                 peerListener.discoveredPeer(BluetoothProtocol.this, Peer.addressFromString(device.getAddress()));
-                Log.d(TAG, "device found: " + device.getName() + " - " + device.getAddress());
             }
         }
     };
@@ -109,9 +123,14 @@ public class BluetoothProtocol extends SocketProtocol {
 
                 BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
-                    BluetoothSocket socket = server.accept();
-                    ConnectionHandler handler = new ConnectionHandler(socket);
-                    connections.put(socket.getRemoteDevice().getAddress(), handler);
+                    try {
+                        BluetoothSocket socket = server.accept();
+                        ConnectionHandler handler = new ConnectionHandler(socket);
+                        connections.put(socket.getRemoteDevice().getAddress(), handler);
+                    } catch(IOException ex) {
+                        Log.e(TAG, "ConnectionHandler constructor fail");
+                        ex.printStackTrace();
+                    }
                 }
 
             } catch (IOException e) {
@@ -122,22 +141,19 @@ public class BluetoothProtocol extends SocketProtocol {
     });
 
     public class ConnectionHandler extends Thread {
-        BluetoothSocket socket;
-        InputStream input;
-        OutputStream output;
-        byte[] peerMacAddress;
-        String formattedMacAddress;
+        final BluetoothSocket socket;
+        final InputStream input;
+        final ObjectOutputStream stream;
+        final byte[] peerMacAddress;
+        final String formattedMacAddress;
 
-        public ConnectionHandler(BluetoothSocket socket) {
+        public ConnectionHandler(BluetoothSocket socket) throws IOException {
             this.socket = socket;
             formattedMacAddress = socket.getRemoteDevice().getAddress();
             peerMacAddress = Peer.addressFromString(formattedMacAddress);
-            try {
-                input = socket.getInputStream();
-                output = socket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            input = socket.getInputStream();
+            OutputStream output = socket.getOutputStream();
+            stream = new ObjectOutputStream(output);
             this.start();
         }
 
@@ -171,9 +187,10 @@ public class BluetoothProtocol extends SocketProtocol {
                 @Override
                 public void run() {
                     Log.d(TAG, "sendNetworkPacket to "+formattedMacAddress+" | "+packet.toString());
-                    synchronized (ConnectionHandler.this.output) {
+                    synchronized (ConnectionHandler.this.stream) {
                         try {
-                            send(ConnectionHandler.this.output, packet);
+                            stream.writeObject(packet);
+                            stream.flush();
                         } catch(IOException ex) {
                             Log.w(TAG, "Could not send to "+formattedMacAddress+" : "+packet.toString());
                             Log.w(TAG, ex.getMessage());

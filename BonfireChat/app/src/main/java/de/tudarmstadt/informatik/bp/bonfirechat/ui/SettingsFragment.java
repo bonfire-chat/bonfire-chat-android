@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +15,19 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Map;
+
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.IProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 
 /**
  * settings list
@@ -63,6 +72,33 @@ public class SettingsFragment extends PreferenceFragment {
 				return true;
 			}
 		});
+
+        findPreference("debugShow").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                StringBuilder debug = new StringBuilder();
+                for(IProtocol c : ConnectionManager.connections) {
+                    debug.append("\nProtocol: "+c.toString());
+                    if (c instanceof BluetoothProtocol) {
+                        BluetoothProtocol proto = (BluetoothProtocol)c;
+                        for(Map.Entry<String,BluetoothProtocol.ConnectionHandler> h : proto.getConnections()) {
+                            debug.append("\n- Conn: "+h.getKey()+" = "+h.getValue().toString());
+                        }
+                    }
+                }
+                debug.append("\n");
+                debug.append(ConnectionManager.routingManager.toString());
+                debug.append("\n");
+                for(Peer p : ConnectionManager.peers) {
+                    debug.append("\n"+p.toString());
+                }
+
+                Log.d("DEBUG", debug.toString());
+                InputBox.Info(getActivity(), "Debug", debug.toString());
+                return true;
+            }
+        });
+
 
     }
 
