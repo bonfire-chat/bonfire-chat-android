@@ -102,6 +102,7 @@ public class BonfireData extends SQLiteOpenHelper{
         if (cursor.moveToNext()) {
             i = Identity.fromCursor(cursor);
         }
+        cursor.close();
         return i;
     }
 
@@ -115,6 +116,7 @@ public class BonfireData extends SQLiteOpenHelper{
             conversation.addMessages(this.getMessages(conversation));
             conversations.add(conversation);
         }
+        conversationCursor.close();
         return conversations;
     }
 
@@ -126,6 +128,7 @@ public class BonfireData extends SQLiteOpenHelper{
         if(conversationCursor.moveToNext()){
             conversation = Conversation.fromCursor(peer, conversationCursor);
         }
+        conversationCursor.close();
         return conversation;
     }
     public Conversation getConversationById(long rowid){
@@ -140,6 +143,7 @@ public class BonfireData extends SQLiteOpenHelper{
                     getContactById(peerId),
                     conversationCursor);
         }
+        conversationCursor.close();
         return conversation;
     }
 
@@ -149,6 +153,7 @@ public class BonfireData extends SQLiteOpenHelper{
         Cursor cursor = db.query(MESSAGES, null, "uuid=?", new String[]  {id.toString()}, null, null, null);
         if (!cursor.moveToNext()) return null;
         Message message = Message.fromCursor(cursor, this);
+        cursor.close();
         return message;
     }
     public ArrayList<Message> getMessages(Conversation conversation){
@@ -158,6 +163,7 @@ public class BonfireData extends SQLiteOpenHelper{
         while(messageCursor.moveToNext()){
             messages.add(Message.fromCursor(messageCursor, this));
         }
+        messageCursor.close();
         return messages;
     }
 
@@ -194,6 +200,7 @@ public class BonfireData extends SQLiteOpenHelper{
         while(cursor.moveToNext()){
             contacts.add(Contact.fromCursor(cursor));
         }
+        cursor.close();
         return contacts;
     }
     public Contact getContactByXmppId(String xmppId){
@@ -201,21 +208,27 @@ public class BonfireData extends SQLiteOpenHelper{
         ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor = db.query(CONTACTS, ALL_COLS, "xmppId = ?", new String[]{ xmppId }, null, null, null);
         if (!cursor.moveToNext()) return null;
-        return Contact.fromCursor(cursor);
+        Contact c = Contact.fromCursor(cursor);
+        cursor.close();
+        return c;
     }
     public Contact getContactByPublicKey(String publicKey){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor = db.query(CONTACTS, ALL_COLS, "publicKey = ?", new String[]{ publicKey }, null, null, null);
         if (!cursor.moveToNext()) return null;
-        return Contact.fromCursor(cursor);
+        Contact c = Contact.fromCursor(cursor);
+        cursor.close();
+        return c;
     }
     public Contact getContactById(long id){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor = db.query(CONTACTS, ALL_COLS, "rowid = ?", new String[]{ String.valueOf(id) }, null, null, null);
         if (!cursor.moveToNext()) return null;
-        return Contact.fromCursor(cursor);
+        Contact c = Contact.fromCursor(cursor);
+        cursor.close();
+        return c;
     }
 
     public void updateContact(Contact contact) {
@@ -242,10 +255,14 @@ public class BonfireData extends SQLiteOpenHelper{
     public StatsEntry getLatestStatsEntry() {
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(STATS, ALL_COLS, null, null, null, null, null);
+        StatsEntry result;
         if (!cursor.moveToLast()) {
             Log.i(TAG, "no latest stats object found in database. Creating a new one...");
-            return new StatsEntry();
+            result = new StatsEntry();
+        } else {
+            result = StatsEntry.fromCursor(cursor);
         }
-        return StatsEntry.fromCursor(cursor);
+        cursor.close();
+        return result;
     }
 }
