@@ -107,9 +107,6 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         setIntent(intent);
     }
 
-    /**
-     * Parses the NDEF Message from the intent and prints to the TextView
-     */
     void processIntent(Intent intent) {
         textView = (TextView) findViewById(R.id.action_scan_nfc);
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
@@ -119,7 +116,13 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         // record 0 contains the MIME type, record 1 is the AAR, if present
         Log.d("TEST", new String(msg.getRecords()[0].getPayload()));
         Contact contact = contactFromUri(Uri.parse(new String(msg.getRecords()[0].getPayload())));
-        db.createContact(contact);
+        Contact dbContact = db.getContactByPublicKey(contact.getPublicKey().asBase64());
+        if(dbContact == null) {
+            db.createContact(contact);
+        }
+        else {
+            contact = dbContact;
+        }
         Intent intent1 = new Intent(this, ContactDetailsActivity.class);
         intent1.putExtra(EXTRA_CONTACT_ID, contact.rowid);
         startActivity(intent1);
