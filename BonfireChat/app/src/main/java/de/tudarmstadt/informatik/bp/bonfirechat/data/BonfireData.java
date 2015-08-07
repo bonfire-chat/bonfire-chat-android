@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import org.abstractj.kalium.keys.PublicKey;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -42,8 +40,6 @@ public class BonfireData extends SQLiteOpenHelper{
         if (instance == null) instance = new BonfireData(ctx);
         return instance;
     }
-
-    private SQLiteOpenHelper helper;
 
     private BonfireData(Context context) {
         super(context, "CommunicationData", null, 13);
@@ -122,7 +118,6 @@ public class BonfireData extends SQLiteOpenHelper{
 
     public Conversation getConversationByPeer(Contact peer){
         SQLiteDatabase db = getWritableDatabase();
-        ArrayList<Conversation> conversations = new ArrayList<>();
         Cursor conversationCursor = db.query(CONVERSATIONS, ALL_COLS, "peer = ?", new String[]{String.valueOf(peer.rowid)}, null, null, null);
         Conversation conversation = null;
         if(conversationCursor.moveToNext()){
@@ -133,7 +128,6 @@ public class BonfireData extends SQLiteOpenHelper{
     }
     public Conversation getConversationById(long rowid){
         SQLiteDatabase db = getWritableDatabase();
-        ArrayList<Conversation> conversations = new ArrayList<>();
         Cursor conversationCursor = db.query(CONVERSATIONS, ALL_COLS, "rowid = ?", new String[]{String.valueOf(rowid)}, null, null, null);
         Conversation conversation = null;
         if(conversationCursor.moveToNext()){
@@ -149,7 +143,6 @@ public class BonfireData extends SQLiteOpenHelper{
 
     public Message getMessageByUUID(UUID id){
         SQLiteDatabase db = getWritableDatabase();
-        ArrayList<Message> messages = new ArrayList<>();
         Cursor cursor = db.query(MESSAGES, null, "uuid=?", new String[]  {id.toString()}, null, null, null);
         if (!cursor.moveToNext()) return null;
         Message message = Message.fromCursor(cursor, this);
@@ -175,6 +168,7 @@ public class BonfireData extends SQLiteOpenHelper{
         }
         catch(Exception e) {
             e.printStackTrace();
+            return false;
         }
         return true;
 
@@ -203,18 +197,9 @@ public class BonfireData extends SQLiteOpenHelper{
         cursor.close();
         return contacts;
     }
-    public Contact getContactByXmppId(String xmppId){
-        SQLiteDatabase db = getWritableDatabase();
-        ArrayList<Contact> contacts = new ArrayList<>();
-        Cursor cursor = db.query(CONTACTS, ALL_COLS, "xmppId = ?", new String[]{ xmppId }, null, null, null);
-        if (!cursor.moveToNext()) return null;
-        Contact c = Contact.fromCursor(cursor);
-        cursor.close();
-        return c;
-    }
+
     public Contact getContactByPublicKey(String publicKey){
         SQLiteDatabase db = getWritableDatabase();
-        ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor = db.query(CONTACTS, ALL_COLS, "publicKey = ?", new String[]{ publicKey }, null, null, null);
         if (!cursor.moveToNext()) return null;
         Contact c = Contact.fromCursor(cursor);
@@ -223,7 +208,6 @@ public class BonfireData extends SQLiteOpenHelper{
     }
     public Contact getContactById(long id){
         SQLiteDatabase db = getWritableDatabase();
-        ArrayList<Contact> contacts = new ArrayList<>();
         Cursor cursor = db.query(CONTACTS, ALL_COLS, "rowid = ?", new String[]{ String.valueOf(id) }, null, null, null);
         if (!cursor.moveToNext()) return null;
         Contact c = Contact.fromCursor(cursor);
