@@ -68,8 +68,14 @@
 <div ng-hide="traceroutes">Eile mit Weile</div>
 <div id="trcontent">
 
+<p>
+<button ng-repeat="retr in retrs" ng-click="filterRetr(retr)">{{retr}}</button>
+</p>
+
+<div id="cyto" style="height: 300px; border: 2px inset #888;"></div>
+
 <table class="table">
-<tr ng-repeat="line in tracecontent">
+<tr ng-repeat="line in tracecontent" class="action-{{line.action}}">
 <td>{{line.reporter}}</td><td>{{line.action}}</td>
 <td>{{line.client_ts|date:"HH:mm:ss"}}</td><td>{{line.protocol}}</td><td>{{line.peer}}</td><td>{{line.traceroute}}</td>
 </tr></table>
@@ -79,6 +85,8 @@
 </div>
 <?php endif; ?>
 <style>
+#trcontent .action-RIGN td { color: #bbb; } /* dim ignored packets */
+
 #trcontent span { display: block; font-size: 8pt; background: #eee; }
 #trcontent span time {float: right; }
 </style>
@@ -89,6 +97,7 @@
     <script src="bower_components/Chart.js/Chart.min.js"></script>
     <script src="bower_components/angular-chart.js/angular-chart.js"></script>
     <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/cytoscape/dist/cytoscape.min.js"></script>
     <script src="dashboard.js"></script>
   </body>
 </html>
