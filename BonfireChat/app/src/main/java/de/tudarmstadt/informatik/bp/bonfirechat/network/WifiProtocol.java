@@ -95,7 +95,7 @@ public class WifiProtocol extends SocketProtocol {
             Collection<WifiP2pDevice> mDevList = peers.getDeviceList();
             Log.d(TAG, "the device List is: " + mDevList);
             for (WifiP2pDevice dev : mDevList) {
-                peerListener.discoveredPeer(WifiProtocol.this, Peer.addressFromString(dev.deviceAddress));
+                peerListener.discoveredPeer(WifiProtocol.this, Peer.addressFromString(dev.deviceAddress), "");
 
                 WifiP2pConfig config = new WifiP2pConfig();
                 config.deviceAddress = dev.deviceAddress;
