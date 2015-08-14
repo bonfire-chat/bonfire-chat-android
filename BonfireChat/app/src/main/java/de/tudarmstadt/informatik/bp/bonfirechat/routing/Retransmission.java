@@ -42,6 +42,10 @@ public class Retransmission implements Runnable{
     }
 
     public static void add(Context ctx, PayloadPacket packet, long timeout){
+        if (pendingRetransmissions.containsKey(packet.uuid)) {
+            Log.e(TAG, "Packet "+packet.uuid+" already has one pending Retransmission, refused to schedule a second one!");
+            return;
+        }
         pendingRetransmissions.put(packet.uuid, new Retransmission(ctx, packet, timeout));
     }
     public static void cancel(UUID uuid) {
@@ -56,6 +60,7 @@ public class Retransmission implements Runnable{
     }
 
     public void run(){
+        pendingRetransmissions.remove(this.packet.uuid);
         packet.incrementTransmissionCount();
         if (packet.getTransmissionCount() > NetworkOptions.MAX_RETRANSMISSIONS) {
             Log.e(TAG, "Maximum retransmission count exceeded, ignoring message");
