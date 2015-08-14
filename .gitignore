@@ -14,3 +14,8 @@ folien_von_jonas.pdf
 *~
 bower_components/
 log.txt
+
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+*.iml
+
