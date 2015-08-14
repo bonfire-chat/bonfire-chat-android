@@ -200,7 +200,13 @@ public class ConnectionManager extends NonStopIntentService {
     private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
         @Override
         public void onPacketReceived(IProtocol sender, Packet packet) {
-            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet)?"RIGN":"RECV", null, packet);
+            Identity thisIdentity = BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity();
+
+            // Traceroute...
+            // TODO ~mw  : should be conditional, only if we have the users consent
+            String thisHopName = thisIdentity.getNickname();
+            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet)?"RIGN":"RECV", null, packet, packet.nextHopNickname, thisHopName);
+
             Log.d(TAG, "onPacketReceived: " + sender.getClass().getSimpleName() + ", " + packet.toString());
             // has this packet not yet been processed?
             if (!processedPackets.contains(packet)) {
@@ -209,7 +215,7 @@ public class ConnectionManager extends NonStopIntentService {
                 // remember path to sender
                 routingManager.registerPath(packet);
                 // is this packet sent to us?
-                if (packet.hasRecipient(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity())) {
+                if (packet.hasRecipient(thisIdentity)) {
                     Log.d(TAG, "this packet is for us. ");
                     // is it  a payload packet?
                     if (packet.getType() == PacketType.Payload) {
@@ -347,6 +353,11 @@ public class ConnectionManager extends NonStopIntentService {
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
             Log.d(TAG, "Loading packet " + packet.toString());
 
+            // for traceroute ...
+            // TODO ~mw  : should be conditional, only if we have the users consent
+            Identity thisIdentity = BonfireData.getInstance(this).getDefaultIdentity();
+            packet.nextHopNickname = thisIdentity.getNickname();
+
             List<Peer> chosenPeers;
             synchronized (peers) {
                 // let RoutingManager decide where to send the packet to
@@ -361,7 +372,7 @@ public class ConnectionManager extends NonStopIntentService {
                     Class protocolClass = peer.getProtocolClass();
                     IProtocol protocol = getConnection(protocolClass);
                     if (protocol != null && protocol.canSend()) {
-                        StatsCollector.publishMessageHop(protocolClass, "SEND", peer, packet);
+                        StatsCollector.publishMessageHop(protocolClass, "SEND", peer, packet, packet.nextHopNickname, null);
                         Log.i(TAG, "Sending via " + peer.toString());
                         protocol.sendPacket(packet, peer);
                     } else throw new IllegalAccessException("Protocol "+protocolClass.getSimpleName()+" not ready");

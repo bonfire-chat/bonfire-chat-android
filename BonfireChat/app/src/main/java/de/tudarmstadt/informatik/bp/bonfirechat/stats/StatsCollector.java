@@ -69,7 +69,7 @@ public class StatsCollector extends BroadcastReceiver {
         publishStats(db);
     }
 
-    public static void publishMessageHop(final Class protocol, final String what, final Peer peer, final Packet pkg) {
+    public static void publishMessageHop(final Class protocol, final String what, final Peer peer, final Packet pkg, final String lastHop, final String thisHop) {
         final long dateTime = new Date().getTime();
         new Thread(new Runnable() {
             @Override
@@ -83,6 +83,8 @@ public class StatsCollector extends BroadcastReceiver {
                 body.put("action", BonfireAPI.encode(what));
                 body.put("peer", BonfireAPI.encode(peer == null ? "" : ("to: "+peer.toString())));
                 body.put("protocol", BonfireAPI.encode(protocol == null ? "" : protocol.getSimpleName()));
+                body.put("hop1", BonfireAPI.encode(lastHop == null ? "" : lastHop));
+                body.put("hop2", BonfireAPI.encode(thisHop == null ? "" : thisHop));
                 body.put("reporter", BonfireAPI.encode(reporterIdentity));
                 try {
                     BonfireAPI.httpPost("traceroute", body);

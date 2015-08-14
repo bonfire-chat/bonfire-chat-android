@@ -33,6 +33,9 @@ public abstract class Packet implements Serializable {
     private List<byte[]> path;
     private List<byte[]> nextHops;
 
+    //for traceroute
+    public String nextHopNickname;
+
     private long timeSent;
 
     private int routingMode = ROUTING_MODE_NONE;
