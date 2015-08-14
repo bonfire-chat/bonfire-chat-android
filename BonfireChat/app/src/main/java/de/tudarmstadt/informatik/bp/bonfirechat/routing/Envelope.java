@@ -26,8 +26,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 public class Envelope extends PayloadPacket {
 
     public final Date sentTime;
-    //TODO eventuell rauswerfen
-    public final String senderNickname;
     public final byte[] senderPublicKey;
     public byte[] encryptedBody;
     public byte[] nonce;
@@ -36,10 +34,9 @@ public class Envelope extends PayloadPacket {
     public static final int FLAG_ENCRYPTED = 4;
     public static final int FLAG_TRACEROUTE = 8;
 
-    public Envelope(UUID uuid, Date sentTime, byte[] recipientPublicKey, String senderNickname, byte[] senderPublicKey, byte[] encryptedBody) {
+    public Envelope(UUID uuid, Date sentTime, byte[] recipientPublicKey, byte[] senderPublicKey, byte[] encryptedBody) {
         super(senderPublicKey, recipientPublicKey, uuid);
         this.sentTime = sentTime;
-        this.senderNickname = senderNickname;
         this.senderPublicKey = senderPublicKey;
         this.encryptedBody = encryptedBody;
     }
@@ -47,13 +44,14 @@ public class Envelope extends PayloadPacket {
 
     public static Envelope fromMessage(Message message, boolean encrypt) {
         byte[] publicKey = message.recipients.get(0).getPublicKey().asByteArray();
+        // Concatenate Sender Nickname and Message Text to be stored in Encrypted Body
+        String parts = message.sender.getNickname() + "|" + message.body;
         Envelope envelope = new Envelope(
                 message.uuid,
                 new Date(),
                 publicKey,
-                message.sender.getNickname(),
                 message.sender.getPublicKey().asByteArray(),
-                message.body.getBytes(Charset.forName("UTF-8")));
+                parts.getBytes(Charset.forName("UTF-8")));
         if (encrypt) {
             Identity sender = (Identity)message.sender;
             Box crypto = new Box(new PublicKey(publicKey), sender.privateKey);
@@ -73,9 +71,10 @@ public class Envelope extends PayloadPacket {
             body = crypto.decrypt(nonce, body);
             msgFlags |= Message.FLAG_ENCRYPTED;
         }
+        String[] parts = new String(body, Charset.forName("UTF-8")).split("\\|", 2);
         return new Message(
-                new String(body, Charset.forName("UTF-8")),
-                Contact.findOrCreate(ctx, senderPublicKey, senderNickname),
+                parts[1],
+                Contact.findOrCreate(ctx, senderPublicKey, parts[0]),
                 sentTime,
                 msgFlags,
                 uuid);
@@ -87,6 +86,6 @@ public class Envelope extends PayloadPacket {
 
     @Override
     public String toString() {
-        return super.toString() + ":Envelope(fromNick=" + senderNickname + ")";
+        return super.toString() + ":Envelope(...)";
     }
 }
