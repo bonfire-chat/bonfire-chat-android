@@ -92,7 +92,7 @@ public class BluetoothProtocol extends SocketProtocol {
 
                 //TODO HACK: ignore non-bonfire devices...
                 //maybe blacklisting after n unsuccessful socket.connect
-                if (name.contains("BEACON")) return;
+                if (name != null && name.contains("BEACON")) return;
 
                 peerListener.discoveredPeer(BluetoothProtocol.this, Peer.addressFromString(device.getAddress()), name);
             }
