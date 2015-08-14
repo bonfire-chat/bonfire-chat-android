@@ -33,6 +33,7 @@ public class BonfireData extends SQLiteOpenHelper{
 
     private static final String TAG = "BonfireData";
 
+    private Identity cachedDefaultIdentity = null;
 
     private static BonfireData instance;
 
@@ -92,14 +93,16 @@ public class BonfireData extends SQLiteOpenHelper{
     }
 
     public Identity getDefaultIdentity() {
+        if (cachedDefaultIdentity != null) {
+            return cachedDefaultIdentity;
+        }
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(IDENTITIES, ALL_COLS, null, null, null, null, null, "1");
-        Identity i = null;
         if (cursor.moveToNext()) {
-            i = Identity.fromCursor(cursor);
+            cachedDefaultIdentity = Identity.fromCursor(cursor);
         }
         cursor.close();
-        return i;
+        return cachedDefaultIdentity;
     }
 
     public ArrayList<Conversation> getConversations(){
