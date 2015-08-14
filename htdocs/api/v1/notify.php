@@ -1,6 +1,6 @@
 <?php
 require_once "init.php";
-    error_log("POST: recipientPublicKey=$_POST[recipientPublicKey], nextHopId=$_POST[nextHopId], senderId=$_POST[senderId]");
+    error_log("POST: recipientPublicKey=$_POST[recipientPublicKey], nextHopId=$_POST[nextHopId], senderId=$_POST[senderId], msgLen=".strlen($_POST["msg"]));
 
 if (!isset($_POST["recipientPublicKey"])) errorResult(400, "pubkey missing");
 

@@ -13,6 +13,7 @@
     "angular-chart.js": "~0.7.2",
     "bootstrap": "~3.3.5",
     "angular": "1.4.2",
-    "leaflet": "~0.7.3"
+    "leaflet": "~0.7.3",
+    "cytoscape": "~2.4.5"
   }
 }

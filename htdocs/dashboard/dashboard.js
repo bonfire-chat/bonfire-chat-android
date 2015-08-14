@@ -51,27 +51,110 @@ angular.module("dashboard", ["chart.js"])
     }])
 
 .controller("TraceController", ["$scope", "$http", "$interval", function ($scope, $http, $interval) {
+  var lastCount = -1;
 
-	
-    $interval(function() {
-	$http.get("/api/v1/traceroute").success(function(ok) {
-	    $scope.traceroutes = ok;
-	});
-	if ($scope.currentUuid) $scope.loadTrace($scope.currentUuid);
-    }, 5000);
+  $interval(function() {
+    loadList();
+    if ($scope.currentUuid) $scope.loadTrace($scope.currentUuid);
+  }, 5000);
+  
+  function loadList() {
+    $http.get("/api/v1/traceroute").success(function(ok) {
+      $scope.traceroutes = ok;
+    });
+  }
+
+  loadList();
+
+  $scope.currentUuid = "";
+  $scope.loadTrace = function(uuid) {
+    if (uuid != $scope.currentUuid) lastCount = -1;
+    $scope.currentUuid = uuid;
+    $http.get("/api/v1/traceroute?uuid=" + uuid).success(function (html) {
+      if (html.length == lastCount) return;
+      lastCount = html.length;
+      
+      $scope.tracecontent = html;
+      initCytoScape(html);
+      
+    });
+  }
+  
+  function initCytoScape(traceData) {
+    var insertedNodes = {};
+    var nodes = [];
+    var edges = [];
     
-    $scope.currentUuid = "";
-    $scope.loadTrace = function(uuid) {
-	$scope.currentUuid = uuid;
-	$http.get("/api/v1/traceroute?uuid=" + uuid).success(function (html) {
-	    $scope.tracecontent = html;
-	});
+    var index = 0;
+    for(var i in traceData) {
+      var row = traceData[i];
+      if (row.hop_from && !insertedNodes[row.hop_from])
+        nodes.push({ data: { id: row.hop_from }});
+      if (row.hop_to && !insertedNodes[row.hop_to])
+        nodes.push({ data: { id: row.hop_to }});
+      
+      insertedNodes[row.hop_from] = true;
+      insertedNodes[row.hop_to] = true;
+
+      var classes = "";
+      if (row.traceroute.indexOf(':ACK')>0) classes += "ack";
+      if (row.action=='RIGN') classes += "ign";
+      edges.push({ 
+        data: { id: 'edge_' + index, source: row.hop_from, target: row.hop_to },
+        classes: classes
+      });
+      index++;
     }
+    
+    var cy = cytoscape({
+      container: document.getElementById("cyto"),
+      
+      elements: {
+        nodes: nodes,
+        edges: edges,
+      },
+    
+      // so we can see the ids
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'content': 'data(id)'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'target-arrow-shape': 'triangle',
+            'line-color': 'black', 'target-arrow-color': 'black'
+          }
+        },
+        {
+          selector: 'edge.ack',
+          style: {
+            'line-color': 'green', 'target-arrow-color': 'green'
+          }
+        },
+        {
+          selector: 'edge.ign',
+          style: {
+            'line-color': '#bbb', 'target-arrow-color': 'gray'
+          }
+        }
+      ]
+    });
+    cy.layout({
+      
+      layout: 'breadthfirst',
+    });
+    
+  }
 
     
 
 
 }])
+
 
 .config(function($filterProvider) {
    $filterProvider.register("shorten", function() {
