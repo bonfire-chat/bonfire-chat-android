@@ -24,7 +24,7 @@
         </ul>
       </nav>
 
-<?php if ($_GET["p"] == "main"): ?>
+<?php if (!isset($_GET["p"]) || $_GET["p"] == "main"): ?>
       <div class="row" ng-controller="DashboardController as dashboard">
       	<div class="col-md-5">
       	  <div class="panel panel-default">
