@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Comparator;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
@@ -28,6 +29,17 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
     public MessagesAdapter(Context context, List<Message> objects) {
         super(context, R.layout.message_rowlayout_received, objects);
+    }
+
+    @Override
+    public void add(Message object) {
+        super.add(object);
+        this.sort(new Comparator<Message>() {
+            @Override
+            public int compare(Message message, Message t1) {
+                return message.sentTime.compareTo(t1.sentTime);
+            }
+        });
     }
 
     @Override

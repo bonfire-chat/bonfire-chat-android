@@ -173,9 +173,8 @@ public class MessagesActivity extends Activity {
     };
 
     private void appendMessage(Message message) {
-        messages.add(message);
         ListView lv = (ListView) findViewById(R.id.messages_view);
-        ((MessagesAdapter)lv.getAdapter()).notifyDataSetChanged();
+        ((MessagesAdapter)lv.getAdapter()).add(message);
     }
 
 
