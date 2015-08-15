@@ -131,7 +131,7 @@ public class BluetoothProtocol extends SocketProtocol {
                         connections.put(socket.getRemoteDevice().getAddress(), handler);
                     } catch(IOException ex) {
                         Log.e(TAG, "ConnectionHandler constructor fail");
-                        ex.printStackTrace();
+                        Log.e(TAG, ex.getMessage());
                     }
                 }
 
@@ -233,8 +233,24 @@ public class BluetoothProtocol extends SocketProtocol {
             // devices nearby that do not run BonfireChat, resulting in no suitable
             // ServerSocket to accept this connection
             Log.e(TAG, "Unable to connect to bluetooth device "+device.getAddress()+", ignoring");
-            e.printStackTrace();
-            return null;
+            Log.e(TAG, e.getMessage());
+            try {
+                Log.w(TAG, "Trying ugly workaround from the internet - here be dragons ...");
+
+                BluetoothSocket socket =(BluetoothSocket) device.getClass().getMethod("createInsecureRfcommSocket", new Class[] {int.class}).invoke(device,1);
+                socket.connect();
+                Log.i(TAG, "W O W  - success!");
+
+                ConnectionHandler handler = new ConnectionHandler(socket);
+                connections.put(device.getAddress(), handler);
+                return handler;
+
+            } catch(Exception ex2) {
+                //all kinds of exceptions...
+                Log.e(TAG, "Ugly workaround did not work around: "+ex2.getMessage());
+
+                return null;
+            }
         }
     }
 

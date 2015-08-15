@@ -151,12 +151,12 @@ public class StatsCollector extends BroadcastReceiver {
         if (stats.powerUsage < 0) stats.powerUsage = 0;
         batteryLastLevel = stats.batteryLevel;
         batteryLastMeasured = System.currentTimeMillis();
-
+/*
         // update location
         final GpsTracker gps = GpsTracker.getInstance();
         if (gps.canGetLocation()) {
             stats.lat = (float) gps.getLatitude();
             stats.lng = (float) gps.getLongitude();
-        }
+        }*/
     }
 }
