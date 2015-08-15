@@ -367,19 +367,25 @@ public class ConnectionManager extends NonStopIntentService {
                 Log.e(TAG, "don't know how to send this packet: "+packet.toString());
                 return;
             }
-            for(Peer peer : chosenPeers) {
-                try {
-                    Class protocolClass = peer.getProtocolClass();
-                    IProtocol protocol = getConnection(protocolClass);
-                    if (protocol != null && protocol.canSend()) {
-                        StatsCollector.publishMessageHop(protocolClass, "SEND", peer, packet, packet.nextHopNickname, null);
-                        Log.i(TAG, "Sending via " + peer.toString());
-                        protocol.sendPacket(packet, peer);
-                    } else throw new IllegalAccessException("Protocol "+protocolClass.getSimpleName()+" not ready");
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                    Log.e(TAG, "Unable to send packet via peer:"+peer.toString());
-                }
+            for(final Peer peer : chosenPeers) {
+                // start a new thread for each send operation, so that sending to multiple devices
+                // can be done in parallel
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Class protocolClass = peer.getProtocolClass();
+                            IProtocol protocol = getConnection(protocolClass);
+                            if (protocol != null && protocol.canSend()) {
+                                StatsCollector.publishMessageHop(protocolClass, "SEND", peer, packet, packet.nextHopNickname, null);
+                                Log.i(TAG, "Sending via " + peer.toString());
+                                protocol.sendPacket(packet, peer);
+                            } else throw new IllegalAccessException("Protocol "+protocolClass.getSimpleName()+" not ready");
+                        } catch(Exception ex) {
+                            ex.printStackTrace();
+                            Log.e(TAG, "Unable to send packet via peer:"+peer.toString());
+                        }
+                    }
+                }).start();
             }
             packet.setTimeSent(System.currentTimeMillis());
 
