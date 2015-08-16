@@ -41,14 +41,18 @@ public class Message implements Serializable {
 
 
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, Contact recipient) {
-        this(body, sender, sentTime, flags, UUID.randomUUID());
-        this.recipients.add(recipient);
+        this(body, sender, sentTime, flags, UUID.randomUUID(), recipient);
     }
-
-    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID rowid) {
+    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID uuid) {
+        this(body, sender, sentTime, flags, uuid, null);
+    }
+    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID rowid, Contact recipient) {
         this.sender = sender; this.recipients = new ArrayList<>();
         this.body = body; this.sentTime = sentTime; this.uuid = rowid;
         this.flags = flags;
+        if (recipient != null) {
+            this.recipients.add(recipient);
+        }
     }
 
     public MessageDirection direction() {
@@ -87,11 +91,13 @@ public class Message implements Serializable {
         } catch (ParseException e) {
             date = new Date();
         }
+        Conversation conversation = db.getConversationById(cursor.getInt(cursor.getColumnIndex("conversation")));
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
                 peer,
                 date,
                 cursor.getInt(cursor.getColumnIndex("flags")),
-                UUID.fromString(cursor.getString(cursor.getColumnIndex("uuid"))));
+                UUID.fromString(cursor.getString(cursor.getColumnIndex("uuid"))),
+                conversation.getPeer());
     }
 
     public boolean hasFlag(int flag) {
