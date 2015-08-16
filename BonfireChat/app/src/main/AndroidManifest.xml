@@ -78,6 +78,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.MessageDetailsActivity"
+            android:label="Nachrichtendetails"
+            android:parentActivityName=".ui.MessagesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MessagesActivity" />
+        </activity>
 
         <receiver
             android:name=".network.gcm.GcmBroadcastReceiver"
