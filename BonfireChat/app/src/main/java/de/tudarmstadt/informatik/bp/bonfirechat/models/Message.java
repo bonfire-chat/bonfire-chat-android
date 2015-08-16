@@ -1,7 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 
 import java.io.Serializable;
