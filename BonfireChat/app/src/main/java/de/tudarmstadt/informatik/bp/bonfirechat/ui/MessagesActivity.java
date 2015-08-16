@@ -33,11 +33,13 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 
 
 public class MessagesActivity extends Activity {
@@ -218,17 +220,12 @@ public class MessagesActivity extends Activity {
                     });
             return true;
 
-        } else if (id == R.id.action_tracert) {
-            Message m = new Message("TRACEROUTE\n", db.getDefaultIdentity(), new Date(), 0, conversation.getPeer());
-            Envelope e = Envelope.fromMessage(m, false);
-            e.flags = Envelope.FLAG_TRACEROUTE;
-            m.body = "TRACEROUTE: " + BonfireAPI.API_ENDPOINT + "/traceroute?uuid=" + e.uuid.toString();
-            appendMessage(m);
-            Log.d(TAG, "sending tracert id " + e.uuid);
-            ConnectionManager.sendEnvelope(MessagesActivity.this, e);
-            //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BonfireData.API_ENDPOINT + "/traceroute.php?uuid=" + e.uuid.toString())));
-        } else if (id == R.id.action_select_protocol) {
-            showSelectProtocol();
+        } else if (id == R.id.action_set_path) {
+            showSelectPath();
+
+        } else if (id == R.id.action_clear_path) {
+            ConnectionManager.routingManager.clearPath(conversation.getPeer().getPublicKey().asByteArray());
+
         } else if (id == R.id.action_show_debug) {
             String debug = NetworkOptions.getDebugInfo();
             Log.d("DEBUG", debug);
@@ -239,18 +236,29 @@ public class MessagesActivity extends Activity {
     }
 
 
-    public void showSelectProtocol() {
+    public void showSelectPath() {
+        CharSequence[] peerList;
+        synchronized (ConnectionManager.peers) {
+            peerList = new CharSequence[ConnectionManager.peers.size()];
+            for(int i = 0; i < ConnectionManager.peers.size(); i++) {
+                peerList[i] = Peer.formatMacAddress(ConnectionManager.peers.get(i).getAddress());
+            }
+        }
+        final CharSequence[] peerList2 = peerList;
         new AlertDialog.Builder(this)
-                .setSingleChoiceItems(new CharSequence[]{"Auto-select", "Bluetooth", "Wifi", "Server"},
-                        preferredProtocol,
+                .setSingleChoiceItems(peerList,
+                        -1,
                         new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        preferredProtocol = i;
+                        ConnectionManager.routingManager.overridePath(
+                                conversation.getPeer().getPublicKey().asByteArray(),
+                                Peer.addressFromString(peerList2[i].toString())
+                        );
                         dialogInterface.dismiss();
                     }
                 })
-                .setTitle("Select protocol")
+                .setTitle("Select path")
         .show();
     }
 

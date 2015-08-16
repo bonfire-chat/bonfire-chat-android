@@ -26,6 +26,21 @@ public class RoutingManager {
         shortestPaths.put(key, packet.getPath());
     }
 
+    public void clearPath(byte[] toPublicKey) {
+        String key = CryptoHelper.toBase64(toPublicKey);
+        shortestPaths.remove(key);
+    }
+
+    /**
+     * For debugging: override path to publicKey with direct path to mac
+     */
+    public void overridePath(byte[] toPublicKey, byte[] targetMac) {
+        String key = CryptoHelper.toBase64(toPublicKey);
+        List<byte[]> path = new ArrayList<>();
+        path.add(targetMac);
+        shortestPaths.put(key, path);
+    }
+
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
