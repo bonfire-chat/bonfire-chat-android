@@ -21,6 +21,7 @@ import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
@@ -187,9 +188,10 @@ public class ConnectionManager extends NonStopIntentService {
         @Override
         public void run() {
             synchronized (peers) {
-                for (Peer peer : peers) {
-                    if (peer.isOutdated()) {
-                        peers.remove(peer);
+                Iterator<Peer> iter = peers.iterator();
+                while (iter.hasNext()) {
+                    if (iter.next().isOutdated()) {
+                        iter.remove();
                     }
                 }
             }
