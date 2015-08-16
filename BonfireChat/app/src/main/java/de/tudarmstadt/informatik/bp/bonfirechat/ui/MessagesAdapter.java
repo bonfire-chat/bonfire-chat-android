@@ -22,6 +22,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
  */
 public class MessagesAdapter extends ArrayAdapter<Message> {
 
+    boolean[] itemSelected;
+
     class ViewHolder {
         ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon;
         TextView messageBody, dateTime;
@@ -29,6 +31,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
     public MessagesAdapter(Context context, List<Message> objects) {
         super(context, R.layout.message_rowlayout_received, objects);
+        itemSelected = new boolean[objects.size()];
     }
 
     @Override
@@ -105,6 +108,9 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         else v.protocolIcon.setVisibility(View.GONE);
         //lastMessage.setText(objects.get(position).getLastMessage());
         //icon.setImageResource(R.mipmap.ic_launcher);
+
+        convertView.setSelected(itemSelected[position]);
+        convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 
         return convertView;
     }

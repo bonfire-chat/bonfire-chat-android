@@ -61,12 +61,7 @@ public class ContactsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         contactsList = (ListView) rootView.findViewById(R.id.contactsList);
-/*
-        BonfireData db = BonfireData.getInstance(getActivity());
-        List<Contact> contacts = db.getContacts();
-        adapter = new ContactsAdapter(this.getActivity(), contacts);
-        contactsList.setAdapter(adapter);
-*/
+
         contactsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         contactsList.setMultiChoiceModeListener(multiChoiceListener);
 
