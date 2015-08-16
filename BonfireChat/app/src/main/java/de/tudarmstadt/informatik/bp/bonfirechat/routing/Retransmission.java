@@ -43,15 +43,18 @@ public class Retransmission implements Runnable{
 
     public static void add(Context ctx, PayloadPacket packet, long timeout){
         if (pendingRetransmissions.containsKey(packet.uuid)) {
-            Log.e(TAG, "Packet "+packet.uuid+" already has one pending Retransmission, refused to schedule a second one!");
+            Log.e(TAG, "RETR-TEST Packet "+packet.uuid+" already has one pending Retransmission, refused to schedule a second one!");
             return;
         }
         pendingRetransmissions.put(packet.uuid, new Retransmission(ctx, packet, timeout));
     }
     public static void cancel(UUID uuid) {
+        Log.i(TAG, "Packet "+ uuid+" was acked, cancelling retransmission...");
         if (pendingRetransmissions.containsKey(uuid)) {
             pendingRetransmissions.get(uuid).cancel();
             pendingRetransmissions.remove(uuid);
+        } else {
+            Log.w(TAG, "RETR-TEST Cancelling retransmission failed  --- timing!");
         }
     }
 
