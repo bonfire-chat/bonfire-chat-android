@@ -13,6 +13,7 @@ import android.os.Bundle;
 //import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
 
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
@@ -27,6 +28,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.IProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 
@@ -84,6 +86,16 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        if (!BluetoothProtocol.isSupported()) {
+            CheckBoxPreference p = (CheckBoxPreference) findPreference("enable_BluetoothProtocol");
+            p.setEnabled(false);
+            p.setChecked(false);
+        }
+        if (!GcmProtocol.isSupported(getActivity())) {
+            CheckBoxPreference p = (CheckBoxPreference) findPreference("enable_GcmProtocol");
+            p.setEnabled(false);
+            p.setChecked(false);
+        }
 
     }
 
