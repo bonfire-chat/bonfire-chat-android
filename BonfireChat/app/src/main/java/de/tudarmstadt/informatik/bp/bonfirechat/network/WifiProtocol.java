@@ -1,230 +1,274 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
+import java.net.SocketException;
+import java.util.ArrayList;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
- * Created by Simon on 22.05.2015.
+ * Created by mw on 16.08.15.
  */
 public class WifiProtocol extends SocketProtocol {
 
-    Context ctx;
-    //todo in etwas sinnvolles  aendern:
-    public static final String MBSSID ="1A:2B:3C:4D:5E:6F";
-    //if a callback is needed in case of loss of framework communication this should be unnulled;
-    public static final WifiP2pManager.ChannelListener MCHLISTENER =null;
-    WifiP2pManager mWifiP2pManager;
-    WifiP2pManager.Channel mChannel;
-    IntentFilter mIntentFilter;
-    WifiReceiver mReceiver;
-    public Packet packet;
-    public static ServerSocket mServerSocket;
-    public static WifiP2pInfo info;
-    private static final String TAG = "WifiProtocol";
+    public static final String TAG = "WifiProtocol";
+    private Context context;
 
+    private final WifiP2pManager manager;
+    private final WifiP2pManager.Channel channel;
 
-    public WifiProtocol(Context ctx){
-        super();
-        this.ctx = ctx;
-        Looper mSrcLooper = ctx.getMainLooper();
-        this.mWifiP2pManager= (WifiP2pManager) ctx.getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel =  mWifiP2pManager.initialize(ctx, mSrcLooper, MCHLISTENER);
-        mReceiver = new WifiReceiver(mWifiP2pManager,mChannel, this);
+    private byte[] myMacAddress;
 
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+    private DatagramSocket socket;
 
-        ctx.registerReceiver(mReceiver, mIntentFilter);
-        registerWifiReceiverSocket();
+    private final ArrayList<Packet> packetsToSend = new ArrayList<Packet>();
 
+    public WifiProtocol(Context context) {
+        this.context = context;
+        manager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
 
-        // Benachtbarte Peers discovern, damit wir den OnPeerDiscoveredListener füllen können.
-        mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+        channel = manager.initialize(context, context.getMainLooper(), new WifiP2pManager.ChannelListener() {
+            @Override
+            public void onChannelDisconnected() {
+                Log.w(TAG, "onChannelDisconnected");
+            }
+        });
+
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);       //  Indicates a change in the Wi-Fi P2P status.
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);       // Indicates a change in the list of available peers.
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);  // Indicates the state of Wi-Fi P2P connectivity has changed.
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION); // Indicates this device's details have changed.
+        context.registerReceiver(this.wifiBroadcastReceiver, intentFilter);
+
+        try {
+            socket = new DatagramSocket(9876);
+            new Thread(listeningThread).start();
+        } catch (SocketException e) {
+            Log.e(TAG, "Unable to create DatagramSocket: " + e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
+        super.setOnPeerDiscoveredListener(listener);
+
+        // Start peer discovery
+        manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "Discovering of peers was successful!");
+                updatePeers();
             }
-
-            ;
 
             @Override
             public void onFailure(int reason) {
-                Log.d(TAG, "the Reason the discovering of peers failed with reason " + reason);
+                Log.w(TAG, "peer discovery failed: " + reason);
             }
         });
     }
 
-    public WifiP2pManager.ConnectionInfoListener mConnectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
-        @Override
-        public void onConnectionInfoAvailable(WifiP2pInfo info) {
-            WifiReceiver.info = info;
-        }
-    };
-
-    public WifiP2pManager.PeerListListener mWifiPeerListListener = new WifiP2pManager.PeerListListener() {
-        @Override
-        public void onPeersAvailable(WifiP2pDeviceList peers) {
-            Collection<WifiP2pDevice> mDevList = peers.getDeviceList();
-            Log.d(TAG, "the device List is: " + mDevList);
-            for (WifiP2pDevice dev : mDevList) {
-                peerListener.discoveredPeer(WifiProtocol.this, Peer.addressFromString(dev.deviceAddress), "");
-
-                WifiP2pConfig config = new WifiP2pConfig();
-                config.deviceAddress = dev.deviceAddress;
-                Log.d(TAG, "wifi device found " + config.deviceAddress);
-                config.groupOwnerIntent = 0;
-                config.wps.setup = WpsInfo.PBC;
-
-
-                mWifiP2pManager.requestConnectionInfo(mChannel, mConnectionInfoListener);
-                //String tmp = info==null ? "null" : info.toString();
-                if (info != null) {
-                    Log.d(TAG, "Info ist: " + info);
-                }
-                if(info == null || !info.groupFormed) {
-                    mWifiP2pManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-                        @Override
-                        public void onSuccess() {
-                            Log.d(TAG, "successfully connected ");
-                        }
-
-                        @Override
-                        public void onFailure(int reason) {
-                            Log.d(TAG, "could not connect with reason " + reason);
-                        }
-                    });
+    private void updatePeers() {
+        manager.requestPeers(channel, new WifiP2pManager.PeerListListener() {
+            @Override
+            public void onPeersAvailable(WifiP2pDeviceList peers) {
+                for (WifiP2pDevice device : peers.getDeviceList()) {
+                    Log.d(TAG, "Wifi found device: " + device.deviceAddress);
+                    peerListener.discoveredPeer(WifiProtocol.this, Peer.addressFromString(device.deviceAddress), device.deviceName);
                 }
             }
+        });
+    }
 
+    private final Runnable listeningThread = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                DatagramPacket pack = new DatagramPacket(new byte[2048], 2048);
 
+                while (!socket.isClosed()) {
+                    socket.receive(pack);
+                    Log.i(TAG, "UDP Packet received");
+                    try {
+                        ByteArrayInputStream stream = new ByteArrayInputStream(pack.getData(), pack.getOffset(), pack.getLength());
+                        ObjectInputStream obj = new ObjectInputStream(stream);
+                        byte[] macAddress = (byte[]) obj.readObject();
+                        Packet packet = (Packet) obj.readObject();
+                        packet.addPathNode(macAddress);
+                        obj.close();
+                        packetListener.onPacketReceived(WifiProtocol.this, packet);
+                    } catch (ClassNotFoundException cnfe) {
+                        Log.e(TAG, "ClassNotFoundException while parsing datagram: " + cnfe.getMessage());
+                    }
+                }
+                Log.w(TAG, "STOPPING WIFI RECV :: closed");
+            } catch (IOException ex) {
+                Log.e(TAG, "STOPPING WIFI RECV :: IOException in DatagramSocket listeningThread: " + ex.getMessage());
+            }
         }
     };
 
 
-
-    @Override
-    public void sendPacket(Packet packet, Peer peer) {
-        // TODO: send packet only to specified recipients
-        this.packet = packet;
-        Log.d(TAG, "WifiReceiver.info ist " + WifiReceiver.info);
-
-        if ((WifiReceiver.info == null  || !WifiReceiver.info.groupFormed)){
-            Log.d(TAG, "Der mWifiManager ist " + mWifiP2pManager);
-            mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "Discovering of peers was successful!");
-
-                }
-
-                ;
-
-                @Override
-                public void onFailure(int reason) {
-                    Log.d(TAG, "the Reason the discovering of peers failed with reason " + reason);
-                }
-
-            });
-            mReceiver.sendMessage();
-
-        }else {
-            Log.d(TAG, "Message wird gesendet ohne discover peers");
-            mReceiver.sendMessage();
-
-
-        }
-    }
-
-
-
-
-    private void registerWifiReceiverSocket() {
-
-
-        FutureTask futureTask = new FutureTask(new Callable() {
-
+    private void sendPacketViaUDP(final Packet packet) {
+        new Thread(new Runnable() {
             @Override
-            public Object call() throws Exception {
-                Log.d(TAG, "do in Backround wird ausgefuehrt");
+            public void run() {
+
+                Log.i(TAG, "Broadcasting via UDP: "+packet.toString());
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 try {
-
-
-
-                    if (WifiProtocol.mServerSocket==null){
-                        WifiProtocol.mServerSocket = new ServerSocket(4242);
-                    }
-
-
-                    Log.d(TAG, "Server: Socket opened");
-
-                    /**
-                     * Create a server socket and wait for client connections. This
-                     * call blocks until a connection is accepted from a client
-                     */
-
-
-
-                        //WifiProtocol.mServerInetAdress = mServerSocket.getInetAddress();
-                        Socket client = WifiProtocol.mServerSocket.accept();
-                        mReceiver.receiverAddress = (InetSocketAddress) client.getRemoteSocketAddress();
-
-                        Log.d(TAG, "Server: connection done");
-
-                        InputStream inputstream = client.getInputStream();
-                        WifiProtocol mySocketProtocol = new WifiProtocol(ctx);
-                        Packet p;
-
-                        p = mySocketProtocol.receive(inputstream);
-                        Log.d(TAG, "Die message war: " + p);
-                        Log.d(TAG,"Der Empfänger ist " +  CryptoHelper.toBase64(p.recipientPublicKey));
-
-                        packetListener.onPacketReceived(WifiProtocol.this, p);
-
-
-
-                    //mServerSocket.close();
+                    ObjectOutputStream obj = new ObjectOutputStream(stream);
+                    obj.writeObject(myMacAddress);
+                    obj.writeObject(packet);
+                    byte[] buffer=stream.toByteArray();
+                    DatagramPacket udpPacket = new DatagramPacket(buffer, buffer.length,
+                            InetAddress.getByName("192.168.49.255"), 9876);
+                    socket.send(udpPacket);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                return null;
             }
-        });
-
-
-        //todo wieviele Threats?
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
-        executorService.execute(futureTask);
-
+        }).start();
     }
 
+    private final BroadcastReceiver wifiBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
+                // Determine if Wifi P2P mode is enabled or not, alert
+                // the Activity.
+                int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
+                if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
+                    //activity.setIsWifiP2pEnabled(true);
+                } else {
+                    //activity.setIsWifiP2pEnabled(false);
+                }
+            } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
+
+                // The peer list has changed!  We should probably do something about
+                // that.
+
+                //updatePeers();
+
+                WifiP2pDeviceList list = (WifiP2pDeviceList) intent.getParcelableExtra(WifiP2pManager.EXTRA_P2P_DEVICE_LIST);
+                for (WifiP2pDevice device : list.getDeviceList()) {
+                    Log.d(TAG, "Wifi found device: " + device.status + "|" +device.deviceName+"|"+ device.deviceAddress);
+                    if (device.status == WifiP2pDevice.AVAILABLE) {
+                        //connectToDevice(device);
+                    }
+                    peerListener.discoveredPeer(WifiProtocol.this, Peer.addressFromString(device.deviceAddress), device.deviceName);
+                }
+
+            } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
+                Log.i(TAG, "Wifi p2p connection changed");
+                if (manager == null) {
+                    return;
+                }
+
+                NetworkInfo networkInfo = (NetworkInfo) intent
+                        .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+
+
+                synchronized (packetsToSend) {
+                    for(Packet p : packetsToSend)
+                        sendPacketViaUDP(p);
+                    packetsToSend.clear();
+                }
+
+                if (networkInfo.isConnected()) {
+                    Log.i(TAG, "network is connected: ");
+                    // We are connected with the other device, request connection
+                    // info to find group owner IP
+
+                    manager.requestConnectionInfo(channel, connectionInfoListener);
+                }
+
+
+            } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
+                WifiP2pDevice thisDevice = (WifiP2pDevice) intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
+                Log.i(TAG, "My wifi device info: " + thisDevice.deviceAddress + " | " + thisDevice.deviceName);
+                myMacAddress = Peer.addressFromString(thisDevice.deviceAddress);
+
+            }
+        }
+    };
+
+    private void connectToDevice(WifiP2pDevice device) {
+        WifiP2pConfig config = new WifiP2pConfig();
+        config.deviceAddress = device.deviceAddress;
+        config.wps.setup = WpsInfo.PBC;
+        Log.i(TAG, "Connecting to " + config.deviceAddress);
+
+        manager.connect(channel, config, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                // WiFiDirectBroadcastReceiver will notify us. Ignore for now.
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.w(TAG, "peer connect failed: " + reason);
+                Toast.makeText(context, "Connect failed. Retry." + reason, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    WifiP2pManager.ConnectionInfoListener connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
+        @Override
+        public void onConnectionInfoAvailable(final WifiP2pInfo info) {
+            Log.i(TAG, "connection info available");
+            // InetAddress from WifiP2pInfo struct.
+            String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
+            Log.i(TAG, "groupFormed="+info.groupFormed);
+            Log.i(TAG, "group owner="+groupOwnerAddress);
+            Log.i(TAG, "isGroupOwner="+ info.isGroupOwner);
+
+            // After the group negotiation, we can determine the group owner.
+            if (info.groupFormed && info.isGroupOwner) {
+                // Do whatever tasks are specific to the group owner.
+                // One common case is creating a server thread and accepting
+                // incoming connections.
+            } else if (info.groupFormed) {
+                // The other device acts as the client. In this case,
+                // you'll want to create a client thread that connects to the group
+                // owner.
+            }
+        }
+    };
+
+    @Override
+    public void sendPacket(final Packet packet, Peer peer) {
+
+        packetsToSend.add(packet);
+        sendPacketViaUDP(packet);
+
+    }
 
     @Override
     public boolean canSend() {
@@ -234,5 +278,11 @@ public class WifiProtocol extends SocketProtocol {
     @Override
     public void shutdown() {
 
+    }
+
+
+    @Override
+    public String toString() {
+        return "WifiProtocol=" + Peer.formatMacAddress(myMacAddress);
     }
 }
