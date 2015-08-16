@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
@@ -31,6 +32,9 @@ public class GcmProtocol extends SocketProtocol {
         this.serverFakeMacAddress = Peer.addressFromString("CA:FE:CA:FE:CA:FE");
     }
 
+    public static boolean isSupported(Context context) {
+        return GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS;
+    }
 
     @Override
     public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
@@ -92,4 +96,7 @@ public class GcmProtocol extends SocketProtocol {
     public void shutdown() {
         // do nothing...
     }
+
+
+
 }

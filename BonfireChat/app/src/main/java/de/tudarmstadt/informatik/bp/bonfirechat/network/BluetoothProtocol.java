@@ -49,6 +49,11 @@ public class BluetoothProtocol extends SocketProtocol {
         ensureBluetoothUp();
     }
 
+    public static boolean isSupported() {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        return mBluetoothAdapter != null;
+    }
+
     public Set<Map.Entry<String,ConnectionHandler>> getConnections() {
         return connections.entrySet();
     }
@@ -184,6 +189,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 teardown();
             }
         }
+
         public void sendNetworkPacket(final Packet packet) {
             Log.d(TAG, "sendNetworkPacket to "+formattedMacAddress+" | "+packet.toString());
             synchronized (ConnectionHandler.this.stream) {
