@@ -185,24 +185,19 @@ public class BluetoothProtocol extends SocketProtocol {
             }
         }
         public void sendNetworkPacket(final Packet packet) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "sendNetworkPacket to "+formattedMacAddress+" | "+packet.toString());
-                    synchronized (ConnectionHandler.this.stream) {
-                        try {
-                            stream.writeObject(packet);
-                            stream.flush();
-                            sent++;
-                        } catch(IOException ex) {
-                            Log.w(TAG, "ConnectionHandler: Could not send to "+formattedMacAddress+" : "+packet.toString());
-                            Log.w(TAG, ex.getMessage());
-                            // Connection is broken, remove from list
-                            teardown();
-                        }
-                    }
+            Log.d(TAG, "sendNetworkPacket to "+formattedMacAddress+" | "+packet.toString());
+            synchronized (ConnectionHandler.this.stream) {
+                try {
+                    stream.writeObject(packet);
+                    stream.flush();
+                    sent++;
+                } catch(IOException ex) {
+                    Log.w(TAG, "ConnectionHandler: Could not send to "+formattedMacAddress+" : "+packet.toString());
+                    Log.w(TAG, ex.getMessage());
+                    // Connection is broken, remove from list
+                    teardown();
                 }
-            }).start();
+            }
         }
         private void teardown() {
             Log.w(TAG,"ConnectionHandler: tearing down "+formattedMacAddress);
@@ -237,7 +232,7 @@ public class BluetoothProtocol extends SocketProtocol {
             try {
                 Log.w(TAG, "Trying ugly workaround from the internet - here be dragons ...");
 
-                BluetoothSocket socket =(BluetoothSocket) device.getClass().getMethod("createInsecureRfcommSocket", new Class[] {int.class}).invoke(device,1);
+                BluetoothSocket socket = (BluetoothSocket) device.getClass().getMethod("createInsecureRfcommSocket", new Class[] {int.class}).invoke(device,1);
                 socket.connect();
                 Log.i(TAG, "W O W  - success!");
 
@@ -246,7 +241,7 @@ public class BluetoothProtocol extends SocketProtocol {
                 return handler;
 
             } catch(Exception ex2) {
-                //all kinds of exceptions...
+                // all kinds of exceptions...
                 Log.e(TAG, "Ugly workaround did not work around: "+ex2.getMessage());
 
                 return null;
