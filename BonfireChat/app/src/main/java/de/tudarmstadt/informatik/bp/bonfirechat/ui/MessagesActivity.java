@@ -10,9 +10,12 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -75,16 +78,10 @@ public class MessagesActivity extends Activity {
             }
         });
 
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Message msg = messages.get(position);
-                Toast.makeText(MessagesActivity.this,  "uuid=" + msg.uuid.toString() + ", flags=" +msg.flags + ",  " + "error=" + msg.error, Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-
         findViewById(R.id.textSendButton).setOnClickListener(onSendButtonClickListener);
+
+        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        lv.setMultiChoiceModeListener(multiChoiceListener);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
@@ -280,4 +277,62 @@ public class MessagesActivity extends Activity {
         i.putExtra("ConversationId", conversation.rowid);
         ctx.startActivity(i);
     }
+
+    private void deleteSelectedItems() {
+        BonfireData db = BonfireData.getInstance(this);
+        boolean[] mySelected = adapter.itemSelected;
+
+        for (int position = adapter.getCount() - 1; position >= 0; position--) {
+            if (mySelected[position]) {
+                db.deleteMessage(adapter.getItem(position));
+                adapter.remove(adapter.getItem(position));
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private AbsListView.MultiChoiceModeListener multiChoiceListener = new AbsListView.MultiChoiceModeListener() {
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                              long id, boolean checked) {
+            // Here you can do something when items are selected/de-selected,
+            // such as update the title in the CAB
+            adapter.itemSelected[position] = checked;
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            // Respond to clicks on the actions in the CAB
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    deleteSelectedItems();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate the menu for the CAB
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_messages_selected, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapter.itemSelected = new boolean[adapter.getCount()];
+            adapter.notifyDataSetChanged();
+        }
+    };
 }

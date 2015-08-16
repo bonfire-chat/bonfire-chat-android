@@ -190,6 +190,20 @@ public class BonfireData extends SQLiteOpenHelper{
         return true;
 
     }
+
+    public boolean deleteMessage(Message message){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.delete(MESSAGES, "uuid=?", new String[] { String.valueOf(message.uuid) });
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+
+    }
+
     public ArrayList<Contact> getContacts(){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();
