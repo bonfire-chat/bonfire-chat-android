@@ -40,7 +40,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 public class MessagesActivity extends Activity {
 
     private static final String TAG = "MessagesActivity";
-    List<Message> messages = new ArrayList<Message>();
+    List<Message> messages = new ArrayList<>();
+    private MessagesAdapter adapter;
     private Conversation conversation;
     private final BonfireData db = BonfireData.getInstance(this);
     int preferredProtocol = 0;
@@ -52,7 +53,6 @@ public class MessagesActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_messages);
-        //BonfireData db = BonfireData.getInstance(this);
         long convId = getIntent().getLongExtra("ConversationId", 0);
         conversation = db.getConversationById(convId);
         if (conversation == null) {
@@ -60,17 +60,20 @@ public class MessagesActivity extends Activity {
         }
         getActionBar().setTitle(conversation.title);
 
-        //new Conversation( new Contact(getIntent().getStringExtra("Conversation")));
-
         final ListView lv = (ListView) findViewById(R.id.messages_view);
-        /*messages.add(new Message("At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", Message.MessageDirection.Received));
-        messages.add(new Message("Hallo", Message.MessageDirection.Sent));
-        messages.add(new Message("Wie gehts?", Message.MessageDirection.Sent));
-        messages.add(new Message("wie stehts?", Message.MessageDirection.Received));
-        messages.add(new Message("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.", Message.MessageDirection.Received));
-        messages.addAll(db.getMessages(conversation));*/
         messages = db.getMessages(conversation);
-        lv.setAdapter(new MessagesAdapter(this, messages));
+        adapter = new MessagesAdapter(this, messages);
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
+                Log.i(TAG, "starting MessagesActivity with message uuid=" + adapter.getItem(position).uuid);
+                intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                startActivity(intent);
+            }
+        });
 
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

@@ -22,4 +22,6 @@
     <string name="title_activity_search_user">SearchUserActivity</string>
 
     <string name="share_my_identity">Kontaktdaten teilen</string>
+
+    <string name="message_details">Details</string>
 </resources>
