@@ -40,6 +40,7 @@ public class MessageDetailsActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // makes sure parameters like conversation id are present in parent activity
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
