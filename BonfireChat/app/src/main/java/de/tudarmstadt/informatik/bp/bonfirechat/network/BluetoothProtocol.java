@@ -293,6 +293,10 @@ public class BluetoothProtocol extends SocketProtocol {
 
     @Override
     public String toString() {
-        return "BluetoothProtocol(name="+this.adapter.getName()+", mac=" + this.adapter.getAddress() + ")";
+        if (adapter != null) {
+            return "BluetoothProtocol(name=" + this.adapter.getName() + ", mac=" + this.adapter.getAddress() + ")";
+        } else {
+            return "BluetoothProtocol(device unsupported!)";
+        }
     }
 }
