@@ -67,6 +67,8 @@ public class Peer {
     }
 
     public static String formatMacAddress(byte[] macAddress) {
+        if (macAddress == null) return null;
+        if (macAddress.length < 6) return "<invalid>";
         return String.format("%02X:%02X:%02X:%02X:%02X:%02X",
                 macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
     }
