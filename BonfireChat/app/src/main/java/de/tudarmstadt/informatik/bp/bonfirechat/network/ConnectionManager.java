@@ -481,6 +481,6 @@ public class ConnectionManager extends NonStopIntentService {
         sendPacket(ctx, envelope);
     }
     public static void sendMessage(Context ctx, Message message) {
-        sendEnvelope(ctx, Envelope.fromMessage(message, true));
+        sendEnvelope(ctx, Envelope.fromMessage(message));
     }
 }

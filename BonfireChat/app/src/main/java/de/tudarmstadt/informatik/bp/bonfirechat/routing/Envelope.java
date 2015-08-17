@@ -48,7 +48,7 @@ public class Envelope extends PayloadPacket {
     }
 
 
-    public static Envelope fromMessage(Message message, boolean encrypt) {
+    public static Envelope fromMessage(Message message) {
         byte[] publicKey = message.recipients.get(0).getPublicKey().asByteArray();
         byte[] bodyBytes;
         if (message.hasFlag(Message.FLAG_IS_FILE)) {
@@ -72,7 +72,7 @@ public class Envelope extends PayloadPacket {
                 publicKey,
                 message.sender.getPublicKey().asByteArray(),
                 bodyBytes);
-        if (encrypt) {
+        if (message.hasFlag(Message.FLAG_ENCRYPTED)) {
             Identity sender = (Identity)message.sender;
             Box crypto = new Box(new PublicKey(publicKey), sender.privateKey);
             envelope.nonce = CryptoHelper.generateNonce();
