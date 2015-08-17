@@ -27,7 +27,7 @@ public class DateHelper {
     public static String formatTimeDelta(Date start, Date end) {
         long interval = end.getTime() - start.getTime();
         long seconds = TimeUnit.SECONDS.convert(interval, TimeUnit.MILLISECONDS);
-        return new StringBuilder().append(seconds).append(" Sekunden").toString();
+        return new StringBuilder().append("+ ").append(seconds).append("s").toString();
     }
 
 }

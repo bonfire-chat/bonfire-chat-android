@@ -202,7 +202,24 @@ public class MessageDetailsActivity extends Activity {
                 view = inflater.inflate(R.layout.traceroute_rowlayout_hop, null);
                 TracerouteHopSegment hop = (TracerouteHopSegment) segment;
 
-                ((TextView) view.findViewById(R.id.protocol)).setText("über Bluetooth, " + hop.getTimeDelta());
+                if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.BLUETOOTH) {
+                    ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_bluetooth_black_24dp);
+                    ((TextView) view.findViewById(R.id.protocol)).setText("Bluetooth");
+                }
+                else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.WIFI) {
+                    ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_network_wifi_black_24dp);
+                    ((TextView) view.findViewById(R.id.protocol)).setText("WiFi Direct");
+                }
+                else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.GCM) {
+                    ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_cloud_black_24dp);
+                    ((TextView) view.findViewById(R.id.protocol)).setText("Datenkanal");
+                }
+                else {
+                    findViewById(R.id.protocol_icon).setVisibility(View.GONE);
+                    findViewById(R.id.protocol).setVisibility(View.GONE);
+                }
+
+                ((TextView) view.findViewById(R.id.time)).setText(hop.getTimeDelta());
             }
             tracerouteList.addView(view);
         }

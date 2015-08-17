@@ -10,11 +10,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/arrow_down"
-        android:paddingRight="20dp" />
+        android:paddingLeft="14dp"
+        android:paddingRight="10dp" />
 
     <ImageView android:id="@+id/protocol_icon"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="24dp"
+        android:layout_height="fill_parent"
         android:gravity="center_vertical"
         android:paddingRight="4dp" />
     <TextView
@@ -26,11 +27,11 @@
         android:paddingRight="20dp" />
 
     <ImageView android:id="@+id/time_icon"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="24dp"
+        android:layout_height="fill_parent"
         android:gravity="center_vertical"
-        android:paddingRight="4dp"
-        android:src="@drawable/ic_acc" />
+        android:paddingRight="6dp"
+        android:src="@drawable/ic_access_time_black_24dp" />
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
