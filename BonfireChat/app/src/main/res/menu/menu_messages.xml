@@ -4,7 +4,11 @@
     tools:context="de.tudarmstadt.informatik.bp.bonfirechatui.MessagesActivity">
 
     <item android:id="@+id/action_edit_title" android:title="Titel ändern"
-         android:showAsAction="always" android:icon="@android:drawable/ic_menu_edit" />
+        android:showAsAction="always" android:icon="@android:drawable/ic_menu_edit" />
+
+    <item android:id="@+id/action_share_image" android:title="Bild senden"
+        android:showAsAction="always" android:icon="@android:drawable/ic_menu_share" />
+
     <item android:id="@+id/action_settings" android:title="Info"
         android:showAsAction="never" />
     <item android:id="@+id/action_set_path" android:title="Set Path"

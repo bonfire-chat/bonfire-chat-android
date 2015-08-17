@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.ActionMode;
@@ -21,6 +22,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +36,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
@@ -226,6 +232,11 @@ public class MessagesActivity extends Activity {
         } else if (id == R.id.action_clear_path) {
             ConnectionManager.routingManager.clearPath(conversation.getPeer().getPublicKey().asByteArray());
 
+        } else if (id == R.id.action_share_image) {
+            Intent i = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(i, 42);
+
         } else if (id == R.id.action_show_debug) {
             String debug = NetworkOptions.getDebugInfo();
             Log.d("DEBUG", debug);
@@ -235,6 +246,35 @@ public class MessagesActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 42) {
+            Log.d(TAG, "result from image picker: "+data.getData().toString());
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "Bonfire Images\\" + (new Date()).getTime() + ".jpg");
+
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                StreamHelper.writeImageToStream(this.getContentResolver(), data.getData(), out);
+                out.close();
+
+                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE, conversation.getPeer());
+                message.error = "Sending";
+
+                db.createMessage(message, conversation);
+                appendMessage(message);
+
+                Log.d(TAG, "sending message id " + message.uuid);
+                ConnectionManager.sendMessage(MessagesActivity.this, message);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     public void showSelectPath() {
         CharSequence[] peerList;

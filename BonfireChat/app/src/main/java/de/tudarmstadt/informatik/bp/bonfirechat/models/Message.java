@@ -31,6 +31,7 @@ public class Message implements Serializable {
     public String error;
     public int flags;
 
+    public static final int FLAG_IS_FILE = 1;
     public static final int FLAG_ACKNOWLEDGED = 2;
     public static final int FLAG_ENCRYPTED = 4;
     public static final int FLAG_PROTO_BT = 16;

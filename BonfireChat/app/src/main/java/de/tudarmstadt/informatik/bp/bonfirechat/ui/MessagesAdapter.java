@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
     boolean[] itemSelected;
 
     class ViewHolder {
-        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon;
+        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
         TextView messageBody, dateTime;
     }
 
@@ -72,6 +73,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             }
 
             v.messageBody = (TextView) convertView.findViewById(R.id.message_body);
+            v.messageImage = (ImageView) convertView.findViewById(R.id.message_image);
             v.dateTime = (TextView) convertView.findViewById(R.id.message_time);
             v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
             v.encryptedIcon = (ImageView) convertView.findViewById(R.id.message_encrypted);
@@ -106,9 +108,17 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         else if (msg.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
         else if (msg.hasFlag(Message.FLAG_PROTO_CLOUD)) v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
         else v.protocolIcon.setVisibility(View.GONE);
-        //lastMessage.setText(objects.get(position).getLastMessage());
-        //icon.setImageResource(R.mipmap.ic_launcher);
 
+        if (msg.hasFlag(Message.FLAG_IS_FILE)) {
+            v.messageBody.setText("");
+            v.messageBody.setVisibility(View.GONE);
+            v.messageImage.setVisibility(View.VISIBLE);
+            v.messageImage.setImageURI(Uri.parse("file://"+msg.body));
+        } else {
+            v.messageBody.setVisibility(View.VISIBLE);
+            v.messageImage.setVisibility(View.GONE);
+            v.messageImage.setImageDrawable(null);
+        }
         //convertView.setSelected(itemSelected[position]);
         //convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 

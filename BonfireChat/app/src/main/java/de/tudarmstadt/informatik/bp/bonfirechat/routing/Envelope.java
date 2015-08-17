@@ -1,10 +1,15 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import android.content.Context;
+import android.os.Environment;
 
 import org.abstractj.kalium.crypto.Box;
 import org.abstractj.kalium.keys.PublicKey;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +36,7 @@ public class Envelope extends PayloadPacket {
     public byte[] nonce;
     public int flags;
 
+    public static final int FLAG_BINARY = 1;
     public static final int FLAG_ENCRYPTED = 4;
     public static final int FLAG_TRACEROUTE = 8;
 
@@ -44,14 +50,28 @@ public class Envelope extends PayloadPacket {
 
     public static Envelope fromMessage(Message message, boolean encrypt) {
         byte[] publicKey = message.recipients.get(0).getPublicKey().asByteArray();
-        // Concatenate Sender Nickname and Message Text to be stored in Encrypted Body
-        String parts = message.sender.getNickname() + "|" + message.body;
+        byte[] bodyBytes;
+        if (message.hasFlag(Message.FLAG_IS_FILE)) {
+            try {
+                File file = new File(message.body);
+                FileInputStream inputStream = new FileInputStream(file);
+                bodyBytes = new byte[(int)file.length()];
+                inputStream.read(bodyBytes);
+                inputStream.close();
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Unable to convert IS_FILE message: "+e.getMessage());
+            }
+        } else {
+            // Concatenate Sender Nickname and Message Text to be stored in Encrypted Body
+            String parts = message.sender.getNickname() + "|" + message.body;
+            bodyBytes = parts.getBytes(Charset.forName("UTF-8"));
+        }
         Envelope envelope = new Envelope(
                 message.uuid,
                 new Date(),
                 publicKey,
                 message.sender.getPublicKey().asByteArray(),
-                parts.getBytes(Charset.forName("UTF-8")));
+                bodyBytes);
         if (encrypt) {
             Identity sender = (Identity)message.sender;
             Box crypto = new Box(new PublicKey(publicKey), sender.privateKey);
@@ -59,25 +79,41 @@ public class Envelope extends PayloadPacket {
             envelope.encryptedBody = crypto.encrypt(envelope.nonce, envelope.encryptedBody);
             envelope.flags |= FLAG_ENCRYPTED;
         }
+        if (message.hasFlag(Message.FLAG_IS_FILE))
+            envelope.flags |= FLAG_BINARY;
         return envelope;
     }
 
     public Message toMessage(Context ctx) {
         byte[] body = encryptedBody;
         int msgFlags = 0;
+        Contact theContact;
         if (hasFlag(FLAG_ENCRYPTED)) {
             Identity id = BonfireData.getInstance(ctx).getDefaultIdentity();
             Box crypto = new Box(new PublicKey(senderPublicKey), id.privateKey);
             body = crypto.decrypt(nonce, body);
             msgFlags |= Message.FLAG_ENCRYPTED;
         }
-        String[] parts = new String(body, Charset.forName("UTF-8")).split("\\|", 2);
-        return new Message(
-                parts[1],
-                Contact.findOrCreate(ctx, senderPublicKey, parts[0]),
-                sentTime,
-                msgFlags,
-                uuid);
+        String messageBody;
+        if (hasFlag(FLAG_BINARY)) {
+            theContact = BonfireData.getInstance(ctx).getContactByPublicKey(senderPublicKey);
+            File target = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "Bonfire Images\\" + this.uuid.toString() + ".jpg");
+            try {
+                FileOutputStream os = new FileOutputStream(target);
+                os.write(body);
+                os.close();
+                messageBody = target.getAbsolutePath();
+                msgFlags |= Message.FLAG_IS_FILE;
+            } catch(IOException ex) {
+                messageBody = "ERROR:" + ex.getMessage();
+            }
+        } else {
+            String[] parts = new String(body, Charset.forName("UTF-8")).split("\\|", 2);
+            theContact = Contact.findOrCreate(ctx, senderPublicKey, parts[0]);
+            messageBody = parts[1];
+        }
+        return new Message(messageBody, theContact, sentTime, msgFlags, uuid);
     }
 
     public boolean hasFlag(int flag) {
