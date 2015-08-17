@@ -7,9 +7,9 @@
          android:showAsAction="always" android:icon="@android:drawable/ic_menu_edit" />
     <item android:id="@+id/action_settings" android:title="Info"
         android:showAsAction="never" />
-    <item android:id="@+id/action_tracert" android:title="Send Traceroute"
+    <item android:id="@+id/action_set_path" android:title="Set Path"
         android:showAsAction="never" />
-    <item android:id="@+id/action_select_protocol" android:title="Protocol"
+    <item android:id="@+id/action_clear_path" android:title="Clear Path"
         android:showAsAction="never" />
     <item android:id="@+id/action_show_debug" android:title="Debug Info"
         android:showAsAction="never" />
