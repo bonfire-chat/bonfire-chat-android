@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
@@ -215,6 +216,10 @@ public class BonfireData extends SQLiteOpenHelper{
         return contacts;
     }
 
+    public Contact getContactByPublicKey(byte[] publicKey) {
+        String publicKeyString = CryptoHelper.toBase64(publicKey);
+        return getContactByPublicKey(publicKeyString);
+    }
     public Contact getContactByPublicKey(String publicKey){
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(CONTACTS, ALL_COLS, "publicKey = ?", new String[]{ publicKey }, null, null, null);

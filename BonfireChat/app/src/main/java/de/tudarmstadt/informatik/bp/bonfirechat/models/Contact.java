@@ -117,9 +117,8 @@ public class Contact implements Serializable, IPublicIdentity, TracerouteSegment
     }
 
     public static Contact findOrCreate(Context ctx, byte[] publicKey, String untrustedNickname) {
-        String publicKeyString = CryptoHelper.toBase64(publicKey);
         BonfireData db = BonfireData.getInstance(ctx);
-        Contact theContact = db.getContactByPublicKey(publicKeyString);
+        Contact theContact = db.getContactByPublicKey(publicKey);
         if (theContact == null) {
             // TODO: better contact creation.... e.g. search in online directory
             theContact = new Contact(untrustedNickname, "", "", "", MyPublicKey.deserialize(publicKey), null, "", "", 0);
