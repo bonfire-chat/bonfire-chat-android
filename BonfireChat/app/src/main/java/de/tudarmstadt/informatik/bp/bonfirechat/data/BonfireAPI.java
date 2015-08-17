@@ -3,17 +3,27 @@ package de.tudarmstadt.informatik.bp.bonfirechat.data;
 import android.util.Log;
 
 import org.abstractj.kalium.keys.PublicKey;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteHopSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
@@ -32,6 +42,38 @@ public class BonfireAPI {
 
     public static final String METHOD_TRACEROUTE = "traceroute";
     public static final String METHOD_SEND_MESSAGE = "notify";
+
+    public static String httpGet(String apiMethod) throws IOException {
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) new URL(API_ENDPOINT + "/" + apiMethod).openConnection();
+            final String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
+            Log.i(TAG, "successful HTTP Get request to "+apiMethod);
+            Log.i(TAG, theString);
+            return theString;
+        } catch (IOException e) {
+            String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+            throw new IOException("HTTP Get request failed, Exception: "+e.toString()+", Body: "+theErrMes);
+        } finally {
+            if(urlConnection == null) urlConnection.disconnect();
+        }
+    }
+    public static JSONObject httpGetJsonObject(String apiMethod) throws IOException {
+        try {
+            return new JSONObject(httpGet(apiMethod));
+        } catch (JSONException e) {
+            Log.e(TAG, "unable to parse JSON object");
+            try { JSONObject o = new JSONObject("{}"); return o; } catch (Throwable t) { return null; }
+        }
+    }
+    public static JSONArray httpGetJsonArray(String apiMethod) throws IOException {
+        try {
+            return new JSONArray(httpGet(apiMethod));
+        } catch (JSONException e) {
+            Log.e(TAG, "unable to parse JSON object");
+            try { JSONArray o = new JSONArray("[]"); return o; } catch (Throwable t) { return null; }
+        }
+    }
 
     public static String httpPost(String apiMethod, Hashtable<String, byte[]> body) throws IOException {
         HttpURLConnection urlConnection = null;
@@ -80,6 +122,23 @@ public class BonfireAPI {
         } catch (IOException e) {
             Log.e(TAG, "Failed to publish traceroute, ignoring!");
             e.printStackTrace();
+        }
+    }
+
+    public static List<TracerouteSegment> getTraceroute(UUID id) {
+        try {
+            JSONArray traceroute = httpGetJsonArray(METHOD_TRACEROUTE + "?uuid=" + id);
+            List<TracerouteSegment> list = new ArrayList<>();
+
+            list.add(new Contact("Alice", "", "", "", "", null, "", "", 0));
+            list.add(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.GCM, new Date(new Date().getTime() - 5000), new Date()));
+            list.add(new Contact("Bob", "", "", "", "", null, "", "", 0));
+
+            return list;
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to load traceroute for message uuid " + id);
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 

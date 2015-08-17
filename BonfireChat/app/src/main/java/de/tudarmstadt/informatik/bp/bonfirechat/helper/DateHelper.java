@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by mw on 22.05.15.
@@ -21,6 +22,12 @@ public class DateHelper {
     }
     public static Date parseDateTime(String string) throws ParseException {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(string);
+    }
+
+    public static String formatTimeDelta(Date start, Date end) {
+        long interval = end.getTime() - start.getTime();
+        long seconds = TimeUnit.SECONDS.convert(interval, TimeUnit.MILLISECONDS);
+        return new StringBuilder().append(seconds).append(" Sekunden").toString();
     }
 
 }

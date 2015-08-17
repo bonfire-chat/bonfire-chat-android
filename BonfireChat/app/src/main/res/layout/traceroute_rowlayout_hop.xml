@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dip">
+
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_down"
+        android:paddingRight="20dp" />
+
+    <ImageView android:id="@+id/protocol_icon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:gravity="center_vertical"
+        android:paddingRight="4dp" />
+    <TextView
+        android:id="@+id/protocol"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:paddingRight="20dp" />
+
+    <ImageView android:id="@+id/time_icon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:gravity="center_vertical"
+        android:paddingRight="4dp"
+        android:src="@drawable/ic_acc" />
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:textSize="20sp" />
+
+</LinearLayout>

@@ -114,7 +114,4 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
         return convertView;
     }
-
-
-
 }
