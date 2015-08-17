@@ -258,7 +258,7 @@ public class MessagesActivity extends Activity {
                 StreamHelper.writeImageToStream(this.getContentResolver(), data.getData(), out);
                 out.close();
 
-                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE, conversation.getPeer());
+                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, conversation.getPeer());
                 message.error = "Sending";
 
                 db.createMessage(message, conversation);
