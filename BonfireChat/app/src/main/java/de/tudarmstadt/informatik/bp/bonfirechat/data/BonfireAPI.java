@@ -130,7 +130,10 @@ public class BonfireAPI {
             JSONArray traceroute = httpGetJsonArray(METHOD_TRACEROUTE + "?uuid=" + id);
             List<TracerouteSegment> list = new ArrayList<>();
 
+            // TODO: johannes: parse traceroute off the JSON response
             list.add(new Contact("Alice", "", "", "", "", null, "", "", 0));
+            list.add(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.BLUETOOTH, new Date(new Date().getTime() - 3800), new Date()));
+            list.add(new Contact("Eve", "", "", "", "", null, "", "", 0));
             list.add(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.GCM, new Date(new Date().getTime() - 5000), new Date()));
             list.add(new Contact("Bob", "", "", "", "", null, "", "", 0));
 
