@@ -3,7 +3,9 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Trace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,8 +22,11 @@ import java.util.List;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteHopSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.MyPublicKey;
@@ -49,12 +55,24 @@ public class MessageDetailsActivity extends Activity {
         }
         getActionBar().setTitle(R.string.message_details);
 
+        // show basic, locally available data
         ViewStub messageStub = (ViewStub) findViewById(R.id.message_stub);
         inflateMessageView(messageStub);
-
         inflateContactsView();
-
         inflateMessageDatails();
+
+        // asynchronously load traceroute data and then populate list
+        (new AsyncTask<Void, Void, List<TracerouteSegment>>() {
+            @Override
+            protected List<TracerouteSegment> doInBackground(Void... voids) {
+                return BonfireAPI.getTraceroute(message.uuid);
+            }
+
+            @Override
+            protected void onPostExecute(List<TracerouteSegment> traceroute) {
+                inflateTraceroute(traceroute);
+            }
+        }).execute();
     }
 
     @Override
@@ -164,5 +182,33 @@ public class MessageDetailsActivity extends Activity {
             findViewById(R.id.label_message_proto).setVisibility(View.GONE);
             findViewById(R.id.message_big_proto).setVisibility(View.GONE);
         }
+    }
+
+    private void inflateTraceroute(List<TracerouteSegment> traceroute) {
+        LinearLayout tracerouteList = (LinearLayout) findViewById(R.id.tracedHopsList);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        for (TracerouteSegment segment: traceroute) {
+            Log.d(TAG, "adding " + segment);
+            View view;
+            if (segment instanceof Contact) {
+                view = inflater.inflate(R.layout.contacts_layout, null);
+                Contact contact = (Contact) segment;
+
+                ((TextView) view.findViewById(R.id.name)).setText(contact.getNickname());
+                ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.mipmap.ic_launcher);
+            }
+            else {
+                view = inflater.inflate(R.layout.traceroute_rowlayout_hop, null);
+                TracerouteHopSegment hop = (TracerouteHopSegment) segment;
+
+                ((TextView) view.findViewById(R.id.protocol)).setText("über Bluetooth, " + hop.getTimeDelta());
+            }
+            tracerouteList.addView(view);
+        }
+
+        // replace progress bar with actual list
+        findViewById(R.id.tracerouteLoading).setVisibility(View.GONE);
+        findViewById(R.id.tracedHopsList).setVisibility(View.VISIBLE);
     }
 }

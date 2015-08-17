@@ -1,97 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="top"
-    android:padding="20dp">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Nachricht:"
-        android:id="@+id/label_message"
-        android:textStyle="bold" />
-    <ViewStub
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/message_stub"
-        android:inflatedId="@+id/message" />
+        android:gravity="top"
+        android:padding="20dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Von/An:"
-        android:id="@+id/label_senders"
-        android:textStyle="bold" />
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/contactsList" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Gesendet um:"
-        android:id="@+id/label_datetime"
-        android:textStyle="bold" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=""
-        android:id="@+id/datetime" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Eigenschaften:"
-        android:id="@+id/label_props"
-        android:textStyle="bold"
-        android:paddingTop="10dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-        <ImageView android:id="@+id/message_encrypted"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:paddingRight="4dp"
-            android:src="@drawable/ic_lock_black_24dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="verschlüsselte Übertragung"
-            android:id="@+id/label_message_encrypted" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-        <ImageView android:id="@+id/message_big_proto"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:paddingRight="4dp"
-            android:src="@drawable/ic_lock_black_24dp" />
+            android:text="Nachricht:"
+            android:id="@+id/label_message"
+            android:textStyle="bold" />
+        <ViewStub
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/message_stub"
+            android:inflatedId="@+id/message" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Von/An:"
+            android:id="@+id/label_senders"
+            android:textStyle="bold" />
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/contactsList" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Gesendet:"
+            android:id="@+id/label_datetime"
+            android:textStyle="bold" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text=""
-            android:id="@+id/label_message_proto" />
+            android:id="@+id/datetime" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Eigenschaften:"
+            android:id="@+id/label_props"
+            android:textStyle="bold"
+            android:paddingTop="10dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <ImageView android:id="@+id/message_encrypted"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:paddingRight="4dp"
+                android:src="@drawable/ic_lock_black_24dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="verschlüsselte Übertragung"
+                android:id="@+id/label_message_encrypted" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <ImageView android:id="@+id/message_big_proto"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:paddingRight="4dp"
+                android:src="@drawable/ic_lock_black_24dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=""
+                android:id="@+id/label_message_proto" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Übertragung über:"
+            android:id="@+id/label_path"
+            android:textStyle="bold"
+            android:paddingTop="10dp" />
+        <ProgressBar
+            android:id="@+id/tracerouteLoading"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tracedHopsList"
+            android:visibility="gone">
+        </LinearLayout>
+
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Über:"
-        android:id="@+id/label_path"
-        android:textStyle="bold"
-        android:paddingTop="10dp" />
-
-</LinearLayout>
+</ScrollView>

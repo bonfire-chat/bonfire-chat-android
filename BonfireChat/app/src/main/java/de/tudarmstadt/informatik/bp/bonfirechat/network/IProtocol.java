@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
