@@ -39,4 +39,18 @@
         android:text="Max Mustermann"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/lastMessageDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="00:00"
+        android:layout_marginRight="2dip"
+        android:layout_marginTop="5dip"
+        android:textSize="12sp"
+        android:textColor="#999999"/>
+
 </RelativeLayout>
