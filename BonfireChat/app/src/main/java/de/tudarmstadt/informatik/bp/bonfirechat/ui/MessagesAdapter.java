@@ -109,8 +109,8 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         //lastMessage.setText(objects.get(position).getLastMessage());
         //icon.setImageResource(R.mipmap.ic_launcher);
 
-        convertView.setSelected(itemSelected[position]);
-        convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
+        //convertView.setSelected(itemSelected[position]);
+        //convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 
         return convertView;
     }
