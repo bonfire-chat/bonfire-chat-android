@@ -214,7 +214,7 @@ public class MessagesActivity extends Activity {
             return true;
 
         } else if (id == R.id.action_edit_title) {
-            InputBox.InputBox(this, "Name ändern", "",
+            InputBox.InputBox(this, getString(R.string.action_edit_title), "",
                     conversation.getName(),
                     new InputBox.OnOkClickListener() {
                         @Override
@@ -298,7 +298,7 @@ public class MessagesActivity extends Activity {
                         dialogInterface.dismiss();
                     }
                 })
-                .setTitle("Select path")
+                .setTitle(getString(R.string.action_set_path))
         .show();
     }
 

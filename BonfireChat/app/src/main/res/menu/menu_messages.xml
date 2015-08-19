@@ -3,19 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.tudarmstadt.informatik.bp.bonfirechatui.MessagesActivity">
 
-    <item android:id="@+id/action_edit_title" android:title="Titel ändern"
+    <item android:id="@+id/action_edit_title" android:title="@string/action_edit_title"
         android:showAsAction="always" android:icon="@android:drawable/ic_menu_edit" />
 
-    <item android:id="@+id/action_share_image" android:title="Bild senden"
+    <item android:id="@+id/action_share_image" android:title="@string/action_share_image"
         android:showAsAction="always" android:icon="@android:drawable/ic_menu_share" />
 
-    <item android:id="@+id/action_settings" android:title="Info"
+    <item android:id="@+id/action_settings" android:title="@string/action_info"
         android:showAsAction="never" />
-    <item android:id="@+id/action_set_path" android:title="Set Path"
+    <item android:id="@+id/action_set_path" android:title="@string/action_set_path"
         android:showAsAction="never" />
-    <item android:id="@+id/action_clear_path" android:title="Clear Path"
+    <item android:id="@+id/action_clear_path" android:title="@string/action_clear_path"
         android:showAsAction="never" />
-    <item android:id="@+id/action_show_debug" android:title="Debug Info"
+    <item android:id="@+id/action_show_debug" android:title="@string/action_debug_info"
         android:showAsAction="never" />
 
 </menu>

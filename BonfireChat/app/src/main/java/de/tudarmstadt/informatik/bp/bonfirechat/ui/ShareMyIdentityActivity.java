@@ -57,7 +57,7 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
-            Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.nfc_is_not_available), Toast.LENGTH_LONG).show();
             ((TextView)findViewById(R.id.nfcNotice)).setVisibility(View.GONE);
         } else {
             // Register callback
