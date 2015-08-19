@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactDetailsActivity">
-    <item android:id="@+id/action_create_conversation" android:title="Chat"
+    <item android:id="@+id/action_create_conversation" android:title="@string/action_create_conversation"
         android:orderInCategory="100" android:showAsAction="always|withText"
         android:icon="@android:drawable/ic_menu_send"/>
     <item android:id="@+id/action_save" android:title="@string/action_save"

@@ -28,7 +28,7 @@ public class ContactDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_details);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("Kontakt");
+        getActionBar().setTitle(getString(R.string.contact));
 
         BonfireData db = BonfireData.getInstance(this);
         Intent in = getIntent();

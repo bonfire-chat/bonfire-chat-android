@@ -37,10 +37,10 @@ public class IdentityActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity);
         if (getIntent().hasExtra("isWelcomeScreen")) {
-            getActionBar().setTitle("Willkommen!");
+            getActionBar().setTitle(getString(R.string.title_welcome));
         }else {
             getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setTitle("Account bearbeiten");
+            getActionBar().setTitle(getString(R.string.title_edit_account));
         }
 
         BonfireData db = BonfireData.getInstance(this);
@@ -81,8 +81,8 @@ public class IdentityActivity extends Activity  {
 
             final AlertDialog progress =
                 new ProgressDialog.Builder(this)
-                    .setTitle("Registering ...")
-                    .setMessage("This will take only a few seconds.")
+                    .setTitle(getString(R.string.registering_title))
+                    .setMessage(getString(R.string.registering_message))
                     .show();
             new AsyncTask<Identity, Object, String>() {
                 @Override
@@ -96,7 +96,7 @@ public class IdentityActivity extends Activity  {
                     progress.dismiss();
                     if (s != null ) {
                         new AlertDialog.Builder(IdentityActivity.this)
-                                .setTitle("Registering failed")
+                                .setTitle(getString(R.string.registering_failed))
                                 .setMessage(s)
                                 .setNeutralButton("OK", new DialogInterface.OnClickListener() {
                                     @Override

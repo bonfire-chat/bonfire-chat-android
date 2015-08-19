@@ -164,17 +164,17 @@ public class MessageDetailsActivity extends Activity {
         ((TextView) findViewById(R.id.datetime)).setText(DateHelper.formatDateTime(message.sentTime));
 
         if (message.hasFlag(Message.FLAG_PROTO_BT)) {
-            ((TextView) findViewById(R.id.label_message_proto)).setText("Bluetooth");
+            ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_bluetooth));
             ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_bluetooth_black_24dp);
             findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);
         }
         else if (message.hasFlag(Message.FLAG_PROTO_WIFI)) {
-            ((TextView) findViewById(R.id.label_message_proto)).setText("WiFi Direct");
+            ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_wifi_direct));
             ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_network_wifi_black_24dp);
             findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);
         }
         else if (message.hasFlag(Message.FLAG_PROTO_CLOUD)) {
-            ((TextView) findViewById(R.id.label_message_proto)).setText("Datenkanal (Internet)");
+            ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_cloud));
             ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_cloud_black_24dp);
             findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);
         }
@@ -204,15 +204,15 @@ public class MessageDetailsActivity extends Activity {
 
                 if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.BLUETOOTH) {
                     ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_bluetooth_black_24dp);
-                    ((TextView) view.findViewById(R.id.protocol)).setText("Bluetooth");
+                    ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_bluetooth));
                 }
                 else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.WIFI) {
                     ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_network_wifi_black_24dp);
-                    ((TextView) view.findViewById(R.id.protocol)).setText("WiFi Direct");
+                    ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_wifi_direct));
                 }
                 else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.GCM) {
                     ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_cloud_black_24dp);
-                    ((TextView) view.findViewById(R.id.protocol)).setText("Datenkanal");
+                    ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_cloud));
                 }
                 else {
                     findViewById(R.id.protocol_icon).setVisibility(View.GONE);

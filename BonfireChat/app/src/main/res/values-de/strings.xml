@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">BonfireChat</string>
+
+    <string name="title_conversations">Unterhaltungen</string>
+    <string name="title_contacts">Kontakte</string>
+    <string name="title_settings">Einstellungen</string>
+
+    <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
+    <string name="navigation_drawer_close">Navigationsleiste schließen</string>
+
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_credits">Über Bonfire Chat</string>
+    <string name="action_add_conversation">Neue Unterhaltung</string>
+    <string name="action_add_contact">Neuer Kontakt</string>
+
+    <string name="new_contact">Neuer Kontakt</string>
+    <string name="search_contact_by_name">Nach Name suchen:</string>
+    <string name="title_activity_contact_details">Kontaktdetails</string>
+
+    <string name="hello_world">Hallo, Welt!</string>
+    <string name="action_save">Speichern</string>
+    <string name="title_activity_search_user">Nach einem Benutzer suchen</string>
+
+    <string name="share_my_identity">Kontaktdaten teilen</string>
+
+    <string name="message_details">Nachrichtendetails</string>
+    <string name="Search">Suchen</string>
+    <string name="scan_nfc">NFC</string>
+    <string name="action_edit_account">Account bearbeiten</string>
+    <string name="action_edit">Bearbeiten</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_create_conversation">Unterhaltung beginnen</string>
+    <string name="action_edit_title">Titel ändern</string>
+    <string name="action_share_image">Bild senden</string>
+    <string name="action_info">Informationen</string>
+    <string name="action_set_path">Nachrichtenweg zuweisen</string>
+    <string name="action_clear_path">Nachrichtenweg zurücksetzen</string>
+    <string name="action_debug_info">Diagnoseinformationen</string>
+    <string name="action_search">Suchen</string>
+    <string name="action_scan_qr_code">QR-Code scannen</string>
+    <string name="contact">Kontakt</string>
+    <string name="title_welcome">Willkommen!</string>
+    <string name="title_edit_account">Account bearbeiten</string>
+    <string name="protocol_bluetooth">Bluetooth</string>
+    <string name="protocol_wifi_direct">WiFi Direct</string>
+    <string name="protocol_cloud">Cloud</string>
+    <string name="nfc_is_not_available">NFC ist nicht verfügbar</string>
+    <string name="registering_title">Registrieren ...</string>
+    <string name="registering_message">Eile mit Weile.</string>
+    <string name="registering_failed">Fehler beim Speichern</string>
+</resources>
