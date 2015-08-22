@@ -38,6 +38,7 @@ public class Message implements Serializable {
     public static final int FLAG_PROTO_WIFI = 32;
     public static final int FLAG_PROTO_CLOUD = 64;
     public static final int FLAG_FAILED = 128;
+    public static final int FLAG_IS_LOCATION = 256;
 
 
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, Contact recipient) {

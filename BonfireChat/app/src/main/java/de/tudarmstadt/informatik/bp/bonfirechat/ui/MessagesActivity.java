@@ -46,6 +46,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry;
 
 
 public class MessagesActivity extends Activity {
@@ -79,10 +81,15 @@ public class MessagesActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
-                Log.i(TAG, "starting MessagesActivity with message uuid=" + adapter.getItem(position).uuid);
-                intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
-                startActivity(intent);
+                if(!messages.get(position).hasFlag(Message.FLAG_IS_LOCATION)) {
+                    Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
+                    Log.i(TAG, "starting MessagesActivity with message uuid=" + adapter.getItem(position).uuid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                    startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(MessagesActivity.this, )
+                }
             }
         });
 
@@ -241,6 +248,19 @@ public class MessagesActivity extends Activity {
             String debug = NetworkOptions.getDebugInfo();
             Log.d("DEBUG", debug);
             InputBox.Info(this, "Debug", debug);
+
+        } else if (id == R.id.action_share_location) {
+            StatsEntry statsEntry = CurrentStats.getInstance();
+            Log.d("Location", statsEntry.lat + " : " + statsEntry.lng);
+
+            Message message = new Message(statsEntry.lat + ":" + statsEntry.lng ,db.getDefaultIdentity(), new Date(), Message.FLAG_IS_LOCATION | Message.FLAG_ENCRYPTED, conversation.getPeer());
+            message.error = "Sending";
+
+            db.createMessage(message, conversation);
+            appendMessage(message);
+
+            Log.d(TAG, "sending message id " + message.uuid);
+            ConnectionManager.sendMessage(MessagesActivity.this, message);
         }
 
         return super.onOptionsItemSelected(item);
