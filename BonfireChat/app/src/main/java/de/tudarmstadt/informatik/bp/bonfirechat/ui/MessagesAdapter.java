@@ -130,7 +130,6 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.messageBody.setVisibility(View.GONE);
             v.messageImage.setVisibility(View.GONE);
             v.messageImage.setImageDrawable(null);
-            Log.d("Type", "Location");
         }
         else {
             v.messageLocation.setVisibility(View.GONE);
