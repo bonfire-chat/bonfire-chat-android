@@ -88,7 +88,8 @@ public class MessagesActivity extends Activity {
                     startActivity(intent);
                 }
                 else{
-                    Intent intent = new Intent(MessagesActivity.this, )
+                    //TODO: Hier soll dann die MapsActivity gestartet werden aber ich krieg es nicht hin die Activity zu erstellen
+                    //Intent intent = new Intent(MessagesActivity.this, )
                 }
             }
         });
