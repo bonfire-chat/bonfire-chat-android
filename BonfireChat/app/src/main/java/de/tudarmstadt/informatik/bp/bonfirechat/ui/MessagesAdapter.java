@@ -2,8 +2,10 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
 import android.media.Image;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +26,12 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 public class MessagesAdapter extends ArrayAdapter<Message> {
 
     boolean[] itemSelected;
+    float lat;
+    float lng;
 
     class ViewHolder {
         ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
-        TextView messageBody, dateTime;
+        TextView messageBody, messageLocation, dateTime;
     }
 
     public MessagesAdapter(Context context, List<Message> objects) {
@@ -78,6 +82,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
             v.encryptedIcon = (ImageView) convertView.findViewById(R.id.message_encrypted);
             v.protocolIcon = (ImageView) convertView.findViewById(R.id.message_proto);
+            v.messageLocation = (TextView) convertView.findViewById(R.id.message_location);
             convertView.setTag(v);
         } else {
             v = (ViewHolder)convertView.getTag();
@@ -113,11 +118,22 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.messageBody.setText("");
             v.messageBody.setVisibility(View.GONE);
             v.messageImage.setVisibility(View.VISIBLE);
-            v.messageImage.setImageURI(Uri.parse("file://"+msg.body));
-        } else {
+            v.messageImage.setImageURI(Uri.parse("file://" + msg.body));
+        }else{
             v.messageBody.setVisibility(View.VISIBLE);
             v.messageImage.setVisibility(View.GONE);
             v.messageImage.setImageDrawable(null);
+        }
+
+        if(msg.hasFlag(Message.FLAG_IS_LOCATION)) {
+            v.messageLocation.setVisibility(View.VISIBLE);
+            v.messageBody.setVisibility(View.GONE);
+            v.messageImage.setVisibility(View.GONE);
+            v.messageImage.setImageDrawable(null);
+            Log.d("Type", "Location");
+        }
+        else {
+            v.messageLocation.setVisibility(View.GONE);
         }
         //convertView.setSelected(itemSelected[position]);
         //convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
