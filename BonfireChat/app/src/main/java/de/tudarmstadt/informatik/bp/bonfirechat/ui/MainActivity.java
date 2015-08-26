@@ -13,15 +13,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
-import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
@@ -30,7 +35,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, View.OnClickListener {
 
     private static final String TAG = "MainActivity";
 
@@ -68,7 +73,46 @@ public class MainActivity extends Activity
         //GpsTracker.init(this);
         initializeNetwork();
         initializeStats();
+
+        if (UIHelper.isFirstStartExperience(this)) {
+            showcaseView = new ShowcaseView.Builder(this)
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setOnClickListener(this)
+                    .build();
+            onClick(null);
+        }
     }
+
+
+    // ####### First-Start Tutorial #####################################################
+    private ShowcaseView showcaseView;
+    private int tutorial_counter = 0;
+    /**
+     * Handles clicks on Close button of first-start tutorial view
+     */
+    @Override
+    public void onClick(View v) {
+        switch(tutorial_counter++) {
+            case 0:
+                showcaseView.setContentTitle("Willkommen!");
+                showcaseView.setContentText("Hier kannst du Kontakte hinzufügen und Konversationen starten");
+                showcaseView.setTarget(new PointTarget(100, 420));
+                showcaseView.setButtonText("Weiter");
+                break;
+            case 1:
+                showcaseView.setContentTitle("Deine Kontaktdaten");
+                showcaseView.setContentText("Hier klicken, um deine Kontaktdaten weiterzugeben");
+                showcaseView.setTarget(new ViewTarget(R.id.btnShareIdentityQR, this));
+                showcaseView.setButtonText("Los geht's");
+                break;
+            case 2:
+                showcaseView.hide();
+                break;
+        }
+    }
+
+    // ####### End First-Start Tutorial #####################################################
+
 
     private void initializeNetwork() {
         BonfireData db = BonfireData.getInstance(this);
@@ -83,7 +127,6 @@ public class MainActivity extends Activity
             startActivity(intent);
             finish();
         } else {
-
             Intent intent = new Intent(this, ConnectionManager.class);
             intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
             this.startService(intent);
@@ -156,4 +199,5 @@ public class MainActivity extends Activity
             startActivity(ii);
         }
     }
+
 }

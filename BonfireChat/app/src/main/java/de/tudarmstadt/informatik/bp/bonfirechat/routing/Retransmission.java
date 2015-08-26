@@ -9,7 +9,7 @@ import android.util.Log;
 import java.util.Hashtable;
 import java.util.UUID;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
@@ -65,7 +65,7 @@ public class Retransmission implements Runnable{
     public void run(){
         pendingRetransmissions.remove(this.packet.uuid);
         packet.incrementTransmissionCount();
-        if (packet.getTransmissionCount() > NetworkOptions.MAX_RETRANSMISSIONS) {
+        if (packet.getTransmissionCount() > ConstOptions.MAX_RETRANSMISSIONS) {
             Log.e(TAG, "Maximum retransmission count exceeded, ignoring message");
 
             final Intent localIntent = new Intent(ConnectionManager.MSG_SENT_BROADCAST_EVENT)

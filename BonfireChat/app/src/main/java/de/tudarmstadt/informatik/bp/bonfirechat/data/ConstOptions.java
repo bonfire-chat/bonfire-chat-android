@@ -10,7 +10,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 /**
  * Created by mw on 03.08.15.
  */
-public class NetworkOptions {
+public class ConstOptions {
+
+    public static final boolean ALWAYS_SHOW_OOBE = false;
+
+
 
     public static final int MAX_RETRANSMISSIONS = 5;
 

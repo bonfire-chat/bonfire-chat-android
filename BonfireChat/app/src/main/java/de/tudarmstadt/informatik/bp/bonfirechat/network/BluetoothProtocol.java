@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.EnableBluetoothActivity;
 
 /**
  * Created by johannes on 22.05.15.
@@ -63,19 +64,23 @@ public class BluetoothProtocol extends SocketProtocol {
             Log.d(TAG, "device does not support Bluetooth");
         } else {
             Log.d(TAG, "enabling bluetooth and requesting infinite discoverability");
-            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
-            discoverableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ctx.startActivity(discoverableIntent);
-            new android.os.Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(ctx, "initalizing bluetooth...", Toast.LENGTH_SHORT).show();
-                    initializeBluetooth();
-                }
-            }, 7500);
+            Intent intent =new Intent(ctx, EnableBluetoothActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ctx.startActivity(intent);
         }
         return false;
+    }
+
+
+    /**
+     * Called by ConnectionManager on receipt of CONTINUE_BLUETOOTH_STARTUP_ACTION.
+     * This gets sent by EnableBluetoothActivity after the user has accepted the activation
+     * of bluetooth discoverability via the required system UI.
+     */
+    public void continueStartup() {
+        Toast.makeText(ctx, "initalizing bluetooth...", Toast.LENGTH_SHORT).show();
+        initializeBluetooth();
+        
     }
 
     private void initializeBluetooth() {

@@ -27,7 +27,7 @@ import java.util.List;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
@@ -55,6 +55,7 @@ public class ConnectionManager extends NonStopIntentService {
     // action in Intents which are sent to the service
     public static final String GO_ONLINE_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.GO_ONLINE";
     public static final String SENDMESSAGE_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.SENDMESSAGE";
+    public static final String CONTINUE_BLUETOOTH_STARTUP_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.CONTINUE_BLUETOOTH_STARTUP";
 
     // action in event Intents broadcasted by the service
     public static final String MSG_RECEIVED_BROADCAST_EVENT =
@@ -270,7 +271,7 @@ public class ConnectionManager extends NonStopIntentService {
 
         private void forwardPacket(Packet packet) {
             // if the packet has been sent less than 20 hops, redistribute it
-            if (packet.getHopCount() < NetworkOptions.MAX_HOPS) {
+            if (packet.getHopCount() < ConstOptions.MAX_HOPS) {
                 sendPacket(ConnectionManager.this, packet);
             }
         }
@@ -366,10 +367,10 @@ public class ConnectionManager extends NonStopIntentService {
                 chosenPeers = routingManager.chooseRecipients(packet, peers);
             }
             if (chosenPeers == null) {
-                Log.e(TAG, "don't know how to send this packet: "+packet.toString());
+                Log.e(TAG, "don't know how to send this packet: " + packet.toString());
                 return;
             }
-            for(final Peer peer : chosenPeers) {
+            for (final Peer peer : chosenPeers) {
                 // start a new thread for each send operation, so that sending to multiple devices
                 // can be done in parallel
                 new Thread(new Runnable() {
@@ -381,10 +382,11 @@ public class ConnectionManager extends NonStopIntentService {
                                 StatsCollector.publishMessageHop(protocolClass, "SEND", peer, packet, packet.nextHopNickname, null);
                                 Log.i(TAG, "Sending via " + peer.toString());
                                 protocol.sendPacket(packet, peer);
-                            } else throw new IllegalAccessException("Protocol "+protocolClass.getSimpleName()+" not ready");
-                        } catch(Exception ex) {
+                            } else
+                                throw new IllegalAccessException("Protocol " + protocolClass.getSimpleName() + " not ready");
+                        } catch (Exception ex) {
                             ex.printStackTrace();
-                            Log.e(TAG, "Unable to send packet via peer:"+peer.toString());
+                            Log.e(TAG, "Unable to send packet via peer:" + peer.toString());
                         }
                     }
                 }).start();
@@ -393,8 +395,8 @@ public class ConnectionManager extends NonStopIntentService {
 
 
             if (packet instanceof PayloadPacket && packet.getHopCount() == 0) {
-                Retransmission.add(this, (PayloadPacket)packet,
-                        ((PayloadPacket) packet).getTransmissionCount() * NetworkOptions.RETRANSMISSION_TIMEOUT);
+                Retransmission.add(this, (PayloadPacket) packet,
+                        ((PayloadPacket) packet).getTransmissionCount() * ConstOptions.RETRANSMISSION_TIMEOUT);
 
                 // if a message object is specified, this packet was just generated on this phone
                 // notify UI that sending has started
@@ -407,6 +409,10 @@ public class ConnectionManager extends NonStopIntentService {
 
             // update statistics
             CurrentStats.getInstance().messagesSent += 1;
+
+        } else if (intent.getAction() == CONTINUE_BLUETOOTH_STARTUP_ACTION) {
+            BluetoothProtocol bt = (BluetoothProtocol) getConnection(BluetoothProtocol.class);
+            if (bt != null) bt.continueStartup();
 
         } else if (!extras.isEmpty()) {
             final GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
