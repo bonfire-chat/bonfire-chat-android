@@ -1,6 +1,10 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.data;
 
+import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.abstractj.kalium.keys.PublicKey;
 import org.json.JSONArray;
@@ -8,7 +12,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,6 +32,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteHopSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
 /**
@@ -42,6 +50,8 @@ public class BonfireAPI {
 
     public static final String METHOD_TRACEROUTE = "traceroute";
     public static final String METHOD_SEND_MESSAGE = "notify";
+
+    private static final String DOWNLOADS_DIRECTORY = "Bonfire Downloads\\";
 
     public static String httpGet(String apiMethod) throws IOException {
         HttpURLConnection urlConnection = null;
@@ -72,6 +82,35 @@ public class BonfireAPI {
         } catch (JSONException e) {
             Log.e(TAG, "unable to parse JSON object");
             try { JSONArray o = new JSONArray("[]"); return o; } catch (Throwable t) { return null; }
+        }
+    }
+
+    public static String httpGetToFile(String url, String filename) throws IOException {
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) new URL(url).openConnection();
+            InputStream is = urlConnection.getInputStream();
+
+            File target = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), DOWNLOADS_DIRECTORY + filename + ".jpg");
+
+            FileOutputStream os = new FileOutputStream(target);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+
+            Log.i(TAG, "successful HTTP Get file request to "+url);
+            Log.i(TAG, target.getAbsolutePath());
+            return target.getAbsolutePath();
+
+        } catch (IOException e) {
+            String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+            throw new IOException("HTTP Get request failed, Exception: "+e.toString()+", Body: "+theErrMes);
+        } finally {
+            if(urlConnection == null) urlConnection.disconnect();
         }
     }
 
@@ -155,6 +194,32 @@ public class BonfireAPI {
         body.put("nextHopId", encode(nextHop));
         body.put("msg", serializedEnvelope);
         httpPost(METHOD_SEND_MESSAGE, body);
+    }
+
+    public static String getMapPreviewAsFilename(LatLng location, String filename) {
+        // is this preview already cached?
+        File cached = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                DOWNLOADS_DIRECTORY + filename + ".jpg");
+        if (cached.exists()) {
+            return cached.getAbsolutePath();
+        }
+        else {
+            Log.d(TAG, "getMapPreviewAsFilename: cache miss");
+            // build Google static map API URL
+            String url = "http://maps.google.com/maps/api/staticmap?center=" +
+                    location.latitude + "," + location.longitude +
+                    "&markers=color:red%7C" +
+                    location.latitude + "," + location.longitude +
+                    "&zoom=15&size=150x150&sensor=false";
+
+            // download map preview
+            try {
+                return httpGetToFile(url, filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
 

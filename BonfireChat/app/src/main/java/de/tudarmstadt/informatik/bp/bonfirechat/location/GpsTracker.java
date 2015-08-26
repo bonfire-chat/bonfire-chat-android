@@ -52,7 +52,7 @@ public class GpsTracker implements LocationListener {
         getLocation();
     }
 
-    public Location getLocation() {
+    private Location getLocation() {
         try {
             locationManager = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
 
@@ -65,7 +65,6 @@ public class GpsTracker implements LocationListener {
             Log.d(TAG, "isNetworkLocationEnabled: " + isNetworkEnabled);
 
             if (isGPSEnabled || isNetworkEnabled) {
-                this.canGetLocation = true;
                 // try network first
                 if (isNetworkEnabled) {
                     Log.i(TAG, "requesting continuous updates on location changes via network");
@@ -76,6 +75,7 @@ public class GpsTracker implements LocationListener {
 
                     location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     if (location != null) {
+                        this.canGetLocation = true;
                         Log.d(TAG, "setting location based on network: " + location.getLatitude() + "N, " + location.getLongitude() + "E");
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
@@ -91,6 +91,7 @@ public class GpsTracker implements LocationListener {
 
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if (location != null) {
+                        this.canGetLocation = true;
                         Log.d(TAG, "setting location based on GPS: " + location.getLatitude() + "N, " + location.getLongitude() + "E");
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
@@ -120,7 +121,7 @@ public class GpsTracker implements LocationListener {
     }
 
     public boolean canGetLocation() {
-        return this.canGetLocation;
+        return this.canGetLocation && this.location != null;
     }
 
     /*
@@ -131,6 +132,7 @@ public class GpsTracker implements LocationListener {
         if (location != null) {
             Log.d(TAG, "updating location: " + location.getLatitude() + "N, " + location.getLongitude() + "E");
             this.location = location;
+            this.canGetLocation = true;
         }
     }
 

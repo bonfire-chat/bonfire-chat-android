@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         map:mapType="normal"
-        map:cameraZoom="13" />
+        map:cameraZoom="15" />
 
 </LinearLayout>

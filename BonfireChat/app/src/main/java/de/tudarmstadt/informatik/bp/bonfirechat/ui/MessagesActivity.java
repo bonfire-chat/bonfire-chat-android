@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.ActionMode;
@@ -20,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +36,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -41,8 +44,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
-import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
-import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry;
 
 
 public class MessagesActivity extends Activity {
@@ -248,17 +249,22 @@ public class MessagesActivity extends Activity {
             InputBox.Info(this, "Debug", debug);
 
         } else if (id == R.id.action_share_location) {
-            StatsEntry statsEntry = CurrentStats.getInstance();
-            Log.d("Location", statsEntry.lat + " : " + statsEntry.lng);
+            GpsTracker gps = GpsTracker.getInstance();
+            if (gps.canGetLocation()) {
+                Log.d("Location", gps.getLatitude() + " : " + gps.getLongitude());
+                Message message = new Message(gps.getLatitude() + ":" + gps.getLongitude(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_LOCATION | Message.FLAG_ENCRYPTED, conversation.getPeer());
+                message.error = "Sending";
 
-            Message message = new Message(statsEntry.lat + ":" + statsEntry.lng ,db.getDefaultIdentity(), new Date(), Message.FLAG_IS_LOCATION | Message.FLAG_ENCRYPTED, conversation.getPeer());
-            message.error = "Sending";
+                db.createMessage(message, conversation);
+                appendMessage(message);
 
-            db.createMessage(message, conversation);
-            appendMessage(message);
-
-            Log.d(TAG, "sending message id " + message.uuid);
-            ConnectionManager.sendMessage(MessagesActivity.this, message);
+                Log.d(TAG, "sending message id " + message.uuid);
+                ConnectionManager.sendMessage(MessagesActivity.this, message);
+            }
+            else {
+                Toast toast = Toast.makeText(this, R.string.toast_location_not_available, Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
