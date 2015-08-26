@@ -58,4 +58,6 @@
 
     <string name="message_location">Location</string>
     <string name="toast_location_not_available">Your location is not available.</string>
+    <string name="image">picture</string>
+    <string name="location">location</string>
 </resources>
