@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.ActionMode;
@@ -20,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,13 +36,14 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 
 
 public class MessagesActivity extends Activity {
@@ -74,10 +77,18 @@ public class MessagesActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
-                Log.i(TAG, "starting MessagesActivity with message uuid=" + adapter.getItem(position).uuid);
-                intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
-                startActivity(intent);
+                if(!messages.get(position).hasFlag(Message.FLAG_IS_LOCATION)) {
+                    Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
+                    Log.i(TAG, "starting MessageDetailsActivity with message uuid=" + adapter.getItem(position).uuid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                    startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(MessagesActivity.this, MessageLocationActivity.class);
+                    Log.i(TAG, "starting MessageLocationActivity with message uuid=" + adapter.getItem(position).uuid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -236,6 +247,24 @@ public class MessagesActivity extends Activity {
             String debug = ConstOptions.getDebugInfo();
             Log.d("DEBUG", debug);
             UIHelper.Info(this, "Debug", debug);
+
+        } else if (id == R.id.action_share_location) {
+            GpsTracker gps = GpsTracker.getInstance();
+            if (gps.canGetLocation()) {
+                Log.d("Location", gps.getLatitude() + " : " + gps.getLongitude());
+                Message message = new Message(gps.getLatitude() + ":" + gps.getLongitude(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_LOCATION | Message.FLAG_ENCRYPTED, conversation.getPeer());
+                message.error = "Sending";
+
+                db.createMessage(message, conversation);
+                appendMessage(message);
+
+                Log.d(TAG, "sending message id " + message.uuid);
+                ConnectionManager.sendMessage(MessagesActivity.this, message);
+            }
+            else {
+                Toast toast = Toast.makeText(this, R.string.toast_location_not_available, Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
 
         return super.onOptionsItemSelected(item);

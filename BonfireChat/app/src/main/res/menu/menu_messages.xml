@@ -7,9 +7,13 @@
         android:showAsAction="always" android:icon="@android:drawable/ic_menu_edit" />
 
     <item android:id="@+id/action_share_image" android:title="@string/action_share_image"
-        android:showAsAction="always" android:icon="@android:drawable/ic_menu_share" />
+        android:showAsAction="always" android:icon="@android:drawable/ic_menu_share"
+        tools:ignore="AppCompatResource" />
 
-    <item android:id="@+id/action_settings" android:title="@string/action_info"
+    <item android:id="@+id/action_share_location" android:title="Standort senden"
+        android:showAsAction="always" android:icon="@android:drawable/ic_menu_mylocation" />
+
+    <item android:id="@+id/action_settings" android:title="Info"
         android:showAsAction="never" />
     <item android:id="@+id/action_set_path" android:title="@string/action_set_path"
         android:showAsAction="never" />

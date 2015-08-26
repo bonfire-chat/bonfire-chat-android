@@ -55,4 +55,7 @@
     <string name="login_nickname_hint">Choose A Nickname</string>
 
     <string name="share_text">I\'m a happy Bonfire Chat user!</string>
+
+    <string name="message_location">Location</string>
+    <string name="toast_location_not_available">Your location is not available.</string>
 </resources>

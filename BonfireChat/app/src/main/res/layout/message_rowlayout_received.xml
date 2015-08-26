@@ -38,6 +38,21 @@
                 android:paddingBottom="2dp"
                 android:scaleType="centerCrop" />
 
+            <ImageView
+                android:id="@+id/map_preview"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:adjustViewBounds="true"
+                android:background="@color/primarytext"
+                android:paddingBottom="2dp"
+                android:scaleType="centerCrop" />
+            <ProgressBar
+                android:id="@+id/map_loading"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" />
+
             <TextView
                 android:id="@+id/message_body"
                 android:layout_width="wrap_content"
