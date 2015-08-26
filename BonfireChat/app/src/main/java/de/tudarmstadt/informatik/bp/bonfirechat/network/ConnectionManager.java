@@ -471,7 +471,7 @@ public class ConnectionManager extends NonStopIntentService {
      * @param envelope
      */
     public static void sendEnvelope(Context ctx, Envelope envelope) {
-        if (envelope.getHopCount() > 0) throw new IllegalArgumentException("This method only sends fresh envelopes");
+        if (envelope.getHopCount() > 0) throw new IllegalArgumentException(ctx.getString(R.string.exception_only_fresh_envelopes));
 
         // retrieve best path to target from RoutingManager, if known. otherwise use flooding
         List<byte[]> hopsToTarget = routingManager.getPath(envelope);

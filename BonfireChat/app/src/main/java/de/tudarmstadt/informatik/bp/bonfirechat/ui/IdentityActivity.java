@@ -4,15 +4,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.games.multiplayer.InvitationEntity;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
@@ -32,13 +37,18 @@ public class IdentityActivity extends Activity  {
 
     Identity identity;
 
+    boolean isWelcomeScreen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_identity);
         if (getIntent().hasExtra("isWelcomeScreen")) {
+            isWelcomeScreen = true;
+            setContentView(R.layout.activity_identity_welcome);
             getActionBar().setTitle(getString(R.string.title_welcome));
+            getActionBar().hide();
         }else {
+            setContentView(R.layout.activity_identity);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setTitle(getString(R.string.title_edit_account));
         }
@@ -49,10 +59,16 @@ public class IdentityActivity extends Activity  {
         getEdit(R.id.txt_nickname).setText(identity.nickname);
         String pubkey = identity.getPublicKey().asBase64();
         pubkey = pubkey.substring(0,21) + "\n" + pubkey.substring(22);
-        ((TextView)findViewById(R.id.txt_publicKey)).setText(pubkey);
+        TextView txtPublickey = (TextView)findViewById(R.id.txt_publicKey);
+        if (txtPublickey != null) txtPublickey.setText(pubkey);
         getEdit(R.id.txt_phoneNumber).setText(identity.phone);
 
+        Button saveButton = (Button) findViewById(R.id.save);
+        if (saveButton != null ) saveButton.setOnClickListener(onSaveButtonClicked);
+
     }
+
+
 
     private EditText getEdit(int id) {
         return ((EditText)findViewById(id));
@@ -65,25 +81,20 @@ public class IdentityActivity extends Activity  {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private View.OnClickListener onSaveButtonClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
             identity.nickname = getEdit(R.id.txt_nickname).getText().toString();
             identity.phone = getEdit(R.id.txt_phoneNumber).getText().toString();
-            final BonfireData db = BonfireData.getInstance(this);
+            final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
             db.updateIdentity(identity);
 
             final AlertDialog progress =
-                new ProgressDialog.Builder(this)
-                    .setTitle(getString(R.string.registering_title))
-                    .setMessage(getString(R.string.registering_message))
-                    .show();
+                    new ProgressDialog.Builder(IdentityActivity.this)
+                            .setTitle(getString(R.string.registering_title))
+                            .setMessage(getString(R.string.registering_message))
+                            .show();
             new AsyncTask<Identity, Object, String>() {
                 @Override
                 protected String doInBackground(Identity... params) {
@@ -105,16 +116,31 @@ public class IdentityActivity extends Activity  {
                                     }
                                 }).show();
                     } else {
-
                         finish();
+                        if (isWelcomeScreen) {
+                            startActivity(new Intent(IdentityActivity.this, MainActivity.class));
+                        }
                     }
                 }
             }.execute(identity);
 
-            SharedPreferences.Editor preferences = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            SharedPreferences.Editor preferences = PreferenceManager.getDefaultSharedPreferences(IdentityActivity.this).edit();
             preferences.putString("my_nickname", identity.nickname);
             preferences.commit();
 
+        }
+    };
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_save) {
+            onSaveButtonClicked.onClick(null);
             return true;
         }
 
