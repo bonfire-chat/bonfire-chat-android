@@ -37,6 +37,7 @@ public class Envelope extends PayloadPacket {
     public int flags;
 
     public static final int FLAG_BINARY = 1;
+    public static final int FLAG_LOCATION = 2;
     public static final int FLAG_ENCRYPTED = 4;
     public static final int FLAG_TRACEROUTE = 8;
 
@@ -81,6 +82,9 @@ public class Envelope extends PayloadPacket {
         }
         if (message.hasFlag(Message.FLAG_IS_FILE))
             envelope.flags |= FLAG_BINARY;
+
+        if (message.hasFlag(Message.FLAG_IS_LOCATION))
+            envelope.flags |= FLAG_LOCATION;
         return envelope;
     }
 
@@ -94,6 +98,9 @@ public class Envelope extends PayloadPacket {
             body = crypto.decrypt(nonce, body);
             msgFlags |= Message.FLAG_ENCRYPTED;
         }
+        if (hasFlag(FLAG_LOCATION))
+            msgFlags |= Message.FLAG_IS_LOCATION;
+
         String messageBody;
         if (hasFlag(FLAG_BINARY)) {
             theContact = BonfireData.getInstance(ctx).getContactByPublicKey(senderPublicKey);

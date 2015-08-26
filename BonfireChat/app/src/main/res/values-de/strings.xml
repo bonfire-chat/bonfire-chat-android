@@ -54,4 +54,8 @@
     <string name="login_nickname_hint">Dein Name</string>
 
     <string name="share_text">Ich bin ein glücklicher BonfireChat-Nutzer!</string>
+
+    <string name="message_location">Standortdetails</string>
+    <string name="toast_location_not_available">Dein Standort ist nicht verfügbar.</string>
+
 </resources>
