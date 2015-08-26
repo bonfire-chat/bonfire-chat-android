@@ -1,8 +1,8 @@
-# Code-Review vom 3. August 2015
+# Code-Review vom 17. August 2015
 
 **Durchgeführt von:**
 
-**Geprüfte Codeteile:** Connection Manager 
+**Geprüfte Codeteile:** ConnectionManager
 
 ### 1. Is the functionality correct?
 
@@ -14,7 +14,7 @@ Ja.
 
 ### 3. Is the class structure well designed and meeting all requirements or does it need improvements?
 
-Ja sie ist sinnvoll erstellt und es sind keine Verbesserungen bekannt. 
+Ja sie ist sinnvoll erstellt und es sind keine Verbesserungen bekannt.
 
 ### 4. Are there classes which have become obsolete because of a new implementation?
 
@@ -22,7 +22,7 @@ Nein.
 
 ### 5. Are there unnecessary overloaded functions or constructors?
 
-Die Methode storeAndDisplayMessage kann in eine storeMessage und in ein displayMessage aufgeteilt werden. 
+Die Methode storeAndDisplayMessage kann in eine storeMessage und in ein displayMessage aufgeteilt werden.
 
 ### 6. Is the perstistent database structure well designed?
 
@@ -30,7 +30,7 @@ Ja.
 
 ### 7. Does it contain functions that can be reused later? Are they placed in a Helper class?
 
-Die Klasse ist dafür zuständig Nachrichten zu versenden und diese weiterzuleiten. Immer wenn dies geschieht erledigt das der ConnectionManager. Insofern gitb es keine Funktionen die später wiederverwendet werden können. 
+Die Klasse ist dafür zuständig Nachrichten zu versenden und diese weiterzuleiten. Immer wenn dies geschieht erledigt das der ConnectionManager. Insofern gitb es keine Funktionen die später wiederverwendet werden können.
 
 ### 8. Are existing helper functions being used? Is no duplicate functionality implemented?
 
@@ -42,11 +42,11 @@ Es gibt keine Eingabeparameter im klassischen Sinne. Besitzt ein Handy keine Wif
 
 ### 10. How will the functionalities affect the performance of the app - power usage, time and memory?
 
-Der Connection Manager startet die Protokolle Wifi, Bluetooth und GCM. Diese überprüfen häufig welche Geräte sich in der unmittelbaren Nähe befinden und verbrauchen damit Strom. Da dies jedoch eine wichtige Funktionalität ist für die Funktionalität der App, kann dies nicht vermieden werden. Will ein User nur eins der Protokole benutzen so kann er dies in den Einstellungen auswählen. 
+Der Connection Manager startet die Protokolle Wifi, Bluetooth und GCM. Diese überprüfen häufig welche Geräte sich in der unmittelbaren Nähe befinden und verbrauchen damit Strom. Da dies jedoch eine wichtige Funktionalität ist für die Funktionalität der App, kann dies nicht vermieden werden. Will ein User nur eins der Protokole benutzen so kann er dies in den Einstellungen auswählen.
 
 ### 11. Is it absolutely necessary to run it on UI thread or would a background thread suffice?
 
-Ja. Der Connection Manager ist für das Versenden von Messages zuständig. Dies wird im UI thread eingeleitet. 
+Ja. Der Connection Manager ist für das Versenden von Messages zuständig. Dies wird im UI thread eingeleitet.
 
 ### 12. Are all possible failures handled?
 
@@ -68,7 +68,7 @@ Nein, folgende Fehler wurden gefunden und werden behoben:
 
 ### 15. What pieces of the component can be executed in parallel?
 
-Die Paralellisierung findet in den aufgerufenen Klassen statt und ist somit bereits vorhanden. 
+Die Paralellisierung findet in den aufgerufenen Klassen statt und ist somit bereits vorhanden.
 
 ### 16. Are the operations thread-safe if they need to be?
 
