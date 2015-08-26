@@ -27,6 +27,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
+import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
