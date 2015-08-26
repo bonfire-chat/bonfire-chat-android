@@ -15,4 +15,8 @@
     <color name="orange">#ffff9800</color>
     <color name="green">#ff259b24</color>
 
+    <drawable name="buttondisabled">#77000000</drawable>
+    <drawable name="buttonpressed">#bb0033cc</drawable>
+    <drawable name="buttondefault">#dd0011aa</drawable>
+
 </resources>

@@ -79,12 +79,15 @@ public class MainActivity extends Activity
         }
         if (id.nickname.equals("")) {
             Intent intent = new Intent(this, IdentityActivity.class);
+            intent.putExtra("isWelcomeScreen", "yes");
             startActivity(intent);
-        }
+            finish();
+        } else {
 
-        Intent intent = new Intent(this, ConnectionManager.class);
-        intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
-        this.startService(intent);
+            Intent intent = new Intent(this, ConnectionManager.class);
+            intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
+            this.startService(intent);
+        }
     }
 
     private void initializeStats() {
