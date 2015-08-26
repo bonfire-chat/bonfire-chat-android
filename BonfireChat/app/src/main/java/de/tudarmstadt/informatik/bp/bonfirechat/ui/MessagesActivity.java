@@ -20,10 +20,8 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,20 +30,17 @@ import java.util.List;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry;
 
@@ -83,13 +78,15 @@ public class MessagesActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 if(!messages.get(position).hasFlag(Message.FLAG_IS_LOCATION)) {
                     Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
-                    Log.i(TAG, "starting MessagesActivity with message uuid=" + adapter.getItem(position).uuid);
+                    Log.i(TAG, "starting MessageDetailsActivity with message uuid=" + adapter.getItem(position).uuid);
                     intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
                     startActivity(intent);
                 }
                 else{
-                    //TODO: Hier soll dann die MapsActivity gestartet werden aber ich krieg es nicht hin die Activity zu erstellen
-                    //Intent intent = new Intent(MessagesActivity.this, )
+                    Intent intent = new Intent(MessagesActivity.this, MessageLocationActivity.class);
+                    Log.i(TAG, "starting MessageLocationActivity with message uuid=" + adapter.getItem(position).uuid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                    startActivity(intent);
                 }
             }
         });

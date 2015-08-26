@@ -48,4 +48,5 @@
     <string name="registering_title">Registrieren ...</string>
     <string name="registering_message">Eile mit Weile.</string>
     <string name="registering_failed">Fehler beim Speichern</string>
+    <string name="message_location">Standortdetails</string>
 </resources>

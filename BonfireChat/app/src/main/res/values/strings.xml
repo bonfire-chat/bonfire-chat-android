@@ -48,4 +48,5 @@
     <string name="registering_title">Registering ...</string>
     <string name="registering_message">This will take only a few seconds.</string>
     <string name="registering_failed">Registering failed</string>
+    <string name="message_location">Location</string>
 </resources>
