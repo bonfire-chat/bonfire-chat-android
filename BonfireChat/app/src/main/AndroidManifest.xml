@@ -134,7 +134,6 @@
 
         <activity
             android:name=".ui.IdentityActivity"
-            android:label="@string/title_activity_identity"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:parentActivityName=".ui.MainActivity" >
         </activity>
