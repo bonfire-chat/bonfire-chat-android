@@ -53,4 +53,6 @@
     <string name="action_login_ok">Continue</string>
     <string name="login_phone_number_hint">Your Phone Number</string>
     <string name="login_nickname_hint">Choose A Nickname</string>
+
+    <string name="share_text">I\'m a happy Bonfire Chat user!</string>
 </resources>
