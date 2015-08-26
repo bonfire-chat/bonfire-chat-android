@@ -74,7 +74,7 @@ public class MainActivity extends Activity
         initializeNetwork();
         initializeStats();
 
-        if (UIHelper.isFirstStartExperience(this)) {
+        if (UIHelper.shouldShowOobe(this)) {
             showcaseView = new ShowcaseView.Builder(this)
                     .setStyle(R.style.CustomShowcaseTheme2)
                     .setOnClickListener(this)
