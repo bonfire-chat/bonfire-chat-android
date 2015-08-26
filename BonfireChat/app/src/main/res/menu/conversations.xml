@@ -6,4 +6,14 @@
         app:showAsAction="ifRoom" android:icon="@android:drawable/ic_menu_add" />
     <item android:id="@+id/action_edit_identity" android:title="@string/action_edit_account"
         app:showAsAction="never"/>
+
+
+    <item android:id="@+id/action_share_with_facebook" android:title="Share with Facebook"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_share_with_twitter" android:title="Share with Twitter"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+
+
 </menu>

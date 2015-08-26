@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -20,11 +21,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
@@ -103,12 +106,23 @@ public class ConversationsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (item.getItemId() == R.id.action_add_conversation) {
-            // just open ContactsFragment, because that provides the intended functionality anyway
-            // a list of contacts is shown, and upon clicking one a conversation is shown / added
-            ((MainActivity) getActivity()).navigateFragment(1);
-        } else if (item.getItemId() == R.id.action_edit_identity) {
-            startActivity(new Intent(getActivity(), IdentityActivity.class));
+        switch (item.getItemId()) {
+            case R.id.action_add_conversation:
+                // just open ContactsFragment, because that provides the intended functionality anyway
+                // a list of contacts is shown, and upon clicking one a conversation is shown / added
+                ((MainActivity) getActivity()).navigateFragment(1);
+                break;
+            case R.id.action_edit_identity:
+                startActivity(new Intent(getActivity(), IdentityActivity.class));
+                break;
+            case R.id.action_share_with_facebook:
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://www.facebook.com/sharer/sharer.php?u=" + URLEncoder.encode(ConstOptions.APP_HOMEPAGE))));
+                return true;
+            case R.id.action_share_with_twitter:
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://twitter.com/share?text=" + URLEncoder.encode(getString(R.string.share_text)) + "&url=" + URLEncoder.encode(ConstOptions.APP_HOMEPAGE))));
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

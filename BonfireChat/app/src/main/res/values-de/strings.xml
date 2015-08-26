@@ -52,4 +52,6 @@
     <string name="action_login_ok">Weiter</string>
     <string name="login_phone_number_hint">Deine Handynummer</string>
     <string name="login_nickname_hint">Dein Name</string>
+
+    <string name="share_text">Ich bin ein glücklicher BonfireChat-Nutzer!</string>
 </resources>
