@@ -2,40 +2,45 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.location.Location;
-import android.media.Image;
 import android.net.Uri;
-import android.util.Log;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Comparator;
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
-import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
 /**
  * Created by mw on 05.05.2015.
  */
 public class MessagesAdapter extends ArrayAdapter<Message> {
 
+    Context context;
     boolean[] itemSelected;
     float lat;
     float lng;
 
     class ViewHolder {
-        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
-        TextView messageBody, messageLocation, dateTime;
+        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage, mapPreview;
+        TextView messageBody, dateTime;
+        ProgressBar mapLoading;
     }
 
     public MessagesAdapter(Context context, List<Message> objects) {
         super(context, R.layout.message_rowlayout_received, objects);
+        this.context = context;
         itemSelected = new boolean[objects.size()];
     }
 
@@ -62,10 +67,10 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder v;
+        final ViewHolder v;
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = new ViewHolder();
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             switch (getItem(position).direction()) {
                 case Received:
                     convertView = inflater.inflate(R.layout.message_rowlayout_received, parent, false);
@@ -78,16 +83,17 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
             v.messageBody = (TextView) convertView.findViewById(R.id.message_body);
             v.messageImage = (ImageView) convertView.findViewById(R.id.message_image);
+            v.mapPreview = (ImageView) convertView.findViewById(R.id.map_preview);
+            v.mapLoading = (ProgressBar) convertView.findViewById(R.id.map_loading);
             v.dateTime = (TextView) convertView.findViewById(R.id.message_time);
             v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
             v.encryptedIcon = (ImageView) convertView.findViewById(R.id.message_encrypted);
             v.protocolIcon = (ImageView) convertView.findViewById(R.id.message_proto);
-            v.messageLocation = (TextView) convertView.findViewById(R.id.message_location);
             convertView.setTag(v);
         } else {
-            v = (ViewHolder)convertView.getTag();
+            v = (ViewHolder) convertView.getTag();
         }
-        Message msg = getItem(position);
+        final Message msg = getItem(position);
         v.messageBody.setText(msg.body);
         if (msg.error != null) {
             v.dateTime.setText(msg.error);
@@ -119,20 +125,44 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.messageBody.setVisibility(View.GONE);
             v.messageImage.setVisibility(View.VISIBLE);
             v.messageImage.setImageURI(Uri.parse("file://" + msg.body));
-        }else{
+        }
+        else{
             v.messageBody.setVisibility(View.VISIBLE);
             v.messageImage.setVisibility(View.GONE);
             v.messageImage.setImageDrawable(null);
         }
 
         if(msg.hasFlag(Message.FLAG_IS_LOCATION)) {
-            v.messageLocation.setVisibility(View.VISIBLE);
+            v.messageBody.setText("");
             v.messageBody.setVisibility(View.GONE);
-            v.messageImage.setVisibility(View.GONE);
-            v.messageImage.setImageDrawable(null);
+            v.mapPreview.setVisibility(View.GONE);
+            v.mapLoading.setVisibility(View.VISIBLE);
+
+            // extract coordinates from message
+            String[] coords = msg.body.split(":");
+            LatLng location = new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+
+            // load map preview from Google Maps static map API
+            (new AsyncTask<LatLng, Void, String>() {
+                @Override
+                protected String doInBackground(LatLng... locations) {
+                    // download map preview
+                    return BonfireAPI.getMapPreviewAsFilename(locations[0], msg.uuid.toString());
+                }
+                @Override
+                protected void onPostExecute(String filename) {
+                    // display map preview image
+                    v.mapPreview.setImageURI(Uri.parse("file://" + filename));
+                    v.mapPreview.setVisibility(View.VISIBLE);
+                    v.mapLoading.setVisibility(View.GONE);
+                }
+            }).execute(location);
         }
         else {
-            v.messageLocation.setVisibility(View.GONE);
+            v.messageBody.setVisibility(View.VISIBLE);
+            v.mapPreview.setVisibility(View.GONE);
+            v.mapLoading.setVisibility(View.GONE);
+            v.mapPreview.setImageDrawable(null);
         }
         //convertView.setSelected(itemSelected[position]);
         //convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);

@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -52,6 +54,10 @@ public class MessageLocationActivity extends FragmentActivity implements OnMapRe
         // extract position from message
         String[] coords = message.body.split(":");
         LatLng position = new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+
+        // set map position
+        CameraUpdate center = CameraUpdateFactory.newLatLng(position);
+        map.moveCamera(center);
 
         // show position marker
         map.addMarker(new MarkerOptions()
