@@ -66,7 +66,7 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
 
         v.icon.setImageResource(R.mipmap.ic_launcher);
         v.name.setText(getItem(position).getName());
-        v.lastMessage.setText(getItem(position).getLastMessage());
+        v.lastMessage.setText(getItem(position).getLastMessage(context));
         v.lastMessageDate.setText(getItem(position).getLastMessageDate());
         Log.d("ConversationsAdapter", "getview position=" + position + "   selected=" + itemSelected[position]);
         convertView.setSelected(itemSelected[position]);
