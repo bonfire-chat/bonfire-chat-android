@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.bp.bonfirechat.network.gcm;
+package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.app.Activity;
 import android.content.ComponentName;

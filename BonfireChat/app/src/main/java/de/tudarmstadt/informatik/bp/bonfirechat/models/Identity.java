@@ -4,25 +4,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 
 import org.abstractj.kalium.crypto.Box;
 import org.abstractj.kalium.keys.KeyPair;
 import org.abstractj.kalium.keys.PrivateKey;
 
-import java.io.BufferedOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Hashtable;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.gcm.GcmBroadcastReceiver;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver;
 
 /**
  * Created by mw on 18.05.15.
