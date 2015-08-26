@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bitte aktiviere Bluetooth"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:text="Damit die App richtig funktioniert, wird Bluetooth benötigt."
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="20dp"
+        android:layout_above="@+id/enable_bluetooth"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth aktivieren"
+        android:id="@+id/enable_bluetooth"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        />
+
+
+</RelativeLayout>

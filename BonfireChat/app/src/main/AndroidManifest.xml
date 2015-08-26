@@ -145,6 +145,10 @@
                 <data android:mimeType="application/de.tudarmstadt.informatik.bp.bonfirechat"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.EnableBluetoothActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
 
     </application>
 

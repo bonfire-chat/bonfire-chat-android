@@ -3,17 +3,19 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 
 /**
  * Created by mw on 21.05.15.
  */
-public class InputBox {
+public class UIHelper {
 
     public interface OnOkClickListener {
         void onOkClicked(String input);
@@ -63,4 +65,18 @@ public class InputBox {
         AlertDialog d = b.create();
         d.show();
     }
+
+
+
+    /**
+     * Per the design guidelines, you should show the drawer on launch until the user manually
+     * expands it. This shared preference tracks this.
+     */
+    public static final String PREF_SHOW_OOBE = "show_oobe";
+    public static boolean shouldShowOobe(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_SHOW_OOBE, true) || ConstOptions.ALWAYS_SHOW_OOBE;
+    }
+
+
 }

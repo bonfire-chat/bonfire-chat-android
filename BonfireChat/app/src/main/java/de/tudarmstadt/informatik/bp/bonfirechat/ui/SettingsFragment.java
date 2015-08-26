@@ -1,14 +1,12 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 //import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
 
@@ -21,16 +19,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Map;
-
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.IProtocol;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 
 /**
  * settings list
@@ -79,9 +72,9 @@ public class SettingsFragment extends PreferenceFragment {
         findPreference("debugShow").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                String debug = NetworkOptions.getDebugInfo();
+                String debug = ConstOptions.getDebugInfo();
                 Log.d("DEBUG", debug);
-                InputBox.Info(getActivity(), "Debug", debug);
+                UIHelper.Info(getActivity(), "Debug", debug);
                 return true;
             }
         });

@@ -20,10 +20,8 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,20 +30,17 @@ import java.util.List;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.NetworkOptions;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.InputBox;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 
 
 public class MessagesActivity extends Activity {
@@ -210,13 +205,13 @@ public class MessagesActivity extends Activity {
                         "\nName: " + conversation.getPeer().getFirstName() + " "+conversation.getPeer().getLastName() +
                         "\nXMPP ID: " + conversation.getPeer().getXmppId();
             }
-            InputBox.Info(this, "Info", info);
+            UIHelper.Info(this, "Info", info);
             return true;
 
         } else if (id == R.id.action_edit_title) {
-            InputBox.InputBox(this, getString(R.string.action_edit_title), "",
+            UIHelper.InputBox(this, getString(R.string.action_edit_title), "",
                     conversation.getName(),
-                    new InputBox.OnOkClickListener() {
+                    new UIHelper.OnOkClickListener() {
                         @Override
                         public void onOkClicked(String input) {
                             conversation.title = input;
@@ -238,9 +233,9 @@ public class MessagesActivity extends Activity {
             startActivityForResult(i, 42);
 
         } else if (id == R.id.action_show_debug) {
-            String debug = NetworkOptions.getDebugInfo();
+            String debug = ConstOptions.getDebugInfo();
             Log.d("DEBUG", debug);
-            InputBox.Info(this, "Debug", debug);
+            UIHelper.Info(this, "Debug", debug);
         }
 
         return super.onOptionsItemSelected(item);
