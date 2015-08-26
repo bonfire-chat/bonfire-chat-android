@@ -70,9 +70,10 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        GcmBroadcastReceiver.registerForGcm(this);
+
         if (!initializeNetwork()) return;
 
-        GcmBroadcastReceiver.registerForGcm(this);
         GpsTracker.init(this);
         initializeStats();
 
