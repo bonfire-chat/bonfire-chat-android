@@ -70,9 +70,10 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        if (!initializeNetwork()) return;
+
         GcmBroadcastReceiver.registerForGcm(this);
         GpsTracker.init(this);
-        initializeNetwork();
         initializeStats();
 
         if (UIHelper.shouldShowOobe(this)) {
@@ -115,7 +116,7 @@ public class MainActivity extends Activity
     // ####### End First-Start Tutorial #####################################################
 
 
-    private void initializeNetwork() {
+    private boolean initializeNetwork() {
         BonfireData db = BonfireData.getInstance(this);
         Identity id = db.getDefaultIdentity();
         if (id == null) {
@@ -127,10 +128,12 @@ public class MainActivity extends Activity
             intent.putExtra("isWelcomeScreen", "yes");
             startActivity(intent);
             finish();
+            return false;
         } else {
             Intent intent = new Intent(this, ConnectionManager.class);
             intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
             this.startService(intent);
+            return true;
         }
     }
 
