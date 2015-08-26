@@ -13,6 +13,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 public class ConstOptions {
 
     public static final boolean ALWAYS_SHOW_OOBE = false;
+    public static final String APP_HOMEPAGE = "https://bonfire.projects.teamwiki.net";
 
 
 
