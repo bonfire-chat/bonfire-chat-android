@@ -68,7 +68,7 @@ public class NavigationDrawerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firstStart = !UIHelper.shouldShowOobe(getActivity());
+        firstStart = UIHelper.shouldShowOobe(getActivity());
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
@@ -183,7 +183,7 @@ public class NavigationDrawerFragment extends Fragment {
                     firstStart = false;
                     SharedPreferences sp = PreferenceManager
                             .getDefaultSharedPreferences(getActivity());
-                    sp.edit().putBoolean(UIHelper.PREF_SHOW_OOBE, true).apply();
+                    sp.edit().putBoolean(UIHelper.PREF_SHOW_OOBE, false).apply();
                 }
                 getActionBar().setTitle(R.string.app_name);
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
