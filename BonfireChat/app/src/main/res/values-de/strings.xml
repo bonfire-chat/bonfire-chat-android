@@ -48,5 +48,8 @@
     <string name="registering_title">Registrieren ...</string>
     <string name="registering_message">Eile mit Weile.</string>
     <string name="registering_failed">Fehler beim Speichern</string>
+
     <string name="action_login_ok">Weiter</string>
+    <string name="login_phone_number_hint">Deine Handynummer</string>
+    <string name="login_nickname_hint">Dein Name</string>
 </resources>
