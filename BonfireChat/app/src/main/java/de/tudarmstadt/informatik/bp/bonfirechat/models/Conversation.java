@@ -44,22 +44,11 @@ public class Conversation {
         this.messages.addAll(messages);
     }
 
-    public String getLastMessage(Context context) {
+    public Message getLastMessage() {
         if(messages.size() > 0) {
-            Message message = messages.get(messages.size() - 1);
-            // show placeholder descriptions for images and locations
-            if (message.hasFlag(Message.FLAG_IS_FILE)) {
-                return context.getString(R.string.image);
-            }
-            else if (message.hasFlag(Message.FLAG_IS_LOCATION)) {
-                return context.getString(R.string.location);
-            }
-            else {
-                return message.toString();
-            }
-        }
-        else {
-            return "";
+            return messages.get(messages.size() - 1);
+        } else {
+            return null;
         }
     }
     public String getLastMessageDate() {
