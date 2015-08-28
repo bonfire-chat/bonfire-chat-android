@@ -95,11 +95,13 @@ public class IdentityActivity extends Activity  {
 
                 if (!StringHelper.regexMatch("\\d+", phone.getText().toString())) {
                     phone.setError(getString(R.string.phone_error));
+                    phone.requestFocus();
                 }
                 // validate nickname at last, so that it will be the one error message
                 // to be shown (the others will collapse to a red error sign)
                 if (!StringHelper.regexMatch("\\w+", nickname.getText().toString())) {
                     nickname.setError(getString(R.string.nickname_error));
+                    nickname.requestFocus();
                 }
                 return;
 
@@ -129,6 +131,7 @@ public class IdentityActivity extends Activity  {
                         // nickname already taken?
                         if (s.contains("Duplicate entry")) {
                             nickname.setError(getString(R.string.nickname_already_taken));
+                            nickname.requestFocus();
                         }
                         // other error
                         else {

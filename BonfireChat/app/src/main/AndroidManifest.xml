@@ -134,8 +134,8 @@
 
         <activity
             android:name=".ui.IdentityActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            android:parentActivityName=".ui.MainActivity" >
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:parentActivityName=".ui.MainActivity">
         </activity>
 
         <activity

@@ -101,7 +101,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/action_login_ok"
         android:id="@+id/save"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/button"
         android:textColor="#ffffff" />
