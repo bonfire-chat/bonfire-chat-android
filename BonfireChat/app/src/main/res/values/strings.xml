@@ -77,7 +77,7 @@
     <string name="tutorial_messages_share_location">share location</string>
     <string name="tutorial_messages_share_location_desc">click here to share your current location</string>
     <string name="tutorial_messages_details">Last but not least</string>
-    <string name="tutorial_messages_details_desc">to see details about a message\'s transmission, click on it</string>
+    <string name="tutorial_messages_details_desc">to see details about a message\'s transmission, long-click on it and select the details icon</string>
     <string name="tutorial_contacts_your_contact">your contact data</string>
     <string name="tutorial_contacts_your_contact_desc">click here to share your contact data with others</string>
     <string name="tutorial_contacts_scan_qr">scan QR-code</string>
