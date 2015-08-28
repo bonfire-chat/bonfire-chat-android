@@ -78,7 +78,7 @@ public class BluetoothProtocol extends SocketProtocol {
      * of bluetooth discoverability via the required system UI.
      */
     public void continueStartup() {
-        Toast.makeText(ctx, "initalizing bluetooth...", Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "initializing Bluetooth");
         initializeBluetooth();
         
     }
