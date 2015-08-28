@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.util.Log;
@@ -39,15 +38,13 @@ import java.util.UUID;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 
 
@@ -58,7 +55,6 @@ public class MessagesActivity extends Activity {
     private MessagesAdapter adapter;
     private Conversation conversation;
     private final BonfireData db = BonfireData.getInstance(this);
-    int preferredProtocol = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +74,7 @@ public class MessagesActivity extends Activity {
         messages = db.getMessages(conversation);
         adapter = new MessagesAdapter(this, messages);
         lv.setAdapter(adapter);
+        lv.setItemsCanFocus(true);
 
         // show tutorial on first use
         if (UIHelper.shouldShowConversationTutorial(this)) {
