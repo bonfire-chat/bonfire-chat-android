@@ -72,6 +72,7 @@ public class MainActivity extends Activity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         GcmBroadcastReceiver.registerForGcm(this);
+
         if (!initializeIdentiy()) return;
 
         if (UIHelper.shouldShowOobe(this)) {
