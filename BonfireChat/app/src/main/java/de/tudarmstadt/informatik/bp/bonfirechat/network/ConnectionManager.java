@@ -64,10 +64,6 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.MSG_SENT_BROADCAST";
     public static final String MSG_ACKED_BROADCAST_EVENT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MSG_ACKED_BROADCAST";
-    public static final String CONNECTED_BROADCAST_EVENT =
-            "de.tudarmstadt.informatik.bp.bonfirechat.CONNECTED_BROADCAST";
-    public static final String CONNECTION_CLOSED_BROADCAST_EVENT =
-            "de.tudarmstadt.informatik.bp.bonfirechat.CONNECTION_CLOSED_BROADCAST";
     public static final String NEW_CONVERSATION_BROADCAST_EVENT =
             "de.tudarmstadt.informatik.bp.bonfirechat.NEW_CONVERSATION_BROADCAST";
 
@@ -75,8 +71,6 @@ public class ConnectionManager extends NonStopIntentService {
 
     public static final String EXTENDED_DATA_CONVERSATION_ID =
             "de.tudarmstadt.informatik.bp.bonfirechat.CONVERSATION_ID";
-    public static final String EXTENDED_DATA_PEER_ID =
-            "de.tudarmstadt.informatik.bp.bonfirechat.PEER_ID";
     public static final String EXTENDED_DATA_PROTOCOL_CLASS =
             "de.tudarmstadt.informatik.bp.bonfirechat.PROTOCOL_CLASS";
     public static final String EXTENDED_DATA_MESSAGE_TEXT =
@@ -315,14 +309,13 @@ public class ConnectionManager extends NonStopIntentService {
             stackBuilder.addParentStack(MessagesActivity.class);
             stackBuilder.addNextIntent(intent);
             final PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-            //PendingIntent.getActivity(ConnectionManager.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
             final Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
             final NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ConnectionManager.this)
                             .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
                             .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                             .setContentTitle(conversation.title)
-                            .setContentText(message.body)
+                            .setContentText(message.getDisplayBody(ConnectionManager.this))
                             .setContentIntent(pi)
                             .setSound(sound)
                             .setAutoCancel(true)
@@ -441,20 +434,6 @@ public class ConnectionManager extends NonStopIntentService {
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         return preferences.getBoolean("enable_" + protocol.getSimpleName(), true);
     }
-
-    private IProtocol chooseConnection() {
-        for(Class protocol : registeredProtocols) {
-            // Bluetooth enabled and ready?
-            if (isProtocolEnabled(protocol)) {
-                IProtocol p = getOrCreateConnection(protocol);
-                if (p.canSend()) {
-                    return p;
-                }
-            }
-        }
-        return null;
-    }
-
 
     private void acknowledgePacket(Envelope packetToAck) {
         AckPacket ack = new AckPacket(packetToAck.uuid, packetToAck.recipientPublicKey, packetToAck.senderPublicKey);
