@@ -94,7 +94,6 @@ public class Identity implements IPublicIdentity {
             String plaintext = "nickname=" + URLEncoder.encode(nickname, "UTF-8")
                     + "&phone=" + URLEncoder.encode(phone, "UTF-8")
                     + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
-            Log.e(TAG, plaintext);
 
             Box b = new Box(BonfireAPI.SERVER_PUBLICKEY, privateKey);
             byte[] nonce = CryptoHelper.generateNonce();
@@ -109,11 +108,9 @@ public class Identity implements IPublicIdentity {
                 serverUid = Integer.valueOf(result.substring(3));
                 return null;
             } else {
-                Log.e(TAG, result);
                 return result;
             }
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
             e.printStackTrace();
             return e.toString();
         }
