@@ -74,6 +74,7 @@ public class SearchUserActivity extends Activity {
             }
         });
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        searchView.requestFocus();
 
         return true;
     }
