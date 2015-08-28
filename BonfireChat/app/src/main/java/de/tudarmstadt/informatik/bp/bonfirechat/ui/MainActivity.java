@@ -11,8 +11,10 @@ import android.app.ActionBar;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -76,11 +78,15 @@ public class MainActivity extends Activity
         initializeStats();
 
         if (UIHelper.shouldShowOobe(this)) {
-            showcaseView = new ShowcaseView.Builder(this)
-                    .setStyle(R.style.CustomShowcaseTheme2)
-                    .setOnClickListener(this)
-                    .build();
-            onClick(null);
+            // only show showcase when drawer is really open, in case
+            // the activity was restarted due to rotation
+            if (((DrawerLayout) findViewById(R.id.drawer_layout)).isDrawerVisible(findViewById(R.id.navigation_drawer))) {
+                showcaseView = new ShowcaseView.Builder(this)
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setOnClickListener(this)
+                        .build();
+                onClick(null);
+            }
         }
     }
 
