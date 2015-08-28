@@ -185,13 +185,14 @@ public class BonfireAPI {
     }
 
 
-    public static void sendGcmMessage(Identity identity, byte[] targetPubkey, String nextHop, byte[] serializedEnvelope) throws IOException {
+    public static void sendGcmMessage(Identity identity, byte[] targetPubkey, String nextHop, String uuid, byte[] serializedEnvelope) throws IOException {
         String key = CryptoHelper.toBase64(targetPubkey);
 
         Hashtable<String, byte[]> body = new Hashtable<>();
         body.put("senderId", encode(String.valueOf(identity.getServerUid())));
         body.put("recipientPublicKey", encode(key));
         body.put("nextHopId", encode(nextHop));
+        body.put("uuid", encode(uuid));
         body.put("msg", serializedEnvelope);
         httpPost(METHOD_SEND_MESSAGE, body);
     }
