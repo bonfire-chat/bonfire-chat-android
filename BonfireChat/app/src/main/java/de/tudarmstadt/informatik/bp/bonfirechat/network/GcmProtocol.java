@@ -11,9 +11,13 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 
 /**
@@ -45,13 +49,33 @@ public class GcmProtocol extends SocketProtocol {
 
     public void onHandleGcmIntent(Intent intent) {
         try {
-            final String dataString = intent.getStringExtra("msg");
             final String senderId = intent.getStringExtra("senderId");
-            Log.i("GcmProtocol", "onHandleGcmIntent: "+ dataString);
-            //byte[] data = dataString.getBytes("ascii");
-            //Log.i("GcmProtocol", "onHandleGcmIntent: "+ StreamHelper.byteArrayToHexString(data));
-            final ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT));
-            final Packet packet = receive(bais);
+            // Messages too long for GCM must be fetched from server
+            if (intent.hasExtra("uuid")) {
+                HttpURLConnection urlConnection = null;
+                try {
+                    urlConnection = (HttpURLConnection)
+                            new URL(BonfireAPI.API_ENDPOINT + "/message?retrieve=" + intent.hasExtra("uuid"))
+                            .openConnection();
+                    onHandleMessage(urlConnection.getInputStream(), senderId);
+                } finally {
+                    if(urlConnection == null) urlConnection.disconnect();
+                }
+            } else {
+                final String dataString = intent.getStringExtra("msg");
+                Log.i("GcmProtocol", "onHandleGcmIntent: "+ dataString);
+                onHandleMessage(new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT)), senderId);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            Log.e("GcmProtocol", "Unable to deserialize: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    private void onHandleMessage(InputStream inputStream, String senderId) {
+        try {
+            final Packet packet = receive(inputStream);
 
             //TODO: HACK - this should better be done by the server
             if (packet.getNextHop() != null) packet.removeNextHop();
@@ -60,8 +84,6 @@ public class GcmProtocol extends SocketProtocol {
 
             packet.addPathNode(serverFakeMacAddress);
             packetListener.onPacketReceived(this, packet);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             Log.e("GcmProtocol", "Unable to deserialize: "+e.getMessage());
             e.printStackTrace();
@@ -81,7 +103,7 @@ public class GcmProtocol extends SocketProtocol {
             }
             //end todo
 
-            BonfireAPI.sendGcmMessage(identity, packet.recipientPublicKey, nextHopId, out.toByteArray());
+            BonfireAPI.sendGcmMessage(identity, packet.recipientPublicKey, nextHopId, packet.uuid.toString(), out.toByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
