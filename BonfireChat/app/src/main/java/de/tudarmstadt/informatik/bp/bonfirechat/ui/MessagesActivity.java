@@ -190,28 +190,28 @@ public class MessagesActivity extends Activity {
         public void onClick(View view) {
             switch(tutorial_counter++) {
                 case 0:
-                    showcaseView.setContentTitle("Titel ändern");
-                    showcaseView.setContentText("Hier klicken, um den Titel dieser Unterhaltung zu ändern");
+                    showcaseView.setContentTitle(getString(R.string.tutorial_messages_change_title));
+                    showcaseView.setContentText(getString(R.string.tutorial_messages_change_title_desc));
                     showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_edit_title));
-                    showcaseView.setButtonText("Weiter");
+                    showcaseView.setButtonText(getString(R.string.next));
                     break;
                 case 1:
-                    showcaseView.setContentTitle("Bild verschicken");
-                    showcaseView.setContentText("Klicke hier, um ein Bild zu versenden");
+                    showcaseView.setContentTitle(getString(R.string.tutorial_messages_share_image));
+                    showcaseView.setContentText(getString(R.string.tutorial_messages_share_image_desc));
                     showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_share_image));
-                    showcaseView.setButtonText("Weiter");
+                    showcaseView.setButtonText(getString(R.string.next));
                     break;
                 case 2:
-                    showcaseView.setContentTitle("Standort teilen");
-                    showcaseView.setContentText("Klicke hier, um deinen Standort zu übertragen");
+                    showcaseView.setContentTitle(getString(R.string.tutorial_messages_share_location));
+                    showcaseView.setContentText(getString(R.string.tutorial_messages_share_location_desc));
                     showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_share_location));
-                    showcaseView.setButtonText("Weiter");
+                    showcaseView.setButtonText(getString(R.string.next));
                     break;
                 case 3:
-                    showcaseView.setContentTitle("Übrigens");
-                    showcaseView.setContentText("Klicke auf eine Nachricht, um Details zur Übertragung anzusehen.");
+                    showcaseView.setContentTitle(getString(R.string.tutorial_messages_details));
+                    showcaseView.setContentText(getString(R.string.tutorial_messages_details_desc));
                     showcaseView.setTarget(new PointTarget(200, 600));
-                    showcaseView.setButtonText("Alles klar");
+                    showcaseView.setButtonText(getString(R.string.got_it));
                     break;
                 case 4:
                     UIHelper.flagShownConversationTutorial(MessagesActivity.this);

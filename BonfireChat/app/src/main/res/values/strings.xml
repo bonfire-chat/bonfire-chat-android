@@ -65,4 +65,27 @@
     <string name="registering">Registering with server …</string>
     <string name="registering_error">Could not register with server, please try again later.\nAre you connected to the internet?</string>
     <string name="nickname_already_taken">this nickname is already taken</string>
+
+    <string name="next">next</string>
+    <string name="got_it">got it</string>
+    <string name="letsgo">Let\'s go</string>
+
+    <string name="tutorial_messages_change_title">change title</string>
+    <string name="tutorial_messages_change_title_desc">click here to change the title of this conversation</string>
+    <string name="tutorial_messages_share_image">send an image</string>
+    <string name="tutorial_messages_share_image_desc">click here to send an image in a message</string>
+    <string name="tutorial_messages_share_location">share location</string>
+    <string name="tutorial_messages_share_location_desc">click here to share your current location</string>
+    <string name="tutorial_messages_details">Last but not least</string>
+    <string name="tutorial_messages_details_desc">to see details about a message\'s transmission, click on it</string>
+    <string name="tutorial_contacts_your_contact">your contact data</string>
+    <string name="tutorial_contacts_your_contact_desc">click here to share your contact data with others</string>
+    <string name="tutorial_contacts_scan_qr">scan QR-code</string>
+    <string name="tutorial_contacts_scan_qr_desc">click here to scan a QR-code and add a contact</string>
+    <string name="tutorial_contacts_search">search for contacts</string>
+    <string name="tutorial_contacts_search_desc">click here to search for contact on the internet</string>
+    <string name="tutorial_main_welcome">Welcome!</string>
+    <string name="tutorial_main_welcome_desc">you can add contacts and start conversations</string>
+    <string name="tutorial_main_your_contact">your contact data</string>
+    <string name="tutorial_main_your_contact_desc">click here to share your contact data with others</string>
 </resources>

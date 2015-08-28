@@ -94,22 +94,22 @@ public class ContactsFragment extends Fragment {
         public void onClick(View view) {
             switch(tutorial_counter++) {
                 case 0:
-                    showcaseView.setContentTitle("Deine Kontaktdaten");
-                    showcaseView.setContentText("Hier klicken, um deine Kontaktdaten weiterzugeben");
+                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_your_contact));
+                    showcaseView.setContentText(getString(R.string.tutorial_contacts_your_contact_desc));
                     showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_nfc));
-                    showcaseView.setButtonText("Weiter");
+                    showcaseView.setButtonText(getString(R.string.next));
                     break;
                 case 1:
-                    showcaseView.setContentTitle("QR-Code scannen");
-                    showcaseView.setContentText("Hier klicken, um einen QR-Code zu scannen, um einen Kontakt hinzuzufügen");
+                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_scan_qr));
+                    showcaseView.setContentText(getString(R.string.tutorial_contacts_scan_qr_desc));
                     showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_qr));
-                    showcaseView.setButtonText("Weiter");
+                    showcaseView.setButtonText(getString(R.string.next));
                     break;
                 case 2:
-                    showcaseView.setContentTitle("Kontakt suchen");
-                    showcaseView.setContentText("Hier klicken, um einen Kontakt über das Internet zu suchen");
+                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_search));
+                    showcaseView.setContentText(getString(R.string.tutorial_contacts_search_desc));
                     showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_search));
-                    showcaseView.setButtonText("Alles klar");
+                    showcaseView.setButtonText(getString(R.string.got_it));
                     break;
                 case 3:
                     UIHelper.flagShownContactsTutorial(getActivity());

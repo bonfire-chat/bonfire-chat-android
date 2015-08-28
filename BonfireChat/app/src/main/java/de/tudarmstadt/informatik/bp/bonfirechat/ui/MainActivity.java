@@ -106,16 +106,16 @@ public class MainActivity extends Activity
     public void onClick(View v) {
         switch(tutorial_counter++) {
             case 0:
-                showcaseView.setContentTitle("Willkommen!");
-                showcaseView.setContentText("Hier kannst du Kontakte hinzufügen und Konversationen starten");
+                showcaseView.setContentTitle(getString(R.string.tutorial_main_welcome));
+                showcaseView.setContentText(getString(R.string.tutorial_main_welcome_desc));
                 showcaseView.setTarget(new PointTarget(100, 420));
-                showcaseView.setButtonText("Weiter");
+                showcaseView.setButtonText(getString(R.string.next));
                 break;
             case 1:
-                showcaseView.setContentTitle("Deine Kontaktdaten");
-                showcaseView.setContentText("Hier klicken, um deine Kontaktdaten weiterzugeben");
+                showcaseView.setContentTitle(getString(R.string.tutorial_main_your_contact));
+                showcaseView.setContentText(getString(R.string.tutorial_main_your_contact_desc));
                 showcaseView.setTarget(new ViewTarget(R.id.btnShareIdentityQR, this));
-                showcaseView.setButtonText("Los geht's");
+                showcaseView.setButtonText(getString(R.string.letsgo));
                 break;
             case 2:
                 showcaseView.hide();
