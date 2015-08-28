@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,8 +14,12 @@ import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -83,12 +88,13 @@ public class MessageDetailsActivity extends Activity {
     }
 
     class ViewHolder {
-        ImageView encryptedIcon, protocolIcon, ackIcon;
+        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
         TextView messageBody, dateTime;
+        ProgressBar thumbLoading;
     }
 
     private void inflateMessageView(ViewStub stub) {
-        ViewHolder v = new ViewHolder();
+        final ViewHolder v = new ViewHolder();
 
         switch (message.direction()) {
             case Received:
@@ -103,9 +109,13 @@ public class MessageDetailsActivity extends Activity {
 
         View view = stub.inflate();
 
-        //view.findViewById(R.id.message_photo).setVisibility(View.GONE);
+        view.findViewById(R.id.message_photo).setVisibility(View.GONE);
+
         v.messageBody = (TextView) view.findViewById(R.id.message_body);
+        v.messageImage = (ImageView) view.findViewById(R.id.message_image);
+        v.thumbLoading = (ProgressBar) view.findViewById(R.id.thumb_loading);
         v.dateTime = (TextView) view.findViewById(R.id.message_time);
+        v.contactPhoto = (ImageView) view.findViewById(R.id.message_photo);
         v.encryptedIcon = (ImageView) view.findViewById(R.id.message_encrypted);
         v.protocolIcon = (ImageView) view.findViewById(R.id.message_proto);
         view.setTag(v);
@@ -135,6 +145,59 @@ public class MessageDetailsActivity extends Activity {
         else if (message.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
         else if (message.hasFlag(Message.FLAG_PROTO_CLOUD)) v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
         else v.protocolIcon.setVisibility(View.GONE);
+
+        if (message.hasFlag(Message.FLAG_IS_FILE)) {
+            // Handle message type "FILE" (image)
+            v.messageBody.setVisibility(View.GONE);
+            v.messageImage.setVisibility(View.VISIBLE);
+            v.messageImage.setImageURI(Uri.parse("file://" + message.body));
+            v.thumbLoading.setVisibility(View.GONE);
+
+        } else if(message.hasFlag(Message.FLAG_IS_LOCATION)) {
+            // Handle message type "LOCATION"
+            v.messageBody.setVisibility(View.GONE);
+
+            final File previewFile = message.getImageFile();
+            if (previewFile.exists()) {
+                v.messageImage.setImageURI(Uri.parse("file://" + previewFile.getAbsolutePath()));
+                v.messageImage.setVisibility(View.VISIBLE);
+                v.thumbLoading.setVisibility(View.GONE);
+            } else {
+                v.messageImage.setVisibility(View.GONE);
+                v.thumbLoading.setVisibility(View.VISIBLE);
+
+                // extract coordinates from message
+                String[] coords = message.body.split(":");
+                LatLng location = new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+
+                // load map preview from Google Maps static map API
+                (new AsyncTask<LatLng, Void, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(LatLng... locations) {
+                        // download map preview
+                        return BonfireAPI.downloadMapPreview(locations[0], previewFile);
+                    }
+                    @Override
+                    protected void onPostExecute(Boolean ok) {
+                        if (ok ) {
+                            // display map preview image
+                            v.messageImage.setImageURI(Uri.parse("file://" + previewFile.getAbsolutePath()));
+                            v.messageImage.setVisibility(View.VISIBLE);
+                        } else {
+                            v.messageBody.setVisibility(View.VISIBLE);
+                        }
+                        v.thumbLoading.setVisibility(View.GONE);
+                    }
+                }).execute(location);
+            }
+
+        } else {
+            // Handle message type "TEXT"
+            v.messageBody.setVisibility(View.VISIBLE);
+            v.thumbLoading.setVisibility(View.GONE);
+            v.messageImage.setVisibility(View.GONE);
+            v.messageImage.setImageDrawable(null);
+        }
     }
 
     private void inflateContactsView() {
