@@ -1,7 +1,10 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.data;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Environment;
+import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -50,6 +53,7 @@ public class BonfireAPI {
 
     public static final String METHOD_TRACEROUTE = "traceroute";
     public static final String METHOD_SEND_MESSAGE = "notify";
+    public static final String METHOD_CHECK_CONTACTS = "phonecontacts";
 
     private static final String DOWNLOADS_DIRECTORY = "Bonfire Downloads\\";
 
@@ -223,4 +227,49 @@ public class BonfireAPI {
     }
 
 
+    public static int updateContacts(Context context) {
+        List<String> numbers = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
+        while (phones.moveToNext())
+        {
+            String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            names.add(name);
+            String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            numbers.add(phoneNumber);
+        }
+        phones.close();
+
+        BonfireData db = BonfireData.getInstance(context);
+        String self = db.getDefaultIdentity().getPublicKey().asBase64();
+
+        Hashtable<String, byte[]> body = new Hashtable<>();
+        body.put("numbers", encode(TextUtils.join(",", numbers)));
+        int newContacts = 0;
+        try {
+            String result = httpPost(METHOD_CHECK_CONTACTS, body);
+            String[] pubkeys = result.split("\\n");
+            for(int i=0; i<pubkeys.length && i<names.size(); i++) {
+                if ("".equals(pubkeys[i]))continue;
+                if (self.equals(pubkeys[i]))continue;
+                if (onNewPhoneContact(db, numbers.get(i), pubkeys[i], names.get(i)))
+                    newContacts++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return newContacts;
+    }
+
+    public static boolean onNewPhoneContact(BonfireData db, String phone, String pubkey, String nickname) {
+        Contact contact = db.getContactByPublicKey(pubkey);
+        if (contact == null) {
+            contact = new Contact(nickname, "", "", phone, pubkey, "", "", "", 0);
+            db.createContact(contact);
+            return true;
+        } else {
+            // update phone number?
+            return false;
+        }
+    }
 }

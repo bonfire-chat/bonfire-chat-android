@@ -11,4 +11,7 @@
     <item android:id="@+id/action_search" android:title="@string/Search"
         android:showAsAction="always" android:icon="@drawable/ic_search_black_24dp"/>
 
+    <item android:id="@+id/action_update_contacts" android:title="@string/action_refresh"
+        android:showAsAction="never"/>
+
 </menu>

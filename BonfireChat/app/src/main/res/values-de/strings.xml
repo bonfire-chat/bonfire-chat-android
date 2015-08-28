@@ -64,6 +64,7 @@
     <string name="registering">Registrierung läuft …</string>
     <string name="registering_error">Registrierung fehlgeschlagen, versuche es später erneut.\nBist du mit dem Internet verbunden?</string>
     <string name="nickname_already_taken">Dieser Nickname ist schon vergeben.</string>
+    <string name="action_refresh">Aktualisieren</string>
 
     <string name="next">Weiter</string>
     <string name="got_it">Alles klar</string>

@@ -91,4 +91,6 @@
 
     <string name="action_details">details</string>
     <string name="message_image">image</string>
+
+    <string name="action_refresh">Refresh</string>
 </resources>
