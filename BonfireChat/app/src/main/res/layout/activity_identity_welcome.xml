@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/welcome_background">
 
-
     <TextView android:layout_height="wrap_content" android:layout_width="wrap_content"
         android:text="Bonfire" android:textSize="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
         android:textColor="#ffffff"
         android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="center_horizontal"
         />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:background="#99ffffff"
         android:padding="15dp"
-        android:layout_marginBottom="20dp">
-
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/linearLayoutInputs" >
 
         <EditText
             android:layout_width="match_parent"
@@ -32,30 +31,79 @@
             android:ems="10"
             android:id="@+id/txt_nickname" />
 
-
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="phone"
             android:hint="@string/login_phone_number_hint"
             android:ems="10"
             android:id="@+id/txt_phoneNumber"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#99ffffff"
+        android:padding="15dp"
+        android:layout_marginBottom="15dp"
+        android:id="@+id/linearLayoutRegistering"
+        android:visibility="gone" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBarRegistering"
+            style="@android:style/Widget.ProgressBar.Inverse"
+            android:visibility="visible"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/registering"
+            android:id="@+id/textViewRegistering"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#99ffffff"
+        android:padding="15dp"
+        android:layout_marginBottom="15dp"
+        android:id="@+id/linearLayoutError"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/registering_error"
+            android:textColor="#ffcc0000"
+            android:id="@+id/textViewError"
+            android:layout_gravity="center_horizontal"
+            android:enabled="false"
+            android:gravity="center_horizontal" />
 
     </LinearLayout>
 
     <Button
         android:layout_width="285dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:text="@string/action_login_ok"
         android:id="@+id/save"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/button"
-        android:textColor="#ffffff"
-        />
+        android:textColor="#ffffff" />
 
-
-</RelativeLayout>
+</LinearLayout>

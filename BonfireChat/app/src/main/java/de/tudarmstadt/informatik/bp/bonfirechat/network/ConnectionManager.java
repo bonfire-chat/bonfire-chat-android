@@ -343,7 +343,6 @@ public class ConnectionManager extends NonStopIntentService {
             id.registerWithServer();
             db.updateIdentity(id);
 
-            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             for(Class protocol : registeredProtocols) {
                 if (isProtocolEnabled(protocol)) {
                     getOrCreateConnection(protocol);
