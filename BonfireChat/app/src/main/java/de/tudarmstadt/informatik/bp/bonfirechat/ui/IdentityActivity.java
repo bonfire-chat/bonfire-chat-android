@@ -83,8 +83,11 @@ public class IdentityActivity extends Activity  {
         @Override
         public void onClick(View v) {
 
-            EditText nickname = getEdit(R.id.txt_nickname),
-                     phone = getEdit(R.id.txt_phoneNumber);
+            final EditText nickname = getEdit(R.id.txt_nickname);
+            final EditText phone = getEdit(R.id.txt_phoneNumber);
+            final View boxRegistering = findViewById(R.id.linearLayoutRegistering);
+            final View boxError = findViewById(R.id.linearLayoutError);
+            final View button = findViewById(R.id.save);
 
             // validate user input
             if (! (StringHelper.regexMatch("\\w+", nickname.getText().toString()) &&
@@ -108,35 +111,34 @@ public class IdentityActivity extends Activity  {
             // register with BonfireAPI server
             identity.nickname = nickname.getText().toString();
             identity.phone = phone.getText().toString();
-            final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
-            db.updateIdentity(identity);
 
-            final AlertDialog progress =
-                    new ProgressDialog.Builder(IdentityActivity.this)
-                            .setTitle(getString(R.string.registering_title))
-                            .setMessage(getString(R.string.registering_message))
-                            .show();
+            boxRegistering.setVisibility(View.VISIBLE);
+            boxError.setVisibility(View.GONE);
+            button.setEnabled(false);
             new AsyncTask<Identity, Object, String>() {
                 @Override
                 protected String doInBackground(Identity... params) {
                     String ok = params[0].registerWithServer();
-                    db.updateIdentity(params[0]);
                     return ok;
                 }
                 @Override
                 protected void onPostExecute(String s) {
-                    progress.dismiss();
+                    boxRegistering.setVisibility(View.GONE);
+                    button.setEnabled(true);
                     if (s != null ) {
-                        new AlertDialog.Builder(IdentityActivity.this)
-                                .setTitle(getString(R.string.registering_failed))
-                                .setMessage(s)
-                                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).show();
+                        // nickname already taken?
+                        if (s.contains("Duplicate entry")) {
+                            nickname.setError(getString(R.string.nickname_already_taken));
+                        }
+                        // other error
+                        else {
+                            boxError.setVisibility(View.VISIBLE);
+                        }
                     } else {
+                        // save identity
+                        final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
+                        db.updateIdentity(identity);
+                        // close wlcome screen
                         finish();
                         if (isWelcomeScreen) {
                             startActivity(new Intent(IdentityActivity.this, MainActivity.class));
