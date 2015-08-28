@@ -55,7 +55,7 @@ public class GcmProtocol extends SocketProtocol {
                 HttpURLConnection urlConnection = null;
                 try {
                     urlConnection = (HttpURLConnection)
-                            new URL(BonfireAPI.API_ENDPOINT + "/message?retrieve=" + intent.hasExtra("uuid"))
+                            new URL(BonfireAPI.API_ENDPOINT + "/message?retrieve=" + intent.getStringExtra("uuid"))
                             .openConnection();
                     onHandleMessage(urlConnection.getInputStream(), senderId);
                 } finally {
