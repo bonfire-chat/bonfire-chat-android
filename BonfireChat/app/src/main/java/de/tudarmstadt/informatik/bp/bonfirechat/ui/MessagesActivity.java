@@ -341,15 +341,16 @@ public class MessagesActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 42) {
             Log.d(TAG, "result from image picker: "+data.getData().toString());
-            File file = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), "Bonfire Images\\" + (new Date()).getTime() + ".jpg");
+            UUID uuid = UUID.randomUUID();
+
+            File file = Message.getImageFile(uuid);
 
             try {
                 FileOutputStream out = new FileOutputStream(file);
                 StreamHelper.writeImageToStream(this.getContentResolver(), data.getData(), out);
                 out.close();
 
-                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, conversation.getPeer());
+                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, uuid, conversation.getPeer());
                 message.error = "Sending";
 
                 db.createMessage(message, conversation);

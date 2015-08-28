@@ -55,7 +55,7 @@ public class BonfireAPI {
     public static final String METHOD_SEND_MESSAGE = "notify";
     public static final String METHOD_CHECK_CONTACTS = "phonecontacts";
 
-    public static final String DOWNLOADS_DIRECTORY = "Bonfire Downloads/";
+    public static final String DOWNLOADS_DIRECTORY = "Bonfire Images/";
 
     public static String httpGet(String apiMethod) throws IOException {
         HttpURLConnection urlConnection = null;

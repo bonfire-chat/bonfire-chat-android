@@ -104,8 +104,7 @@ public class Envelope extends PayloadPacket {
         String messageBody;
         if (hasFlag(FLAG_BINARY)) {
             theContact = BonfireData.getInstance(ctx).getContactByPublicKey(senderPublicKey);
-            File target = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), "Bonfire Images\\" + this.uuid.toString() + ".jpg");
+            File target = Message.getImageFile(this.uuid);
             try {
                 FileOutputStream os = new FileOutputStream(target);
                 os.write(body);

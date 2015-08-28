@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.Serializable;
@@ -52,9 +53,9 @@ public class Message implements Serializable {
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID uuid) {
         this(body, sender, sentTime, flags, uuid, null);
     }
-    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID rowid, Contact recipient) {
+    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID uuid, Contact recipient) {
         this.sender = sender; this.recipients = new ArrayList<>();
-        this.body = body; this.sentTime = sentTime; this.uuid = rowid;
+        this.body = body; this.sentTime = sentTime; this.uuid = uuid;
         this.flags = flags;
         if (recipient != null) {
             this.recipients.add(recipient);
@@ -89,6 +90,7 @@ public class Message implements Serializable {
         return Message.getImageFile(this.uuid);
     }
     public static File getImageFile(UUID uuid) {
+        Log.d("xxx", "storage dir:"+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
         return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 BonfireAPI.DOWNLOADS_DIRECTORY + uuid.toString() + ".jpg");
     }
