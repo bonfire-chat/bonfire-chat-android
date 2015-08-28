@@ -82,6 +82,7 @@ public class ContactsFragment extends Fragment {
 
         return rootView;
     }
+
     // ####### First-Start Tutorial #####################################################
     private ShowcaseView showcaseView;
     private int tutorial_counter = 0;

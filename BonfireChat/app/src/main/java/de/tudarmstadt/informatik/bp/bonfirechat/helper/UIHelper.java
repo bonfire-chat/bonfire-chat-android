@@ -74,7 +74,7 @@ public class UIHelper {
      */
     public static final String PREF_SHOW_OOBE = "show_oobe";
     public static final String PREF_SHOW_CONTACTS_SHOWCASE = "show_contacts_showcase";
-    public static final String PREF_SHOW_CONVERSATIONS_SHOWCASE = "show_conversations_showcase";
+    public static final String PREF_SHOW_CONVERSATION_SHOWCASE = "show_conversation_showcase";
 
     public static boolean shouldShowOobe(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -85,9 +85,9 @@ public class UIHelper {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_SHOW_CONTACTS_SHOWCASE, true);
     }
-    public static boolean shouldShowConversationssTutorial(Context context) {
+    public static boolean shouldShowConversationTutorial(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(PREF_SHOW_CONVERSATIONS_SHOWCASE, true);
+        return sp.getBoolean(PREF_SHOW_CONVERSATION_SHOWCASE, true);
     }
 
     public static void flagShownContactsTutorial(Context context) {
@@ -96,10 +96,10 @@ public class UIHelper {
         editor.putBoolean(PREF_SHOW_CONTACTS_SHOWCASE, false);
         editor.commit();
     }
-    public static void flagShownConversationsTutorial(Context context) {
+    public static void flagShownConversationTutorial(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(PREF_SHOW_CONVERSATIONS_SHOWCASE, false);
+        editor.putBoolean(PREF_SHOW_CONVERSATION_SHOWCASE, false);
         editor.commit();
     }
 
