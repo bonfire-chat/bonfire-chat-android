@@ -73,10 +73,34 @@ public class UIHelper {
      * expands it. This shared preference tracks this.
      */
     public static final String PREF_SHOW_OOBE = "show_oobe";
+    public static final String PREF_SHOW_CONTACTS_SHOWCASE = "show_contacts_showcase";
+    public static final String PREF_SHOW_CONVERSATIONS_SHOWCASE = "show_conversations_showcase";
+
     public static boolean shouldShowOobe(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_SHOW_OOBE, true) || ConstOptions.ALWAYS_SHOW_OOBE;
     }
 
+    public static boolean shouldShowContactsTutorial(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_SHOW_CONTACTS_SHOWCASE, true);
+    }
+    public static boolean shouldShowConversationssTutorial(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREF_SHOW_CONVERSATIONS_SHOWCASE, true);
+    }
+
+    public static void flagShownContactsTutorial(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(PREF_SHOW_CONTACTS_SHOWCASE, false);
+        editor.commit();
+    }
+    public static void flagShownConversationsTutorial(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(PREF_SHOW_CONVERSATIONS_SHOWCASE, false);
+        editor.commit();
+    }
 
 }
