@@ -93,15 +93,15 @@ public class MessagesActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                if(!messages.get(position).hasFlag(Message.FLAG_IS_LOCATION)) {
-                    Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
-                    Log.i(TAG, "starting MessageDetailsActivity with message uuid=" + adapter.getItem(position).uuid);
+                if (messages.get(position).hasFlag(Message.FLAG_IS_LOCATION)) {
+                    Intent intent = new Intent(MessagesActivity.this, MessageLocationActivity.class);
+                    Log.i(TAG, "starting MessageLocationActivity with message uuid=" + adapter.getItem(position).uuid);
                     intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
                     startActivity(intent);
                 }
-                else{
-                    Intent intent = new Intent(MessagesActivity.this, MessageLocationActivity.class);
-                    Log.i(TAG, "starting MessageLocationActivity with message uuid=" + adapter.getItem(position).uuid);
+                else if (messages.get(position).hasFlag(Message.FLAG_IS_FILE)) {
+                    Intent intent = new Intent(MessagesActivity.this, MessageImageActivity.class);
+                    Log.i(TAG, "starting MessageImageActivity with message uuid=" + adapter.getItem(position).uuid);
                     intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
                     startActivity(intent);
                 }
@@ -388,14 +388,6 @@ public class MessagesActivity extends Activity {
         .show();
     }
 
-    private Class getPreferredProtocol() {
-        switch(preferredProtocol) {
-            case 1: return BluetoothProtocol.class;
-            case 3: return GcmProtocol.class;
-            default: return null;
-        }
-    }
-
     public static void startConversationWithPeer(Context ctx, Contact contact) {
         // conversation with this contact already exists?
         BonfireData db = BonfireData.getInstance(ctx);
@@ -426,6 +418,21 @@ public class MessagesActivity extends Activity {
         adapter.notifyDataSetChanged();
     }
 
+    private void detailsForSelectedItem() {
+        boolean[] mySelected = adapter.itemSelected;
+
+        for (int position = adapter.getCount() - 1; position >= 0; position--) {
+            if (mySelected[position]) {
+                Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
+                Log.i(TAG, "starting MessageDetailsActivity with message uuid=" + adapter.getItem(position).uuid);
+                intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                startActivity(intent);
+                // show details only for one message
+                break;
+            }
+        }
+    }
+
     private AbsListView.MultiChoiceModeListener multiChoiceListener = new AbsListView.MultiChoiceModeListener() {
 
         @Override
@@ -441,6 +448,10 @@ public class MessagesActivity extends Activity {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             // Respond to clicks on the actions in the CAB
             switch (item.getItemId()) {
+                case R.id.action_details:
+                    detailsForSelectedItem();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
                 case R.id.action_delete:
                     deleteSelectedItems();
                     mode.finish(); // Action picked, so close the CAB
