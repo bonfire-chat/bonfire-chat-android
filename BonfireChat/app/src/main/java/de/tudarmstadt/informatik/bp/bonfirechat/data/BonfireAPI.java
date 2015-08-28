@@ -55,7 +55,7 @@ public class BonfireAPI {
     public static final String METHOD_SEND_MESSAGE = "notify";
     public static final String METHOD_CHECK_CONTACTS = "phonecontacts";
 
-    private static final String DOWNLOADS_DIRECTORY = "Bonfire Downloads\\";
+    public static final String DOWNLOADS_DIRECTORY = "Bonfire Downloads\\";
 
     public static String httpGet(String apiMethod) throws IOException {
         HttpURLConnection urlConnection = null;
@@ -89,14 +89,11 @@ public class BonfireAPI {
         }
     }
 
-    public static String httpGetToFile(String url, String filename) throws IOException {
+    public static void httpGetToFile(String url, File target) throws IOException {
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = (HttpURLConnection) new URL(url).openConnection();
             InputStream is = urlConnection.getInputStream();
-
-            File target = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), DOWNLOADS_DIRECTORY + filename + ".jpg");
 
             FileOutputStream os = new FileOutputStream(target);
             byte[] buffer = new byte[1024];
@@ -108,7 +105,6 @@ public class BonfireAPI {
 
             Log.i(TAG, "successful HTTP Get file request to "+url);
             Log.i(TAG, target.getAbsolutePath());
-            return target.getAbsolutePath();
 
         } catch (IOException e) {
             String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
@@ -200,14 +196,11 @@ public class BonfireAPI {
         httpPost(METHOD_SEND_MESSAGE, body);
     }
 
-    public static String getMapPreviewAsFilename(LatLng location, String filename) {
+    public static boolean downloadMapPreview(LatLng location, File cached) {
         // is this preview already cached?
-        File cached = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                DOWNLOADS_DIRECTORY + filename + ".jpg");
         if (cached.exists()) {
-            return cached.getAbsolutePath();
-        }
-        else {
+            return true;
+        } else {
             Log.d(TAG, "getMapPreviewAsFilename: cache miss");
             // build Google static map API URL
             String url = "http://maps.google.com/maps/api/staticmap?center=" +
@@ -218,10 +211,11 @@ public class BonfireAPI {
 
             // download map preview
             try {
-                return httpGetToFile(url, filename);
+                httpGetToFile(url, cached);
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
-                return null;
+                return false;
             }
         }
     }
