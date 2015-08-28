@@ -164,6 +164,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.mapLoading.setVisibility(View.GONE);
             v.mapPreview.setImageDrawable(null);
         }
+
         convertView.setSelected(itemSelected[position]);
         convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 
