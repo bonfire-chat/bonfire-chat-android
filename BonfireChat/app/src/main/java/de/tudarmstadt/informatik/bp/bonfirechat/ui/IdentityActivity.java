@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StringHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
 /**
@@ -82,37 +83,65 @@ public class IdentityActivity extends Activity  {
         @Override
         public void onClick(View v) {
 
-            identity.nickname = getEdit(R.id.txt_nickname).getText().toString();
-            identity.phone = getEdit(R.id.txt_phoneNumber).getText().toString();
-            final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
-            db.updateIdentity(identity);
+            final EditText nickname = getEdit(R.id.txt_nickname);
+            final EditText phone = getEdit(R.id.txt_phoneNumber);
+            final View boxRegistering = findViewById(R.id.linearLayoutRegistering);
+            final View boxError = findViewById(R.id.linearLayoutError);
+            final View button = findViewById(R.id.save);
 
-            final AlertDialog progress =
-                    new ProgressDialog.Builder(IdentityActivity.this)
-                            .setTitle(getString(R.string.registering_title))
-                            .setMessage(getString(R.string.registering_message))
-                            .show();
+            // validate user input
+            if (! (StringHelper.regexMatch("\\w+", nickname.getText().toString()) &&
+                    StringHelper.regexMatch("\\d+", phone.getText().toString())) ) {
+
+                if (!StringHelper.regexMatch("\\d+", phone.getText().toString())) {
+                    phone.setError(getString(R.string.phone_error));
+                    phone.requestFocus();
+                }
+                // validate nickname at last, so that it will be the one error message
+                // to be shown (the others will collapse to a red error sign)
+                if (!StringHelper.regexMatch("\\w+", nickname.getText().toString())) {
+                    nickname.setError(getString(R.string.nickname_error));
+                    nickname.requestFocus();
+                }
+                return;
+
+            } else {
+                nickname.setError(null);
+                phone.setError(null);
+            }
+
+            // register with BonfireAPI server
+            identity.nickname = nickname.getText().toString();
+            identity.phone = phone.getText().toString();
+
+            boxRegistering.setVisibility(View.VISIBLE);
+            boxError.setVisibility(View.GONE);
+            button.setEnabled(false);
             new AsyncTask<Identity, Object, String>() {
                 @Override
                 protected String doInBackground(Identity... params) {
                     String ok = params[0].registerWithServer();
-                    db.updateIdentity(params[0]);
                     return ok;
                 }
                 @Override
                 protected void onPostExecute(String s) {
-                    progress.dismiss();
+                    boxRegistering.setVisibility(View.GONE);
+                    button.setEnabled(true);
                     if (s != null ) {
-                        new AlertDialog.Builder(IdentityActivity.this)
-                                .setTitle(getString(R.string.registering_failed))
-                                .setMessage(s)
-                                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).show();
+                        // nickname already taken?
+                        if (s.contains("Duplicate entry")) {
+                            nickname.setError(getString(R.string.nickname_already_taken));
+                            nickname.requestFocus();
+                        }
+                        // other error
+                        else {
+                            boxError.setVisibility(View.VISIBLE);
+                        }
                     } else {
+                        // save identity
+                        final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
+                        db.updateIdentity(identity);
+                        // close wlcome screen
                         finish();
                         if (isWelcomeScreen) {
                             startActivity(new Intent(IdentityActivity.this, MainActivity.class));

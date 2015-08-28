@@ -27,7 +27,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     private static final String TAG = "GcmBroadcastReceiver";
 
     private static final String SENDER_ID = "1083776418239";
-    public static String regid;
+    public static String regid = "";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -53,7 +53,6 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
         // Check device for Play Services APK. If check succeeds, proceed with
         //  GCM registration.
         if (checkPlayServices(activityContext)) {
-            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(activityContext);
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activityContext);
 
             regid = prefs.getString("gcmId", "");
