@@ -59,5 +59,7 @@
     <string name="toast_location_not_available">Dein Standort ist nicht verfügbar.</string>
     <string name="image">Bild</string>
     <string name="location">Standort</string>
+    <string name="nickname_error">Bitte wähle einen Nickname, der aus Buchstaben, Zahlen oder Unterstrichen besteht.</string>
+    <string name="phone_error">Bitte gib deine Handynummer ein.</string>
 
 </resources>

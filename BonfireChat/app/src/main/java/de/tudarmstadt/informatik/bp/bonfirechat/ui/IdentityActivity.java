@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StringHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
 /**
@@ -82,8 +83,31 @@ public class IdentityActivity extends Activity  {
         @Override
         public void onClick(View v) {
 
-            identity.nickname = getEdit(R.id.txt_nickname).getText().toString();
-            identity.phone = getEdit(R.id.txt_phoneNumber).getText().toString();
+            EditText nickname = getEdit(R.id.txt_nickname),
+                     phone = getEdit(R.id.txt_phoneNumber);
+
+            // validate user input
+            if (! (StringHelper.regexMatch("\\w+", nickname.getText().toString()) &&
+                    StringHelper.regexMatch("\\d+", phone.getText().toString())) ) {
+
+                if (!StringHelper.regexMatch("\\d+", phone.getText().toString())) {
+                    phone.setError(getString(R.string.phone_error));
+                }
+                // validate nickname at last, so that it will be the one error message
+                // to be shown (the others will collapse to a red error sign)
+                if (!StringHelper.regexMatch("\\w+", nickname.getText().toString())) {
+                    nickname.setError(getString(R.string.nickname_error));
+                }
+                return;
+
+            } else {
+                nickname.setError(null);
+                phone.setError(null);
+            }
+
+            // register with BonfireAPI server
+            identity.nickname = nickname.getText().toString();
+            identity.phone = phone.getText().toString();
             final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
             db.updateIdentity(identity);
 

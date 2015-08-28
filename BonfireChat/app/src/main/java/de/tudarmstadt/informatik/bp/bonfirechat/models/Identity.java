@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
+import android.util.Log;
 
 import org.abstractj.kalium.crypto.Box;
 import org.abstractj.kalium.keys.KeyPair;
@@ -90,7 +91,6 @@ public class Identity implements IPublicIdentity {
 
     public String registerWithServer() {
         try {
-
             String plaintext = "nickname=" + URLEncoder.encode(nickname, "UTF-8")
                     + "&phone=" + URLEncoder.encode(phone, "UTF-8")
                     + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
