@@ -72,10 +72,7 @@ public class MainActivity extends Activity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         GcmBroadcastReceiver.registerForGcm(this);
-        if (!initializeNetwork()) return;
-
-        GpsTracker.init(this);
-        initializeStats();
+        if (!initializeIdentiy()) return;
 
         if (UIHelper.shouldShowOobe(this)) {
             // only show showcase when drawer is really open, in case
@@ -86,8 +83,15 @@ public class MainActivity extends Activity
                         .setOnClickListener(this)
                         .build();
                 onClick(null);
+                // dont initialize network yet, wait for finishing tutorial
+                return;
             }
         }
+
+        // finally initialize network and services
+        initializeNetwork();
+        GpsTracker.init(this);
+        initializeStats();
     }
 
 
@@ -114,6 +118,10 @@ public class MainActivity extends Activity
                 break;
             case 2:
                 showcaseView.hide();
+                // we skipped initializing network and services in favor of showing the tutorial, do this now
+                initializeNetwork();
+                GpsTracker.init(this);
+                initializeStats();
                 break;
         }
     }
@@ -121,7 +129,7 @@ public class MainActivity extends Activity
     // ####### End First-Start Tutorial #####################################################
 
 
-    private boolean initializeNetwork() {
+    private boolean initializeIdentiy() {
         BonfireData db = BonfireData.getInstance(this);
         Identity id = db.getDefaultIdentity();
         if (id == null) {
@@ -135,11 +143,14 @@ public class MainActivity extends Activity
             finish();
             return false;
         } else {
-            Intent intent = new Intent(this, ConnectionManager.class);
-            intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
-            this.startService(intent);
             return true;
         }
+    }
+
+    private void initializeNetwork() {
+        Intent intent = new Intent(this, ConnectionManager.class);
+        intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
+        this.startService(intent);
     }
 
     private void initializeStats() {
