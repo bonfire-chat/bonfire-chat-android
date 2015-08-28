@@ -15,10 +15,17 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
+import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 
@@ -34,15 +41,15 @@ public class ContactsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        if (UIHelper.shouldShowContactsTutorial(getActivity())) {
+            showcaseView = new ShowcaseView.Builder(getActivity())
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setOnClickListener(showcaseListener)
+                    .build();
+            tutorial_counter = 0;
+            showcaseListener.onClick(null);
+        }
     }
-
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.contacts, menu);
-    }
-
 
     @Override
     public void onResume() {
@@ -53,7 +60,7 @@ public class ContactsFragment extends Fragment {
         contactsList.setAdapter(adapter);
     }
 
-    ActionMode mActionMode;
+
     ListView contactsList;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,10 +82,51 @@ public class ContactsFragment extends Fragment {
 
         return rootView;
     }
+    // ####### First-Start Tutorial #####################################################
+    private ShowcaseView showcaseView;
+    private int tutorial_counter = 0;
+    /**
+     * Handles clicks on Close button of first-start tutorial view
+     */
+    private View.OnClickListener showcaseListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch(tutorial_counter++) {
+                case 0:
+                    showcaseView.setContentTitle("Deine Kontaktdaten");
+                    showcaseView.setContentText("Hier klicken, um deine Kontaktdaten weiterzugeben");
+                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_nfc));
+                    showcaseView.setButtonText("Weiter");
+                    break;
+                case 1:
+                    showcaseView.setContentTitle("QR-Code scannen");
+                    showcaseView.setContentText("Hier klicken, um einen QR-Code zu scannen, um einen Kontakt hinzuzufügen");
+                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_qr));
+                    showcaseView.setButtonText("Weiter");
+                    break;
+                case 2:
+                    showcaseView.setContentTitle("Kontakt suchen");
+                    showcaseView.setContentText("Hier klicken, um einen Kontakt über das Internet zu suchen");
+                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_search));
+                    showcaseView.setButtonText("Alles klar");
+                    break;
+                case 3:
+                    UIHelper.flagShownContactsTutorial(getActivity());
+                    showcaseView.hide();
+                    break;
+            }
+        }
+    };
+    // ####### End First-Start Tutorial #####################################################
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.contacts, menu);
     }
 
     @Override
