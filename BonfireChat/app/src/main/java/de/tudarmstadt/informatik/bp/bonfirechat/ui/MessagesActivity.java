@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -90,16 +91,23 @@ public class MessagesActivity extends Activity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                if (messages.get(position).hasFlag(Message.FLAG_IS_LOCATION)) {
+                Message theMessage = adapter.getItem(position);
+                if (theMessage.hasFlag(Message.FLAG_IS_LOCATION)) {
                     Intent intent = new Intent(MessagesActivity.this, MessageLocationActivity.class);
-                    Log.i(TAG, "starting MessageLocationActivity with message uuid=" + adapter.getItem(position).uuid);
-                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                    Log.i(TAG, "starting MessageLocationActivity with message uuid=" + theMessage.uuid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, theMessage.uuid);
                     startActivity(intent);
-                }
-                else if (messages.get(position).hasFlag(Message.FLAG_IS_FILE)) {
-                    Intent intent = new Intent(MessagesActivity.this, MessageImageActivity.class);
-                    Log.i(TAG, "starting MessageImageActivity with message uuid=" + adapter.getItem(position).uuid);
-                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, adapter.getItem(position).uuid);
+                } else if (theMessage.hasFlag(Message.FLAG_IS_FILE)) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    Uri imageUri = Uri.fromFile(theMessage.getImageFile());
+                    Log.i(TAG, "opening image in system viewer: "+imageUri.toString());
+                    intent.setDataAndType(imageUri, "image/*");
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(MessagesActivity.this, MessageDetailsActivity.class);
+                    Log.i(TAG, "starting MessageDetailsActivity with message uuid=" + theMessage.uuid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID, theMessage.uuid);
                     startActivity(intent);
                 }
             }
