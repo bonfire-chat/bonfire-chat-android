@@ -62,6 +62,7 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
             v.name = (TextView) convertView.findViewById(R.id.name);
             v.lastMessage = (TextView) convertView.findViewById(R.id.lastMessage);
             v.lastMessageDate = (TextView) convertView.findViewById(R.id.lastMessageDate);
+            convertView.setTag(v);
         } else {
             v = (ViewHolder) convertView.getTag();
         }
