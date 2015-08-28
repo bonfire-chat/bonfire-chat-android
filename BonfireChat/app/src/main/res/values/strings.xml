@@ -88,4 +88,7 @@
     <string name="tutorial_main_welcome_desc">you can add contacts and start conversations</string>
     <string name="tutorial_main_your_contact">your contact data</string>
     <string name="tutorial_main_your_contact_desc">click here to share your contact data with others</string>
+
+    <string name="action_details">details</string>
+    <string name="message_image">image</string>
 </resources>
