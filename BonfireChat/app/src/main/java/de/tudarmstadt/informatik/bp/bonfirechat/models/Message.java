@@ -1,6 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
@@ -58,6 +60,21 @@ public class Message implements Serializable {
 
     public MessageDirection direction() {
         return (sender instanceof Identity) ? MessageDirection.Sent : MessageDirection.Received;
+    }
+
+    /**
+     * returns placeholder descriptions for images and locations
+     * @param context
+     * @return
+     */
+    public String getDisplayBody(Context context) {
+        if (hasFlag(Message.FLAG_IS_FILE)) {
+            return context.getString(R.string.image);
+        } else if (hasFlag(Message.FLAG_IS_LOCATION)) {
+            return context.getString(R.string.location);
+        } else {
+            return body;
+        }
     }
 
     @Override
