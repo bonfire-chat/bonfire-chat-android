@@ -3,7 +3,9 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Environment;
 
+import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
@@ -80,6 +83,14 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return body;
+    }
+
+    public File getImageFile() {
+        return Message.getImageFile(this.uuid);
+    }
+    public static File getImageFile(UUID uuid) {
+        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                BonfireAPI.DOWNLOADS_DIRECTORY + uuid.toString() + ".jpg");
     }
 
     public ContentValues getContentValues() {

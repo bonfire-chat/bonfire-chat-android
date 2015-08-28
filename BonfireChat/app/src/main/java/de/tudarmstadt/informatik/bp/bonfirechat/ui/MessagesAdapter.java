@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 
@@ -31,9 +32,9 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
     boolean[] itemSelected;
 
     class ViewHolder {
-        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage, mapPreview;
+        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
         TextView messageBody, dateTime;
-        ProgressBar mapLoading;
+        ProgressBar thumbLoading;
     }
 
     public MessagesAdapter(Context context, List<Message> objects) {
@@ -83,8 +84,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
             v.messageBody = (TextView) convertView.findViewById(R.id.message_body);
             v.messageImage = (ImageView) convertView.findViewById(R.id.message_image);
-            v.mapPreview = (ImageView) convertView.findViewById(R.id.map_preview);
-            v.mapLoading = (ProgressBar) convertView.findViewById(R.id.map_loading);
+            v.thumbLoading = (ProgressBar) convertView.findViewById(R.id.thumb_loading);
             v.dateTime = (TextView) convertView.findViewById(R.id.message_time);
             v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
             v.encryptedIcon = (ImageView) convertView.findViewById(R.id.message_encrypted);
@@ -121,50 +121,57 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         else v.protocolIcon.setVisibility(View.GONE);
 
         if (msg.hasFlag(Message.FLAG_IS_FILE)) {
-            v.messageBody.setText("");
+            // Handle message type "FILE" (image)
             v.messageBody.setVisibility(View.GONE);
             v.messageImage.setVisibility(View.VISIBLE);
             v.messageImage.setImageURI(Uri.parse("file://" + msg.body));
-        }
-        else{
+            v.thumbLoading.setVisibility(View.GONE);
+
+        } else if(msg.hasFlag(Message.FLAG_IS_LOCATION)) {
+            // Handle message type "LOCATION"
+            v.messageBody.setVisibility(View.GONE);
+
+            final File previewFile = msg.getImageFile();
+            if (previewFile.exists()) {
+                v.messageImage.setImageURI(Uri.parse("file://" + previewFile.getAbsolutePath()));
+                v.messageImage.setVisibility(View.VISIBLE);
+                v.thumbLoading.setVisibility(View.GONE);
+            } else {
+                v.messageImage.setVisibility(View.GONE);
+                v.thumbLoading.setVisibility(View.VISIBLE);
+
+                // extract coordinates from message
+                String[] coords = msg.body.split(":");
+                LatLng location = new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+
+                // load map preview from Google Maps static map API
+                (new AsyncTask<LatLng, Void, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(LatLng... locations) {
+                        // download map preview
+                        return BonfireAPI.downloadMapPreview(locations[0], previewFile);
+                    }
+                    @Override
+                    protected void onPostExecute(Boolean ok) {
+                        if (ok ) {
+                            // display map preview image
+                            v.messageImage.setImageURI(Uri.parse("file://" + previewFile.getAbsolutePath()));
+                            v.messageImage.setVisibility(View.VISIBLE);
+                        } else {
+                            v.messageBody.setVisibility(View.VISIBLE);
+                        }
+                        v.thumbLoading.setVisibility(View.GONE);
+                    }
+                }).execute(location);
+            }
+
+        } else {
+            // Handle message type "TEXT"
             v.messageBody.setVisibility(View.VISIBLE);
+            v.thumbLoading.setVisibility(View.GONE);
             v.messageImage.setVisibility(View.GONE);
             v.messageImage.setImageDrawable(null);
         }
-
-        if(msg.hasFlag(Message.FLAG_IS_LOCATION)) {
-            v.messageBody.setText("");
-            v.messageBody.setVisibility(View.GONE);
-            v.mapPreview.setVisibility(View.GONE);
-            v.mapLoading.setVisibility(View.VISIBLE);
-
-            // extract coordinates from message
-            String[] coords = msg.body.split(":");
-            LatLng location = new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
-
-            // load map preview from Google Maps static map API
-            (new AsyncTask<LatLng, Void, String>() {
-                @Override
-                protected String doInBackground(LatLng... locations) {
-                    // download map preview
-                    return BonfireAPI.getMapPreviewAsFilename(locations[0], msg.uuid.toString());
-                }
-                @Override
-                protected void onPostExecute(String filename) {
-                    // display map preview image
-                    v.mapPreview.setImageURI(Uri.parse("file://" + filename));
-                    v.mapPreview.setVisibility(View.VISIBLE);
-                    v.mapLoading.setVisibility(View.GONE);
-                }
-            }).execute(location);
-        }
-        else {
-            v.messageBody.setVisibility(View.VISIBLE);
-            v.mapPreview.setVisibility(View.GONE);
-            v.mapLoading.setVisibility(View.GONE);
-            v.mapPreview.setImageDrawable(null);
-        }
-
         convertView.setSelected(itemSelected[position]);
         convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 
