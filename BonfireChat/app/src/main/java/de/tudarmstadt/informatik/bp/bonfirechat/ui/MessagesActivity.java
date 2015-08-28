@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -22,6 +23,10 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,6 +78,17 @@ public class MessagesActivity extends Activity {
         messages = db.getMessages(conversation);
         adapter = new MessagesAdapter(this, messages);
         lv.setAdapter(adapter);
+
+        // show tutorial on first use
+        if (UIHelper.shouldShowConversationTutorial(this)) {
+            // make sure the keyboard is hidden during tutorial
+            ((EditText) findViewById(R.id.textinput)).setInputType(InputType.TYPE_NULL);
+            showcaseView = new ShowcaseView.Builder(this)
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setOnClickListener(showcaseListener)
+                    .build();
+            showcaseListener.onClick(null);
+        }
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -162,6 +178,52 @@ public class MessagesActivity extends Activity {
                 },
                 new IntentFilter(ConnectionManager.MSG_ACKED_BROADCAST_EVENT));
     }
+
+    // ####### First-Start Tutorial #####################################################
+    private ShowcaseView showcaseView;
+    private int tutorial_counter = 0;
+    /**
+     * Handles clicks on Close button of first-start tutorial view
+     */
+    private View.OnClickListener showcaseListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch(tutorial_counter++) {
+                case 0:
+                    showcaseView.setContentTitle("Titel ändern");
+                    showcaseView.setContentText("Hier klicken, um den Titel dieser Unterhaltung zu ändern");
+                    showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_edit_title));
+                    showcaseView.setButtonText("Weiter");
+                    break;
+                case 1:
+                    showcaseView.setContentTitle("Bild verschicken");
+                    showcaseView.setContentText("Klicke hier, um ein Bild zu versenden");
+                    showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_share_image));
+                    showcaseView.setButtonText("Weiter");
+                    break;
+                case 2:
+                    showcaseView.setContentTitle("Standort teilen");
+                    showcaseView.setContentText("Klicke hier, um deinen Standort zu übertragen");
+                    showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_share_location));
+                    showcaseView.setButtonText("Weiter");
+                    break;
+                case 3:
+                    showcaseView.setContentTitle("Übrigens");
+                    showcaseView.setContentText("Klicke auf eine Nachricht, um Details zur Übertragung anzusehen.");
+                    showcaseView.setTarget(new PointTarget(200, 600));
+                    showcaseView.setButtonText("Alles klar");
+                    break;
+                case 4:
+                    UIHelper.flagShownConversationTutorial(MessagesActivity.this);
+                    // reenable keyboard after tutorial
+                    ((EditText) findViewById(R.id.textinput)).setInputType(InputType.TYPE_CLASS_TEXT);
+                    findViewById(R.id.textinput).requestFocus();
+                    showcaseView.hide();
+                    break;
+            }
+        }
+    };
+    // ####### End First-Start Tutorial #####################################################
 
     @Override
     protected void onNewIntent(Intent intent) {
