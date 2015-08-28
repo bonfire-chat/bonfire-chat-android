@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by johannes on 05.05.15.
@@ -66,7 +68,16 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
 
         v.icon.setImageResource(R.mipmap.ic_launcher);
         v.name.setText(getItem(position).getName());
-        v.lastMessage.setText(getItem(position).getLastMessage(context));
+        Message lastMessage = getItem(position).getLastMessage();
+        if (lastMessage == null) {
+            v.lastMessage.setText("");
+        } else {
+            v.lastMessage.setText(lastMessage.getDisplayBody(context));
+            v.lastMessage.setTypeface (null,
+                    (lastMessage.hasFlag(Message.FLAG_IS_FILE) || lastMessage.hasFlag(Message.FLAG_IS_LOCATION))
+                        ? Typeface.ITALIC : Typeface.NORMAL);
+        }
+
         v.lastMessageDate.setText(getItem(position).getLastMessageDate());
         Log.d("ConversationsAdapter", "getview position=" + position + "   selected=" + itemSelected[position]);
         convertView.setSelected(itemSelected[position]);
