@@ -90,10 +90,10 @@ public class IdentityActivity extends Activity  {
             final View button = findViewById(R.id.save);
 
             // validate user input
-            if (! (StringHelper.regexMatch("\\w+", nickname.getText().toString()) &&
-                    StringHelper.regexMatch("\\d+", phone.getText().toString())) ) {
+            if (!(StringHelper.regexMatch("\\w+", nickname.getText().toString()) &&
+                    StringHelper.regexMatch("\\+?\\d+", phone.getText().toString()))) {
 
-                if (!StringHelper.regexMatch("\\d+", phone.getText().toString())) {
+                if (!StringHelper.regexMatch("\\+?\\d+", phone.getText().toString())) {
                     phone.setError(getString(R.string.phone_error));
                     phone.requestFocus();
                 }
@@ -114,9 +114,11 @@ public class IdentityActivity extends Activity  {
             identity.nickname = nickname.getText().toString();
             identity.phone = phone.getText().toString();
 
-            boxRegistering.setVisibility(View.VISIBLE);
-            boxError.setVisibility(View.GONE);
-            button.setEnabled(false);
+            if (isWelcomeScreen) {
+                boxRegistering.setVisibility(View.VISIBLE);
+                boxError.setVisibility(View.GONE);
+                button.setEnabled(false);
+            }
             new AsyncTask<Identity, Object, String>() {
                 @Override
                 protected String doInBackground(Identity... params) {
@@ -125,8 +127,10 @@ public class IdentityActivity extends Activity  {
                 }
                 @Override
                 protected void onPostExecute(String s) {
-                    boxRegistering.setVisibility(View.GONE);
-                    button.setEnabled(true);
+                    if (isWelcomeScreen) {
+                        boxRegistering.setVisibility(View.GONE);
+                        button.setEnabled(true);
+                    }
                     if (s != null ) {
                         // nickname already taken?
                         if (s.contains("Duplicate entry")) {
@@ -135,7 +139,7 @@ public class IdentityActivity extends Activity  {
                         }
                         // other error
                         else {
-                            boxError.setVisibility(View.VISIBLE);
+                            if (isWelcomeScreen) boxError.setVisibility(View.VISIBLE);
                         }
                     } else {
                         // save identity
