@@ -76,7 +76,7 @@
     <string name="tutorial_messages_share_location">Standort teilen</string>
     <string name="tutorial_messages_share_location_desc">Klicke hier, um deinen Standort zu übertragen</string>
     <string name="tutorial_messages_details">Übrigens</string>
-    <string name="tutorial_messages_details_desc">Klicke auf eine Nachricht, um Details zur Übertragung anzusehen.</string>
+    <string name="tutorial_messages_details_desc">Klicke lang auf eine Nachricht und wähle das Details-Icon, um Details zur Übertragung anzusehen.</string>
     <string name="tutorial_contacts_your_contact">Deine Kontaktdaten</string>
     <string name="tutorial_contacts_your_contact_desc">Hier klicken, um deine Kontaktdaten weiterzugeben</string>
     <string name="tutorial_contacts_scan_qr">QR-Code scannen</string>
