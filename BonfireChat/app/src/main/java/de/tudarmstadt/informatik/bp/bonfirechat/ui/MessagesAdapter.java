@@ -153,7 +153,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
                     }
                     @Override
                     protected void onPostExecute(Boolean ok) {
-                        if (ok ) {
+                        if (ok) {
                             // display map preview image
                             v.messageImage.setImageURI(Uri.parse("file://" + previewFile.getAbsolutePath()));
                             v.messageImage.setVisibility(View.VISIBLE);
