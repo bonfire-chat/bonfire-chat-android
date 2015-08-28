@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.ActionMode;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
@@ -22,6 +24,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
@@ -54,6 +57,11 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        loadContacts();
+    }
+
+    void loadContacts() {
+
         BonfireData db = BonfireData.getInstance(getActivity());
         List<Contact> contacts = db.getContacts();
         adapter = new ContactsAdapter(this.getActivity(), contacts);
@@ -144,6 +152,23 @@ public class ContactsFragment extends Fragment {
         } else if (item.getItemId() == R.id.action_scan_nfc) {
             startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
             return true;
+        } else if (item.getItemId() == R.id.action_update_contacts) {
+            new AsyncTask<String, Integer, Integer>() {
+                @Override
+                protected Integer doInBackground(String... params) {
+                    return BonfireAPI.updateContacts(getActivity());
+                }
+
+                @Override
+                protected void onPostExecute(Integer s) {
+                    if (s > 0) {
+                        loadContacts();
+                        Toast.makeText(getActivity(), "" + s.toString() + " new contacts found", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getActivity(), "No updates", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }.execute();
         }
 
         return super.onOptionsItemSelected(item);

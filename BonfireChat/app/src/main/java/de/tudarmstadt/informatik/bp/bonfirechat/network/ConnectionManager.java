@@ -424,6 +424,11 @@ public class ConnectionManager extends NonStopIntentService {
                 Log.w(TAG, "GCM: Deleted messages on server: " + extras.toString());
 
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+                if (intent.hasExtra("new_phone_contact")) {
+                    BonfireAPI.onNewPhoneContact(db, intent.getStringExtra("phone"),
+                            intent.getStringExtra("publickey"), intent.getStringExtra("nickname"));
+                    return;
+                }
                 final GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
                 Log.i(TAG, "gcmProto=" + gcmProto);
                 if (gcmProto == null) return;
