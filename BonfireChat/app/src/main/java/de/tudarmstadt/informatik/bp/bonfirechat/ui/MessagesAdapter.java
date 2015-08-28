@@ -29,8 +29,6 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
     Context context;
     boolean[] itemSelected;
-    float lat;
-    float lng;
 
     class ViewHolder {
         ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage, mapPreview;
@@ -53,6 +51,8 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
                 return message.sentTime.compareTo(t1.sentTime);
             }
         });
+        // adjust size of selected array
+        itemSelected = new boolean[getCount()];
     }
 
     @Override
@@ -164,8 +164,8 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.mapLoading.setVisibility(View.GONE);
             v.mapPreview.setImageDrawable(null);
         }
-        //convertView.setSelected(itemSelected[position]);
-        //convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
+        convertView.setSelected(itemSelected[position]);
+        convertView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
 
         return convertView;
     }
