@@ -22,14 +22,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 import static android.widget.AdapterView.*;
@@ -63,7 +59,7 @@ public class ConversationsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.conversations, menu);
+        inflater.inflate(R.menu.menu_conversations, menu);
     }
 
     @Override
