@@ -1,0 +1,7 @@
+
+AuthType Basic
+AuthName "Restricted Files"
+# (Following line optional)
+AuthBasicProvider file
+AuthUserFile /var/www/virtual/bonfire/passwords
+Require valid-user

@@ -4,7 +4,7 @@ angular.module("dashboard", ["chart.js"])
 	$scope.curDevice = null;
 	
 	// Initialize Power consumption chart
-	$http.get("/api/v1/stats?mode=chart").then(function(result) {
+	$http.get("/dashboard/stats.php?mode=chart").then(function(result) {
 	    var data = result.data;
 	    
 	    $scope.labels = [];
@@ -30,7 +30,7 @@ angular.module("dashboard", ["chart.js"])
 
 	});
 
-	$http.get("/api/v1/stats?mode=devices").then(function(result) {
+	$http.get("/dashboard/stats.php?mode=devices").then(function(result) {
 	    $scope.devices = result.data;
 
 	
@@ -59,7 +59,7 @@ angular.module("dashboard", ["chart.js"])
   }, 5000);
   
   function loadList() {
-    $http.get("/api/v1/traceroute").success(function(ok) {
+    $http.get("/dashboard/traceroute.php").success(function(ok) {
       $scope.traceroutes = ok;
     });
   }
@@ -70,7 +70,8 @@ angular.module("dashboard", ["chart.js"])
   $scope.loadTrace = function(uuid) {
     if (uuid != $scope.currentUuid) lastCount = -1;
     $scope.currentUuid = uuid;
-    $http.get("/api/v1/traceroute?uuid=" + uuid).success(function (html) {
+    
+    $http.get("/dashboard/traceroute.php?uuid=" + uuid).success(function (html) {
       if (html.length == lastCount) return;
       lastCount = html.length;
       
@@ -80,37 +81,58 @@ angular.module("dashboard", ["chart.js"])
     });
   }
   
+  $scope.filterRetr = function(retr) {
+    
+  }
+  
   function initCytoScape(traceData) {
-    var insertedNodes = {};
-    var nodes = [];
+    
+    var nodes = {};
     var edges = [];
+    var recentEdges = {};
     
     var index = 0;
     for(var i in traceData) {
       var row = traceData[i];
-      if (row.hop_from && !insertedNodes[row.hop_from])
-        nodes.push({ data: { id: row.hop_from }});
-      if (row.hop_to && !insertedNodes[row.hop_to])
-        nodes.push({ data: { id: row.hop_to }});
+      if (row.hop_from && !nodes[row.hop_from])
+        nodes[row.hop_from] = { data: { id: row.hop_from }};
+      if (row.hop_to && !nodes[row.hop_to])
+        nodes[row.hop_to] = { data: { id: row.hop_to }};
       
-      insertedNodes[row.hop_from] = true;
-      insertedNodes[row.hop_to] = true;
-
-      var classes = "";
-      if (row.traceroute.indexOf(':ACK')>0) classes += "ack";
-      if (row.action=='RIGN') classes += "ign";
-      edges.push({ 
-        data: { id: 'edge_' + index, source: row.hop_from, target: row.hop_to },
+      if (!row.hop_to) continue;
+      
+      var classes = row.protocol;
+      if (row.traceroute.indexOf(':ACK')>0) {
+        classes += " ack";
+      }
+      if (row.action=='RIGN') classes += " ign";
+      var edge = { 
+        data: { 
+          id: 'edge_' + index, source: row.hop_from, target: row.hop_to
+        },
         classes: classes
-      });
+      };
+      edges.push(edge);
+      recentEdges[row.protocol + row.hop_from + row.hop_to] = edge;
       index++;
+    }
+    for(var i in traceData) {
+      var row = traceData[i];
+      if (row.traceroute.indexOf(':ACK')>0) {
+        try{
+          console.log("marking "+row.protocol + row.hop_to + row.hop_from+" as part of shortest path")
+          recentEdges[row.protocol + row.hop_to + row.hop_from].classes += " short";
+        }catch(e){}
+      }
     }
     
     var cy = cytoscape({
       container: document.getElementById("cyto"),
       
       elements: {
-        nodes: nodes,
+        nodes: Object.keys(nodes).map(function (key) {
+          return nodes[key];
+        }),
         edges: edges,
       },
     
@@ -119,38 +141,64 @@ angular.module("dashboard", ["chart.js"])
         {
           selector: 'node',
           style: {
-            'content': 'data(id)'
+            'content': 'data(id)',
+            'background-image': 'android.png', 'background-fit': 'contain'
           }
         },
-        {
+        {  // Generic Edge
           selector: 'edge',
           style: {
             'target-arrow-shape': 'triangle',
-            'line-color': 'black', 'target-arrow-color': 'black'
+            'line-color': 'black', 'target-arrow-color': 'black',
+            'font-size': '7'
           }
         },
-        {
+        {  // Acknownledge
           selector: 'edge.ack',
           style: {
             'line-color': 'green', 'target-arrow-color': 'green'
           }
         },
-        {
+        {  // Shortest Path
+          selector: 'edge.short',
+          style: {
+            //'line-color': 'green', 'target-arrow-color': 'green', 
+            'width': '3'
+          }
+        },
+        {  // Transmission Ignored By Recipient
           selector: 'edge.ign',
           style: {
             'line-color': '#bbb', 'target-arrow-color': 'gray'
+          }
+        },
+        {
+          selector: 'edge.BluetoothProtocol',
+          style: {
+            'content': 'BT', 'color': '#000000', 'text-outline-color': '#9955ff' , 'text-outline-width': '1'
+          }
+        },
+        {
+          selector: 'edge.GcmProtocol',
+          style: {
+            'content': 'Gcm', 'color': '#000000', 'text-outline-color': '#00ff00' , 'text-outline-width': '1'
           }
         }
       ]
     });
     cy.layout({
-      
-      layout: 'breadthfirst',
+      name: 'breadthfirst'
     });
     
   }
 
-    
+  function getShortProtocolName(proto) {
+    switch(proto){
+    case "BluetoothProtocol": return "BT";
+    case "GcmProtocol": return "GCM";
+    default: return proto;
+    }
+  }
 
 
 }])

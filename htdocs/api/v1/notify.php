@@ -24,13 +24,26 @@ if ($nextHop) {
         errorResult(400, "invalid pubkey");
     }
 
+    if (preg_match("/[^a-z0-9-]/", $_POST["uuid"])) errorResult(400, "Invalid uuid");
+    file_put_contents(DATA_FOLDER."/message-$_POST[uuid].dat", $_POST["msg"]);
+    
     error_log("success: recipient found with pk=".$info["publickey"].", nick=$info[nickname], tel=$info[phone]");
-
+    
+    $sender_id = sprintf("%06d", intval($_POST["senderId"]));
+    
+    $encoded_msg = base64_encode($_POST["msg"]);
+    error_log("Message length ".strlen($encoded_msg));
+    
+    if (strlen($encoded_msg) > 3800)
+        $data = array("uuid" => $_POST["uuid"], "senderId" => $sender_id);
+    else
+        $data = array("msg" => $encoded_msg, "senderId" => $sender_id);
+    
     $url = 'https://android.googleapis.com/gcm/send';
     $data = array(
         "registration_ids" => array($info["gcmid"]),
      //   "data" => array("msg" => utf8_encode($_POST["msg"]))
-        "data" => array("msg" => base64_encode($_POST["msg"]), "senderId" => sprintf("%06d", intval($_POST["senderId"])))
+        "data" => $data
     );
     //error_log(bin2hex($_POST["msg"]));
     $data =json_encode($data);
