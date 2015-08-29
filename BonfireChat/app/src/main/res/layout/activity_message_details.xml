@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Von/An:"
+            android:text=""
             android:id="@+id/label_senders"
             android:textStyle="bold" />
         <ListView
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Gesendet:"
+            android:text="@string/details_label_sent"
             android:id="@+id/label_datetime"
             android:textStyle="bold" />
         <TextView
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Eigenschaften:"
+            android:text="@string/details_label_properties"
             android:id="@+id/label_props"
             android:textStyle="bold"
             android:paddingTop="10dp" />
@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="verschlüsselte Übertragung"
+                android:text="@string/details_label_encrypted"
                 android:id="@+id/label_message_encrypted" />
         </LinearLayout>
         <LinearLayout
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Über:"
+            android:text="@string/details_label_via"
             android:id="@+id/label_path"
             android:textStyle="bold"
             android:paddingTop="10dp" />
@@ -96,6 +96,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tracedHopsList">
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/details_label_debug"
+            android:id="@+id/label_debug"
+            android:textStyle="bold"
+            android:paddingTop="10dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=""
+                android:paddingRight="4dp"
+                android:id="@+id/retries" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/details_label_retries"
+                android:id="@+id/label_retries" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/details_label_uuid"
+                android:paddingRight="4dp"
+                android:id="@+id/label_uuid" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=""
+                android:id="@+id/uuid" />
         </LinearLayout>
 
     </LinearLayout>
