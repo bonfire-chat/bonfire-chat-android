@@ -70,6 +70,7 @@ public class MessageDetailsActivity extends Activity {
         inflateContactsView();
         inflateMessageDatails();
         inflateTraceroute();
+        inflateDebugInfo();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
@@ -230,13 +231,13 @@ public class MessageDetailsActivity extends Activity {
 
         switch (message.direction()) {
             case Received:
-                ((TextView) findViewById(R.id.label_senders)).setText("Von:");
+                ((TextView) findViewById(R.id.label_senders)).setText(R.string.details_from);
                 contacts = new ArrayList<>();
                 contacts.add(new Contact(message.sender.getNickname(), "", "", message.sender.getPhoneNumber(), message.sender.getPublicKey(), null, "", "", 0));
                 break;
             case Sent:
             default:
-                ((TextView) findViewById(R.id.label_senders)).setText("An:");
+                ((TextView) findViewById(R.id.label_senders)).setText(R.string.details_to);
                 contacts = message.recipients;
                 break;
         }
@@ -312,5 +313,10 @@ public class MessageDetailsActivity extends Activity {
             }
             tracerouteList.addView(view);
         }
+    }
+
+    private void inflateDebugInfo() {
+        ((TextView) findViewById(R.id.retries)).setText(""+message.retransmissionCount);
+        ((TextView) findViewById(R.id.uuid)).setText(message.uuid.toString().substring(0, 8));
     }
 }

@@ -92,5 +92,14 @@
     <string name="action_details">details</string>
 
     <string name="action_refresh">Refresh</string>
-    <string name="still_sending">message is on its way...</string>
+    <string name="still_sending">message is on its way…</string>
+    <string name="details_label_debug">information for nerds:</string>
+    <string name="details_label_via">via:</string>
+    <string name="details_label_encrypted">encrypted transfer</string>
+    <string name="details_label_properties">properties:</string>
+    <string name="details_label_sent">sent:</string>
+    <string name="details_from">from:</string>
+    <string name="details_to">to:</string>
+    <string name="details_label_retries">attempts to send</string>
+    <string name="details_label_uuid">UUID:</string>
 </resources>

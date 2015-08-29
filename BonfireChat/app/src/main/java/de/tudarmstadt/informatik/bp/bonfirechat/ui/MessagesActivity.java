@@ -144,7 +144,8 @@ public class MessagesActivity extends Activity {
                                 } else {
                                     m.flags |= Message.FLAG_ON_ITS_WAY;
                                 }
-
+                                // set retransmission count for UI
+                                m.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, 0);
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
                                 db.updateMessage(m);
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();

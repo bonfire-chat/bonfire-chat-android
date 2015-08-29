@@ -38,6 +38,7 @@ public class Message implements Serializable {
     public final Date sentTime;
     public String error;
     public int flags;
+    public int retransmissionCount;
 
     public List<TracerouteSegment> traceroute;
 
@@ -110,6 +111,7 @@ public class Message implements Serializable {
         values.put("uuid", uuid.toString());
         values.put("flags", flags);
         values.put("traceroute", StreamHelper.serialize(((ArrayList<TracerouteSegment>) traceroute)));
+        values.put("retries", retransmissionCount);
         return values;
     }
 
@@ -131,13 +133,15 @@ public class Message implements Serializable {
         }
         Conversation conversation = db.getConversationById(cursor.getInt(cursor.getColumnIndex("conversation")));
         ArrayList<TracerouteSegment> traceroute = StreamHelper.deserialize(cursor.getBlob(cursor.getColumnIndex("traceroute")));
-        return new Message(cursor.getString(cursor.getColumnIndex("body")),
+        Message message = new Message(cursor.getString(cursor.getColumnIndex("body")),
                 peer,
                 date,
                 cursor.getInt(cursor.getColumnIndex("flags")),
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("uuid"))),
                 conversation.getPeer(),
                 traceroute);
+        message.retransmissionCount = cursor.getInt(cursor.getColumnIndex("retries"));
+        return message;
     }
 
     public boolean hasFlag(int flag) {

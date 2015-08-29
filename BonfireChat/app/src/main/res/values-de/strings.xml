@@ -90,6 +90,13 @@
     <string name="tutorial_main_your_contact_desc">Hier klicken, um deine Kontaktdaten weiterzugeben</string>
 
     <string name="action_details">Details</string>
-    <string name="still_sending">Übertragung läuft noch...</string>
+    <string name="still_sending">Übertragung läuft noch…</string>
+    <string name="details_label_debug">Informationen für Nerds:</string>
+    <string name="details_label_via">Über:</string>
+    <string name="details_label_encrypted">verschlüsselte Übertragung</string>
+    <string name="details_label_sent">Gesendet:</string>
+    <string name="details_to">An:</string>
+    <string name="details_label_retries">Übertragungsversuche</string>
+    <string name="details_label_uuid">UUID:</string>
 
 </resources>
