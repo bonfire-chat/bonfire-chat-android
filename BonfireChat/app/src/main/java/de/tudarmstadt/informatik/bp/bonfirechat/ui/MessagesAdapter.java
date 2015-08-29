@@ -34,7 +34,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
     class ViewHolder {
         ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
         TextView messageBody, dateTime;
-        ProgressBar thumbLoading;
+        ProgressBar thumbLoading, onItsWay;
     }
 
     public MessagesAdapter(Context context, List<Message> objects) {
@@ -79,6 +79,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
                 case Sent:
                     convertView = inflater.inflate(R.layout.message_rowlayout_sent, parent, false);
                     v.ackIcon = (ImageView) convertView.findViewById(R.id.message_ack);
+                    v.onItsWay = (ProgressBar) convertView.findViewById(R.id.on_its_way);
                     break;
             }
 
@@ -114,6 +115,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.encryptedIcon.setColorFilter(Color.MAGENTA);
         }
         if (v.ackIcon != null) v.ackIcon.setVisibility(msg.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
+        if (v.onItsWay != null) v.onItsWay.setVisibility(msg.hasFlag(Message.FLAG_ON_ITS_WAY) ? View.VISIBLE : View.GONE);
         v.protocolIcon.setVisibility(View.VISIBLE);
         if (msg.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
         else if (msg.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
