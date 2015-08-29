@@ -102,4 +102,5 @@
     <string name="details_to">to:</string>
     <string name="details_label_retries">attempts to send</string>
     <string name="details_label_uuid">UUID:</string>
+    <string name="action_retry">send again</string>
 </resources>

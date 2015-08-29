@@ -98,5 +98,6 @@
     <string name="details_to">An:</string>
     <string name="details_label_retries">Übertragungsversuche</string>
     <string name="details_label_uuid">UUID:</string>
+    <string name="action_retry">Erneut senden</string>
 
 </resources>
