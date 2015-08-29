@@ -1,11 +1,15 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -44,6 +48,7 @@ public class MessageDetailsActivity extends Activity {
     private static final String TAG = "MessageDetailsActivity";
     private final BonfireData db = BonfireData.getInstance(this);
     private Message message;
+    final ViewHolder v = new ViewHolder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,35 @@ public class MessageDetailsActivity extends Activity {
         inflateContactsView();
         inflateMessageDatails();
         inflateTraceroute();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        UUID ackedUUID = (UUID) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
+                        Log.i(TAG, "MSG_ACKED: " + ackedUUID.toString());
+
+                        // wurde diese Nachricht bestätigt?
+                        if (message.uuid.equals(ackedUUID)) {
+                            // Haken anzeigen
+                            message.flags |= Message.FLAG_ACKNOWLEDGED;
+
+                            // Traceroute aktualisieren
+                            message.traceroute = (ArrayList<TracerouteSegment>) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_TRACEROUTE);
+
+                            // Protokoll(e) anzeigen
+                            // TODO wenn mehrere Protokolle verwendet, evtl mehrere Icons?
+                            message.setTransferProtocol((Class) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
+                            message.error = null;
+
+                            // show acked icon
+                            v.ackIcon.setVisibility(View.VISIBLE);
+                            // update traceroute
+                            inflateTraceroute();
+                        }
+                    }
+                },
+                new IntentFilter(ConnectionManager.MSG_ACKED_BROADCAST_EVENT));
     }
 
     @Override
@@ -84,8 +118,6 @@ public class MessageDetailsActivity extends Activity {
     }
 
     private void inflateMessageView(ViewStub stub) {
-        final ViewHolder v = new ViewHolder();
-
         switch (message.direction()) {
             case Received:
                 stub.setLayoutResource(R.layout.message_rowlayout_received);
@@ -240,6 +272,7 @@ public class MessageDetailsActivity extends Activity {
     private void inflateTraceroute() {
         List<TracerouteSegment> traceroute = message.traceroute;
         LinearLayout tracerouteList = (LinearLayout) findViewById(R.id.tracedHopsList);
+        tracerouteList.removeAllViews();
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         for (TracerouteSegment segment: traceroute) {
@@ -279,9 +312,5 @@ public class MessageDetailsActivity extends Activity {
             }
             tracerouteList.addView(view);
         }
-
-        // replace progress bar with actual list
-        findViewById(R.id.tracerouteLoading).setVisibility(View.GONE);
-        findViewById(R.id.tracedHopsList).setVisibility(View.VISIBLE);
     }
 }
