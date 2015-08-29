@@ -21,6 +21,7 @@ import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -264,11 +265,15 @@ public class ConnectionManager extends NonStopIntentService {
             // cancel the pending retransmission for this packet
             Retransmission.cancel(packet.acknowledgesUUID);
 
+            // reverse traceroute because ACK came opposite direction
+            List<TracerouteSegment> traceroute = packet.getTraceroute();
+            Collections.reverse(traceroute);
+
             // notify the ui that the recipient has acknowledged this message
             final Intent localIntent = new Intent(MSG_ACKED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID)
                     .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, sender.getClass())
-                    .putExtra(EXTENDED_DATA_TRACEROUTE, (ArrayList<TracerouteSegment>) packet.getTraceroute());
+                    .putExtra(EXTENDED_DATA_TRACEROUTE, (ArrayList<TracerouteSegment>) traceroute);
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
         }
@@ -457,6 +462,8 @@ public class ConnectionManager extends NonStopIntentService {
         // remember this packet
         processedPackets.enqueue(packet);
 
+        // add first traceroute segment, all following will be added on receiving
+        packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
         // set sent time for that hop, to allow calculating spent time on the air
         packet.setLastHopTimeSent(new Date());
 
@@ -480,20 +487,15 @@ public class ConnectionManager extends NonStopIntentService {
         if (hopsToTarget == null) envelope.setFlooding();
         else envelope.setDSR(hopsToTarget);
 
-        // set first hop sent time for calculating durations
-        envelope.setLastHopTimeSent(new Date());
-
         sendPacket(ctx, envelope);
     }
     public static void sendMessage(Context ctx, Message message) {
-        // add first traceroute segment, all following will be added on receiving
-        message.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
-
         sendEnvelope(ctx, Envelope.fromMessage(message));
 
         // add temporary traceroute segment, indication the message is still on its way
         // when the ACK packet for this message is received, the traceroute will be replaced entirely
         // by its reversed traceroute, so this segment will be removed then
+        message.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
         message.addTracerouteSegment(new TracerouteProgressSegment());
     }
 }
