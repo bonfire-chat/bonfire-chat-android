@@ -2,7 +2,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.data;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Environment;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,11 +30,11 @@ import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteHopSegment;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
 /**
@@ -170,11 +169,11 @@ public class BonfireAPI {
             List<TracerouteSegment> list = new ArrayList<>();
 
             // TODO: johannes: parse traceroute off the JSON response
-            list.add(new Contact("Alice", "", "", "", "", null, "", "", 0));
+            list.add(new TracerouteNodeSegment("Alice"));
             list.add(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.BLUETOOTH, new Date(new Date().getTime() - 3800), new Date()));
-            list.add(new Contact("Eve", "", "", "", "", null, "", "", 0));
+            list.add(new TracerouteNodeSegment("Eve"));
             list.add(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.GCM, new Date(new Date().getTime() - 5000), new Date()));
-            list.add(new Contact("Bob", "", "", "", "", null, "", "", 0));
+            list.add(new TracerouteNodeSegment("Bob"));
 
             return list;
         } catch (IOException e) {

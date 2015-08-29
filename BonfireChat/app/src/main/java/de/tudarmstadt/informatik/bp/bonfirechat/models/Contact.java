@@ -7,13 +7,11 @@ import android.database.Cursor;
 import java.io.Serializable;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteSegment;
 
 /**
  * Created by johannes on 05.05.15.
  */
-public class Contact implements Serializable, IPublicIdentity, TracerouteSegment {
+public class Contact implements Serializable, IPublicIdentity {
 
     // the publickey is the globally unique identifier for a person/device
     public MyPublicKey publicKey;

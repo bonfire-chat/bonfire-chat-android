@@ -28,8 +28,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteHopSegment;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.TracerouteSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
@@ -251,12 +252,11 @@ public class MessageDetailsActivity extends Activity {
         for (TracerouteSegment segment: traceroute) {
             Log.d(TAG, "adding " + segment);
             View view;
-            if (segment instanceof Contact) {
-                view = inflater.inflate(R.layout.contacts_layout, null);
-                Contact contact = (Contact) segment;
+            if (segment instanceof TracerouteNodeSegment) {
+                view = inflater.inflate(R.layout.traceroute_rowlayout_node, null);
+                TracerouteNodeSegment node = (TracerouteNodeSegment) segment;
 
-                ((TextView) view.findViewById(R.id.name)).setText(contact.getNickname());
-                ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.mipmap.ic_launcher);
+                ((TextView) view.findViewById(R.id.name)).setText(node.getNickname());
             }
             else {
                 view = inflater.inflate(R.layout.traceroute_rowlayout_hop, null);
