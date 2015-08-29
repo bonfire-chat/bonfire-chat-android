@@ -91,18 +91,11 @@
             android:id="@+id/label_path"
             android:textStyle="bold"
             android:paddingTop="10dp" />
-        <ProgressBar
-            android:id="@+id/tracerouteLoading"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" />
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tracedHopsList"
-            android:visibility="gone">
+            android:id="@+id/tracedHopsList">
         </LinearLayout>
 
     </LinearLayout>
