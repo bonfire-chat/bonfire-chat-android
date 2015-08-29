@@ -90,5 +90,6 @@
     <string name="tutorial_main_your_contact_desc">Hier klicken, um deine Kontaktdaten weiterzugeben</string>
 
     <string name="action_details">Details</string>
+    <string name="still_sending">Übertragung läuft noch...</string>
 
 </resources>
