@@ -234,7 +234,7 @@ public class ContactsFragment extends Fragment {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate the menu for the CAB
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.menu_contact, menu);
+            inflater.inflate(R.menu.menu_contacts_selected, menu);
             return true;
         }
 
