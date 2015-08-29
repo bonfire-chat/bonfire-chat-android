@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import org.abstractj.kalium.crypto.Box;
 import org.abstractj.kalium.keys.PublicKey;
@@ -120,7 +121,8 @@ public class Envelope extends PayloadPacket {
             messageBody = parts[1];
         }
         Message message = new Message(messageBody, theContact, sentTime, msgFlags, uuid);
-        message.traceroute = traceroute;
+        message.traceroute = getTraceroute();
+        Log.w("Envelope", "unpacking envelope. traceroute : " + message.traceroute);
         return message;
     }
 

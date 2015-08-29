@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.EnableBluetoothActivity;
 
 /**
@@ -179,6 +181,7 @@ public class BluetoothProtocol extends SocketProtocol {
                     final Packet packet = (Packet) stream.readObject();
                     Log.d(TAG, "Received " + packet.toString());
                     packet.addPathNode(peerMacAddress);
+                    packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.BLUETOOTH, packet.getLastHopTimeSent(), new Date()));
                     // hand over to the onMessageReceivedListener, which will take account for displaying
                     // the message and/or redistribute it to further recipients
                     packetListener.onPacketReceived(BluetoothProtocol.this, packet);

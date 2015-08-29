@@ -21,6 +21,7 @@ import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
@@ -211,6 +213,8 @@ public class ConnectionManager extends NonStopIntentService {
                 processedPackets.enqueue(packet);
                 // remember path to sender
                 routingManager.registerPath(packet);
+                // add traceroute segment for this node, segment for hop was already added by the receiving protocol
+                packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity().getNickname()));
                 // is this packet sent to us?
                 if (packet.hasRecipient(thisIdentity)) {
                     Log.d(TAG, "this packet is for us. ");
@@ -447,6 +451,9 @@ public class ConnectionManager extends NonStopIntentService {
         // remember this packet
         processedPackets.enqueue(packet);
 
+        // set sent time for that hop, to allow calculating spent time on the air
+        packet.setLastHopTimeSent(new Date());
+
         // and dispatch sending intent
         final Intent intent = new Intent(ctx, ConnectionManager.class);
         intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
@@ -466,6 +473,10 @@ public class ConnectionManager extends NonStopIntentService {
         List<byte[]> hopsToTarget = routingManager.getPath(envelope);
         if (hopsToTarget == null) envelope.setFlooding();
         else envelope.setDSR(hopsToTarget);
+
+        // add first traceroute segment, all following will be added on receiving
+        envelope.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
+        envelope.setLastHopTimeSent(new Date());
 
         sendPacket(ctx, envelope);
     }

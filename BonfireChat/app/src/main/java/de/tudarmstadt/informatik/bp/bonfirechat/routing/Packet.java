@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +35,8 @@ public abstract class Packet implements Serializable {
     private List<byte[]> nextHops;
 
     // for traceroute visualization
-    List<TracerouteSegment> traceroute;
+    private List<TracerouteSegment> traceroute;
+    private Date lastHopTimeSent;
     public String nextHopNickname;
 
     private long timeSent;
@@ -67,6 +69,17 @@ public abstract class Packet implements Serializable {
 
     public List<byte[]> getPath() {
         return path;
+    }
+
+    public List<TracerouteSegment> getTraceroute() {
+        return traceroute;
+    }
+
+    public Date getLastHopTimeSent() {
+        return lastHopTimeSent;
+    }
+    public void setLastHopTimeSent(Date lastHopTimeSent) {
+        this.lastHopTimeSent = lastHopTimeSent;
     }
 
     public List<byte[]> getNextHops() {
