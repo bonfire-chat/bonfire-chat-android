@@ -219,8 +219,10 @@ public class ConnectionManager extends NonStopIntentService {
                 processedPackets.enqueue(packet);
                 // remember path to sender
                 routingManager.registerPath(packet);
-                // add traceroute segment for this node, segment for hop was already added by the receiving protocol
-                packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity().getNickname()));
+                // if it is a payload packet, add traceroute segment for this node, segment for hop was already added by the receiving protocol
+                if (packet.getType() == PacketType.Payload) {
+                    packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity().getNickname()));
+                }
                 // is this packet sent to us?
                 if (packet.hasRecipient(thisIdentity)) {
                     Log.d(TAG, "this packet is for us. ");
@@ -265,15 +267,11 @@ public class ConnectionManager extends NonStopIntentService {
             // cancel the pending retransmission for this packet
             Retransmission.cancel(packet.acknowledgesUUID);
 
-            // reverse traceroute because ACK came opposite direction
-            List<TracerouteSegment> traceroute = packet.getTraceroute();
-            Collections.reverse(traceroute);
-
             // notify the ui that the recipient has acknowledged this message
             final Intent localIntent = new Intent(MSG_ACKED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID)
                     .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, sender.getClass())
-                    .putExtra(EXTENDED_DATA_TRACEROUTE, (ArrayList<TracerouteSegment>) traceroute);
+                    .putExtra(EXTENDED_DATA_TRACEROUTE, (ArrayList<TracerouteSegment>) packet.getTraceroute());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
         }
@@ -453,6 +451,9 @@ public class ConnectionManager extends NonStopIntentService {
     private void acknowledgePacket(Envelope packetToAck) {
         AckPacket ack = new AckPacket(packetToAck.uuid, packetToAck.recipientPublicKey, packetToAck.senderPublicKey);
         ack.setDSR(packetToAck.getPath());
+        // set traceroute of the incoming packet, so that it will be transmitted back to the sender
+        // ACK packets will not be added traceroute segments
+        ack.setTraceroute(packetToAck.getTraceroute());
         sendPacket(this, ack);
     }
 
@@ -462,10 +463,14 @@ public class ConnectionManager extends NonStopIntentService {
         // remember this packet
         processedPackets.enqueue(packet);
 
-        // add first traceroute segment, all following will be added on receiving
-        packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
-        // set sent time for that hop, to allow calculating spent time on the air
-        packet.setLastHopTimeSent(new Date());
+        // only build traceroute for payload packets, ACK packets will carry the traceroute of their
+        // correspondent payload packet back to the sender
+        if (packet.getType() == PacketType.Payload) {
+            // add first traceroute segment, all following will be added on receiving
+            packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
+            // set sent time for that hop, to allow calculating spent time on the air
+            packet.setLastHopTimeSent(new Date());
+        }
 
         // and dispatch sending intent
         final Intent intent = new Intent(ctx, ConnectionManager.class);

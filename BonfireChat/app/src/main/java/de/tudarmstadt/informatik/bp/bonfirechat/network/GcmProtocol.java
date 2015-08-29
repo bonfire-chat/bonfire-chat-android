@@ -20,6 +20,7 @@ import java.util.Date;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 
 /**
@@ -84,8 +85,10 @@ public class GcmProtocol extends SocketProtocol {
             packet.addPathNode(senderId.getBytes());
             //end todo
 
-            // add traceroute segment
-            packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.GCM, packet.getLastHopTimeSent(), new Date()));
+            // add traceroute segment to payload packets
+            if (packet.getType() == PacketType.Payload) {
+                packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.GCM, packet.getLastHopTimeSent(), new Date()));
+            }
 
             packet.addPathNode(serverFakeMacAddress);
             packetListener.onPacketReceived(this, packet);
