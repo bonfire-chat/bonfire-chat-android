@@ -15,10 +15,12 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 
 /**
  * Created by mw on 15.06.15.
@@ -81,6 +83,9 @@ public class GcmProtocol extends SocketProtocol {
             if (packet.getNextHop() != null) packet.removeNextHop();
             packet.addPathNode(senderId.getBytes());
             //end todo
+
+            // add traceroute segment
+            packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.GCM, packet.getLastHopTimeSent(), new Date()));
 
             packet.addPathNode(serverFakeMacAddress);
             packetListener.onPacketReceived(this, packet);

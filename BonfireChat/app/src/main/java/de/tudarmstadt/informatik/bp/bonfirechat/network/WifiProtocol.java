@@ -28,8 +28,10 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 
 /**
  * Created by mw on 16.08.15.
@@ -120,6 +122,7 @@ public class WifiProtocol extends SocketProtocol {
                         byte[] macAddress = (byte[]) obj.readObject();
                         Packet packet = (Packet) obj.readObject();
                         packet.addPathNode(macAddress);
+                        packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.WIFI, packet.getLastHopTimeSent(), new Date()));
                         obj.close();
                         packetListener.onPacketReceived(WifiProtocol.this, packet);
                     } catch (ClassNotFoundException cnfe) {
