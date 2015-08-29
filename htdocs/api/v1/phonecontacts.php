@@ -10,8 +10,7 @@ if (!isset($_POST["numbers"])) {
 
 $nums = explode(",", $_POST["numbers"]);
 foreach($nums as $num ) {
-  $num = preg_replace("/[^0-9]/", "", $num);
-  $num = preg_replace("/^0/", "49", $num);
+  $num = preparePhonenumber($num);
   //error_log("search number $num");
   $stmt = $db->prepare("SELECT publickey FROM users WHERE phone = ? ORDER BY last_updated desc LIMIT 1");
   $stmt->execute(array($num));
