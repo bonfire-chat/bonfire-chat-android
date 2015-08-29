@@ -143,6 +143,10 @@ public class Message implements Serializable {
         return (flags & flag) != 0;
     }
 
+    public void addTracerouteSegment(TracerouteSegment segment) {
+        traceroute.add(segment);
+    }
+
     public enum MessageDirection {
         Unknown,
         Sent,

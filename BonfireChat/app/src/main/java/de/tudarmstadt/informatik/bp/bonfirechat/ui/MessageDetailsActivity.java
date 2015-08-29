@@ -30,6 +30,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteProgressSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -246,6 +247,9 @@ public class MessageDetailsActivity extends Activity {
                 TracerouteNodeSegment node = (TracerouteNodeSegment) segment;
 
                 ((TextView) view.findViewById(R.id.name)).setText(node.getNickname());
+            }
+            else if (segment instanceof TracerouteProgressSegment) {
+                view = inflater.inflate(R.layout.traceroute_rowlayout_progress, null);
             }
             else {
                 view = inflater.inflate(R.layout.traceroute_rowlayout_hop, null);

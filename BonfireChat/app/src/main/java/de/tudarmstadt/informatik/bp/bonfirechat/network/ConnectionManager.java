@@ -42,6 +42,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteProgressSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
@@ -83,6 +85,8 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
     public static final String EXTENDED_DATA_RETRANSMISSION_COUNT =
             "de.tudarmstadt.informatik.bp.bonfirechat.RETRANSMISSION_COUNT";
+    public static final String EXTENDED_DATA_TRACEROUTE =
+            "de.tudarmstadt.informatik.bp.bonfirechat.TRACEROUTE";
 
 
     // buffer for storing which messages have already been handled
@@ -197,6 +201,7 @@ public class ConnectionManager extends NonStopIntentService {
     };
 
     private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {
+
         @Override
         public void onPacketReceived(IProtocol sender, Packet packet) {
             Identity thisIdentity = BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity();
@@ -262,7 +267,8 @@ public class ConnectionManager extends NonStopIntentService {
             // notify the ui that the recipient has acknowledged this message
             final Intent localIntent = new Intent(MSG_ACKED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID)
-                    .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, sender.getClass());
+                    .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, sender.getClass())
+                    .putExtra(EXTENDED_DATA_TRACEROUTE, (ArrayList<TracerouteSegment>) packet.getTraceroute());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
         }
@@ -474,13 +480,20 @@ public class ConnectionManager extends NonStopIntentService {
         if (hopsToTarget == null) envelope.setFlooding();
         else envelope.setDSR(hopsToTarget);
 
-        // add first traceroute segment, all following will be added on receiving
-        envelope.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
+        // set first hop sent time for calculating durations
         envelope.setLastHopTimeSent(new Date());
 
         sendPacket(ctx, envelope);
     }
     public static void sendMessage(Context ctx, Message message) {
+        // add first traceroute segment, all following will be added on receiving
+        message.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
+
         sendEnvelope(ctx, Envelope.fromMessage(message));
+
+        // add temporary traceroute segment, indication the message is still on its way
+        // when the ACK packet for this message is received, the traceroute will be replaced entirely
+        // by its reversed traceroute, so this segment will be removed then
+        message.addTracerouteSegment(new TracerouteProgressSegment());
     }
 }
