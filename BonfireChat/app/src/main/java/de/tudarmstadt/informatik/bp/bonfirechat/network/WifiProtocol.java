@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 
 /**
@@ -122,7 +123,10 @@ public class WifiProtocol extends SocketProtocol {
                         byte[] macAddress = (byte[]) obj.readObject();
                         Packet packet = (Packet) obj.readObject();
                         packet.addPathNode(macAddress);
-                        packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.WIFI, packet.getLastHopTimeSent(), new Date()));
+                        // add traceroute segment to payload packets
+                        if (packet.getType() == PacketType.Payload) {
+                            packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.WIFI, packet.getLastHopTimeSent(), new Date()));
+                        }
                         obj.close();
                         packetListener.onPacketReceived(WifiProtocol.this, packet);
                     } catch (ClassNotFoundException cnfe) {

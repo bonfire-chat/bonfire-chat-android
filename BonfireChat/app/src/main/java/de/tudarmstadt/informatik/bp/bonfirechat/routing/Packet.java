@@ -74,6 +74,9 @@ public abstract class Packet implements Serializable {
     public List<TracerouteSegment> getTraceroute() {
         return traceroute;
     }
+    public void setTraceroute(List<TracerouteSegment> traceroute) {
+        this.traceroute = traceroute;
+    }
 
     public Date getLastHopTimeSent() {
         return lastHopTimeSent;
@@ -112,7 +115,7 @@ public abstract class Packet implements Serializable {
 
     public void setFlooding() {
         this.routingMode = ROUTING_MODE_FLOODING;
-        this.nextHops = new ArrayList<byte[]>();
+        this.nextHops = new ArrayList<>();
     }
     public void setDSR(List<byte[]> nextHops) {
         this.routingMode = ROUTING_MODE_DSR;
