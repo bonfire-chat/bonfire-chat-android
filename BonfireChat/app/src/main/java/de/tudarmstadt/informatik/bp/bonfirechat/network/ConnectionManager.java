@@ -463,15 +463,6 @@ public class ConnectionManager extends NonStopIntentService {
         // remember this packet
         processedPackets.enqueue(packet);
 
-        // only build traceroute for payload packets, ACK packets will carry the traceroute of their
-        // correspondent payload packet back to the sender
-        if (packet.getType() == PacketType.Payload) {
-            // add first traceroute segment, all following will be added on receiving
-            packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
-            // set sent time for that hop, to allow calculating spent time on the air
-            packet.setLastHopTimeSent(new Date());
-        }
-
         // and dispatch sending intent
         final Intent intent = new Intent(ctx, ConnectionManager.class);
         intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);
@@ -491,6 +482,11 @@ public class ConnectionManager extends NonStopIntentService {
         List<byte[]> hopsToTarget = routingManager.getPath(envelope);
         if (hopsToTarget == null) envelope.setFlooding();
         else envelope.setDSR(hopsToTarget);
+
+        // add first traceroute segment, all following will be added on receiving
+        envelope.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
+        // set sent time for that hop, to allow calculating spent time on the air
+        envelope.setLastHopTimeSent(new Date());
 
         sendPacket(ctx, envelope);
     }
