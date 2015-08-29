@@ -29,6 +29,7 @@ import java.util.UUID;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
+import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 import de.tudarmstadt.informatik.bp.bonfirechat.ui.EnableBluetoothActivity;
 
 /**
@@ -149,7 +150,9 @@ public class BluetoothProtocol extends SocketProtocol {
                 }
 
             } catch (IOException e) {
-                Log.e(TAG, "MEEP MEEP MEEP: Exception in Blueooth Listener Thread, bluetooth connections won't work until app restart! ");
+                String errMes = "MEEP MEEP MEEP: Exception in Blueooth Listener Thread, bluetooth connections won't work until app restart! ";
+                Log.e(TAG, errMes);
+                StatsCollector.publishError(BluetoothProtocol.class, "ERR", null, errMes);
                 e.printStackTrace();
             }
         }
@@ -197,6 +200,7 @@ public class BluetoothProtocol extends SocketProtocol {
             } catch (IOException e) {
                 // On connection errors, tear down this connection and remove from the list
                 // of active connections.
+                StatsCollector.publishError(BluetoothProtocol.class, "ERR", null, "Error in recv thread: "+e.getMessage());
                 e.printStackTrace();
                 teardown();
             }
@@ -210,8 +214,9 @@ public class BluetoothProtocol extends SocketProtocol {
                     stream.flush();
                     sent++;
                 } catch(IOException ex) {
-                    Log.w(TAG, "ConnectionHandler: Could not send to "+formattedMacAddress+" : "+packet.toString());
+                    Log.w(TAG, "sendNetworkPacket: Could not send to "+formattedMacAddress+" : "+packet.toString());
                     Log.w(TAG, ex.getMessage());
+                    StatsCollector.publishError(BluetoothProtocol.class, "ERR", packet.uuid, "Could not send to " + formattedMacAddress + " : " + ex.getMessage());
                     // Connection is broken, remove from list
                     teardown();
                 }
@@ -231,7 +236,7 @@ public class BluetoothProtocol extends SocketProtocol {
         }
     }
 
-    ConnectionHandler connectToDevice(BluetoothDevice device) {
+    ConnectionHandler connectToDevice(BluetoothDevice device, UUID uuid) {
         try {
             if (connections.containsKey(device.getAddress()))
                 return connections.get(device.getAddress());
@@ -247,6 +252,9 @@ public class BluetoothProtocol extends SocketProtocol {
             // ServerSocket to accept this connection
             Log.e(TAG, "Unable to connect to bluetooth device "+device.getAddress()+", ignoring");
             Log.e(TAG, e.getMessage());
+            StatsCollector.publishError(BluetoothProtocol.class, "ERR", uuid,
+                    "Unable to connect to bluetooth device "+device.getAddress()+": "+e.getMessage());
+
             try {
                 Log.w(TAG, "Trying ugly workaround from the internet - here be dragons ...");
 
@@ -283,7 +291,7 @@ public class BluetoothProtocol extends SocketProtocol {
 
         // send packet only to specified peer. Just try sending it to
         // the addresses, no discovering necessary to send the packet
-        ConnectionHandler socket = connectToDevice(adapter.getRemoteDevice(peer.getAddress()));
+        ConnectionHandler socket = connectToDevice(adapter.getRemoteDevice(peer.getAddress()), packet.uuid);
         if (socket != null) {
             socket.sendNetworkPacket(packet);
         }

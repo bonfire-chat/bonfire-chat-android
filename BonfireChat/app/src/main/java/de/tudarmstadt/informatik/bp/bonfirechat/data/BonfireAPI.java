@@ -162,6 +162,9 @@ public class BonfireAPI {
             e.printStackTrace();
         }
     }
+    public static void publishFailure(UUID uuid, String errmes) {
+
+    }
 
     public static void sendGcmMessage(Identity identity, byte[] targetPubkey, String nextHop, String uuid, byte[] serializedEnvelope) throws IOException {
         String key = CryptoHelper.toBase64(targetPubkey);
