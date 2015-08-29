@@ -13,11 +13,18 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Formatter;
 
 /**
@@ -37,6 +44,29 @@ public class StreamHelper {
             formatter.format("%02x", b);
         }
         return formatter.toString();
+    }
+
+    public static byte[] serialize(Serializable object) {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutput out = new ObjectOutputStream(bos);
+            out.writeObject(object);
+            return bos.toByteArray();
+        }
+        catch (Exception e) {
+            return new byte[]{};
+        }
+    }
+
+    public static <T extends Serializable> T deserialize (byte[] bytes) {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+            ObjectInput in = new ObjectInputStream(bis);
+            return (T) in.readObject();
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
 
