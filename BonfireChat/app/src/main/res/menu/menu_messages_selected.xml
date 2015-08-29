@@ -4,6 +4,8 @@
 
     <item android:id="@+id/action_details" android:title="@string/action_details"
         app:showAsAction="always" android:icon="@android:drawable/ic_menu_help" />
+    <item android:id="@+id/action_retry" android:title="@string/action_retry"
+        app:showAsAction="always" android:icon="@android:drawable/ic_menu_rotate" />
     <item android:id="@+id/action_delete" android:title="@string/action_delete"
         app:showAsAction="always" android:icon="@android:drawable/ic_menu_delete" />
 </menu>
