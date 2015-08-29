@@ -192,15 +192,26 @@ angular.module("dashboard", ["chart.js"])
     
   }
 
-  function getShortProtocolName(proto) {
-    switch(proto){
-    case "BluetoothProtocol": return "BT";
-    case "GcmProtocol": return "GCM";
-    default: return proto;
-    }
+}])
+
+
+.controller("ErrorListController", ["$scope", "$http", "$interval", function ($scope, $http, $interval) {
+  var lastCount = -1;
+
+  $interval(function() {
+    loadList();
+  }, 5000);
+  
+  function loadList() {
+    $http.get("/dashboard/stats.php?mode=errors").success(function (html) {
+      if (html.length == lastCount) return;
+      lastCount = html.length;
+      
+      $scope.errorlist = html;
+      
+    });
   }
-
-
+  
 }])
 
 
@@ -213,4 +224,14 @@ angular.module("dashboard", ["chart.js"])
 })
 
 ;
-    
+
+
+function getShortProtocolName(proto) {
+  switch(proto){
+  case "BluetoothProtocol": return "BT";
+  case "GcmProtocol": return "GCM";
+  default: return proto;
+  }
+}
+
+

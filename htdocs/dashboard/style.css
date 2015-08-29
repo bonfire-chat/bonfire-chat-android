@@ -1,0 +1,10 @@
+
+.tracelist small {display:block}
+.tracelist>li>a { padding: 5px 10px; }
+
+
+#trcontent .action-RIGN td { color: #bbb; } /* dim ignored packets */
+#trcontent .action-ERR td { color: #b22; } /* errors in red */
+
+#trcontent span { display: block; font-size: 8pt; background: #eee; }
+#trcontent span time {float: right; }
