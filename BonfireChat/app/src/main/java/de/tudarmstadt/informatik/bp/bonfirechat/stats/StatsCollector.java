@@ -40,6 +40,7 @@ public class StatsCollector extends BroadcastReceiver {
     private StatsEntry stats;
     private int batteryLastLevel;
     private long batteryLastMeasured;
+    private boolean isCharging;
 
     public static String reporterIdentity;
 
@@ -53,6 +54,7 @@ public class StatsCollector extends BroadcastReceiver {
         ctx.registerReceiver(this.batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         reporterIdentity = BonfireData.getInstance(ctx).getDefaultIdentity().getNickname();
+
     }
 
     /*
@@ -62,6 +64,12 @@ public class StatsCollector extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final BonfireData db = BonfireData.getInstance(context);
         Log.i(TAG, "publishing latest stats data...");
+
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, ifilter);
+        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                status == BatteryManager.BATTERY_STATUS_FULL;
 
         // save latest stats data to local database
         updateStats();
@@ -129,6 +137,7 @@ public class StatsCollector extends BroadcastReceiver {
                 final String postData = "timestamp=" + DateHelper.formatDateTime(stats.timestamp)
                         + "&batterylevel=" + stats.batteryLevel
                         + "&powerusage=" + stats.powerUsage
+                        + "&charging=" + isCharging
                         + "&messages_sent=" + stats.messagesSent
                         + "&messages_received=" + stats.messageReceived
                         + "&lat=" + stats.lat
@@ -168,15 +177,18 @@ public class StatsCollector extends BroadcastReceiver {
         }
     };
 
+
     private void updateStats() {
         // bump time
         stats.timestamp = new Date();
 
-        // update calculated battery consumption
-        stats.powerUsage = ((float)batteryLastLevel - (float)stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000*60*60;
-        if (stats.powerUsage < 0) stats.powerUsage = 0;
-        batteryLastLevel = stats.batteryLevel;
-        batteryLastMeasured = System.currentTimeMillis();
+        if(!isCharging) {
+            // update calculated battery consumption
+            stats.powerUsage = ((float) batteryLastLevel - (float) stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000 * 60 * 60;
+            if (stats.powerUsage < 0) stats.powerUsage = 0;
+            batteryLastLevel = stats.batteryLevel;
+            batteryLastMeasured = System.currentTimeMillis();
+        }
 /*
         // update location
         final GpsTracker gps = GpsTracker.getInstance();
