@@ -39,6 +39,12 @@ public class DateHelper {
     }
 
     public static String formatTimeDelta(Date start, Date end) {
+        // start after end?
+        if (end.compareTo(start) < 0) {
+            Date tmp = start;
+            start = end;
+            end = tmp;
+        }
         long interval = end.getTime() - start.getTime();
         long seconds = TimeUnit.SECONDS.convert(interval, TimeUnit.MILLISECONDS);
         return new StringBuilder().append("+ ").append(seconds).append("s").toString();
