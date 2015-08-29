@@ -34,6 +34,9 @@ require "../api/v1/init.php";
     WHERE publickey = '".mysql_escape_string($_GET["pk"])."'
     order by timestamp desc
     ;";
+  } elseif ($_GET["mode"] == "errors") {
+    $query = "SELECT * FROM traceroutes WHERE action='ERR' ORDER BY client_ts DESC LIMIT 20
+    ;";
   }
   $stmt = $db->prepare($query);
   $stmt->execute();
