@@ -119,7 +119,9 @@ public class Envelope extends PayloadPacket {
             theContact = Contact.findOrCreate(ctx, senderPublicKey, parts[0]);
             messageBody = parts[1];
         }
-        return new Message(messageBody, theContact, sentTime, msgFlags, uuid);
+        Message message = new Message(messageBody, theContact, sentTime, msgFlags, uuid);
+        message.traceroute = traceroute;
+        return message;
     }
 
     public boolean hasFlag(int flag) {

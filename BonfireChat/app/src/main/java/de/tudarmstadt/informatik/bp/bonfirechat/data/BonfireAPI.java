@@ -163,27 +163,6 @@ public class BonfireAPI {
         }
     }
 
-    public static List<TracerouteSegment> getTraceroute(UUID id) {
-        try {
-            JSONArray traceroute = httpGetJsonArray(METHOD_TRACEROUTE + "?uuid=" + id);
-            List<TracerouteSegment> list = new ArrayList<>();
-
-            // TODO: johannes: parse traceroute off the JSON response
-            list.add(new TracerouteNodeSegment("Alice"));
-            list.add(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.BLUETOOTH, new Date(new Date().getTime() - 3800), new Date()));
-            list.add(new TracerouteNodeSegment("Eve"));
-            list.add(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.GCM, new Date(new Date().getTime() - 5000), new Date()));
-            list.add(new TracerouteNodeSegment("Bob"));
-
-            return list;
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to load traceroute for message uuid " + id);
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-
     public static void sendGcmMessage(Identity identity, byte[] targetPubkey, String nextHop, String uuid, byte[] serializedEnvelope) throws IOException {
         String key = CryptoHelper.toBase64(targetPubkey);
 

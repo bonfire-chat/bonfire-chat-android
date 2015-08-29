@@ -63,19 +63,7 @@ public class MessageDetailsActivity extends Activity {
         inflateMessageView(messageStub);
         inflateContactsView();
         inflateMessageDatails();
-
-        // asynchronously load traceroute data and then populate list
-        (new AsyncTask<Void, Void, List<TracerouteSegment>>() {
-            @Override
-            protected List<TracerouteSegment> doInBackground(Void... voids) {
-                return BonfireAPI.getTraceroute(message.uuid);
-            }
-
-            @Override
-            protected void onPostExecute(List<TracerouteSegment> traceroute) {
-                inflateTraceroute(traceroute);
-            }
-        }).execute();
+        inflateTraceroute();
     }
 
     @Override
@@ -245,7 +233,8 @@ public class MessageDetailsActivity extends Activity {
         }
     }
 
-    private void inflateTraceroute(List<TracerouteSegment> traceroute) {
+    private void inflateTraceroute() {
+        List<TracerouteSegment> traceroute = message.traceroute;
         LinearLayout tracerouteList = (LinearLayout) findViewById(R.id.tracedHopsList);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 

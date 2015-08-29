@@ -21,6 +21,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.WifiProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 
 /**
  * Created by johannes on 05.05.15.
@@ -35,6 +36,8 @@ public class Message implements Serializable {
     public final Date sentTime;
     public String error;
     public int flags;
+
+    public List<TracerouteSegment> traceroute;
 
     public static final int FLAG_IS_FILE = 1;
     public static final int FLAG_ACKNOWLEDGED = 2;
@@ -59,6 +62,7 @@ public class Message implements Serializable {
         if (recipient != null) {
             this.recipients.add(recipient);
         }
+        traceroute = new ArrayList<>();
     }
 
     public MessageDirection direction() {
