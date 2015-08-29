@@ -75,6 +75,12 @@
                     android:tint="#4b4"
                     android:paddingRight="2dp"
                     android:src="@drawable/ic_check_black_24dp" />
+                <ProgressBar android:id="@+id/on_its_way"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:tint="#4b4"
+                    android:paddingRight="2dp" />
                 <TextView
                     android:id="@+id/message_time"
                     android:layout_width="wrap_content"

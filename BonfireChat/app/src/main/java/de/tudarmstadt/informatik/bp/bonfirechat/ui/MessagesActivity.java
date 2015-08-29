@@ -142,7 +142,7 @@ public class MessagesActivity extends Activity {
                                     m.error = intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
                                     m.flags |= Message.FLAG_FAILED;
                                 } else {
-                                    m.error = "Sent(" + (String.valueOf(intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, -1))) + ")";
+                                    m.flags |= Message.FLAG_ON_ITS_WAY;
                                 }
 
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
@@ -166,6 +166,8 @@ public class MessagesActivity extends Activity {
                             if (m.uuid.equals(ackedUUID)) {
                                 // Haken anzeigen
                                 m.flags |= Message.FLAG_ACKNOWLEDGED;
+                                // Progressbar verstecken
+                                m.flags &=~ Message.FLAG_ON_ITS_WAY;
 
                                 // Traceroute aktualisieren
                                 m.traceroute = (ArrayList<TracerouteSegment>) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_TRACEROUTE);
@@ -248,7 +250,6 @@ public class MessagesActivity extends Activity {
             ed.setText("");
 
             Message message = new Message(msg, db.getDefaultIdentity(), new Date(), Message.FLAG_ENCRYPTED, conversation.getPeer());
-            message.error = "Sending";
 
             db.createMessage(message, conversation);
             appendMessage(message);
@@ -325,7 +326,6 @@ public class MessagesActivity extends Activity {
             if (gps.canGetLocation()) {
                 Log.d("Location", gps.getLatitude() + " : " + gps.getLongitude());
                 Message message = new Message(gps.getLatitude() + ":" + gps.getLongitude(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_LOCATION | Message.FLAG_ENCRYPTED, conversation.getPeer());
-                message.error = "Sending";
 
                 db.createMessage(message, conversation);
                 appendMessage(message);
@@ -356,7 +356,6 @@ public class MessagesActivity extends Activity {
                 out.close();
 
                 Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, uuid, conversation.getPeer(), new ArrayList<TracerouteSegment>());
-                message.error = "Sending";
 
                 db.createMessage(message, conversation);
                 appendMessage(message);
