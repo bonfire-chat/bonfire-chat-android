@@ -175,7 +175,7 @@ public class ConversationsFragment extends Fragment {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate the menu for the CAB
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.menu_conversation, menu);
+            inflater.inflate(R.menu.menu_conversations_selected, menu);
             return true;
         }
 
