@@ -47,6 +47,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 
 
 public class MessagesActivity extends Activity {
@@ -350,7 +351,7 @@ public class MessagesActivity extends Activity {
                 StreamHelper.writeImageToStream(this.getContentResolver(), data.getData(), out);
                 out.close();
 
-                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, uuid, conversation.getPeer());
+                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, uuid, conversation.getPeer(), new ArrayList<TracerouteSegment>());
                 message.error = "Sending";
 
                 db.createMessage(message, conversation);

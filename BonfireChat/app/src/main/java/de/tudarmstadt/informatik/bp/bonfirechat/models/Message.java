@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.WifiProtocol;
@@ -50,19 +52,19 @@ public class Message implements Serializable {
 
 
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, Contact recipient) {
-        this(body, sender, sentTime, flags, UUID.randomUUID(), recipient);
+        this(body, sender, sentTime, flags, UUID.randomUUID(), recipient, new ArrayList<TracerouteSegment>());
     }
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID uuid) {
-        this(body, sender, sentTime, flags, uuid, null);
+        this(body, sender, sentTime, flags, uuid, null, new ArrayList<TracerouteSegment>());
     }
-    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID uuid, Contact recipient) {
+    public Message(String body, IPublicIdentity sender, Date sentTime, int flags, UUID uuid, Contact recipient, List<TracerouteSegment> traceroute) {
         this.sender = sender; this.recipients = new ArrayList<>();
         this.body = body; this.sentTime = sentTime; this.uuid = uuid;
         this.flags = flags;
         if (recipient != null) {
             this.recipients.add(recipient);
         }
-        traceroute = new ArrayList<>();
+        this.traceroute = traceroute;
     }
 
     public MessageDirection direction() {
@@ -106,6 +108,7 @@ public class Message implements Serializable {
         values.put("sentDate", DateHelper.formatDateTime(this.sentTime));
         values.put("uuid", uuid.toString());
         values.put("flags", flags);
+        values.put("traceroute", StreamHelper.serialize(((ArrayList<TracerouteSegment>) traceroute)));
         return values;
     }
 
@@ -126,12 +129,14 @@ public class Message implements Serializable {
             date = new Date();
         }
         Conversation conversation = db.getConversationById(cursor.getInt(cursor.getColumnIndex("conversation")));
+        ArrayList<TracerouteSegment> traceroute = StreamHelper.deserialize(cursor.getBlob(cursor.getColumnIndex("traceroute")));
         return new Message(cursor.getString(cursor.getColumnIndex("body")),
                 peer,
                 date,
                 cursor.getInt(cursor.getColumnIndex("flags")),
                 UUID.fromString(cursor.getString(cursor.getColumnIndex("uuid"))),
-                conversation.getPeer());
+                conversation.getPeer(),
+                traceroute);
     }
 
     public boolean hasFlag(int flag) {
