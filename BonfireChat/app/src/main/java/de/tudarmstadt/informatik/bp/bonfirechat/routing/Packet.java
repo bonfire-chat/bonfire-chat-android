@@ -33,7 +33,8 @@ public abstract class Packet implements Serializable {
     private List<byte[]> path;
     private List<byte[]> nextHops;
 
-    //for traceroute
+    // for traceroute visualization
+    List<TracerouteSegment> traceroute;
     public String nextHopNickname;
 
     private long timeSent;
@@ -57,6 +58,7 @@ public abstract class Packet implements Serializable {
         this.recipientPublicKey = recipientPublicKey;
         this.uuid = uuid;
         this.path = new ArrayList<>();
+        this.traceroute = new ArrayList<>();
     }
 
     public PacketType getType() {
@@ -85,6 +87,10 @@ public abstract class Packet implements Serializable {
 
     public void addPathNode(byte[] id) {
         path.add(id);
+    }
+
+    public void addTracerouteSegment(TracerouteSegment segment) {
+        traceroute.add(segment);
     }
 
     public boolean isFlooding() {
