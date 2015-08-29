@@ -17,3 +17,9 @@ function base64url_decode($base64url) {
   return ($plainText);
 }
 
+function preparePhonenumber($num) {
+  $num = preg_replace("/[^0-9]/", "", $num);
+  // HACK ...es wird davon ausgegangen, dass alle Nummern ohne Landesvorwahl deutsche Nummern sind
+  $num = preg_replace("/^0/", "49", $num);
+  return $num;
+}
