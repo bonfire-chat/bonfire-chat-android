@@ -46,7 +46,7 @@ Der Connection Manager startet die Protokolle Wifi, Bluetooth und GCM. Diese üb
 
 ### 11. Is it absolutely necessary to run it on UI thread or would a background thread suffice?
 
-Ja. Der Connection Manager ist für das Versenden von Messages zuständig. Dies wird im UI thread eingeleitet.
+Der Großteil des Codes im ConnectionManager läuft bereits in einem Hintergrundthread. Nur einige statische Methoden dienen als Helper für UI-Klassen, diese müssen daher im UI Thread laufen.
 
 ### 12. Are all possible failures handled?
 
@@ -77,3 +77,9 @@ Müssen sie nicht.
 ### 17. Is the layout suitable for all screen dimensions?
 
 Es gibt kein Layout.
+
+### 18. Do all methods and fields have the proper access modifiers?
+
+- routingManager und peers sollten nicht public sein, alle Zugriffe von außen sind zur Generierung von Debugausgaben bzw. zum manuellen Setzen einer Route zum Debuggen. Die Methode zur Generierung von Debugausgaben kann in den ConnectionManager verschoben werden.
+- registeredProtocols, getOrCreateConnection muss nicht public sein (wird nicht extern verwendet)
+- connections muss nicht public sein, wird von außen nur zur Generierung von Debugausgaben verwendet. Die Methode zur Generierung von Debugausgaben kann in den ConnectionManager verschoben werden.
