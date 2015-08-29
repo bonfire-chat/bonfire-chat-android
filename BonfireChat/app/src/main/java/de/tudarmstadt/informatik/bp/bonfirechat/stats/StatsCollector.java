@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
@@ -85,6 +86,31 @@ public class StatsCollector extends BroadcastReceiver {
                 body.put("protocol", BonfireAPI.encode(protocol == null ? "" : protocol.getSimpleName()));
                 body.put("hop1", BonfireAPI.encode(lastHop == null ? "" : lastHop));
                 body.put("hop2", BonfireAPI.encode(thisHop == null ? "" : thisHop));
+                body.put("reporter", BonfireAPI.encode(reporterIdentity));
+                try {
+                    BonfireAPI.httpPost("traceroute", body);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public static void publishError(final Class protocol, final String what, final UUID uuid, final String errMes) {
+        final long dateTime = new Date().getTime();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Hashtable<String,byte[]> body = new Hashtable<>();
+                String uid = uuid == null ? "" : uuid.toString();
+                body.put("uuid", BonfireAPI.encode(uid));
+                body.put("datetime", BonfireAPI.encode(String.valueOf(dateTime)));
+                body.put("string", BonfireAPI.encode(errMes));
+                body.put("action", BonfireAPI.encode(what));
+                body.put("peer", new byte[0]);
+                body.put("protocol", new byte[0]);
+                body.put("hop1", new byte[0]);
+                body.put("hop2", new byte[0]);
                 body.put("reporter", BonfireAPI.encode(reporterIdentity));
                 try {
                     BonfireAPI.httpPost("traceroute", body);
