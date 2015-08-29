@@ -166,6 +166,10 @@ public class MessagesActivity extends Activity {
                             if (m.uuid.equals(ackedUUID)) {
                                 // Haken anzeigen
                                 m.flags |= Message.FLAG_ACKNOWLEDGED;
+
+                                // Traceroute aktualisieren
+                                m.traceroute = (ArrayList<TracerouteSegment>) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_TRACEROUTE);
+
                                 // Protokoll(e) anzeigen
                                 // TODO wenn mehrere Protokolle verwendet, evtl mehrere Icons?
                                 m.setTransferProtocol((Class)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
