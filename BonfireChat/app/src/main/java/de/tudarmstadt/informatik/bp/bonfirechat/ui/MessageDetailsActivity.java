@@ -93,13 +93,16 @@ public class MessageDetailsActivity extends Activity {
             case Sent:
             default:
                 stub.setLayoutResource(R.layout.message_rowlayout_sent);
-                v.ackIcon = (ImageView) findViewById(R.id.message_ack);
                 break;
         }
 
         View view = stub.inflate();
 
         view.findViewById(R.id.message_photo).setVisibility(View.GONE);
+
+        if (message.direction() == Message.MessageDirection.Sent) {
+            v.ackIcon = (ImageView) view.findViewById(R.id.message_ack);
+        }
 
         v.messageBody = (TextView) view.findViewById(R.id.message_body);
         v.messageImage = (ImageView) view.findViewById(R.id.message_image);
