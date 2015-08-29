@@ -33,7 +33,6 @@ public class Message implements Serializable {
     public final IPublicIdentity sender;
     public String body;
     public final Date sentTime;
-    public String transferProtocol;
     public String error;
     public int flags;
 

@@ -1,6 +1,8 @@
-package de.tudarmstadt.informatik.bp.bonfirechat.helper;
+package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import java.util.Date;
+
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 
 /**
  * Created by johannes on 16.08.15.
