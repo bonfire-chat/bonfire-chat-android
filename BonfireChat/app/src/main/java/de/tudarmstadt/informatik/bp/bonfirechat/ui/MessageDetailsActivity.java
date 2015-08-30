@@ -371,9 +371,8 @@ public class MessageDetailsActivity extends Activity {
     }
 
     private void inflateDebugInfo() {
-        ((TextView) findViewById(R.id.retries)).setText(""+(message.retransmissionCount+1));
+        ((TextView) findViewById(R.id.retries)).setText(""+message.retransmissionCount);
         ((TextView) findViewById(R.id.uuid)).setText(message.uuid.toString().substring(0, 8));
-        Log.e("FOO", "mesage flags: " + message.flags);
         if (message.hasFlag(Message.FLAG_ROUTING_DSR)) {
             ((TextView) findViewById(R.id.routing)).setText(R.string.routing_dsr);
         } else if (message.hasFlag(Message.FLAG_ROUTING_FLOODING)) {

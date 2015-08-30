@@ -146,7 +146,6 @@ public class MessagesActivity extends Activity {
                                 }
                                 if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ROUTING_TYPE)) {
                                     int routingType = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_ROUTING_TYPE, 0);
-                                    Log.e("FOO", "routing Type: " + routingType);
                                     if (routingType == Packet.ROUTING_MODE_DSR) {
                                         m.flags |= Message.FLAG_ROUTING_DSR;
                                         m.flags &=~ Message.FLAG_ROUTING_FLOODING;

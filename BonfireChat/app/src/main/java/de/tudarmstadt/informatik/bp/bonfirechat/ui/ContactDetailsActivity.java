@@ -1,31 +1,41 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
-import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 
-public class ContactDetailsActivity extends Activity {
-
+public class ContactDetailsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static final String EXTRA_CONTACT_ID = "ContactId";
 
-    Contact contact;
+    private Contact contact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_contact_details);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setTitle(getString(R.string.contact));
@@ -46,10 +56,27 @@ public class ContactDetailsActivity extends Activity {
             finish();
         }
 
-        getEdit(R.id.txt_nickname).setText(contact.getNickname());
-        getEdit(R.id.txt_xmppId).setText(contact.getXmppId());
-        getEdit(R.id.txt_publicKey).setText(contact.getPublicKey().asBase64());
-        getEdit(R.id.txt_phoneNumber).setText(contact.phoneNumber);
+        getEdit(R.id.nickname).setText(contact.getNickname());
+        getEdit(R.id.phone).setText(contact.phoneNumber);
+        ((TextView) findViewById(R.id.publickey)).setText(contact.getPublicKey().asBase64());
+        ((TextView) findViewById(R.id.stats)).setText("coming soon");
+
+        if (contact.getLastKnownLocation() != null) {
+            // hide notice
+            findViewById(R.id.map).setVisibility(View.VISIBLE);
+            findViewById(R.id.no_location_for_contact).setVisibility(View.GONE);
+            // display map
+            MapFragment mapFragment = (MapFragment) getFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+            // fix scroll issue
+            fixMapScrolling();
+        }
+        else {
+            // show notice
+            findViewById(R.id.map).setVisibility(View.GONE);
+            findViewById(R.id.no_location_for_contact).setVisibility(View.VISIBLE);
+        }
     }
 
     private EditText getEdit(int id) {
@@ -72,22 +99,71 @@ public class ContactDetailsActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
-            contact.setNickname(getEdit(R.id.txt_nickname).getText().toString());
-            contact.setXmppId(getEdit(R.id.txt_xmppId).getText().toString());
-            //contact.publicKey = getEdit(R.id.txt_publicKey).getText().toString();
-            contact.phoneNumber = getEdit(R.id.txt_phoneNumber).getText().toString();
-            BonfireData db = BonfireData.getInstance(this);
-            db.updateContact(contact);
+            saveContact();
             finish();
-
             return true;
         }
-
         else if (id == R.id.action_create_conversation) {
+            // save contact before starting conversation, to prevent data loss on wrong button click
+            saveContact();
             MessagesActivity.startConversationWithPeer(this, contact);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveContact() {
+        contact.setNickname(getEdit(R.id.nickname).getText().toString());
+        contact.phoneNumber = getEdit(R.id.phone).getText().toString();
+        BonfireData db = BonfireData.getInstance(this);
+        db.updateContact(contact);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        // extract position from message
+        LatLng position = contact.getLastKnownLocation();
+
+        // set map position
+        CameraUpdate center = CameraUpdateFactory.newLatLng(position);
+        map.moveCamera(center);
+
+        // show position marker
+        map.addMarker(new MarkerOptions()
+                .position(position)
+                .title(contact.getNickname()));
+    }
+
+    private void fixMapScrolling() {
+        final ScrollView mainScrollView = (ScrollView) findViewById(R.id.scrollView);
+        View transparentView = findViewById(R.id.transparent);
+
+        transparentView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        mainScrollView.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        });
     }
 }
