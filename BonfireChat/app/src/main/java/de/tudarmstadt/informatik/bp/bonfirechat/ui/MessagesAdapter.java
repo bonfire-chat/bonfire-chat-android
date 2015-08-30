@@ -32,7 +32,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
     boolean[] itemSelected;
 
     class ViewHolder {
-        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
+        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, errorIcon, messageImage;
         TextView messageBody, dateTime;
         ProgressBar thumbLoading, onItsWay;
     }
@@ -90,6 +90,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.contactPhoto = (ImageView) convertView.findViewById(R.id.message_photo);
             v.encryptedIcon = (ImageView) convertView.findViewById(R.id.message_encrypted);
             v.protocolIcon = (ImageView) convertView.findViewById(R.id.message_proto);
+            v.errorIcon = (ImageView) convertView.findViewById(R.id.message_error);
             convertView.setTag(v);
         } else {
             v = (ViewHolder) convertView.getTag();
@@ -106,8 +107,9 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.encryptedIcon.setColorFilter(Color.RED);
         }
         if (msg.hasFlag(Message.FLAG_FAILED)) {
-            v.encryptedIcon.setImageResource(R.drawable.ic_warning_black_24dp);
-            v.encryptedIcon.setColorFilter(Color.MAGENTA);
+            v.errorIcon.setVisibility(View.VISIBLE);
+        } else {
+            v.errorIcon.setVisibility(View.GONE);
         }
         if (v.ackIcon != null) v.ackIcon.setVisibility(msg.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
         if (v.onItsWay != null) v.onItsWay.setVisibility((msg.hasFlag(Message.FLAG_ACKNOWLEDGED) || msg.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);
