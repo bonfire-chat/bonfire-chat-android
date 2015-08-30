@@ -163,6 +163,16 @@ public class BonfireData extends SQLiteOpenHelper{
         messageCursor.close();
         return messages;
     }
+    public ArrayList<Message> getPendingMessages() {
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Message> messages = new ArrayList<>();
+        Cursor messageCursor = db.query(MESSAGES, null, "retries < ? AND sender == -1", new String[]{String.valueOf(ConstOptions.MAX_RETRANSMISSIONS)}, null, null, "");
+        while(messageCursor.moveToNext()){
+            messages.add(Message.fromCursor(messageCursor, this));
+        }
+        messageCursor.close();
+        return messages;
+    }
 
     public boolean deleteContact(Contact contact){
 
