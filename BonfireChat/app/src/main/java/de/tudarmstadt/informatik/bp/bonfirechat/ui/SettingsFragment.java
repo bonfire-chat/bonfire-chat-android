@@ -23,6 +23,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol;
 
 /**
@@ -90,6 +91,23 @@ public class SettingsFragment extends PreferenceFragment {
             p.setChecked(false);
         }
 
+        initProtocolCheckbox("BluetoothProtocol");
+        initProtocolCheckbox("WifiProtocol");
+        initProtocolCheckbox("GcmProtocol");
+
+    }
+
+    private void initProtocolCheckbox(String name) {
+        CheckBoxPreference p = (CheckBoxPreference) findPreference("enable_" + name);
+        p.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Intent intent = new Intent(getActivity(), ConnectionManager.class);
+                intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
+                getActivity().startService(intent);
+                return true;
+            }
+        });
     }
 
     @Override

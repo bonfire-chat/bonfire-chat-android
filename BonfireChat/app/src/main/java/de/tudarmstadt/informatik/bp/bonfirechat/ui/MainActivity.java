@@ -161,6 +161,7 @@ public class MainActivity extends Activity
     private void initializeNetwork() {
         Intent intent = new Intent(this, ConnectionManager.class);
         intent.setAction(ConnectionManager.GO_ONLINE_ACTION);
+        intent.putExtra("appStart", "yes");
         this.startService(intent);
     }
 
