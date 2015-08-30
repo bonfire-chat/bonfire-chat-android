@@ -320,6 +320,18 @@ public class MessagesActivity extends Activity {
                 toast.show();
             }
 
+        } else if (id == R.id.action_show_contact_location) {
+            // location available?
+            if (conversation.getPeer().getLastKnownLocation() != null) {
+                Intent intent = new Intent(MessagesActivity.this, ContactLocationActivity.class);
+                Log.i(TAG, "starting ContactLocationActivity with contact id=" + conversation.getPeer().rowid);
+                intent.putExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, conversation.getPeer().rowid);
+                startActivity(intent);
+            } else {
+                Toast toast = Toast.makeText(this, R.string.toast_location_not_available, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
         } else if (id == R.id.action_share_image) {
             Intent i = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
