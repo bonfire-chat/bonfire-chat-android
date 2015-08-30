@@ -37,6 +37,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.LocationUdpPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket;
@@ -210,7 +211,7 @@ public class ConnectionManager extends NonStopIntentService {
             // Traceroute...
             // TODO ~mw  : should be conditional, only if we have the users consent
             String thisHopName = thisIdentity.getNickname();
-            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet)?"RIGN":"RECV", null, packet, packet.nextHopNickname, thisHopName);
+            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet) ? "RIGN" : "RECV", null, packet, packet.nextHopNickname, thisHopName);
 
             Log.d(TAG, "onPacketReceived: " + sender.getClass().getSimpleName() + ", " + packet.toString());
             // has this packet not yet been processed?
@@ -233,6 +234,10 @@ public class ConnectionManager extends NonStopIntentService {
                     // is it an ACK packet?
                     else if (packet.getType() == PacketType.Ack) {
                         handleAckPacket((AckPacket) packet, sender);
+                    }
+                    // is it a UDP location broadcast?
+                    else if (packet.getType() == PacketType.LocationUdp) {
+                        handleLocationUdpPacket((LocationUdpPacket) packet, sender);
                     }
                     // otherwise it's an unknown packet type
                     else {
@@ -286,6 +291,19 @@ public class ConnectionManager extends NonStopIntentService {
                     .putExtra(EXTENDED_DATA_TRACEROUTE, (ArrayList<TracerouteSegment>) packet.getTraceroute());
 
             LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
+        }
+
+        private void handleLocationUdpPacket(LocationUdpPacket packet, IProtocol sender) {
+            BonfireData db = BonfireData.getInstance(ConnectionManager.this);
+            Contact contact = db.getContactByPublicKey(packet.senderPublicKey);
+            // do we know this contact? has he at least sent us one regular message?
+            if (contact != null) {
+                // update known location
+                contact.setLastKnownLocation(packet.getLocation(db.getDefaultIdentity()));
+                // save contact
+                db.updateContact(contact);
+                Log.i(TAG, "received location broadcast: " + contact.getNickname() + " claims to be at " + contact.getLastKnownLocation());
+            }
         }
 
         private void forwardPacket(Packet packet) {
