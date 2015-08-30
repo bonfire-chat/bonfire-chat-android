@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
     <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div class="container">
@@ -20,6 +21,7 @@
         <ul class="nav navbar-nav">
 	  <li><a href="/dashboard?p=main">Dashboard</a></li>
 	  <li><a href="/dashboard?p=trace">Trace</a></li>
+    <li><a href="/dashboard?p=errors">Errors</a></li>
           <li class="pull-right"><a href="../">Zurück zur Homepage</a></li>
         </ul>
       </nav>
@@ -58,9 +60,11 @@
 <div class="row" ng-controller="TraceController ">
 
         <div class="col-md-2">
-          <ul class="nav nav-pills nav-stacked">
+          <ul class="nav nav-pills nav-stacked tracelist">
             <li ng-repeat="tr in traceroutes" ng-class="{ active: tr.uuid == currentUuid }">
-              <a href="javascript://" ng-click="loadTrace(tr.uuid)">{{tr.uuid|shorten}}</a>
+              <a href="javascript://" ng-click="loadTrace(tr.uuid)">
+              <small>von {{tr.sender}}</small>
+              {{tr.uuid|shorten}}</a>
             </li>
           </ul>
         </div>
@@ -84,12 +88,21 @@
 </div>
 </div>
 <?php endif; ?>
-<style>
-#trcontent .action-RIGN td { color: #bbb; } /* dim ignored packets */
+<?php if ($_GET["p"] == "errors"): ?>
 
-#trcontent span { display: block; font-size: 8pt; background: #eee; }
-#trcontent span time {float: right; }
-</style>
+<div class="row" ng-controller="ErrorListController">
+
+
+<table class="table">
+<tr ng-repeat="line in errorlist">
+<td>{{line.reporter}}</td><td>{{line.action}}</td>
+<td>{{line.client_ts|date:"HH:mm:ss"}}</td><td>{{line.protocol}}</td><td>{{line.traceroute}}</td>
+</tr></table>
+
+
+</div>
+
+<?php endif; ?>
 
     </div>
 
