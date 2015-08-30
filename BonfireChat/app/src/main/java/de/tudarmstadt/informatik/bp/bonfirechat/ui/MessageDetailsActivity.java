@@ -150,8 +150,12 @@ public class MessageDetailsActivity extends Activity {
 
                             // show acked icon
                             v.ackIcon.setVisibility(View.VISIBLE);
+                            v.onItsWay.setVisibility(View.GONE);
                             // update traceroute
                             inflateTraceroute();
+
+                            // save acked message
+                            db.updateMessage(message);
                         }
                     }
                 },
@@ -376,7 +380,7 @@ public class MessageDetailsActivity extends Activity {
     }
 
     private void inflateDebugInfo() {
-        ((TextView) findViewById(R.id.retries)).setText(""+message.retransmissionCount);
+        ((TextView) findViewById(R.id.retries)).setText(""+(message.retransmissionCount+1));
         ((TextView) findViewById(R.id.uuid)).setText(message.uuid.toString().substring(0, 8));
         if (message.hasFlag(Message.FLAG_FAILED)) {
             ((TextView) findViewById(R.id.error)).setText(message.error);
