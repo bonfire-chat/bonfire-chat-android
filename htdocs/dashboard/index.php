@@ -5,11 +5,11 @@
 
     <title>Dashboard - Bonfire Chat </title>
 
-    <meta rel="icon" href="/icon.png">
+    <meta rel="icon" href="../icon.png">
 
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
-    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/angular-chart.js/dist/angular-chart.css">
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
@@ -106,11 +106,11 @@
 
     </div>
 
-    <script src="bower_components/angular/angular.min.js"></script>
-    <script src="bower_components/Chart.js/Chart.min.js"></script>
-    <script src="bower_components/angular-chart.js/angular-chart.js"></script>
-    <script src="bower_components/leaflet/dist/leaflet.js"></script>
-    <script src="bower_components/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/Chart.js/Chart.min.js"></script>
+    <script src="../bower_components/angular-chart.js/angular-chart.js"></script>
+    <script src="../bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="../bower_components/cytoscape/dist/cytoscape.min.js"></script>
     <script src="dashboard.js"></script>
   </body>
 </html>
