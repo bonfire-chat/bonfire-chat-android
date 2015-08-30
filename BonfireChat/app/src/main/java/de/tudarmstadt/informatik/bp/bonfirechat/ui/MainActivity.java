@@ -103,10 +103,6 @@ public class MainActivity extends Activity
         initializeNetwork();
         GpsTracker.init(this);
         initializeStats();
-
-        // resend pending messages in database
-        // TODO: jl: evaluate if this is too early (e.g. Bluetooth not granted yet?)
-        new ResendOldMessagesTask().execute(this);
     }
 
 

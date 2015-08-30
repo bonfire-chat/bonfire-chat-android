@@ -1,18 +1,13 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import org.abstractj.kalium.crypto.Box;
 import org.abstractj.kalium.keys.PublicKey;
 
 import java.nio.charset.Charset;
-import java.util.Date;
 import java.util.UUID;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * Created by johannes on 30.08.15.

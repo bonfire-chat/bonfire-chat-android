@@ -166,7 +166,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Message> getPendingMessages() {
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Message> messages = new ArrayList<>();
-        Cursor messageCursor = db.query(MESSAGES, null, "retries < ? AND sender == -1", new String[]{String.valueOf(ConstOptions.MAX_RETRANSMISSIONS)}, null, null, "");
+        Cursor messageCursor = db.query(MESSAGES, null, "retries < ? AND sender == -1 AND NOT flags & " + Message.FLAG_ACKNOWLEDGED, new String[]{String.valueOf(ConstOptions.MAX_RETRANSMISSIONS)}, null, null, "");
         while(messageCursor.moveToNext()){
             messages.add(Message.fromCursor(messageCursor, this));
         }
