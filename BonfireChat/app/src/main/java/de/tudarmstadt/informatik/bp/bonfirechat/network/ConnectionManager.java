@@ -389,6 +389,10 @@ public class ConnectionManager extends NonStopIntentService {
                 }
             }
 
+            // resend pending messages in database
+            // TODO: jl: evaluate if this is too early (e.g. Bluetooth not granted yet?)
+            new ResendOldMessagesTask().execute(this);
+
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
             Log.d(TAG, "Loading packet " + packet.toString());

@@ -21,11 +21,6 @@ public class ResendOldMessagesTask extends AsyncTask<Context, Void, Void> {
 
     @Override
     protected Void doInBackground(Context... contexts) {
-        try {
-            // sleep for half a second, to prevent odd error when ConnectionManager Looper is not ready yet
-            Thread.sleep(500);
-        } catch (InterruptedException e) { e.printStackTrace(); }
-
         Context ctx = contexts[0];
         BonfireData db = BonfireData.getInstance(ctx);
 
@@ -34,12 +29,9 @@ public class ResendOldMessagesTask extends AsyncTask<Context, Void, Void> {
 
         // resend them
         for (Message message: messages) {
-            // not already acked?
-            if (!message.hasFlag(Message.FLAG_ACKNOWLEDGED)) {
-                Log.d(TAG, "resending pending message with uuid: " + message.uuid);
-                ConnectionManager.retrySendMessage(ctx, message);
-                db.updateMessage(message);
-            }
+            Log.d(TAG, "resending pending message with uuid: " + message.uuid);
+            ConnectionManager.retrySendMessage(ctx, message);
+            db.updateMessage(message);
         }
 
         return null;
