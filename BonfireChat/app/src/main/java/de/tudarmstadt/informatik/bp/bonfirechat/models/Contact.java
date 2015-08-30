@@ -22,6 +22,7 @@ public class Contact implements Serializable, IPublicIdentity {
     private String firstName;
     private String lastName;
     public String phoneNumber;
+    private boolean shareLocation;
 
     private String lastKnownLocation;
 
@@ -45,6 +46,7 @@ public class Contact implements Serializable, IPublicIdentity {
         this.bluetoothMacAddress = bluetoothMacAddress;
         this.rowid = rowid;
         this.lastKnownLocation = "";
+        this.shareLocation = false;
     }
 
     public String getNickname() {
@@ -101,6 +103,14 @@ public class Contact implements Serializable, IPublicIdentity {
         this.lastKnownLocation = location;
     }
 
+    public boolean isShareLocation() {
+        return shareLocation;
+    }
+
+    public void setShareLocation(boolean shareLocation) {
+        this.shareLocation = shareLocation;
+    }
+
     @Override
     public String toString() {
         return nickname;
@@ -117,6 +127,7 @@ public class Contact implements Serializable, IPublicIdentity {
         values.put("wifiMacAddress", wifiMacAddress);
         values.put("bluetoothMacAddress", bluetoothMacAddress);
         values.put("lastKnownLocation", lastKnownLocation);
+        values.put("shareLocation", shareLocation ? 1 : 0);
         return values;
     }
 
@@ -131,6 +142,7 @@ public class Contact implements Serializable, IPublicIdentity {
                 cursor.getString(cursor.getColumnIndex("bluetoothMacAddress")),
                 cursor.getInt(cursor.getColumnIndex("rowid")));
         contact.setLastKnownLocation(cursor.getString(cursor.getColumnIndex("lastKnownLocation")));
+        contact.setShareLocation(cursor.getInt(cursor.getColumnIndex("shareLocation")) == 1);
         return contact;
     }
 
