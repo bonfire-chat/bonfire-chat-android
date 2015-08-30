@@ -12,4 +12,13 @@
         map:mapType="normal"
         map:cameraZoom="15" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/notice_no_location_for_contact"
+        android:id="@+id/notice"
+        android:visibility="gone"/>
+
 </LinearLayout>

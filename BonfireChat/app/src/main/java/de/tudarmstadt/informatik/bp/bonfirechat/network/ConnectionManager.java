@@ -21,7 +21,6 @@ import org.jivesoftware.smack.SmackAndroid;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -58,23 +57,24 @@ public class ConnectionManager extends NonStopIntentService {
 
     private static final String TAG = "ConnectionManager";
 
-    // action in Intents which are sent to the service
+    // action intents which are sent to the service
     public static final String GO_ONLINE_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.GO_ONLINE";
     public static final String SENDMESSAGE_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.SENDMESSAGE";
     public static final String CONTINUE_BLUETOOTH_STARTUP_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.CONTINUE_BLUETOOTH_STARTUP";
 
-    // action in event Intents broadcasted by the service
-    public static final String MSG_RECEIVED_BROADCAST_EVENT =
-            "de.tudarmstadt.informatik.bp.bonfirechat.MSG_RECEIVED_BROADCAST";
+    // event intents which are broadcasted by the service
     public static final String MSG_SENT_BROADCAST_EVENT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MSG_SENT_BROADCAST";
     public static final String MSG_ACKED_BROADCAST_EVENT =
             "de.tudarmstadt.informatik.bp.bonfirechat.MSG_ACKED_BROADCAST";
     public static final String NEW_CONVERSATION_BROADCAST_EVENT =
             "de.tudarmstadt.informatik.bp.bonfirechat.NEW_CONVERSATION_BROADCAST";
+    public static final String CONTACT_LOCATION_UPDATED_BROADCAST_EVENT =
+            "de.tudarmstadt.informatik.bp.bonfirechat.CONTACT_LOCATION_UPDATED_BROADCAST_EVENT";
 
-
-
+    // data in event intents broadcasted by the service
+    public static final String MSG_RECEIVED_BROADCAST_EVENT =
+            "de.tudarmstadt.informatik.bp.bonfirechat.MSG_RECEIVED_BROADCAST";
     public static final String EXTENDED_DATA_CONVERSATION_ID =
             "de.tudarmstadt.informatik.bp.bonfirechat.CONVERSATION_ID";
     public static final String EXTENDED_DATA_PROTOCOL_CLASS =
@@ -300,11 +300,15 @@ public class ConnectionManager extends NonStopIntentService {
             Contact contact = db.getContactByPublicKey(packet.senderPublicKey);
             // do we know this contact? has he at least sent us one regular message?
             if (contact != null) {
+                Log.i(TAG, "received location broadcast: " + contact.getNickname() + " claims to be at " + contact.getLastKnownLocation());
                 // update known location
                 contact.setLastKnownLocation(packet.getLocation(db.getDefaultIdentity()));
                 // save contact
                 db.updateContact(contact);
-                Log.i(TAG, "received location broadcast: " + contact.getNickname() + " claims to be at " + contact.getLastKnownLocation());
+                // notify UI
+                final Intent localIntent = new Intent(CONTACT_LOCATION_UPDATED_BROADCAST_EVENT)
+                        .putExtra(EXTENDED_DATA_CONTACT_ID, contact.rowid);
+                LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);
             }
         }
 
@@ -391,7 +395,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             // resend pending messages in database
             // TODO: jl: evaluate if this is too early (e.g. Bluetooth not granted yet?)
-            new ResendOldMessagesTask().execute(this);
+            new ResendOldMessagesTask(this).start();
 
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             final Packet packet = (Packet) intent.getSerializableExtra("packet");

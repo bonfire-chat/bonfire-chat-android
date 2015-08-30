@@ -1,9 +1,15 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -11,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
@@ -26,6 +33,8 @@ public class ContactLocationActivity extends FragmentActivity implements OnMapRe
     private static final String TAG = "ContactLocationActivity";
     private final BonfireData db = BonfireData.getInstance(this);
     private Contact contact;
+    private Marker marker;
+    private boolean mapInflated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +50,53 @@ public class ContactLocationActivity extends FragmentActivity implements OnMapRe
         }
         getActionBar().setTitle(contact.getNickname());
 
-        // display map
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        // location available?
+        updateMap();
+
+        // receive location updates
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        long contactId = intent.getLongExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, 0);
+                        Log.i(TAG, "location updated for contact id: " + contactId);
+
+                        // wurde dieser Kontakt aktualisiert?
+                        if (contact.rowid == contactId) {
+                            // update
+                            contact = db.getContactById(contactId);
+                            updateMap();
+                        }
+                    }
+                },
+                new IntentFilter(ConnectionManager.CONTACT_LOCATION_UPDATED_BROADCAST_EVENT));
+    }
+
+    private void updateMap() {
+        if (contact.getLastKnownLocation() != null) {
+            // hide notice
+            findViewById(R.id.map).setVisibility(View.VISIBLE);
+            findViewById(R.id.notice).setVisibility(View.GONE);
+            // map already inflated?
+            if (mapInflated) {
+                // update marker
+                if (marker != null && contact.getLastKnownLocation() != null) {
+                    marker.setPosition(contact.getLastKnownLocation());
+                }
+            }
+            else {
+                // display map
+                MapFragment mapFragment = (MapFragment) getFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(this);
+                mapInflated = true;
+            }
+        }
+        else {
+            // show notice
+            findViewById(R.id.map).setVisibility(View.GONE);
+            findViewById(R.id.notice).setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -57,7 +109,7 @@ public class ContactLocationActivity extends FragmentActivity implements OnMapRe
         map.moveCamera(center);
 
         // show position marker
-        map.addMarker(new MarkerOptions()
+        marker = map.addMarker(new MarkerOptions()
                 .position(position)
                 .title(contact.getNickname()));
     }

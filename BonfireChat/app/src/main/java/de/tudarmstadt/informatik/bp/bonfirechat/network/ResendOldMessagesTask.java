@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
@@ -15,13 +16,18 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
  * this async task is called on app startup
  * it sends messages that were pending retransmissions just before the app was closed
  */
-public class ResendOldMessagesTask extends AsyncTask<Context, Void, Void> {
+public class ResendOldMessagesTask extends Thread {
 
     private static String TAG = "ResendOldMessagesTask";
 
+    private Context ctx;
+
+    public ResendOldMessagesTask(Context ctx) {
+        this.ctx = ctx;
+    }
+
     @Override
-    protected Void doInBackground(Context... contexts) {
-        Context ctx = contexts[0];
+    public void run() {
         BonfireData db = BonfireData.getInstance(ctx);
 
         // fetch messages pending a retransmission
@@ -33,7 +39,5 @@ public class ResendOldMessagesTask extends AsyncTask<Context, Void, Void> {
             ConnectionManager.retrySendMessage(ctx, message);
             db.updateMessage(message);
         }
-
-        return null;
     }
 }

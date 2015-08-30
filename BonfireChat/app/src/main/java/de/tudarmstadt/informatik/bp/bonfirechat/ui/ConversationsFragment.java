@@ -168,16 +168,10 @@ public class ConversationsFragment extends Fragment {
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
                 Conversation conversation = adapter.getItem(position);
-                // location available?
-                if (conversation.getPeer().getLastKnownLocation() != null) {
-                    Intent intent = new Intent(getActivity(), ContactLocationActivity.class);
-                    Log.i(TAG, "starting ContactLocationActivity with contact id=" + conversation.getPeer().rowid);
-                    intent.putExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, conversation.getPeer().rowid);
-                    startActivity(intent);
-                } else {
-                    Toast toast = Toast.makeText(getActivity(), R.string.toast_location_not_available, Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+                Intent intent = new Intent(getActivity(), ContactLocationActivity.class);
+                Log.i(TAG, "starting ContactLocationActivity with contact id=" + conversation.getPeer().rowid);
+                intent.putExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, conversation.getPeer().rowid);
+                startActivity(intent);
                 break;
             }
         }
