@@ -175,7 +175,6 @@ public class BonfireData extends SQLiteOpenHelper{
     }
 
     public boolean deleteContact(Contact contact){
-
         // delete conversation with this contact
         Conversation conversation = getConversationByPeer(contact);
         if (conversation != null) {
@@ -259,7 +258,6 @@ public class BonfireData extends SQLiteOpenHelper{
     }
     public void updateMessage(Message message) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.e("FOO", "DATABASE: updating message to flags " + message.flags);
         db.update(MESSAGES, message.getContentValues(), " uuid = ? ", new String[]{String.valueOf(message.uuid)});
     }
     public void updateIdentity(Identity identity) {

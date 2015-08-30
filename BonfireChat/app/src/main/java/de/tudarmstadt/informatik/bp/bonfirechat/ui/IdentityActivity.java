@@ -91,9 +91,9 @@ public class IdentityActivity extends Activity  {
 
             // validate user input
             if (!(StringHelper.regexMatch("\\w+", nickname.getText().toString()) &&
-                    StringHelper.regexMatch("\\+?\\d+", phone.getText().toString()))) {
+                    (phone.getText().toString().isEmpty() || StringHelper.regexMatch("\\+?\\d+", phone.getText().toString())))) {
 
-                if (!StringHelper.regexMatch("\\+?\\d+", phone.getText().toString())) {
+                if (!phone.getText().toString().isEmpty() && !StringHelper.regexMatch("\\+?\\d+", phone.getText().toString())) {
                     phone.setError(getString(R.string.phone_error));
                     phone.requestFocus();
                 }

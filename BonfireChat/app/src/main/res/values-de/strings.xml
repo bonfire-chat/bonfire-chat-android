@@ -50,8 +50,8 @@
     <string name="registering_failed">Fehler beim Speichern</string>
 
     <string name="action_login_ok">Weiter</string>
-    <string name="login_phone_number_hint">Deine Handynummer</string>
-    <string name="login_nickname_hint">Dein Name</string>
+    <string name="login_phone_number_hint">Handynummer (optional)</string>
+    <string name="login_nickname_hint">Dein Nickname</string>
 
     <string name="share_text">Ich bin ein glücklicher BonfireChat-Nutzer!</string>
 
@@ -60,7 +60,7 @@
     <string name="image">Bild</string>
     <string name="location">Standort</string>
     <string name="nickname_error">Bitte wähle einen Nickname, der aus Buchstaben, Zahlen oder Unterstrichen besteht.</string>
-    <string name="phone_error">Bitte gib deine Handynummer ein.</string>
+    <string name="phone_error">Bitte gib eine gültige Handynummer ein.</string>
     <string name="registering">Registrierung läuft …</string>
     <string name="registering_error">Registrierung fehlgeschlagen, versuche es später erneut.\nBist du mit dem Internet verbunden?</string>
     <string name="nickname_already_taken">Dieser Nickname ist schon vergeben.</string>
@@ -111,5 +111,11 @@
     <string name="routing_flooding">Flooding</string>
     <string name="routing_dsr">DSR</string>
     <string name="routing_unknown">unbekannt</string>
+    <string name="no_location_for_contact">letzter Standort unbekannt</string>
+    <string name="label_nickname">Nickname:</string>
+    <string name="label_phone">Handynummer:</string>
+    <string name="label_publickey">Öffentlicher Schlüssel:</string>
+    <string name="label_last_known_location">Letzter bekannter Standort:</string>
+    <string name="label_stats">Statistiken:</string>
 
 </resources>
