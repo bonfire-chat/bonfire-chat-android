@@ -365,7 +365,7 @@ public class MessagesActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 42) {
+        if (requestCode == 42 && data.getData() != null) {
             Log.d(TAG, "result from image picker: "+data.getData().toString());
             UUID uuid = UUID.randomUUID();
 
