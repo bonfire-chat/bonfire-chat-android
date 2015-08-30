@@ -22,10 +22,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.net.URLEncoder;
+import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 import static android.widget.AdapterView.*;
@@ -75,6 +77,17 @@ public class ConversationsFragment extends Fragment {
         conversationsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         conversationsList.setMultiChoiceModeListener(multiChoiceListener);
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // reload messages (possibly changed on disk)
+        List<Conversation> conversations = BonfireData.getInstance(getActivity()).getConversations();
+        adapter.clear();
+        adapter.addAll(conversations);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
