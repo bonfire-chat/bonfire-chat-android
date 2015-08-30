@@ -58,12 +58,15 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
 
         getEdit(R.id.nickname).setText(contact.getNickname());
         getEdit(R.id.phone).setText(contact.phoneNumber);
-        ((TextView) findViewById(R.id.publickey)).setText(contact.getPublicKey().asBase64());
         ((TextView) findViewById(R.id.stats)).setText("coming soon");
+
+        String pubkey = contact.getPublicKey().asBase64();
+        pubkey = pubkey.substring(0,21) + "\n" + pubkey.substring(22);
+        ((TextView) findViewById(R.id.publickey)).setText(pubkey);
 
         if (contact.getLastKnownLocation() != null) {
             // hide notice
-            findViewById(R.id.map).setVisibility(View.VISIBLE);
+            findViewById(R.id.group_map).setVisibility(View.VISIBLE);
             findViewById(R.id.no_location_for_contact).setVisibility(View.GONE);
             // display map
             MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -74,13 +77,13 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
         }
         else {
             // show notice
-            findViewById(R.id.map).setVisibility(View.GONE);
+            findViewById(R.id.group_map).setVisibility(View.GONE);
             findViewById(R.id.no_location_for_contact).setVisibility(View.VISIBLE);
         }
     }
 
     private EditText getEdit(int id) {
-        return ((EditText)findViewById(id));
+        return ((EditText) findViewById(id));
     }
 
     @Override

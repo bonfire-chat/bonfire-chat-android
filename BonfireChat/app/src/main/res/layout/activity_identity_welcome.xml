@@ -29,7 +29,7 @@
             android:inputType="textPersonName"
             android:hint="@string/login_nickname_hint"
             android:ems="10"
-            android:id="@+id/txt_nickname" />
+            android:id="@+id/nickname" />
 
         <EditText
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:inputType="phone"
             android:hint="@string/login_phone_number_hint"
             android:ems="10"
-            android:id="@+id/txt_phoneNumber"
+            android:id="@+id/phone"
             android:layout_marginTop="10dp" />
 
     </LinearLayout>
