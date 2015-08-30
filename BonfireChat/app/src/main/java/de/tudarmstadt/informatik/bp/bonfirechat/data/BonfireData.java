@@ -176,6 +176,12 @@ public class BonfireData extends SQLiteOpenHelper{
 
     public boolean deleteContact(Contact contact){
 
+        // delete conversation with this contact
+        Conversation conversation = getConversationByPeer(contact);
+        if (conversation != null) {
+            deleteConversation(conversation);
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             db.delete(CONTACTS, "rowid=?", new String[] { String.valueOf(contact.rowid) });
