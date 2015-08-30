@@ -230,6 +230,16 @@ public class BonfireData extends SQLiteOpenHelper{
         cursor.close();
         return contacts;
     }
+    public ArrayList<Contact> getContactsToShareLocationWith(){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Contact> contacts = new ArrayList<>();
+        Cursor cursor = db.query(CONTACTS, ALL_COLS, "shareLocation == 1", null, null, null, null);
+        while(cursor.moveToNext()){
+            contacts.add(Contact.fromCursor(cursor));
+        }
+        cursor.close();
+        return contacts;
+    }
 
     public Contact getContactByPublicKey(byte[] publicKey) {
         String publicKeyString = CryptoHelper.toBase64(publicKey);

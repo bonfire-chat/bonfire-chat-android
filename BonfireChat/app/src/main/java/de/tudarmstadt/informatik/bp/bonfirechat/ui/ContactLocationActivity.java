@@ -88,7 +88,9 @@ public class ContactLocationActivity extends FragmentActivity implements OnMapRe
                 // display map
                 MapFragment mapFragment = (MapFragment) getFragmentManager()
                         .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(this);
+                if (mapFragment != null) {
+                    mapFragment.getMapAsync(this);
+                }
                 mapInflated = true;
             }
         }
