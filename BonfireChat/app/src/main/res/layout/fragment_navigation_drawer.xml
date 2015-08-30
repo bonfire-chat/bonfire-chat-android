@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnEditIdentity"
-            android:src="@drawable/ic_build_black_24dp"
+            android:src="@android:drawable/ic_menu_edit"
             android:tint="#ffffff"
             style="@android:style/Widget.ActionButton" />
     </LinearLayout>
