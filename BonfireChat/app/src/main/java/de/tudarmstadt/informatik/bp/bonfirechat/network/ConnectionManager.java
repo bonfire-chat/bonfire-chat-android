@@ -158,10 +158,14 @@ public class ConnectionManager extends NonStopIntentService {
     }
 
     private void closeConnection(Class typ) {
-        for(IProtocol p : connections) {
-            if (typ.isInstance(p)) {
-                connections.remove(p);
-                p.shutdown();
+        synchronized (connections) {
+            Iterator<IProtocol> iter = connections.iterator();
+            while (iter.hasNext()) {
+                IProtocol p = iter.next();
+                if (typ.isInstance(p)) {
+                    iter.remove();
+                    p.shutdown();
+                }
             }
         }
         synchronized (peers) {
