@@ -15,17 +15,14 @@ public class ConstOptions {
     public static final boolean ALWAYS_SHOW_OOBE = false;
     public static final String APP_HOMEPAGE = "https://bonfire.projects.teamwiki.net";
 
-
-
     public static final int MAX_RETRANSMISSIONS = 5;
+    public static final int RETRANSMISSION_TIMEOUT = 20 * 1000; // ms
 
     // maximum hops for a message until it will be discarded
     public static final int DEFAULT_TTL = 6;
     public static final int MAX_TTL = 14;
 
-    public static final int RETRANSMISSION_TIMEOUT = 20000;
-
-
+    public static final int LOCATION_BROADCAST_INTERVAL = 60 * 1000; // ms
 
     public static String getDebugInfo() {
         StringBuilder debug = new StringBuilder();
