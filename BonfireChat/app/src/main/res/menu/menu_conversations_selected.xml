@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/action_show_contact_location" android:title="@string/contact_location"
+        app:showAsAction="always" android:icon="@android:drawable/ic_menu_compass" />
     <item android:id="@+id/action_delete" android:title="@string/action_delete"
         app:showAsAction="always" android:icon="@android:drawable/ic_menu_delete" />
 

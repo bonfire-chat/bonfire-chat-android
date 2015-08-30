@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,11 +29,15 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
  * contacts list
  */
 public class ContactsFragment extends Fragment {
+
+    private static String TAG = "ContactsFragment";
 
     private ContactsAdapter adapter;
 
@@ -202,6 +207,27 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    private void showLocationForSelectedItems() {
+        boolean[] mySelected = adapter.itemSelected;
+
+        for (int position = adapter.getCount() - 1; position >= 0; position--) {
+            if (mySelected[position]) {
+                Contact contact = adapter.getItem(position);
+                // location available?
+                if (contact.getLastKnownLocation() != null) {
+                    Intent intent = new Intent(getActivity(), ContactLocationActivity.class);
+                    Log.i(TAG, "starting ContactLocationActivity with contact id=" + contact.rowid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, contact.rowid);
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(getActivity(), R.string.toast_location_not_available, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                break;
+            }
+        }
+    }
+
     private AbsListView.MultiChoiceModeListener multiChoiceListener = new AbsListView.MultiChoiceModeListener() {
 
         @Override
@@ -217,6 +243,10 @@ public class ContactsFragment extends Fragment {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             // Respond to clicks on the actions in the CAB
             switch (item.getItemId()) {
+                case R.id.action_show_contact_location:
+                    showLocationForSelectedItems();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
                 case R.id.action_delete:
                     deleteSelectedItems();
                     mode.finish(); // Action picked, so close the CAB
