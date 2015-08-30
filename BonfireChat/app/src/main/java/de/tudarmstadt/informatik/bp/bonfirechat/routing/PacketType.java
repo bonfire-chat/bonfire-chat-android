@@ -5,5 +5,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.routing;
  */
 public enum PacketType {
     Payload,
-    Ack
+    Ack,
+    LocationUdp
 }
