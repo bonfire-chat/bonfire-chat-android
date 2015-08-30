@@ -380,12 +380,10 @@ public class ConnectionManager extends NonStopIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "ConnectionManager called with intent : "+intent.getAction());
         final Bundle extras = intent.getExtras();
         final BonfireData db = BonfireData.getInstance(this);
         if (intent.getAction() == GO_ONLINE_ACTION) {
-            final Identity id = db.getDefaultIdentity();
-            id.registerWithServer();
-            db.updateIdentity(id);
 
             for(Class protocol : registeredProtocols) {
                 if (isProtocolEnabled(protocol)) {
@@ -395,10 +393,16 @@ public class ConnectionManager extends NonStopIntentService {
                 }
             }
 
-            // resend pending messages in database
-            // TODO: jl: evaluate if this is too early (e.g. Bluetooth not granted yet?)
-            new ResendOldMessagesTask(this).start();
+            // Only do this on app start, but not after changing 'protocol enabled' checkboxes in settings
+            if (intent.hasExtra("appStart")) {
+                final Identity id = db.getDefaultIdentity();
+                id.registerWithServer();
+                db.updateIdentity(id);
 
+                // resend pending messages in database
+                // TODO: jl: evaluate if this is too early (e.g. Bluetooth not granted yet?)
+                new ResendOldMessagesTask(this).start();
+            }
         } else if (intent.getAction() == SENDMESSAGE_ACTION) {
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
             Log.d(TAG, "Loading packet " + packet.toString());
