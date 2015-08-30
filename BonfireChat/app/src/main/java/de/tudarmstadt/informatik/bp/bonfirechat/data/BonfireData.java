@@ -44,7 +44,7 @@ public class BonfireData extends SQLiteOpenHelper{
     }
 
     private BonfireData(Context context) {
-        super(context, "CommunicationData", null, 15);
+        super(context, "CommunicationData", null, 17);
 
     }
 
@@ -61,10 +61,10 @@ public class BonfireData extends SQLiteOpenHelper{
         if (oldVersion >= newVersion)
             return;
 
-        //db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
-        //db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
+        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + CONTACTS);
-        //db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);
+        db.execSQL("DROP TABLE IF EXISTS " + IDENTITIES);
 
         onCreate(db);
     }

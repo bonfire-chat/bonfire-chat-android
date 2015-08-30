@@ -543,4 +543,13 @@ public class ConnectionManager extends NonStopIntentService {
 
         sendMessage(ctx, message);
     }
+
+    public static void sendLocationUdpPacket(Context ctx, LocationUdpPacket packet) {
+        // retrieve best path to target from RoutingManager, if known. otherwise use flooding
+        List<byte[]> hopsToTarget = routingManager.getPath(packet);
+        if (hopsToTarget == null) packet.setFlooding();
+        else packet.setDSR(hopsToTarget);
+        // send it
+        sendPacket(ctx, packet);
+    }
 }
