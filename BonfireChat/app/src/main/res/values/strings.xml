@@ -120,4 +120,5 @@
     <string name="label_publickey">Public Key:</string>
     <string name="label_last_known_location">Last known location:</string>
     <string name="label_stats">Statistics:</string>
+    <string name="share_location_perodically">Share my location with this contact periodically</string>
 </resources>
