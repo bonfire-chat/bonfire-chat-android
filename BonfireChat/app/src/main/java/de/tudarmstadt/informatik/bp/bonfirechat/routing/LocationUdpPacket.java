@@ -25,12 +25,12 @@ public class LocationUdpPacket extends Packet {
     private byte[] encryptedBody;
     private byte[] nonce;
 
-    public LocationUdpPacket(Identity sender, byte[] recipientPublicKey, LatLng location) {
+    public LocationUdpPacket(Identity sender, byte[] recipientPublicKey, double latitude, double longitude) {
         super(sender.getPublicKey().asByteArray(), recipientPublicKey, UUID.randomUUID());
         this.type = PacketType.LocationUdp;
 
         // create location payload
-        String body = location.latitude + ":" + location.longitude;
+        String body = latitude + ":" + longitude;
 
         // encrypt payload
         Box crypto = new Box(new PublicKey(recipientPublicKey), sender.privateKey);

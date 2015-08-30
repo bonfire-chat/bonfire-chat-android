@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.util.Log;
@@ -47,6 +46,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.LocationUdpPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 
 
@@ -309,6 +309,16 @@ public class MessagesActivity extends Activity {
 
         } else if (id == R.id.action_clear_path) {
             ConnectionManager.routingManager.clearPath(conversation.getPeer().getPublicKey().asByteArray());
+
+        } else if (id == R.id.action_send_location_udp) {
+            GpsTracker gps = GpsTracker.getInstance();
+            if (gps.canGetLocation()) {
+                LocationUdpPacket p = new LocationUdpPacket(db.getDefaultIdentity(), conversation.getPeer().getPublicKey().asByteArray(), gps.getLatitude(), gps.getLongitude());
+                ConnectionManager.sendLocationUdpPacket(this, p);
+            } else {
+                Toast toast = Toast.makeText(this, R.string.toast_location_not_available, Toast.LENGTH_SHORT);
+                toast.show();
+            }
 
         } else if (id == R.id.action_share_image) {
             Intent i = new Intent(Intent.ACTION_PICK,
