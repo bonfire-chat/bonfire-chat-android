@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
 /**
@@ -33,6 +34,7 @@ public abstract class Packet implements Serializable {
     // previous and next hops
     private List<byte[]> path;
     private List<byte[]> nextHops;
+    public int ttl;
 
     // for traceroute visualization
     private List<TracerouteSegment> traceroute;
@@ -61,6 +63,7 @@ public abstract class Packet implements Serializable {
         this.uuid = uuid;
         this.path = new ArrayList<>();
         this.traceroute = new ArrayList<>();
+        this.ttl = ConstOptions.DEFAULT_TTL;
     }
 
     public PacketType getType() {

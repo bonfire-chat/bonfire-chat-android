@@ -315,8 +315,8 @@ public class ConnectionManager extends NonStopIntentService {
         }
 
         private void forwardPacket(Packet packet) {
-            // if the packet has been sent less than 20 hops, redistribute it
-            if (packet.getHopCount() < ConstOptions.MAX_HOPS) {
+            // if the packet packets TTL is not exceeded, forward it
+            if (packet.ttl -- > 0) {
                 sendPacket(ConnectionManager.this, packet);
             }
         }

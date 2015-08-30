@@ -75,7 +75,14 @@ public class Retransmission implements Runnable{
             LocalBroadcastManager.getInstance(context).sendBroadcast(localIntent);
             return;
         }
-        packet.setFlooding();
+        if (!packet.isFlooding()) {
+            packet.ttl = packet.getPath().size() + 1;
+            packet.setFlooding();
+        } else {
+            // set ttl to DEFAULT_TTL, if it was smaller than DEFAULT_TTL
+            // increment ttl by two but do not exceed MAX_TTL
+            packet.ttl = Math.min(ConstOptions.MAX_TTL, Math.max(packet.ttl, ConstOptions.DEFAULT_TTL) + 2);
+        }
         Log.i(TAG, "timed out, retransmitting "+packet.toString());
         ConnectionManager.sendPacket(context, packet);
     }
