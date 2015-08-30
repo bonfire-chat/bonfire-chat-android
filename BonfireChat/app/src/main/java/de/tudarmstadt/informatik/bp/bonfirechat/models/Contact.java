@@ -44,6 +44,7 @@ public class Contact implements Serializable, IPublicIdentity {
         this.wifiMacAddress = wifiMacAddress;
         this.bluetoothMacAddress = bluetoothMacAddress;
         this.rowid = rowid;
+        this.lastKnownLocation = "";
     }
 
     public String getNickname() {

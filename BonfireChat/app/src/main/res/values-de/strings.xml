@@ -105,6 +105,7 @@
     <string name="details_label_error_desc">Beim Senden der Nachricht ist ein Fehler aufgetreten. Die Nachricht ist vermutlich nicht angekommen.</string>
     <string name="details_label_errormessage">Fehler:</string>
     <string name="cant_resend_received_message">empfangene Nachrichten können nicht gesendet werden</string>
-    <string name="contact_location">Position des Gesprächpartners</string>
+    <string name="contact_location">Position des Kontakts</string>
+    <string name="notice_no_location_for_contact">Für diesen Kontakt ist momentan kein Standort bekannt.</string>
 
 </resources>

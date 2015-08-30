@@ -213,16 +213,10 @@ public class ContactsFragment extends Fragment {
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
                 Contact contact = adapter.getItem(position);
-                // location available?
-                if (contact.getLastKnownLocation() != null) {
-                    Intent intent = new Intent(getActivity(), ContactLocationActivity.class);
-                    Log.i(TAG, "starting ContactLocationActivity with contact id=" + contact.rowid);
-                    intent.putExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, contact.rowid);
-                    startActivity(intent);
-                } else {
-                    Toast toast = Toast.makeText(getActivity(), R.string.toast_location_not_available, Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+                Intent intent = new Intent(getActivity(), ContactLocationActivity.class);
+                Log.i(TAG, "starting ContactLocationActivity with contact id=" + contact.rowid);
+                intent.putExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, contact.rowid);
+                startActivity(intent);
                 break;
             }
         }
