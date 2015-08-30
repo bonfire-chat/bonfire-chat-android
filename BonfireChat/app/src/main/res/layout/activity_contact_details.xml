@@ -64,6 +64,12 @@
             android:id="@+id/label_map"
             android:textStyle="bold"
             android:layout_marginTop="20dp" />
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share_location_perodically"
+            android:id="@+id/share_location"
+            android:layout_marginTop="10dp" />
         <FrameLayout android:id="@+id/group_map"
             android:layout_width="fill_parent"
             android:layout_height="200dp"
