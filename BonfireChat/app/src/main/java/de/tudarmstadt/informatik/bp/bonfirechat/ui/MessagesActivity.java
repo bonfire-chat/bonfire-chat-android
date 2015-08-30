@@ -141,11 +141,9 @@ public class MessagesActivity extends Activity {
                                 if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
                                     m.error = intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
                                     m.flags |= Message.FLAG_FAILED;
-                                } else {
-                                    m.flags |= Message.FLAG_ON_ITS_WAY;
                                 }
                                 // set retransmission count for UI
-                                m.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, 0);
+                                m.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, m.retransmissionCount);
                                 BonfireData db = BonfireData.getInstance(MessagesActivity.this);
                                 db.updateMessage(m);
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
@@ -167,8 +165,6 @@ public class MessagesActivity extends Activity {
                             if (m.uuid.equals(ackedUUID)) {
                                 // Haken anzeigen
                                 m.flags |= Message.FLAG_ACKNOWLEDGED;
-                                // Progressbar verstecken
-                                m.flags &=~ Message.FLAG_ON_ITS_WAY;
 
                                 // Traceroute aktualisieren
                                 m.traceroute = (ArrayList<TracerouteSegment>) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_TRACEROUTE);
@@ -190,6 +186,17 @@ public class MessagesActivity extends Activity {
                     }
                 },
                 new IntentFilter(ConnectionManager.MSG_ACKED_BROADCAST_EVENT));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // reload messages (possibly changed on disk)
+        messages = db.getMessages(conversation);
+        adapter.clear();
+        adapter.addAll(messages);
+        adapter.notifyDataSetChanged();
     }
 
     // ####### First-Start Tutorial #####################################################
@@ -257,6 +264,9 @@ public class MessagesActivity extends Activity {
 
             Log.d(TAG, "sending message id " + message.uuid);
             ConnectionManager.sendMessage(MessagesActivity.this, message);
+
+            // store initial traceroute
+            db.updateMessage(message);
         }
     };
 
@@ -429,6 +439,26 @@ public class MessagesActivity extends Activity {
         adapter.notifyDataSetChanged();
     }
 
+    private void resendSelectedItems() {
+        boolean[] mySelected = adapter.itemSelected;
+
+        for (int position = adapter.getCount() - 1; position >= 0; position--) {
+            if (mySelected[position]) {
+                Message adapterMessage = adapter.getItem(position);
+                for (Message message: messages) {
+                    // correct message?
+                    if (message.uuid.equals(adapterMessage.uuid)) {
+                        ConnectionManager.retrySendMessage(this, message);
+                        db.updateMessage(message);
+                    }
+                }
+            }
+        }
+        adapter.clear();
+        adapter.addAll(messages);
+        adapter.notifyDataSetChanged();
+    }
+
     private void detailsForSelectedItem() {
         boolean[] mySelected = adapter.itemSelected;
 
@@ -459,6 +489,10 @@ public class MessagesActivity extends Activity {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             // Respond to clicks on the actions in the CAB
             switch (item.getItemId()) {
+                case R.id.action_retry:
+                    resendSelectedItems();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
                 case R.id.action_details:
                     detailsForSelectedItem();
                     mode.finish(); // Action picked, so close the CAB

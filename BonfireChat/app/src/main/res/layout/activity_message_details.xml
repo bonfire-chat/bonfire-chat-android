@@ -42,60 +42,96 @@
             android:text=""
             android:id="@+id/datetime" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout android:id="@+id/group_infos"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/details_label_properties"
-            android:id="@+id/label_props"
-            android:textStyle="bold"
-            android:paddingTop="10dp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-            <ImageView android:id="@+id/message_encrypted"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:paddingRight="4dp"
-                android:src="@drawable/ic_lock_black_24dp" />
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/details_label_encrypted"
-                android:id="@+id/label_message_encrypted" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-            <ImageView android:id="@+id/message_big_proto"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:paddingRight="4dp"
-                android:src="@drawable/ic_lock_black_24dp" />
+                android:text="@string/details_label_properties"
+                android:id="@+id/label_props"
+                android:textStyle="bold"
+                android:paddingTop="10dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <ImageView android:id="@+id/message_encrypted"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:paddingRight="4dp"
+                    android:src="@drawable/ic_lock_black_24dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/details_label_encrypted"
+                    android:id="@+id/label_message_encrypted" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <ImageView android:id="@+id/message_big_proto"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:paddingRight="4dp"
+                    android:src="@drawable/ic_lock_black_24dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""
+                    android:id="@+id/label_message_proto" />
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text=""
-                android:id="@+id/label_message_proto" />
+                android:text="@string/details_label_via"
+                android:id="@+id/label_path"
+                android:textStyle="bold"
+                android:paddingTop="10dp" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tracedHopsList">
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/details_label_via"
-            android:id="@+id/label_path"
-            android:textStyle="bold"
-            android:paddingTop="10dp" />
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout android:id="@+id/group_error"
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tracedHopsList">
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/details_label_error"
+                android:id="@+id/label_error"
+                android:textStyle="bold"
+                android:paddingTop="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/details_label_error_desc"
+                android:id="@+id/label_error_desc"
+                android:textColor="#ffff0000" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/details_retry_send"
+                android:id="@+id/button_retry_send"
+                android:layout_marginTop="10dp" />
         </LinearLayout>
 
         <TextView
@@ -141,6 +177,25 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text=""
                 android:id="@+id/uuid" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/details_label_errormessage"
+                android:paddingRight="4dp"
+                android:id="@+id/label_error_message" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=""
+                android:textColor="#ffff0000"
+                android:id="@+id/error" />
         </LinearLayout>
 
     </LinearLayout>

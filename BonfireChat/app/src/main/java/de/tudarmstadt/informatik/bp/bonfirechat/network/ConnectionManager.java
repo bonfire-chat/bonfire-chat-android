@@ -499,4 +499,18 @@ public class ConnectionManager extends NonStopIntentService {
         message.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
         message.addTracerouteSegment(new TracerouteProgressSegment());
     }
+
+    public static void retrySendMessage(Context ctx, Message message) {
+        // delete pending transmission
+        Retransmission.cancel(message.uuid);
+
+        // reset some message properties
+        message.retransmissionCount = 0;
+        message.traceroute = new ArrayList<>();
+        message.error = null;
+        message.flags &= ~Message.FLAG_FAILED;
+        message.flags &= ~Message.FLAG_ACKNOWLEDGED;
+
+        sendMessage(ctx, message);
+    }
 }

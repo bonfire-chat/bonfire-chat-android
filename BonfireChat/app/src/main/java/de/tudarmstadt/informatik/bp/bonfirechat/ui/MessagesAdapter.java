@@ -96,13 +96,8 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         }
         final Message msg = getItem(position);
         v.messageBody.setText(msg.body);
-        if (msg.error != null) {
-            v.dateTime.setText(msg.error);
-            v.dateTime.setTextColor(Color.RED);
-        } else {
-            v.dateTime.setText(DateHelper.formatTime(msg.sentTime));
-            v.dateTime.setTextColor(Color.GRAY);
-        }
+        v.dateTime.setText(DateHelper.formatTime(msg.sentTime));
+        v.dateTime.setTextColor(Color.GRAY);
         if (msg.hasFlag(Message.FLAG_ENCRYPTED)) {
             v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
             v.encryptedIcon.setColorFilter(Color.GRAY);
@@ -115,7 +110,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.encryptedIcon.setColorFilter(Color.MAGENTA);
         }
         if (v.ackIcon != null) v.ackIcon.setVisibility(msg.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
-        if (v.onItsWay != null) v.onItsWay.setVisibility(msg.hasFlag(Message.FLAG_ON_ITS_WAY) ? View.VISIBLE : View.GONE);
+        if (v.onItsWay != null) v.onItsWay.setVisibility((msg.hasFlag(Message.FLAG_ACKNOWLEDGED) || msg.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);
         v.protocolIcon.setVisibility(View.VISIBLE);
         if (msg.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
         else if (msg.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
