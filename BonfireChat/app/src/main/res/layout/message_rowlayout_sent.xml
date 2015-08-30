@@ -64,6 +64,12 @@
                     android:layout_height="14dp"
                     android:paddingRight="2dp"
                     android:src="@drawable/ic_lock_black_24dp"/>
+                <ImageView android:id="@+id/message_error"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:paddingRight="2dp"
+                    android:src="@drawable/ic_warning_black_24dp"
+                    android:tint="#f0a" />
                 <ImageView android:id="@+id/message_proto"
                     android:layout_width="14dp"
                     android:layout_height="14dp"

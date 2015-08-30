@@ -84,6 +84,7 @@ public class MessageDetailsActivity extends Activity {
                 if (v.onItsWay != null) v.onItsWay.setVisibility(View.VISIBLE);
                 v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
                 v.encryptedIcon.setColorFilter(Color.GRAY);
+                v.errorIcon.setVisibility(View.GONE);
                 inflateMessageDatails();
                 inflateDebugInfo();
                 inflateTraceroute();
@@ -116,8 +117,9 @@ public class MessageDetailsActivity extends Activity {
                                 v.encryptedIcon.setColorFilter(Color.RED);
                             }
                             if (message.hasFlag(Message.FLAG_FAILED)) {
-                                v.encryptedIcon.setImageResource(R.drawable.ic_warning_black_24dp);
-                                v.encryptedIcon.setColorFilter(Color.MAGENTA);
+                                v.errorIcon.setVisibility(View.VISIBLE);
+                            } else {
+                                v.errorIcon.setVisibility(View.GONE);
                             }
                             inflateMessageDatails();
                             inflateDebugInfo();
@@ -167,7 +169,7 @@ public class MessageDetailsActivity extends Activity {
     }
 
     class ViewHolder {
-        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, messageImage;
+        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, errorIcon, messageImage;
         TextView messageBody, dateTime;
         ProgressBar thumbLoading, onItsWay;
     }
@@ -199,6 +201,7 @@ public class MessageDetailsActivity extends Activity {
         v.contactPhoto = (ImageView) view.findViewById(R.id.message_photo);
         v.encryptedIcon = (ImageView) view.findViewById(R.id.message_encrypted);
         v.protocolIcon = (ImageView) view.findViewById(R.id.message_proto);
+        v.errorIcon = (ImageView) view.findViewById(R.id.message_error);
         view.setTag(v);
 
         v.messageBody.setText(message.body);
@@ -212,8 +215,9 @@ public class MessageDetailsActivity extends Activity {
             v.encryptedIcon.setColorFilter(Color.RED);
         }
         if (message.hasFlag(Message.FLAG_FAILED)) {
-            v.encryptedIcon.setImageResource(R.drawable.ic_warning_black_24dp);
-            v.encryptedIcon.setColorFilter(Color.MAGENTA);
+            v.errorIcon.setVisibility(View.VISIBLE);
+        } else {
+            v.errorIcon.setVisibility(View.GONE);
         }
         if (v.ackIcon != null) v.ackIcon.setVisibility(message.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
         if (v.onItsWay != null) v.onItsWay.setVisibility((message.hasFlag(Message.FLAG_ACKNOWLEDGED) || message.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);
