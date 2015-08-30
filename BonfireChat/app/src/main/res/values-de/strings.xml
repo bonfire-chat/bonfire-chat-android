@@ -94,10 +94,15 @@
     <string name="details_label_debug">Informationen für Nerds:</string>
     <string name="details_label_via">Über:</string>
     <string name="details_label_encrypted">verschlüsselte Übertragung</string>
+    <string name="details_label_properties">Eigenschaften:</string>
     <string name="details_label_sent">Gesendet:</string>
     <string name="details_to">An:</string>
     <string name="details_label_retries">Übertragungsversuche</string>
     <string name="details_label_uuid">UUID:</string>
     <string name="action_retry">Erneut senden</string>
+    <string name="details_retry_send">Erneut versuchen</string>
+    <string name="details_label_error">Nachricht konnte nicht gesendet werden</string>
+    <string name="details_label_error_desc">Beim Senden der Nachricht ist ein Fehler aufgetreten. Die Nachricht ist vermutlich nicht angekommen.</string>
+    <string name="details_label_errormessage">Fehler:</string>
 
 </resources>

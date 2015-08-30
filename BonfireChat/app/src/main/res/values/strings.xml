@@ -103,4 +103,8 @@
     <string name="details_label_retries">attempts to send</string>
     <string name="details_label_uuid">UUID:</string>
     <string name="action_retry">send again</string>
+    <string name="details_retry_send">retry sending</string>
+    <string name="details_label_error">message could not be sent</string>
+    <string name="details_label_error_desc">An error occured while trying to send the message. It probably didn\'t reach its recipient.</string>
+    <string name="details_label_errormessage">error:</string>
 </resources>

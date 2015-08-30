@@ -50,7 +50,6 @@ public class Message implements Serializable {
     public static final int FLAG_PROTO_CLOUD = 64;
     public static final int FLAG_FAILED = 128;
     public static final int FLAG_IS_LOCATION = 256;
-    public static final int FLAG_ON_ITS_WAY = 512;
 
 
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, Contact recipient) {
@@ -112,6 +111,7 @@ public class Message implements Serializable {
         values.put("flags", flags);
         values.put("traceroute", StreamHelper.serialize(((ArrayList<TracerouteSegment>) traceroute)));
         values.put("retries", retransmissionCount);
+        values.put("error", error);
         return values;
     }
 
@@ -141,6 +141,7 @@ public class Message implements Serializable {
                 conversation.getPeer(),
                 traceroute);
         message.retransmissionCount = cursor.getInt(cursor.getColumnIndex("retries"));
+        message.error = cursor.getString(cursor.getColumnIndex("error"));
         return message;
     }
 
