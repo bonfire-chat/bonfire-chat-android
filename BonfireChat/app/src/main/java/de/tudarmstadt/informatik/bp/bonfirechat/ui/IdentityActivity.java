@@ -54,22 +54,22 @@ public class IdentityActivity extends Activity  {
         BonfireData db = BonfireData.getInstance(this);
         identity = db.getDefaultIdentity();
 
-        getEdit(R.id.txt_nickname).setText(identity.nickname);
-        String pubkey = identity.getPublicKey().asBase64();
-        pubkey = pubkey.substring(0,21) + "\n" + pubkey.substring(22);
-        TextView txtPublickey = (TextView)findViewById(R.id.txt_publicKey);
-        if (txtPublickey != null) txtPublickey.setText(pubkey);
-        getEdit(R.id.txt_phoneNumber).setText(identity.phone);
+        getEdit(R.id.nickname).setText(identity.nickname);
+        getEdit(R.id.phone).setText(identity.phone);
+
+        if (!isWelcomeScreen) {
+            String pubkey = identity.getPublicKey().asBase64();
+            pubkey = pubkey.substring(0, 21) + "\n" + pubkey.substring(22);
+            ((TextView) findViewById(R.id.publickey)).setText(pubkey);
+        }
 
         Button saveButton = (Button) findViewById(R.id.save);
         if (saveButton != null ) saveButton.setOnClickListener(onSaveButtonClicked);
 
     }
 
-
-
     private EditText getEdit(int id) {
-        return ((EditText)findViewById(id));
+        return ((EditText) findViewById(id));
     }
 
     @Override
@@ -83,8 +83,8 @@ public class IdentityActivity extends Activity  {
         @Override
         public void onClick(View v) {
 
-            final EditText nickname = getEdit(R.id.txt_nickname);
-            final EditText phone = getEdit(R.id.txt_phoneNumber);
+            final EditText nickname = getEdit(R.id.nickname);
+            final EditText phone = getEdit(R.id.phone);
             final View boxRegistering = findViewById(R.id.linearLayoutRegistering);
             final View boxError = findViewById(R.id.linearLayoutError);
             final View button = findViewById(R.id.save);
