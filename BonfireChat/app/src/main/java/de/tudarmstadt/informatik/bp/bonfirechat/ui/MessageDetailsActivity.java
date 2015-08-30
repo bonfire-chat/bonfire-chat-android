@@ -137,25 +137,14 @@ public class MessageDetailsActivity extends Activity {
 
                         // wurde diese Nachricht bestätigt?
                         if (message.uuid.equals(ackedUUID)) {
-                            // Haken anzeigen
-                            message.flags |= Message.FLAG_ACKNOWLEDGED;
-
-                            // Traceroute aktualisieren
-                            message.traceroute = (ArrayList<TracerouteSegment>) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_TRACEROUTE);
-
-                            // Protokoll(e) anzeigen
-                            // TODO wenn mehrere Protokolle verwendet, evtl mehrere Icons?
-                            message.setTransferProtocol((Class) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
-                            message.error = null;
+                            // update
+                            message = db.getMessageByUUID(message.uuid);
 
                             // show acked icon
                             v.ackIcon.setVisibility(View.VISIBLE);
                             v.onItsWay.setVisibility(View.GONE);
                             // update traceroute
                             inflateTraceroute();
-
-                            // save acked message
-                            db.updateMessage(message);
                         }
                     }
                 },

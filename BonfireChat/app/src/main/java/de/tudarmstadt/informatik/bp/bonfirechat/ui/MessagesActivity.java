@@ -163,22 +163,9 @@ public class MessagesActivity extends Activity {
                         // bestätigte Nachricht suchen
                         for(Message m : messages) {
                             if (m.uuid.equals(ackedUUID)) {
-                                // Haken anzeigen
-                                m.flags |= Message.FLAG_ACKNOWLEDGED;
-
-                                // Traceroute aktualisieren
-                                m.traceroute = (ArrayList<TracerouteSegment>) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_TRACEROUTE);
-
-                                // Protokoll(e) anzeigen
-                                // TODO wenn mehrere Protokolle verwendet, evtl mehrere Icons?
-                                m.setTransferProtocol((Class)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_PROTOCOL_CLASS));
-                                m.error = null;
-
-                                // TODO: DB Update in ConnectionManager verlagern, damit es auch stattfindet
-                                // wenn die zugehörige Conversation nicht im vordergrund ist
-                                BonfireData db = BonfireData.getInstance(MessagesActivity.this);
-                                db.updateMessage(m);
-
+                                // update
+                                Message newMessage = db.getMessageByUUID(m.uuid);
+                                m.flags = newMessage.flags;
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
                                 return;
                             }

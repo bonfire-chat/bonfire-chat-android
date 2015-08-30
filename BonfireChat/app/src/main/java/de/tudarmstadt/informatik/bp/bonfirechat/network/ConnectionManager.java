@@ -267,6 +267,18 @@ public class ConnectionManager extends NonStopIntentService {
             // cancel the pending retransmission for this packet
             Retransmission.cancel(packet.acknowledgesUUID);
 
+            // mark message as acked in database
+            BonfireData db = BonfireData.getInstance(ConnectionManager.this);
+            Message message = db.getMessageByUUID(packet.acknowledgesUUID);
+            message.flags |= Message.FLAG_ACKNOWLEDGED;
+            // Traceroute aktualisieren
+            message.traceroute = packet.getTraceroute();
+            // Protokoll(e) anzeigen
+            // TODO wenn mehrere Protokolle verwendet, evtl mehrere Icons?
+            message.setTransferProtocol(sender.getClass());
+            message.error = null;
+            db.updateMessage(message);
+
             // notify the ui that the recipient has acknowledged this message
             final Intent localIntent = new Intent(MSG_ACKED_BROADCAST_EVENT)
                     .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID)

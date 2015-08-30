@@ -35,6 +35,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ResendOldMessagesTask;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 
@@ -102,6 +103,10 @@ public class MainActivity extends Activity
         initializeNetwork();
         GpsTracker.init(this);
         initializeStats();
+
+        // resend pending messages in database
+        // TODO: jl: evaluate if this is too early (e.g. Bluetooth not granted yet?)
+        new ResendOldMessagesTask().execute(this);
     }
 
 
