@@ -107,5 +107,9 @@
     <string name="cant_resend_received_message">empfangene Nachrichten können nicht gesendet werden</string>
     <string name="contact_location">Position des Kontakts</string>
     <string name="notice_no_location_for_contact">Für diesen Kontakt ist momentan kein Standort bekannt.</string>
+    <string name="details_label_routing">Routingverfahren:</string>
+    <string name="routing_flooding">Flooding</string>
+    <string name="routing_dsr">DSR</string>
+    <string name="routing_unknown">unbekannt</string>
 
 </resources>

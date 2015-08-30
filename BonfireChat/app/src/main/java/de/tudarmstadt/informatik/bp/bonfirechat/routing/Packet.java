@@ -113,6 +113,10 @@ public abstract class Packet implements Serializable {
         return routingMode == ROUTING_MODE_FLOODING;
     }
 
+    public int getRoutingMode() {
+        return routingMode;
+    }
+
     public void setFlooding() {
         this.routingMode = ROUTING_MODE_FLOODING;
         this.nextHops = new ArrayList<>();

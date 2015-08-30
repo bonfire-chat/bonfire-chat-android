@@ -93,14 +93,20 @@ public class Envelope extends PayloadPacket {
         byte[] body = encryptedBody;
         int msgFlags = 0;
         Contact theContact;
+        if (getRoutingMode() == ROUTING_MODE_DSR) {
+            msgFlags |= Message.FLAG_ROUTING_DSR;
+        } else if (getRoutingMode() == ROUTING_MODE_FLOODING) {
+            msgFlags |= Message.FLAG_ROUTING_FLOODING;
+        }
         if (hasFlag(FLAG_ENCRYPTED)) {
             Identity id = BonfireData.getInstance(ctx).getDefaultIdentity();
             Box crypto = new Box(new PublicKey(senderPublicKey), id.privateKey);
             body = crypto.decrypt(nonce, body);
             msgFlags |= Message.FLAG_ENCRYPTED;
         }
-        if (hasFlag(FLAG_LOCATION))
+        if (hasFlag(FLAG_LOCATION)) {
             msgFlags |= Message.FLAG_IS_LOCATION;
+        }
 
         String messageBody;
         if (hasFlag(FLAG_BINARY)) {

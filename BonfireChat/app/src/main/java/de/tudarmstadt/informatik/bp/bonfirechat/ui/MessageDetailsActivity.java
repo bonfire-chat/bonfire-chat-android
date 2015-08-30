@@ -300,9 +300,11 @@ public class MessageDetailsActivity extends Activity {
         // display error?
         if (message.hasFlag(Message.FLAG_FAILED)) {
             findViewById(R.id.group_infos).setVisibility(View.GONE);
+            findViewById(R.id.group_proto).setVisibility(View.GONE);
         }
         else {
             findViewById(R.id.group_infos).setVisibility(View.VISIBLE);
+            findViewById(R.id.group_proto).setVisibility(View.VISIBLE);
 
             if (message.hasFlag(Message.FLAG_PROTO_BT)) {
                 ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_bluetooth));
@@ -371,6 +373,14 @@ public class MessageDetailsActivity extends Activity {
     private void inflateDebugInfo() {
         ((TextView) findViewById(R.id.retries)).setText(""+(message.retransmissionCount+1));
         ((TextView) findViewById(R.id.uuid)).setText(message.uuid.toString().substring(0, 8));
+        Log.e("FOO", "mesage flags: " + message.flags);
+        if (message.hasFlag(Message.FLAG_ROUTING_DSR)) {
+            ((TextView) findViewById(R.id.routing)).setText(R.string.routing_dsr);
+        } else if (message.hasFlag(Message.FLAG_ROUTING_FLOODING)) {
+            ((TextView) findViewById(R.id.routing)).setText(R.string.routing_flooding);
+        } else {
+            ((TextView) findViewById(R.id.routing)).setText(R.string.routing_unknown);
+        }
         if (message.hasFlag(Message.FLAG_FAILED)) {
             ((TextView) findViewById(R.id.error)).setText(message.error);
             findViewById(R.id.error).setVisibility(View.VISIBLE);

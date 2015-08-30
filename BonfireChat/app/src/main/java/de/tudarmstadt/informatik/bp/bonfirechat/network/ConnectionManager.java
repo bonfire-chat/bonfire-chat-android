@@ -91,6 +91,8 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.RETRANSMISSION_COUNT";
     public static final String EXTENDED_DATA_TRACEROUTE =
             "de.tudarmstadt.informatik.bp.bonfirechat.TRACEROUTE";
+    public static final String EXTENDED_DATA_ROUTING_TYPE =
+            "de.tudarmstadt.informatik.bp.bonfirechat.ROUTING_TYPE";
 
 
     // buffer for storing which messages have already been handled
@@ -447,6 +449,7 @@ public class ConnectionManager extends NonStopIntentService {
                 // notify UI that sending has started
                 final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)
                         .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid)
+                        .putExtra(EXTENDED_DATA_ROUTING_TYPE, packet.getRoutingMode())
                         .putExtra(EXTENDED_DATA_RETRANSMISSION_COUNT, ((PayloadPacket) packet).getTransmissionCount());
 
                 LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);

@@ -50,6 +50,8 @@ public class Message implements Serializable {
     public static final int FLAG_PROTO_CLOUD = 64;
     public static final int FLAG_FAILED = 128;
     public static final int FLAG_IS_LOCATION = 256;
+    public static final int FLAG_ROUTING_DSR = 512;
+    public static final int FLAG_ROUTING_FLOODING = 1024;
 
 
     public Message(String body, IPublicIdentity sender, Date sentTime, int flags, Contact recipient) {
