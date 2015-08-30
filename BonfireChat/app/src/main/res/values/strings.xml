@@ -110,4 +110,8 @@
     <string name="cant_resend_received_message">can\'t resend a message that you received</string>
     <string name="contact_location">contact\'s location</string>
     <string name="notice_no_location_for_contact">There is no location available for this contact.</string>
+    <string name="details_label_routing">routing technique:</string>
+    <string name="routing_flooding">Flooding</string>
+    <string name="routing_dsr">DSR</string>
+    <string name="routing_unknown">unknown</string>
 </resources>

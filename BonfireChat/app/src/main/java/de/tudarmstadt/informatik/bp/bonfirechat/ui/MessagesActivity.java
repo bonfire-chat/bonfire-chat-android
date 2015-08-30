@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.inputmethodservice.ExtractEditText;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -47,6 +48,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.LocationUdpPacket;
+import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 
 
@@ -141,6 +143,17 @@ public class MessagesActivity extends Activity {
                                 if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
                                     m.error = intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
                                     m.flags |= Message.FLAG_FAILED;
+                                }
+                                if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ROUTING_TYPE)) {
+                                    int routingType = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_ROUTING_TYPE, 0);
+                                    Log.e("FOO", "routing Type: " + routingType);
+                                    if (routingType == Packet.ROUTING_MODE_DSR) {
+                                        m.flags |= Message.FLAG_ROUTING_DSR;
+                                        m.flags &=~ Message.FLAG_ROUTING_FLOODING;
+                                    } else {
+                                        m.flags |= Message.FLAG_ROUTING_FLOODING;
+                                        m.flags &=~ Message.FLAG_ROUTING_DSR;
+                                    }
                                 }
                                 // set retransmission count for UI
                                 m.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, m.retransmissionCount);
