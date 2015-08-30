@@ -107,4 +107,5 @@
     <string name="details_label_error">message could not be sent</string>
     <string name="details_label_error_desc">An error occured while trying to send the message. It probably didn\'t reach its recipient.</string>
     <string name="details_label_errormessage">error:</string>
+    <string name="cant_resend_received_message">can\'t resend a message that you received</string>
 </resources>

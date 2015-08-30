@@ -429,11 +429,18 @@ public class MessagesActivity extends Activity {
 
     private void resendSelectedItems() {
         boolean[] mySelected = adapter.itemSelected;
+        boolean receivedMessagesInSelection = false;
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {
             if (mySelected[position]) {
                 Message adapterMessage = adapter.getItem(position);
-                for (Message message: messages) {
+                // is it a received message?
+                if (!adapterMessage.sender.getPublicKey().equals(db.getDefaultIdentity().getPublicKey())) {
+                    // don't resend that
+                    receivedMessagesInSelection = true;
+                    continue;
+                }
+                for (Message message : messages) {
                     // correct message?
                     if (message.uuid.equals(adapterMessage.uuid)) {
                         ConnectionManager.retrySendMessage(this, message);
@@ -445,6 +452,11 @@ public class MessagesActivity extends Activity {
         adapter.clear();
         adapter.addAll(messages);
         adapter.notifyDataSetChanged();
+
+        // notify the user that received messages can't be resent, in case he intended to do so
+        if (receivedMessagesInSelection) {
+            Toast.makeText(this, R.string.cant_resend_received_message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void detailsForSelectedItem() {
