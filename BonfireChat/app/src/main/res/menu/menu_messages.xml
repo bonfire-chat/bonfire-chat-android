@@ -13,6 +13,8 @@
     <item android:id="@+id/action_share_location" android:title="Standort senden"
         android:showAsAction="always" android:icon="@android:drawable/ic_menu_compass" />
 
+    <item android:id="@+id/action_show_contact_location" android:title="@string/contact_location"
+        android:showAsAction="never" />
     <item android:id="@+id/action_settings" android:title="Info"
         android:showAsAction="never" />
     <item android:id="@+id/action_set_path" android:title="@string/action_set_path"
@@ -23,6 +25,5 @@
         android:showAsAction="never" />
     <item android:id="@+id/action_send_location_udp" android:title="send a location udp cast"
         android:showAsAction="never" />
-    <item android:id="@+id/action_show_contact_location" android:title="contact's location"
-        android:showAsAction="never" />
+
 </menu>

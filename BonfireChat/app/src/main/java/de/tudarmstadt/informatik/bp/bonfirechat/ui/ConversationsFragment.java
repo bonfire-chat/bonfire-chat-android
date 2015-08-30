@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.net.URLEncoder;
 import java.util.List;
@@ -160,6 +161,28 @@ public class ConversationsFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
     }
+
+    private void showLocationForSelectedItems() {
+        boolean[] mySelected = adapter.itemSelected;
+
+        for (int position = adapter.getCount() - 1; position >= 0; position--) {
+            if (mySelected[position]) {
+                Conversation conversation = adapter.getItem(position);
+                // location available?
+                if (conversation.getPeer().getLastKnownLocation() != null) {
+                    Intent intent = new Intent(getActivity(), ContactLocationActivity.class);
+                    Log.i(TAG, "starting ContactLocationActivity with contact id=" + conversation.getPeer().rowid);
+                    intent.putExtra(ConnectionManager.EXTENDED_DATA_CONTACT_ID, conversation.getPeer().rowid);
+                    startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(getActivity(), R.string.toast_location_not_available, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                break;
+            }
+        }
+    }
+
     private AbsListView.MultiChoiceModeListener multiChoiceListener = new AbsListView.MultiChoiceModeListener() {
 
         @Override
@@ -175,6 +198,10 @@ public class ConversationsFragment extends Fragment {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             // Respond to clicks on the actions in the CAB
             switch (item.getItemId()) {
+                case R.id.action_show_contact_location:
+                    showLocationForSelectedItems();
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
                 case R.id.action_delete:
                     deleteSelectedItems();
                     mode.finish(); // Action picked, so close the CAB
