@@ -83,6 +83,8 @@ public class ConnectionManager extends NonStopIntentService {
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_TEXT";
     public static final String EXTENDED_DATA_MESSAGE_UUID =
             "de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_UUID";
+    public static final String EXTENDED_DATA_CONTACT_ID =
+            "de.tudarmstadt.informatik.bp.bonfirechat.CONTACT_ID";
     public static final String EXTENDED_DATA_ERROR =
             "de.tudarmstadt.informatik.bp.bonfirechat.ERROR";
     public static final String EXTENDED_DATA_RETRANSMISSION_COUNT =

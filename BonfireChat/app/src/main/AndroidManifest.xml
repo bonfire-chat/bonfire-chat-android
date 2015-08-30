@@ -102,6 +102,15 @@
                 android:value=".ui.MessagesActivity" />
         </activity>
 
+        <activity
+            android:name=".ui.ContactLocationActivity"
+            android:label="Standortdetails"
+            android:parentActivityName=".ui.MessagesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MessagesActivity" />
+        </activity>
+
         <receiver
             android:name=".network.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
