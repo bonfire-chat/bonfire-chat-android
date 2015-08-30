@@ -20,7 +20,8 @@ public class ConstOptions {
     public static final int MAX_RETRANSMISSIONS = 5;
 
     // maximum hops for a message until it will be discarded
-    public static final int MAX_HOPS = 10;
+    public static final int DEFAULT_TTL = 6;
+    public static final int MAX_TTL = 14;
 
     public static final int RETRANSMISSION_TIMEOUT = 20000;
 
