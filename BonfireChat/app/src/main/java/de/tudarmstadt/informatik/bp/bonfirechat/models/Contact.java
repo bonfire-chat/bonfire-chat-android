@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.Serializable;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
@@ -20,6 +22,8 @@ public class Contact implements Serializable, IPublicIdentity {
     private String firstName;
     private String lastName;
     public String phoneNumber;
+
+    private String lastKnownLocation;
 
     public String xmppId;
     public String wifiMacAddress;
@@ -83,6 +87,19 @@ public class Contact implements Serializable, IPublicIdentity {
         return publicKey;
     }
 
+    public LatLng getLastKnownLocation() {
+        if (!lastKnownLocation.isEmpty()) {
+            String[] coords = lastKnownLocation.split(":");
+            return new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+        }
+        else {
+            return null;
+        }
+    }
+    public void setLastKnownLocation(String location) {
+        this.lastKnownLocation = location;
+    }
+
     @Override
     public String toString() {
         return nickname;
@@ -98,6 +115,7 @@ public class Contact implements Serializable, IPublicIdentity {
         values.put("xmppId", xmppId);
         values.put("wifiMacAddress", wifiMacAddress);
         values.put("bluetoothMacAddress", bluetoothMacAddress);
+        values.put("lastKnownLocation", lastKnownLocation);
         return values;
     }
 
@@ -111,6 +129,7 @@ public class Contact implements Serializable, IPublicIdentity {
                 cursor.getString(cursor.getColumnIndex("wifiMacAddress")),
                 cursor.getString(cursor.getColumnIndex("bluetoothMacAddress")),
                 cursor.getInt(cursor.getColumnIndex("rowid")));
+        contact.setLastKnownLocation(cursor.getString(cursor.getColumnIndex("lastKnownLocation")));
         return contact;
     }
 
