@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
 
         getEdit(R.id.nickname).setText(contact.getNickname());
         getEdit(R.id.phone).setText(contact.phoneNumber);
+        ((CheckBox) findViewById(R.id.share_location)).setChecked(contact.isShareLocation());
         ((TextView) findViewById(R.id.stats)).setText("coming soon");
 
         String pubkey = contact.getPublicKey().asBase64();
@@ -119,6 +121,7 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
     private void saveContact() {
         contact.setNickname(getEdit(R.id.nickname).getText().toString());
         contact.phoneNumber = getEdit(R.id.phone).getText().toString();
+        contact.setShareLocation(((CheckBox) findViewById(R.id.share_location)).isChecked());
         BonfireData db = BonfireData.getInstance(this);
         db.updateContact(contact);
     }

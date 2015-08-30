@@ -44,13 +44,13 @@ public class BonfireData extends SQLiteOpenHelper{
     }
 
     private BonfireData(Context context) {
-        super(context, "CommunicationData", null, 18);
+        super(context, "CommunicationData", null, 19);
 
     }
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, phoneNumber TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT, lastKnownLocation TEXT)");
+        db.execSQL("CREATE TABLE if not exists " + CONTACTS + "(nickname TEXT, firstName TEXT, lastName TEXT, phoneNumber TEXT, publicKey TEXT, xmppId TEXT, wifiMacAddress TEXT, bluetoothMacAddress TEXT, lastKnownLocation TEXT, shareLocation INT)");
         db.execSQL("CREATE TABLE if not exists " + CONVERSATIONS + "(peer INT, conversationType INT, title TEXT)");
         db.execSQL("CREATE TABLE if not exists " + MESSAGES + "(uuid TEXT NOT NULL PRIMARY KEY, conversation INT NOT NULL, sender INT NOT NULL, flags INT NOT NULL, protocol TEXT, body TEXT, sentDate TEXT, insertDate INT, traceroute BLOB, retries INT, error TEXT)");
         db.execSQL("CREATE TABLE if not exists " + IDENTITIES + "(nickname TEXT, privatekey TEXT, publickey TEXT, server TEXT, username TEXT, password TEXT, phone TEXT)");

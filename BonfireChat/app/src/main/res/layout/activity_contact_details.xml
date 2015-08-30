@@ -67,7 +67,7 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/share_location_perodically"
+            android:text="@string/share_location_periodically"
             android:id="@+id/share_location"
             android:layout_marginTop="10dp" />
         <FrameLayout android:id="@+id/group_map"
