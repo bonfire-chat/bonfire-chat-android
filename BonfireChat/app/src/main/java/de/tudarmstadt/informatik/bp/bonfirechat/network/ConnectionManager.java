@@ -358,27 +358,29 @@ public class ConnectionManager extends NonStopIntentService {
             broadcastManager.sendBroadcast(localIntent);
 
 
-            final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
-            intent.putExtra("ConversationId", conversation.rowid);
-            final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
-            stackBuilder.addParentStack(MessagesActivity.class);
-            stackBuilder.addNextIntent(intent);
-            final PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-            final Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
-            final NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(ConnectionManager.this)
-                            .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
-                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                            .setContentTitle(conversation.title)
-                            .setContentText(message.getDisplayBody(ConnectionManager.this))
-                            .setContentIntent(pi)
-                            .setSound(sound)
-                            .setAutoCancel(true)
-                            .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
+            if(MessagesActivity.currentConversation == -1) {
+                final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
+                intent.putExtra("ConversationId", conversation.rowid);
+                final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
+                stackBuilder.addParentStack(MessagesActivity.class);
+                stackBuilder.addNextIntent(intent);
+                final PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+                final Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
+                final NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(ConnectionManager.this)
+                                .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                .setContentTitle(conversation.title)
+                                .setContentText(message.getDisplayBody(ConnectionManager.this))
+                                .setContentIntent(pi)
+                                .setSound(sound)
+                                .setAutoCancel(true)
+                                .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
 
-            final NotificationManager mNotifyMgr =
-                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            mNotifyMgr.notify(1, mBuilder.build());
+                final NotificationManager mNotifyMgr =
+                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                mNotifyMgr.notify((int) conversation.rowid, mBuilder.build());
+            }
         }
     };
 
