@@ -29,6 +29,7 @@ public class ConversationTest {
     Conversation conversation;
     Conversation conversation2;
     Contact contact;
+    Message message;
 
     @Before
     public void initTests(){
@@ -37,23 +38,23 @@ public class ConversationTest {
         MyPublicKey myPublicKey = Mockito.mock(MyPublicKey.class);
         contact = new Contact("","","","",myPublicKey,null,null,null,9876);
         ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message("Hello, world.", contact, new Date(2014,01,01), Message.FLAG_PROTO_CLOUD, new UUID(0,0)));
+        messages.add(message = new Message("Hello, world.", contact, new Date(2014,01,01), Message.FLAG_PROTO_CLOUD, new UUID(0,0)));
         conversation2 = new Conversation(contact, "Title2", 23, messages);
     }
 
     @Test
     public void testGetLastMessage() {
-        assertEquals(conversation.getLastMessage(), "");
-        assertEquals(conversation2.getLastMessage(), "Hello, world.");
+        assertEquals(conversation.getLastMessage(), null);
+        assertEquals(conversation2.getLastMessage(), message);
     }
 
     @Test
     public void testAddMessages() {
         ArrayList<Message> newmessages = new ArrayList<>();
         newmessages.add(new Message("Test1", contact, new Date(2014, 01, 01), Message.FLAG_PROTO_CLOUD, new UUID(0,0)));
-        newmessages.add(new Message("Test2", contact, new Date(2014, 01, 01), Message.FLAG_PROTO_CLOUD, new UUID(0,0)));
+        newmessages.add(message = new Message("Test2", contact, new Date(2014, 01, 01), Message.FLAG_PROTO_CLOUD, new UUID(0,0)));
         conversation2.addMessages(newmessages);
-        assertEquals(conversation2.getLastMessage(), "Test2");
+        assertEquals(conversation2.getLastMessage(), message);
     }
 
     /*
