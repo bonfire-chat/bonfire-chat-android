@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
@@ -109,7 +110,8 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Conversation> getConversations(){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Conversation> conversations = new ArrayList<>();
-        Cursor conversationCursor = db.query(CONVERSATIONS, ALL_COLS, null, null, null, null, null);
+        String rawQuery = "SELECT c.rowid, c.*, m.sentDate FROM " + CONVERSATIONS + " c LEFT OUTER JOIN " + MESSAGES + " m ON c.rowid=m.conversation GROUP BY c.rowid ORDER BY m.sentDate DESC";
+        Cursor conversationCursor = db.rawQuery(rawQuery, null);
         while(conversationCursor.moveToNext()){
             Contact contact = getContactById(conversationCursor.getInt(conversationCursor.getColumnIndex("peer")));
             Conversation conversation = Conversation.fromCursor(contact, conversationCursor);
@@ -223,7 +225,7 @@ public class BonfireData extends SQLiteOpenHelper{
     public ArrayList<Contact> getContacts(){
         SQLiteDatabase db = getWritableDatabase();
         ArrayList<Contact> contacts = new ArrayList<>();
-        Cursor cursor = db.query(CONTACTS, ALL_COLS, null, null, null, null, null);
+        Cursor cursor = db.query(CONTACTS, ALL_COLS, null, null, null, null, "nickname COLLATE NOCASE");
         while(cursor.moveToNext()){
             contacts.add(Contact.fromCursor(cursor));
         }
