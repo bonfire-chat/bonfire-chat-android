@@ -33,11 +33,14 @@ public class Identity implements IPublicIdentity {
     public int serverUid;
     public long rowid;
 
+    private String image;
+
     public Identity(String nickname, int serverUid, String privateKey, String publicKey, String phone) {
         this.nickname = nickname; this.phone = phone;
         this.serverUid = serverUid;
         this.privateKey = new PrivateKey(privateKey);
         this.publicKey = MyPublicKey.deserialize(publicKey);
+        image = "";
     }
 
     public static Identity generate(Context ctx) {
@@ -76,6 +79,7 @@ public class Identity implements IPublicIdentity {
         values.put("privatekey", privateKey.toString());
         values.put("publickey", publicKey.asBase64());
         values.put("phone", phone);
+        values.put("image", image);
         return values;
     }
 
@@ -86,6 +90,7 @@ public class Identity implements IPublicIdentity {
                 cursor.getString(cursor.getColumnIndex("publickey")),
                 cursor.getString(cursor.getColumnIndex("phone")));
         id.rowid = cursor.getInt(cursor.getColumnIndex("rowid"));
+        id.setImage(cursor.getString(cursor.getColumnIndex("image")));
         return id;
     }
 
@@ -121,6 +126,14 @@ public class Identity implements IPublicIdentity {
         mTelephonyMgr = (TelephonyManager)
                 ctx.getSystemService(Context.TELEPHONY_SERVICE);
         return mTelephonyMgr.getLine1Number();
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
 }

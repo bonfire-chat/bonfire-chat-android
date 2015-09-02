@@ -1,25 +1,32 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StringHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
  * A login screen that offers login via email/password and via Google+ sign in.
@@ -56,6 +63,9 @@ public class IdentityActivity extends Activity  {
 
         getEdit(R.id.nickname).setText(identity.nickname);
         getEdit(R.id.phone).setText(identity.phone);
+        ImageView contactImage = ((ImageView)findViewById(R.id.contact_image));
+        if(!identity.getImage().equals(""))
+            contactImage.setImageURI(Uri.parse("file://" + identity.getImage()));
 
         if (!isWelcomeScreen) {
             String pubkey = identity.getPublicKey().asBase64();
@@ -66,6 +76,8 @@ public class IdentityActivity extends Activity  {
         Button saveButton = (Button) findViewById(R.id.save);
         if (saveButton != null ) saveButton.setOnClickListener(onSaveButtonClicked);
 
+        ImageView imageView = (ImageView) findViewById(R.id.contact_image);
+        if(imageView != null) imageView.setOnClickListener(onImageClicked);
     }
 
     private EditText getEdit(int id) {
@@ -160,6 +172,39 @@ public class IdentityActivity extends Activity  {
 
         }
     };
+
+    private View.OnClickListener onImageClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(i, 42);
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 42 && data != null) {
+
+            File file = Message.getImageFile(UUID.randomUUID());
+
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                StreamHelper.writeImageToStream(this.getContentResolver(), data.getData(), out);
+                out.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String filename = file.getAbsolutePath();
+            identity.setImage(filename);
+            Log.d("TEST: ", identity.getImage());
+            final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
+            db.updateIdentity(identity);
+            ((ImageView)findViewById(R.id.contact_image)).setImageURI(Uri.parse("file://" + identity.getImage()));
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
