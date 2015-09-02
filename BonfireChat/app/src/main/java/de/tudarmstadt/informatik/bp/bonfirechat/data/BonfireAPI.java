@@ -123,9 +123,16 @@ public class BonfireAPI {
 
             final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
             for (Map.Entry<String, byte[]> part : body.entrySet()) {
-                out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"\r\n\r\n").getBytes("UTF-8"));
-                out.write(part.getValue());
-                out.write(("\r\n").getBytes("UTF-8"));
+                if(part.getKey().equals("image")){
+                    out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"; filename=\"doesntmatter.jpg\"\r\nContent-Type: application/octet-stream" + "\r\n\r\n").getBytes("UTF-8"));
+                    out.write(part.getValue());
+                    out.write(("\r\n").getBytes("UTF-8"));
+                    Log.d("FileTransfer: ", "I did this");
+                }else {
+                    out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"\r\n\r\n").getBytes("UTF-8"));
+                    out.write(part.getValue());
+                    out.write(("\r\n").getBytes("UTF-8"));
+                }
             }
             out.flush();
 

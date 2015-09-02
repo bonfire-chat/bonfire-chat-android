@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -11,11 +12,15 @@ import org.abstractj.kalium.crypto.Box;
 import org.abstractj.kalium.keys.KeyPair;
 import org.abstractj.kalium.keys.PrivateKey;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Hashtable;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver;
 
 /**
@@ -119,6 +124,33 @@ public class Identity implements IPublicIdentity {
             e.printStackTrace();
             return e.toString();
         }
+    }
+
+    public String updateImage(Context ctx){
+            Hashtable<String, byte[]> body = new Hashtable<>();
+            body.put("publickey", BonfireAPI.encode(getPublicKey().asBase64()));
+
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            try {
+                StreamHelper.writeImageToStream(ctx.getContentResolver(), Uri.parse("file://" + getImage()), os);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            body.put("image", os.toByteArray());
+            String result = null;
+            try {
+                result = BonfireAPI.httpPost("avatar", body).trim();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        /*if (result.startsWith("ok=")) {
+            serverUid = Integer.valueOf(result.substring(3));
+            return null;
+        } else {
+            return result;
+        }*/
+        return "";
     }
 
     private static String getMyPhoneNumber(Context ctx){

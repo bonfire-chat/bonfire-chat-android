@@ -9,4 +9,5 @@ public interface IPublicIdentity {
     MyPublicKey getPublicKey();
     String getNickname();
     String getPhoneNumber();
+    String getImage();
 }
