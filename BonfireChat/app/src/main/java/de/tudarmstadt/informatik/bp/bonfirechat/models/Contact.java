@@ -26,6 +26,8 @@ public class Contact implements Serializable, IPublicIdentity {
 
     private String lastKnownLocation;
 
+    private String image;
+
     public String xmppId;
     public String wifiMacAddress;
     public String bluetoothMacAddress;
@@ -82,6 +84,14 @@ public class Contact implements Serializable, IPublicIdentity {
         return phoneNumber;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public void setXmppId(String xmppId) {
         this.xmppId = xmppId;
     }
@@ -128,6 +138,7 @@ public class Contact implements Serializable, IPublicIdentity {
         values.put("bluetoothMacAddress", bluetoothMacAddress);
         values.put("lastKnownLocation", lastKnownLocation);
         values.put("shareLocation", shareLocation ? 1 : 0);
+        values.put("image", image);
         return values;
     }
 
@@ -143,6 +154,7 @@ public class Contact implements Serializable, IPublicIdentity {
                 cursor.getInt(cursor.getColumnIndex("rowid")));
         contact.setLastKnownLocation(cursor.getString(cursor.getColumnIndex("lastKnownLocation")));
         contact.setShareLocation(cursor.getInt(cursor.getColumnIndex("shareLocation")) == 1);
+        contact.setImage(cursor.getString(cursor.getColumnIndex("image")));
         return contact;
     }
 
