@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +68,10 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
             v = (ViewHolder) convertView.getTag();
         }
 
-        v.icon.setImageResource(R.mipmap.ic_launcher);
+        if(objects.get(position).getPeer().getImage().equals(""))
+            v.icon.setImageResource(R.mipmap.ic_launcher);
+        else
+            v.icon.setImageURI(Uri.parse(objects.get(position).getPeer().getImage()));
         v.name.setText(getItem(position).getName());
         Message lastMessage = getItem(position).getLastMessage();
         if (lastMessage == null) {
