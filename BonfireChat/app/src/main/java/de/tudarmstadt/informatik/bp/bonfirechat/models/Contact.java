@@ -49,6 +49,7 @@ public class Contact implements Serializable, IPublicIdentity {
         this.rowid = rowid;
         this.lastKnownLocation = "";
         this.shareLocation = false;
+        this.image = "";
     }
 
     public String getNickname() {

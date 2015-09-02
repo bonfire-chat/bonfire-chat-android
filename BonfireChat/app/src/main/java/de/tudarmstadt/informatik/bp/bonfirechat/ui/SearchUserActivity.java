@@ -3,6 +3,8 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.SearchView;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,10 +25,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SearchUserActivity extends Activity {
     private ContactsAdapter adapter;
@@ -111,8 +116,12 @@ public class SearchUserActivity extends Activity {
                 Contact[] d = new Contact[array.length()];
                 for(int i = 0; i < d.length; i++) {
                     JSONObject obj = array.getJSONObject(i);
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                            BonfireAPI.DOWNLOADS_DIRECTORY + UUID.randomUUID().toString() + ".jpg");
+                    BonfireAPI.httpGetToFile(BonfireAPI.API_ENDPOINT + "/avatar?publickey=" + obj.getString("publickey"), file);
                     d[i] = new Contact(obj.getString("nickname"), obj.getString("nickname"), "",
                             obj.getString("phone"), obj.getString("publickey"), obj.getString("xmppid"), "", "", 0);
+                    d[i].setImage(file.getAbsolutePath());
                 }
                 return d;
 
