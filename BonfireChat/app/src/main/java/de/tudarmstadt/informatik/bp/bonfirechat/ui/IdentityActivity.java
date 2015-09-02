@@ -1,13 +1,13 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -182,6 +182,21 @@ public class IdentityActivity extends Activity  {
         }
     };
 
+    public class myAsyncTask extends AsyncTask<Identity, Object, String> {
+
+        private Context ctx;
+
+        public myAsyncTask(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected String doInBackground(Identity... params) {
+            String ok = params[0].updateImage(ctx);
+            return ok;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 42 && data != null) {
@@ -199,10 +214,12 @@ public class IdentityActivity extends Activity  {
 
             String filename = file.getAbsolutePath();
             identity.setImage(filename);
-            Log.d("TEST: ", identity.getImage());
             final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
             db.updateIdentity(identity);
-            ((ImageView)findViewById(R.id.contact_image)).setImageURI(Uri.parse("file://" + identity.getImage()));
+
+            new myAsyncTask(this).execute(identity);
+
+            ((ImageView) findViewById(R.id.contact_image)).setImageURI(Uri.parse("file://" + identity.getImage()));
         }
     }
 

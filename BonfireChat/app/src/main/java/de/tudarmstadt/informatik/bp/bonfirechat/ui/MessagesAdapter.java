@@ -99,6 +99,9 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         v.messageBody.setText(msg.body);
         v.dateTime.setText(DateHelper.formatTime(msg.sentTime));
         v.dateTime.setTextColor(Color.GRAY);
+
+        if(!msg.sender.getImage().equals(""))
+            v.contactPhoto.setImageURI(Uri.parse("file://" + msg.sender.getImage()));
         if (msg.hasFlag(Message.FLAG_ENCRYPTED)) {
             v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
             v.encryptedIcon.setColorFilter(Color.GRAY);
