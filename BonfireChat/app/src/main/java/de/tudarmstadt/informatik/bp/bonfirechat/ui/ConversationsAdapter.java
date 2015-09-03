@@ -3,7 +3,6 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
@@ -68,10 +68,8 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
             v = (ViewHolder) convertView.getTag();
         }
 
-        if(objects.get(position).getPeer().getImage().equals(""))
-            v.icon.setImageResource(R.mipmap.ic_launcher);
-        else
-            v.icon.setImageURI(Uri.parse(objects.get(position).getPeer().getImage()));
+        ContactImageHelper.displayContactImage(objects.get(position).getPeer(), v.icon);
+
         v.name.setText(getItem(position).getName());
         Message lastMessage = getItem(position).getLastMessage();
         if (lastMessage == null) {
