@@ -32,6 +32,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
@@ -552,7 +553,8 @@ public class ConnectionManager extends NonStopIntentService {
         // add temporary traceroute segment, indication the message is still on its way
         // when the ACK packet for this message is received, the traceroute will be replaced entirely
         // by its reversed traceroute, so this segment will be removed then
-        message.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
+        IPublicIdentity identity = BonfireData.getInstance(ctx).getDefaultIdentity();
+        message.addTracerouteSegment(new TracerouteNodeSegment(identity.getNickname(), identity.getImage()));
         message.addTracerouteSegment(new TracerouteProgressSegment());
     }
 

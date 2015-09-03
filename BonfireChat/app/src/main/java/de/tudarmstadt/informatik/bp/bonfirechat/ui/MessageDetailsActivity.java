@@ -31,6 +31,7 @@ import java.util.UUID;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
@@ -339,6 +340,8 @@ public class MessageDetailsActivity extends Activity {
                 TracerouteNodeSegment node = (TracerouteNodeSegment) segment;
 
                 ((TextView) view.findViewById(R.id.name)).setText(node.getNickname());
+                BonfireData db = BonfireData.getInstance(this);
+                ContactImageHelper.displayContactImage(node.getImage(), (ImageView) view.findViewById(R.id.icon));
             }
             else if (segment instanceof TracerouteProgressSegment) {
                 view = inflater.inflate(R.layout.traceroute_rowlayout_progress, null);
