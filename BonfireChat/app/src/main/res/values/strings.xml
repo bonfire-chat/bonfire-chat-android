@@ -108,7 +108,7 @@
     <string name="details_label_error_desc">An error occurred while trying to send the message. It probably didn\'t reach its recipient.</string>
     <string name="details_label_errormessage">error:</string>
     <string name="cant_resend_received_message">can\'t resend a message that you received</string>
-    <string name="contact_location">contact\'s location</string>
+    <string name="contact_location">Contact\'s location</string>
     <string name="notice_no_location_for_contact">There is no location available for this contact.</string>
     <string name="details_label_routing">routing technique:</string>
     <string name="routing_flooding">Flooding</string>
@@ -121,4 +121,14 @@
     <string name="label_last_known_location">Last known location:</string>
     <string name="label_stats">Statistics:</string>
     <string name="share_location_periodically">Share my location with this contact periodically</string>
+    <string name="bluetooth_needed_for_working">This App needs Bluetooth enabled to function correctly.</string>
+    <string name="please_enable_bluetooth" >Please enable Bluetooth</string>
+    <string name="enable_bluetooth" >Enable Bluetooth</string>
+    <string name="name_of_app">Bonfire</string>
+    <string name="date_time">Date/Time</string>
+    <string name="nfc_instructions">Put your phone back to back to another device in order to share your contact details via NFC</string>
+    <string name="share_facebook">Share with Facebook</string>
+    <string name="share_twitter">Share with Twitter</string>
+    <string name="send_location">Send location</string>
+    <string name="info">Info</string>
 </resources>

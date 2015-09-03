@@ -119,4 +119,16 @@
     <string name="label_stats">Statistiken:</string>
     <string name="share_location_periodically">Meinen Standort regelmäßig mit diesem Kontakt teilen</string>
 
+    <string name="bluetooth_needed_for_working">Damit die App richtig funktioniert, wird Bluetooth benötigt.</string>
+    <string name="please_enable_bluetooth" >Bitte aktiviere Bluetooth</string>
+    <string name="enable_bluetooth" >Bluetooth aktivieren</string>
+    <string name="name_of_app">Bonfire</string>
+    <string name="date_time">Datum/Zeit</string>
+    <string name="nfc_instructions">Halte dein Handy Rückseite an Rückseite an ein anderes Handy, um deine Kontaktdaten per NFC zu teilen</string>
+    <string name="share_facebook">Auf Facebook teilen</string>
+    <string name="share_twitter">Auf Twitter Teilen</string>
+    <string name="send_location">Standort senden</string>
+    <string name="info">Info</string>
+    <string name="details_from">von:</string>
+
 </resources>
