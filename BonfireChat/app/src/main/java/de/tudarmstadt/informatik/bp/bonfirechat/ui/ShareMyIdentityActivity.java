@@ -31,6 +31,7 @@ import java.net.URLEncoder;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRCodeEncoder;
@@ -53,6 +54,8 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nfc_layout);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ContactImageHelper.displayContactImage(pubident, (ImageView) findViewById(R.id.imageView2));
 
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);

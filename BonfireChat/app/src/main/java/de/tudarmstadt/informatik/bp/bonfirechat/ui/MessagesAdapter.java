@@ -102,7 +102,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         v.dateTime.setTextColor(Color.GRAY);
 
         ContactImageHelper.displayContactImage(msg.sender, v.contactPhoto);
-        
+
         if (msg.hasFlag(Message.FLAG_ENCRYPTED)) {
             v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
             v.encryptedIcon.setColorFilter(Color.GRAY);
