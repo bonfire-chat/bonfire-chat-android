@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 
 /**
@@ -13,9 +12,14 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 public class ContactImageHelper {
 
     public static void displayContactImage(IPublicIdentity contact, ImageView icon){
-        if(contact.getImage().equals(""))
+        displayContactImage(contact.getImage(), icon);
+    }
+
+    public static void displayContactImage(String image, ImageView icon){
+        if(image.equals("")) {
             icon.setImageResource(R.mipmap.ic_launcher);
+        }
         else
-            icon.setImageURI(Uri.parse(contact.getImage()));
+            icon.setImageURI(Uri.parse(image));
     }
 }
