@@ -125,7 +125,7 @@ public class SearchUserActivity extends Activity {
                         filename = "";
                     }
                     d[i] = new Contact(obj.getString("nickname"), obj.getString("nickname"), "",
-                            obj.getString("phone"), obj.getString("publickey"), obj.getString("xmppid"), "", "", 0);
+                            obj.getString("phone"), obj.getString("publickey"), "", "", 0);
                     d[i].setImage(filename);
                 }
                 return d;

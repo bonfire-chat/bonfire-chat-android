@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,6 @@ import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
@@ -247,7 +243,7 @@ public class BonfireAPI {
     public static boolean onNewPhoneContact(BonfireData db, String phone, String pubkey, String nickname) {
         Contact contact = db.getContactByPublicKey(pubkey);
         if (contact == null) {
-            contact = new Contact(nickname, "", "", phone, pubkey, "", "", "", 0);
+            contact = new Contact(nickname, "", "", phone, pubkey, "", "", 0);
             db.createContact(contact);
             return true;
         } else {
