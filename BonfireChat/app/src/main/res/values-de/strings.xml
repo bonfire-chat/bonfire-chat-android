@@ -130,5 +130,19 @@
     <string name="send_location">Standort senden</string>
     <string name="info">Info</string>
     <string name="details_from">von:</string>
+    <string name="edit_account">Account bearbeiten</string>
+    <string name="account">Account</string>
+    <string name="communication_channels">Kommunikationskanäle</string>
+    <string name="use_bluetooth">Verwende Bluetooth</string>
+    <string name="use_wifi">Verwende Wi-Fi (Peer-to-Peer)</string>
+    <string name="use_mobile_data">Verwende Mobile Daten / Wi-Fi</string>
+    <string name="misc">Sonstiges</string>
+    <string name="send_debug_to_dashboard">Debuginfos an Dashboard senden</string>
+    <string name="show_internal_information">Zeige interne Informationen</string>
+    <string name="about_the_app">Über BonfireChat</string>
+    <string name="developed_at">Entwickelt an der TU Darmstadt</string>
+    <string name="developed_by">von Johannes, Jonas, Max, Matthias und Simon </string>
+    <string name="update">Update</string>
+    <string name="load_last_dev_build">Letzten Dev-Build laden</string>
 
 </resources>
