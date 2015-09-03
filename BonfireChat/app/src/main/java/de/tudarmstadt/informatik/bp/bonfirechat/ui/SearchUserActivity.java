@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -119,10 +120,17 @@ public class SearchUserActivity extends Activity {
                     JSONObject obj = array.getJSONObject(i);
                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                             BonfireAPI.DOWNLOADS_DIRECTORY + UUID.randomUUID().toString() + ".jpg");
-                    BonfireAPI.httpGetToFile(BonfireAPI.API_ENDPOINT + "/avatar?publickey=" + obj.getString("publickey"), file);
+                    String filename;
+                    try {
+                        BonfireAPI.httpGetToFile(BonfireAPI.API_ENDPOINT + "/avatar?publickey=" + obj.getString("publickey"), file);
+                        filename = file.getAbsolutePath();
+                    }
+                    catch (IOException e){
+                        filename = "";
+                    }
                     d[i] = new Contact(obj.getString("nickname"), obj.getString("nickname"), "",
                             obj.getString("phone"), obj.getString("publickey"), obj.getString("xmppid"), "", "", 0);
-                    d[i].setImage(file.getAbsolutePath());
+                    d[i].setImage(filename);
                 }
                 return d;
 
