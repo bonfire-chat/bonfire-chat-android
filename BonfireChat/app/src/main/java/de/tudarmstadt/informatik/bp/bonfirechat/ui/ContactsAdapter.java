@@ -43,7 +43,6 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
     }
 
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,8 +53,9 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         name.setText(objects.get(position).getNickname());
         if(objects.get(position).getImage().equals(""))
             icon.setImageResource(R.mipmap.ic_launcher);
-        else
+        else {
             icon.setImageURI(Uri.parse(objects.get(position).getImage()));
+        }
         Log.d("ContactsAdapter", "getview position=" + position+"   selected="+itemSelected[position] );
         rowView.setSelected(itemSelected[position]);
         rowView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);
