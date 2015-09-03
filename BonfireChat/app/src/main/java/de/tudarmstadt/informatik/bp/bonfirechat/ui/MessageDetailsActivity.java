@@ -282,7 +282,7 @@ public class MessageDetailsActivity extends Activity {
             case Received:
                 ((TextView) findViewById(R.id.label_senders)).setText(R.string.details_from);
                 contacts = new ArrayList<>();
-                contacts.add(new Contact(message.sender.getNickname(), "", "", message.sender.getPhoneNumber(), message.sender.getPublicKey(), null, "", "", 0));
+                contacts.add(new Contact(message.sender.getNickname(), "", "", message.sender.getPhoneNumber(), message.sender.getPublicKey(), "", "", 0));
                 break;
             case Sent:
             default:

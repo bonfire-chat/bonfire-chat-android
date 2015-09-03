@@ -26,9 +26,6 @@ import android.widget.Toast;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
@@ -38,7 +35,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRCodeEncoder;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
-import de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactDetailsActivity;
 
 public class ShareMyIdentityActivity extends Activity implements CreateNdefMessageCallback {
     NfcAdapter mNfcAdapter;
@@ -135,7 +131,7 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
     public static Contact contactFromUri(Uri url) {
         Contact contact = new Contact(
                 url.getQueryParameter("name"), "", "", url.getQueryParameter("tel"),
-                url.getQueryParameter("key"), url.getQueryParameter("jid"), "", "", 0);
+                url.getQueryParameter("key"), "", "", 0);
         return contact;
     }
 

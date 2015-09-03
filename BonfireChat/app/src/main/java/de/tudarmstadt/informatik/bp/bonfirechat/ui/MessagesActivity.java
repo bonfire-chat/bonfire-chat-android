@@ -315,8 +315,7 @@ public class MessagesActivity extends Activity {
                     "";
             if (conversation.getPeer() != null) {
                 info += "\nKontakt: " + conversation.getPeer().getNickname() +
-                        "\nName: " + conversation.getPeer().getFirstName() + " "+conversation.getPeer().getLastName() +
-                        "\nXMPP ID: " + conversation.getPeer().getXmppId();
+                        "\nName: " + conversation.getPeer().getFirstName() + " "+conversation.getPeer().getLastName();
             }
             UIHelper.Info(this, "Info", info);
             return true;

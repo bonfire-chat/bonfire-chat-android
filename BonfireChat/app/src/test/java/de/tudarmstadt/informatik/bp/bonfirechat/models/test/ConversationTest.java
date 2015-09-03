@@ -36,7 +36,7 @@ public class ConversationTest {
         conversation = new Conversation(null, "Title", 42);
 
         MyPublicKey myPublicKey = Mockito.mock(MyPublicKey.class);
-        contact = new Contact("","","","",myPublicKey,null,null,null,9876);
+        contact = new Contact("","","","",myPublicKey, null,null,9876);
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(message = new Message("Hello, world.", contact, new Date(2014,01,01), Message.FLAG_PROTO_CLOUD, new UUID(0,0)));
         conversation2 = new Conversation(contact, "Title2", 23, messages);
