@@ -131,4 +131,18 @@
     <string name="share_twitter">Share with Twitter</string>
     <string name="send_location">Send location</string>
     <string name="info">Info</string>
+    <string name="edit_account">Edit account</string>
+    <string name="account">Account</string>
+    <string name="communication_channels">Communication channels</string>
+    <string name="use_bluetooth">Use Bluetooth</string>
+    <string name="use_wifi">Use Wi-Fi (peer-to-peer)</string>
+    <string name="use_mobile_data">Use mobile data / Wi-Fi</string>
+    <string name="misc">Miscellaneous</string>
+    <string name="send_debug_to_dashboard">Send debug information to Dashboard</string>
+    <string name="show_internal_information">Show internal information</string>
+    <string name="about_the_app">About BonfireChat</string>
+    <string name="developed_at">Developed at TU Darmstadt</string>
+    <string name="developed_by">by Johannes, Jonas, Max, Matthias and Simon</string>
+    <string name="update">Update</string>
+    <string name="load_last_dev_build">Load last development build</string>
 </resources>
