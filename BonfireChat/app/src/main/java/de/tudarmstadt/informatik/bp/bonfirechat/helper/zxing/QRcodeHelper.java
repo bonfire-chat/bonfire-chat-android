@@ -25,7 +25,7 @@ public class QRcodeHelper {
     public static Contact contactFromUri(Uri url) {
         Contact contact = new Contact(
                 url.getQueryParameter("name"), "", "", url.getQueryParameter("tel"),
-                url.getQueryParameter("key"), url.getQueryParameter("jid"), "", "", 0);
+                url.getQueryParameter("key"), "", "", 0);
         return contact;
     }
 

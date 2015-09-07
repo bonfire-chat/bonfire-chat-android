@@ -20,6 +20,7 @@ import java.util.List;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
@@ -99,6 +100,9 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         v.messageBody.setText(msg.body);
         v.dateTime.setText(DateHelper.formatTime(msg.sentTime));
         v.dateTime.setTextColor(Color.GRAY);
+
+        ContactImageHelper.displayContactImage(msg.sender, v.contactPhoto);
+
         if (msg.hasFlag(Message.FLAG_ENCRYPTED)) {
             v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
             v.encryptedIcon.setColorFilter(Color.GRAY);
