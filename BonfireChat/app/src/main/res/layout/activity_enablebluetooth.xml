@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bitte aktiviere Bluetooth"
+        android:text="@string/please_enable_bluetooth"
         android:textSize="@dimen/abc_text_size_large_material"
         android:gravity="center"
         android:layout_alignParentTop="true"
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
-        android:text="Damit die App richtig funktioniert, wird Bluetooth benötigt."
+        android:text="@string/bluetooth_needed_for_working"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:layout_marginTop="20dp"
@@ -27,7 +27,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bluetooth aktivieren"
+        android:text="@string/enable_bluetooth"
         android:id="@+id/enable_bluetooth"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"

@@ -34,7 +34,7 @@ public class MessageTest {
         org.abstractj.kalium.keys.PublicKey publicKeyMock = Mockito.mock(org.abstractj.kalium.keys.PublicKey.class);
         when(keyPairMock.getPublicKey()).thenReturn(publicKeyMock);
 
-        contact = new Contact("nickname", "Nick", "Name", "", new MyPublicKey(publicKeyMock), "", "", "", 0);
+        contact = new Contact("nickname", "Nick", "Name", "", new MyPublicKey(publicKeyMock), "", "", 0);
         message = new Message("body", contact, new Date(42), Message.FLAG_ENCRYPTED | Message.FLAG_PROTO_BT | Message.FLAG_PROTO_CLOUD | Message.FLAG_PROTO_WIFI, contact);
     }
 

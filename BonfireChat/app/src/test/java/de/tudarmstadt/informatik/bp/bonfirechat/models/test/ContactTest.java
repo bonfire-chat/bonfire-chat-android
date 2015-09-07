@@ -26,7 +26,7 @@ public class ContactTest {
         KeyPair keyPairMock = Mockito.mock(KeyPair.class);
         org.abstractj.kalium.keys.PublicKey publicKeyMock = Mockito.mock(org.abstractj.kalium.keys.PublicKey.class);
         when(keyPairMock.getPublicKey()).thenReturn(publicKeyMock);
-        contact = new Contact("nickname", "Nick", "Name", "", new MyPublicKey(publicKeyMock), "", "", "", 0);
+        contact = new Contact("nickname", "Nick", "Name", "", new MyPublicKey(publicKeyMock), "", "", 0);
     }
 
     @Test

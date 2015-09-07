@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 
 import java.util.List;
@@ -42,7 +44,6 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
     }
 
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,7 +52,7 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
         ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
 
         name.setText(objects.get(position).getNickname());
-        icon.setImageResource(R.mipmap.ic_launcher);
+        ContactImageHelper.displayContactImage(objects.get(position), icon);
         Log.d("ContactsAdapter", "getview position=" + position+"   selected="+itemSelected[position] );
         rowView.setSelected(itemSelected[position]);
         rowView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);

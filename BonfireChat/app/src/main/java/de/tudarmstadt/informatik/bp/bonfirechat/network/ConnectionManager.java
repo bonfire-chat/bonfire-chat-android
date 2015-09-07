@@ -32,6 +32,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
@@ -358,27 +359,29 @@ public class ConnectionManager extends NonStopIntentService {
             broadcastManager.sendBroadcast(localIntent);
 
 
-            final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
-            intent.putExtra("ConversationId", conversation.rowid);
-            final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
-            stackBuilder.addParentStack(MessagesActivity.class);
-            stackBuilder.addNextIntent(intent);
-            final PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-            final Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
-            final NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(ConnectionManager.this)
-                            .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
-                            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                            .setContentTitle(conversation.title)
-                            .setContentText(message.getDisplayBody(ConnectionManager.this))
-                            .setContentIntent(pi)
-                            .setSound(sound)
-                            .setAutoCancel(true)
-                            .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
+            if(MessagesActivity.currentConversation == -1) {
+                final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
+                intent.putExtra("ConversationId", conversation.rowid);
+                final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
+                stackBuilder.addParentStack(MessagesActivity.class);
+                stackBuilder.addNextIntent(intent);
+                final PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+                final Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.correct);
+                final NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(ConnectionManager.this)
+                                .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                .setContentTitle(conversation.title)
+                                .setContentText(message.getDisplayBody(ConnectionManager.this))
+                                .setContentIntent(pi)
+                                .setSound(sound)
+                                .setAutoCancel(true)
+                                .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
 
-            final NotificationManager mNotifyMgr =
-                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            mNotifyMgr.notify(1, mBuilder.build());
+                final NotificationManager mNotifyMgr =
+                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                mNotifyMgr.notify((int) conversation.rowid, mBuilder.build());
+            }
         }
     };
 
@@ -550,7 +553,8 @@ public class ConnectionManager extends NonStopIntentService {
         // add temporary traceroute segment, indication the message is still on its way
         // when the ACK packet for this message is received, the traceroute will be replaced entirely
         // by its reversed traceroute, so this segment will be removed then
-        message.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
+        IPublicIdentity identity = BonfireData.getInstance(ctx).getDefaultIdentity();
+        message.addTracerouteSegment(new TracerouteNodeSegment(identity.getNickname(), identity.getImage()));
         message.addTracerouteSegment(new TracerouteProgressSegment());
     }
 
