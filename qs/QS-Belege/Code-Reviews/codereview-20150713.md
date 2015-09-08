@@ -4,6 +4,8 @@
 
 **Geprüfte Codeteile:** models-Package, ConnectionManager, EchoProtocol, GcmProtocol, TracerouteHandler 
 
+**Änderungen vorgenommen in Commit:** da815895bedcd619aaf928dc29c80a433cdc0ba4
+
 ### 1. Is the functionality correct?
 
 - Im ConnectionManager in der SENDMESSAGE\_ACTION wird eine RuntimeException nicht geworfen, sondern einfach einer Variable zugewiesen. Dies wurde geändert, sodass die Exception nun geworfen wird.

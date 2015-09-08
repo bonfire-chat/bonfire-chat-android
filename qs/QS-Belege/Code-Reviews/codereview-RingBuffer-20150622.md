@@ -4,6 +4,8 @@
 
 **Geprüfte Codeteile:** RingBuffer
 
+**Änderungen vorgenommen in Commit:** ed7607da504e27a40cf2c99841c539be1d60c29a
+
 ### 1. Is the functionality correct?
 
 Die contains-implementierung funktioniert nicht immer korrekt. TODO: Warum?

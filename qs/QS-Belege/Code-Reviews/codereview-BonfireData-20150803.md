@@ -4,6 +4,8 @@
 
 **Geprüfte Codeteile:** Die Datenbankfunktionalität (Im Wesentlichen die Klasse BonfireData)
 
+**Änderungen vorgenommen in Commit:** 5a26429def4f8278980232cac29e2cfd2d6afe32
+
 ### 1. Is the functionality correct?
 
 Ja, abgesehen von der onUpgrade-Methode, die aber gewollt so implementiert ist, um die Entwicklung zu vereinfachen. Sie wird richtig implementiert werden, wenn die App veröffentlicht wird.

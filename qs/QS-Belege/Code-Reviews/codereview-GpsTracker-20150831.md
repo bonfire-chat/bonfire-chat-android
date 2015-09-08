@@ -4,6 +4,8 @@
 
 **Geprüfte Codeteile:** GpsTracker
 
+**Änderungen vorgenommen in Commit:** Im Zuge dieses Code-Reviews wurden keine Änderungen vorgenommen.
+
 ### 1. Is the functionality correct?
 
 Ja.
