@@ -1,6 +1,6 @@
 # Durchführung des manuellen UI-Testplans vom XXXXXXX
 
-**Durchgeführt am:**
+**Durchgeführt von:**
 
 **Änderungen vorgenommen in Commit:**
 
