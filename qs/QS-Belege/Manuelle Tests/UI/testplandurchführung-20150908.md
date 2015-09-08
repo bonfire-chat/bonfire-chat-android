@@ -2,7 +2,7 @@
 
 **Durchgeführt von:** Jonas Mönnig
 
-**Änderungen vorgenommen in Commit:** Es wurden keine Änderungen vorgenommen
+**Änderungen vorgenommen in Commit:** TODO: Commit einfügen
 
 ## Teil I: Darstellung
 
@@ -30,7 +30,7 @@ Bestanden
 
 ### Test II.3
 
-Bestanden
+Nicht bestanden. Die Benutzerführung ist eine völlig andere. Johannes Lauinger wird beauftragt, den Fehler zu beheben.
 
 ## Teil III: Senden und Empfangen von Nachrichten
 
