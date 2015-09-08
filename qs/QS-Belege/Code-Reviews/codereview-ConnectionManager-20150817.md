@@ -4,6 +4,8 @@
 
 **Geprüfte Codeteile:** ConnectionManager
 
+**Änderungen vorgenommen in Commit:** 
+
 ### 1. Is the functionality correct?
 
 Ja.
@@ -68,7 +70,7 @@ Nein, folgende Fehler wurden gefunden und werden behoben:
 
 ### 15. What pieces of the component can be executed in parallel?
 
-Die Paralellisierung findet in den aufgerufenen Klassen statt und ist somit bereits vorhanden.
+Die Parallelisierung findet in den aufgerufenen Klassen statt und ist somit bereits vorhanden.
 
 ### 16. Are the operations thread-safe if they need to be?
 

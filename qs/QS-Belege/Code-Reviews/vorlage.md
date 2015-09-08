@@ -1,8 +1,10 @@
 # Code-Review vom XXXXX
 
-**Durchgeführt von:  XXXXXX **
+**Durchgeführt von:**  XXXXXX
 
 **Geprüfte Codeteile:** XXXXXXX
+
+**Änderungen vorgenommen in Commit:** 
 
 ### 1. Is the functionality correct?
 
