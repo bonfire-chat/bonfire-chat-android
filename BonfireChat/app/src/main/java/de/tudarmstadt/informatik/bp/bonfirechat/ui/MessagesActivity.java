@@ -201,6 +201,7 @@ public class MessagesActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
+
         // reload messages (possibly changed on disk)
         messages = db.getMessages(conversation);
         adapter.clear();
