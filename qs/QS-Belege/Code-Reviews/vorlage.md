@@ -6,55 +6,55 @@
 
 **Änderungen vorgenommen in Commit:** 
 
-### 1. Is the functionality correct?
+### 1. Ist die Funktionalität korrekt?
 
 
-### 2. Are the classes, functions and variables named suitably?
+### 2. Sind die Klassen, Funktionen und Variablen angemessen benannt?
 
 
-### 3. Is the class structure well designed and meeting all requirements or does it need improvements?
+### 3. Wurde die Klassenstruktur gut entworfen und erfüllt sie alle Anforderungen, oder sind Verbesserungen nötig?
 
 
-### 4. Are there classes which have become obsolete because of a new implementation?
+### 4. Gibt es Klassen, die aufgrund neuer Implementierungen überflüssig geworden sind?
 
 
-### 5. Are there unnecessary overloaded functions or constructors?
+### 5. Gibt es unnötig überladene Funktionen oder Konstruktoren?
 
 
-### 6. Is the perstistent database structure well designed?
+### 6. Wurde die Datenbankstruktur gut entworfen?
 
 
-### 7. Does it contain functions that can be reused later? Are they placed in a Helper class?
+### 7. Enthält das Codeteil Funktionen, die wiederverwendet werden können? Sind diese in einer Helper-Klasse untergebracht?
 
 
-### 8. Are existing helper functions being used? Is no duplicate functionality implemented?
+### 8. Wurden existierende Helper-Funktionen benutzt? Ist keine doppelte Funktionalität implementiert?
 
 
-### 9. Are all the input arguments being validated?
+### 9. Werden alle Eingabeparameter validiert?
 
 
-### 10. How will the functionalities affect the performance of the app - power usage, time and memory?
+### 10. Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
 
 
-### 11. Is it absolutely necessary to run it on UI thread or would a background thread suffice?
+### 11. Ist es unbedingt nötig, den Code in einem UI-Thread laufen zu lassen oder würde ein Background-Thread ausreichen?
 
 
-### 12. Are all possible failures handled?
+### 12. Werden alle möglichen Fehlschläge behandelt?
 
 
-### 13. Does it degrade gracefully in case of unknown failures?
+### 13. Findet eine "Graceful Degradation" statt?
 
 
-### 14. Are the best practices for app development, according to Android lint, being followed?
+### 14. Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
 
 
-### 15. What pieces of the component can be executed in parallel?
+### 15. Welche Teile können parallel ausgeführt werden?
 
 
-### 16. Are the operations thread-safe if they need to be?
+### 16. Sind die Operationen, bei denen Threadsicherheit benötigt wird, threadsicher?
 
 
-### 17. Is the layout suitable for all screen dimensions?
+### 17. Ist das Layout passend für alle Bildschirmdimensionen?
 
 
-### 18. Do all methods and fields have the proper access modifiers?
+### 18. Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
