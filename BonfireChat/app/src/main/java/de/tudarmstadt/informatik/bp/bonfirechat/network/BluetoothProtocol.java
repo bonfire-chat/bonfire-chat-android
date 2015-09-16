@@ -139,13 +139,15 @@ public class BluetoothProtocol extends SocketProtocol {
 
                 BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
                 while(true) {
-                    try {
-                        BluetoothSocket socket = server.accept();
-                        ConnectionHandler handler = new ConnectionHandler(socket);
-                        connections.put(socket.getRemoteDevice().getAddress(), handler);
-                    } catch(IOException ex) {
-                        Log.e(TAG, "ConnectionHandler constructor fail");
-                        Log.e(TAG, ex.getMessage());
+                    if (connections.size() < 4) {
+                        try {
+                            BluetoothSocket socket = server.accept();
+                            ConnectionHandler handler = new ConnectionHandler(socket);
+                            connections.put(socket.getRemoteDevice().getAddress(), handler);
+                        } catch (IOException ex) {
+                            Log.e(TAG, "ConnectionHandler constructor fail");
+                            Log.e(TAG, ex.getMessage());
+                        }
                     }
                 }
 
