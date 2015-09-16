@@ -53,6 +53,15 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        findPreference("goto_homepage").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://bonfire.projects.teamwiki.net/?src=app_prefs"));
+                startActivity(browserIntent);
+                return true;
+            }
+        });
+
 		findPreference("update_dev").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
