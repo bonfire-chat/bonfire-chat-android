@@ -169,9 +169,10 @@ public class ConnectionManager extends NonStopIntentService {
             }
         }
         synchronized (peers) {
-            for (Peer p : peers) {
-                if (p.getProtocolClass().equals(typ))
-                    peers.remove(p);
+            Iterator<Peer> iter = peers.iterator();
+            while (iter.hasNext()) {
+                if (iter.next().getProtocolClass().equals(typ))
+                    iter.remove();
             }
         }
     }

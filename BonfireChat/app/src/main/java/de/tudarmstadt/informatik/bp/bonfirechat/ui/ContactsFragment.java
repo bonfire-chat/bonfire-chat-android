@@ -45,7 +45,7 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
+/*
         if (UIHelper.shouldShowContactsTutorial(getActivity())) {
             showcaseView = new ShowcaseView.Builder(getActivity())
                     .setStyle(R.style.CustomShowcaseTheme2)
@@ -53,7 +53,7 @@ public class ContactsFragment extends Fragment {
                     .build();
             tutorial_counter = 0;
             showcaseListener.onClick(null);
-        }
+        }*/
     }
 
     @Override

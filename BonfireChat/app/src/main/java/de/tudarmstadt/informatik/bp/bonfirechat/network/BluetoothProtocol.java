@@ -23,9 +23,11 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
@@ -60,7 +62,9 @@ public class BluetoothProtocol extends SocketProtocol {
     }
 
     public Set<Map.Entry<String,ConnectionHandler>> getConnections() {
-        return connections.entrySet();
+        synchronized (connections) {
+            return connections.entrySet();
+        }
     }
 
     private boolean ensureBluetoothUp() {
@@ -142,7 +146,9 @@ public class BluetoothProtocol extends SocketProtocol {
                     try {
                         BluetoothSocket socket = server.accept();
                         ConnectionHandler handler = new ConnectionHandler(socket);
-                        connections.put(socket.getRemoteDevice().getAddress(), handler);
+                        synchronized (connections) {
+                            connections.put(socket.getRemoteDevice().getAddress(), handler);
+                        }
                     } catch(IOException ex) {
                         Log.e(TAG, "ConnectionHandler constructor fail");
                         Log.e(TAG, ex.getMessage());
@@ -224,7 +230,9 @@ public class BluetoothProtocol extends SocketProtocol {
         }
         private void teardown() {
             Log.w(TAG,"ConnectionHandler: tearing down "+formattedMacAddress);
-            connections.remove(formattedMacAddress);
+            synchronized (connections) {
+                connections.remove(formattedMacAddress);
+            }
             try {
                 socket.close();
             } catch (IOException e) {/*ignore*/}
@@ -238,14 +246,26 @@ public class BluetoothProtocol extends SocketProtocol {
 
     ConnectionHandler connectToDevice(BluetoothDevice device, UUID uuid) {
         try {
-            if (connections.containsKey(device.getAddress()))
-                return connections.get(device.getAddress());
+            synchronized (connections) {
+                if (connections.containsKey(device.getAddress()))
+                    return connections.get(device.getAddress());
+            }
+            if (ConstOptions.DELAYED_BT_CONNECTION > 0) {
+                int delay = new Random().nextInt(ConstOptions.DELAYED_BT_CONNECTION) + 1;
+                Log.d(TAG, "delaying connection by "+delay+" ms");
+                Thread.sleep(delay);
+            }
 
             BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);
             socket.connect();
             ConnectionHandler handler = new ConnectionHandler(socket);
-            connections.put(device.getAddress(), handler);
+            synchronized (connections) {
+                connections.put(device.getAddress(), handler);
+            }
             return handler;
+        }catch(InterruptedException e){
+            //ignore
+            return null;
         } catch (IOException e) {
             // do nothing, this exception will occur a lot because there will be Bluetooth
             // devices nearby that do not run BonfireChat, resulting in no suitable
@@ -263,7 +283,9 @@ public class BluetoothProtocol extends SocketProtocol {
                 Log.i(TAG, "W O W  - success!");
 
                 ConnectionHandler handler = new ConnectionHandler(socket);
-                connections.put(device.getAddress(), handler);
+                synchronized (connections) {
+                    connections.put(device.getAddress(), handler);
+                }
                 return handler;
 
             } catch(Exception ex2) {
@@ -312,8 +334,10 @@ public class BluetoothProtocol extends SocketProtocol {
         if (adapter.isDiscovering()) adapter.cancelDiscovery();
 
         // close all connections
-        for(ConnectionHandler c : connections.values()) {
-            c.teardown();
+        synchronized (connections) {
+            for (ConnectionHandler c : connections.values()) {
+                c.teardown();
+            }
         }
     }
 

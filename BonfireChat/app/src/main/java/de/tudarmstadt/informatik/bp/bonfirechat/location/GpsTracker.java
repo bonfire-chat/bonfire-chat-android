@@ -130,7 +130,7 @@ public class GpsTracker implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            Log.d(TAG, "updating location: " + location.getLatitude() + "N, " + location.getLongitude() + "E");
+            //Log.d(TAG, "updating location: " + location.getLatitude() + "N, " + location.getLongitude() + "E");
             this.location = location;
             this.canGetLocation = true;
         }

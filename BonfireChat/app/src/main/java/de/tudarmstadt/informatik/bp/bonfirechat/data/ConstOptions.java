@@ -24,6 +24,8 @@ public class ConstOptions {
 
     public static final int LOCATION_BROADCAST_INTERVAL = 60 * 1000; // ms
 
+    public static final int DELAYED_BT_CONNECTION = 250;
+
     public static String getDebugInfo() {
         StringBuilder debug = new StringBuilder();
         for(IProtocol c : ConnectionManager.connections) {
