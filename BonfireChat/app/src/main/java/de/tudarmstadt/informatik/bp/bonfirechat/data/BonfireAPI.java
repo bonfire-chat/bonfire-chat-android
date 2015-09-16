@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,6 @@ import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
-import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
@@ -123,9 +119,16 @@ public class BonfireAPI {
 
             final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
             for (Map.Entry<String, byte[]> part : body.entrySet()) {
-                out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"\r\n\r\n").getBytes("UTF-8"));
-                out.write(part.getValue());
-                out.write(("\r\n").getBytes("UTF-8"));
+                if(part.getKey().equals("image")){
+                    out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"; filename=\"doesntmatter.jpg\"\r\nContent-Type: application/octet-stream" + "\r\n\r\n").getBytes("UTF-8"));
+                    out.write(part.getValue());
+                    out.write(("\r\n").getBytes("UTF-8"));
+                    Log.d("FileTransfer: ", "I did this");
+                }else {
+                    out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"\r\n\r\n").getBytes("UTF-8"));
+                    out.write(part.getValue());
+                    out.write(("\r\n").getBytes("UTF-8"));
+                }
             }
             out.flush();
 
@@ -240,7 +243,7 @@ public class BonfireAPI {
     public static boolean onNewPhoneContact(BonfireData db, String phone, String pubkey, String nickname) {
         Contact contact = db.getContactByPublicKey(pubkey);
         if (contact == null) {
-            contact = new Contact(nickname, "", "", phone, pubkey, "", "", "", 0);
+            contact = new Contact(nickname, "", "", phone, pubkey, "", "", 0);
             db.createContact(contact);
             return true;
         } else {

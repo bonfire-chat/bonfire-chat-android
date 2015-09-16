@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Account">
-        <Preference android:title="Account bearbeiten" android:key="edit_account"/>
+    <PreferenceCategory android:title="@string/account">
+        <Preference android:title="@string/edit_account" android:key="edit_account"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Kommunikationswege">
+    <PreferenceCategory android:title="@string/communication_channels">
         <CheckBoxPreference android:key="enable_BluetoothProtocol" android:defaultValue="true"
-            android:title="Verwende Bluetooth"></CheckBoxPreference>
+            android:title="@string/use_bluetooth"></CheckBoxPreference>
 
         <CheckBoxPreference android:key="enable_WifiProtocol" android:defaultValue="true"
-            android:title="Verwende Wi-Fi (AdHoc)"></CheckBoxPreference>
+            android:title="@string/use_wifi"></CheckBoxPreference>
 
         <CheckBoxPreference android:key="enable_GcmProtocol" android:defaultValue="true"
-            android:title="Verwende Mobile Daten / Wi-Fi"></CheckBoxPreference>
+            android:title="@string/use_mobile_data"></CheckBoxPreference>
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Sonstiges">
+    <PreferenceCategory android:title="@string/misc">
 
         <CheckBoxPreference android:key="debugSendToDashboard" android:defaultValue="false"
-            android:title="Debuginfos an Dashboard senden"></CheckBoxPreference>
+            android:title="@string/send_debug_to_dashboard"></CheckBoxPreference>
 
 
         <Preference android:key="debugShow"
-            android:title="Zeige interne Informationen"></Preference>
+            android:title="@string/show_internal_information"></Preference>
 
 
-        <PreferenceScreen android:title="Über BonfireChat">
+        <PreferenceScreen android:title="@string/about_the_app">
 
-            <Preference android:title="Entwickelt an der TU Darmstadt"
-                android:summary="von Johannes, Jonas, Max, Matthias und Simon "/>
+            <Preference android:title="@string/developed_at"
+                android:summary="@string/developed_by"/>
 
             <Preference android:title="Version x.x.x" android:key="version_number"/>
 
@@ -38,7 +38,7 @@
 
         </PreferenceScreen>
 
-        <Preference android:title="Update" android:summary="Letzten Dev-Build laden" android:key="update_dev"/>
+        <Preference android:title="@string/update" android:summary="@string/load_last_dev_build" android:key="update_dev"/>
 
     </PreferenceCategory>
 
