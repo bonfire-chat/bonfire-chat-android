@@ -48,7 +48,6 @@
     <string name="registering_title">Registrieren …</string>
     <string name="registering_message">Eile mit Weile.</string>
     <string name="registering_failed">Fehler beim Speichern</string>
-    <string name="exception_only_fresh_envelopes">Diese Methode sendet nur frische Umschläge.</string>
 
     <string name="action_login_ok">Weiter</string>
     <string name="login_phone_number_hint">Handynummer (optional)</string>
