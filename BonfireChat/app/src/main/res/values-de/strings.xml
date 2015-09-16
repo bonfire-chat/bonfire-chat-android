@@ -144,5 +144,6 @@
     <string name="developed_by">von Johannes, Jonas, Max, Matthias und Simon </string>
     <string name="update">Update</string>
     <string name="load_last_dev_build">Letzten Dev-Build laden</string>
+    <string name="exception_only_fresh_envelopes">Diese Methode verschickt nur jungfräuliche Umschläge.</string>
 
 </resources>
