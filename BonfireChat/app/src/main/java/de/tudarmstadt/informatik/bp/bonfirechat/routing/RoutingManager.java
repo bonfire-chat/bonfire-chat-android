@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
@@ -63,8 +64,13 @@ public class RoutingManager {
 
     public List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
         if (packet.isFlooding()) {
+            Random r = new Random();
             // send to all available peers
-            return (ArrayList) ((ArrayList) peers).clone();
+            ArrayList<Peer> selectedPeers = (ArrayList) ((ArrayList) peers).clone();
+            while (selectedPeers.size() > 4) {
+                selectedPeers.remove(r.nextInt(selectedPeers.size()));
+            }
+            return selectedPeers;
         } else if (packet.getNextHop() != null) {
             List<Peer> r = new ArrayList<>(1);
             for (Peer peer : peers) {
