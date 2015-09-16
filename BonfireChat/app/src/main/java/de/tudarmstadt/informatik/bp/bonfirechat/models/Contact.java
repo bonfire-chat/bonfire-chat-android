@@ -26,27 +26,28 @@ public class Contact implements Serializable, IPublicIdentity {
 
     private String lastKnownLocation;
 
-    public String xmppId;
+    private String image;
+
     public String wifiMacAddress;
     public String bluetoothMacAddress;
     public long rowid;
 
 
-    public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey, String xmppId, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
-        this(nickname, firstName, lastName, phoneNumber, MyPublicKey.deserialize(publicKey), xmppId, wifiMacAddress, bluetoothMacAddress, rowid);
+    public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
+        this(nickname, firstName, lastName, phoneNumber, MyPublicKey.deserialize(publicKey), wifiMacAddress, bluetoothMacAddress, rowid);
     }
-    public Contact(String nickname, String firstName, String lastName, String phoneNumber, MyPublicKey publicKey, String xmppId, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
+    public Contact(String nickname, String firstName, String lastName, String phoneNumber, MyPublicKey publicKey, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.publicKey = publicKey;
-        this.xmppId = xmppId;
         this.wifiMacAddress = wifiMacAddress;
         this.bluetoothMacAddress = bluetoothMacAddress;
         this.rowid = rowid;
         this.lastKnownLocation = "";
         this.shareLocation = false;
+        this.image = "";
     }
 
     public String getNickname() {
@@ -73,17 +74,17 @@ public class Contact implements Serializable, IPublicIdentity {
         this.lastName = lastName;
     }
 
-    public String getXmppId() {
-        return xmppId;
-    }
-
     @Override
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setXmppId(String xmppId) {
-        this.xmppId = xmppId;
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public MyPublicKey getPublicKey() {
@@ -123,11 +124,11 @@ public class Contact implements Serializable, IPublicIdentity {
         values.put("lastName", lastName);
         values.put("phoneNumber", phoneNumber);
         values.put("publicKey", publicKey == null ? null : publicKey.asBase64());
-        values.put("xmppId", xmppId);
         values.put("wifiMacAddress", wifiMacAddress);
         values.put("bluetoothMacAddress", bluetoothMacAddress);
         values.put("lastKnownLocation", lastKnownLocation);
         values.put("shareLocation", shareLocation ? 1 : 0);
+        values.put("image", image);
         return values;
     }
 
@@ -137,12 +138,12 @@ public class Contact implements Serializable, IPublicIdentity {
                 cursor.getString(cursor.getColumnIndex("lastName")),
                 cursor.getString(cursor.getColumnIndex("phoneNumber")),
                 cursor.getString(cursor.getColumnIndex("publicKey")),
-                cursor.getString(cursor.getColumnIndex("xmppId")),
                 cursor.getString(cursor.getColumnIndex("wifiMacAddress")),
                 cursor.getString(cursor.getColumnIndex("bluetoothMacAddress")),
                 cursor.getInt(cursor.getColumnIndex("rowid")));
         contact.setLastKnownLocation(cursor.getString(cursor.getColumnIndex("lastKnownLocation")));
         contact.setShareLocation(cursor.getInt(cursor.getColumnIndex("shareLocation")) == 1);
+        contact.setImage(cursor.getString(cursor.getColumnIndex("image")));
         return contact;
     }
 
@@ -151,7 +152,7 @@ public class Contact implements Serializable, IPublicIdentity {
         Contact theContact = db.getContactByPublicKey(publicKey);
         if (theContact == null) {
             // TODO: better contact creation.... e.g. search in online directory
-            theContact = new Contact(untrustedNickname, "", "", "", MyPublicKey.deserialize(publicKey), null, "", "", 0);
+            theContact = new Contact(untrustedNickname, "", "", "", MyPublicKey.deserialize(publicKey), "", "", 0);
             db.createContact(theContact);
         }
         return theContact;

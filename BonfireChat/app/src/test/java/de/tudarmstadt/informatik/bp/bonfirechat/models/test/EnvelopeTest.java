@@ -10,7 +10,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -46,7 +45,7 @@ public class EnvelopeTest {
         myPublicKey = mock(MyPublicKey.class);
         when(myPublicKey.asByteArray()).thenReturn(recipient);
 
-        contact = new Contact("nickname", "Nick", "Name", "", myPublicKey, "", "", "", 0);
+        contact = new Contact("nickname", "Nick", "Name", "", myPublicKey, "", "", 0);
     }
 
     @Test

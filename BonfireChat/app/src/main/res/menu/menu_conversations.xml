@@ -8,10 +8,10 @@
         app:showAsAction="never"/>
 
 
-    <item android:id="@+id/action_share_with_facebook" android:title="Share with Facebook"
+    <item android:id="@+id/action_share_with_facebook" android:title="@string/share_facebook"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/action_share_with_twitter" android:title="Share with Twitter"
+    <item android:id="@+id/action_share_with_twitter" android:title="@string/share_twitter"
         android:orderInCategory="100" app:showAsAction="never" />
 
 

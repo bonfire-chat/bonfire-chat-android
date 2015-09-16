@@ -5,9 +5,9 @@ package de.tudarmstadt.informatik.bp.bonfirechat.helper;
  */
 public class RingBuffer<T extends Object> {
 
-    Object[] content;
-    int length;
-    int insertPosition;
+    private final Object[] content;
+    private final int length;
+    private int insertPosition;
 
     public RingBuffer(int length) {
         this.length = length;

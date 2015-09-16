@@ -3,6 +3,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +23,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SearchUserActivity extends Activity {
     private ContactsAdapter adapter;
@@ -111,8 +114,19 @@ public class SearchUserActivity extends Activity {
                 Contact[] d = new Contact[array.length()];
                 for(int i = 0; i < d.length; i++) {
                     JSONObject obj = array.getJSONObject(i);
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                            BonfireAPI.DOWNLOADS_DIRECTORY + UUID.randomUUID().toString() + ".jpg");
+                    String filename;
+                    try {
+                        BonfireAPI.httpGetToFile(BonfireAPI.API_ENDPOINT + "/avatar?publickey=" + obj.getString("publickey"), file);
+                        filename = file.getAbsolutePath();
+                    }
+                    catch (IOException e){
+                        filename = "";
+                    }
                     d[i] = new Contact(obj.getString("nickname"), obj.getString("nickname"), "",
-                            obj.getString("phone"), obj.getString("publickey"), obj.getString("xmppid"), "", "", 0);
+                            obj.getString("phone"), obj.getString("publickey"), "", "", 0);
+                    d[i].setImage(filename);
                 }
                 return d;
 

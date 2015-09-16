@@ -4,59 +4,61 @@
 
 **Geprüfte Codeteile:** ConnectionManager
 
-### 1. Is the functionality correct?
+**Änderungen vorgenommen in Commit:** 
+
+### 1. Ist die Funktionalität korrekt?
 
 Ja.
 
-### 2. Are the classes, functions and variables named suitably?
+### 2. Sind die Klassen, Funktionen und Variablen angemessen benannt?
 
 Ja.
 
-### 3. Is the class structure well designed and meeting all requirements or does it need improvements?
+### 3. Wurde die Klassenstruktur gut entworfen und erfüllt sie alle Anforderungen, oder sind Verbesserungen nötig?
 
 Ja sie ist sinnvoll erstellt und es sind keine Verbesserungen bekannt.
 
-### 4. Are there classes which have become obsolete because of a new implementation?
+### 4. Gibt es Klassen, die aufgrund neuer Implementierungen überflüssig geworden sind?
 
 Nein.
 
-### 5. Are there unnecessary overloaded functions or constructors?
+### 5. Gibt es unnötig überladene Funktionen oder Konstruktoren?
 
 Die Methode storeAndDisplayMessage kann in eine storeMessage und in ein displayMessage aufgeteilt werden.
 
-### 6. Is the perstistent database structure well designed?
+### 6. Wurde die Datenbankstruktur gut entworfen?
 
 Ja.
 
-### 7. Does it contain functions that can be reused later? Are they placed in a Helper class?
+### 7. Enthält das Codeteil Funktionen, die wiederverwendet werden können? Sind diese in einer Helper-Klasse untergebracht?
 
 Die Klasse ist dafür zuständig Nachrichten zu versenden und diese weiterzuleiten. Immer wenn dies geschieht erledigt das der ConnectionManager. Insofern gitb es keine Funktionen die später wiederverwendet werden können.
 
-### 8. Are existing helper functions being used? Is no duplicate functionality implemented?
+### 8. Wurden existierende Helper-Funktionen benutzt? Ist keine doppelte Funktionalität implementiert?
 
 Es gibt keine bereits existierenden Helper-Methoden.
 
-### 9. Are all the input arguments being validated?
+### 9. Werden alle Eingabeparameter validiert?
 
 Es gibt keine Eingabeparameter im klassischen Sinne. Besitzt ein Handy keine Wifi oder Bluetooth funktionalität, dann unterliegt es den Protokolen dieser Klassen dies zu überprüfen. Werden Nachrichten an benachbarte Peers verschickt so ist es nicht möglich diese zu validieren, da diese sich außer Reichweite bewegt haben können.
 
-### 10. How will the functionalities affect the performance of the app - power usage, time and memory?
+### 10. Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
 
 Der Connection Manager startet die Protokolle Wifi, Bluetooth und GCM. Diese überprüfen häufig welche Geräte sich in der unmittelbaren Nähe befinden und verbrauchen damit Strom. Da dies jedoch eine wichtige Funktionalität ist für die Funktionalität der App, kann dies nicht vermieden werden. Will ein User nur eins der Protokole benutzen so kann er dies in den Einstellungen auswählen.
 
-### 11. Is it absolutely necessary to run it on UI thread or would a background thread suffice?
+### 11. Ist es unbedingt nötig, den Code in einem UI-Thread laufen zu lassen oder würde ein Background-Thread ausreichen?
 
 Der Großteil des Codes im ConnectionManager läuft bereits in einem Hintergrundthread. Nur einige statische Methoden dienen als Helper für UI-Klassen, diese müssen daher im UI Thread laufen.
 
-### 12. Are all possible failures handled?
+### 12. Werden alle möglichen Fehlschläge behandelt?
 
 Es gibt noch eine Methode in der mit TODO gekennzeichnet ist, ob hier nicht ein Fehler geworfen werden soll. Um alle anderen Fehler wird sich gekümmert.
 
-### 13. Does it degrade gracefully in case of unknown failures?
+### 13. Findet eine "Graceful Degradation" statt?
 
 Bei dem Handlen mit der Datenbank kann ein try-catch Block eingefügt werden.
 
-### 14. Are the best practices for app development, according to Android lint, being followed?
+### 14. Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
 
 Nein, folgende Fehler wurden gefunden und werden behoben:
 
@@ -66,19 +68,19 @@ Nein, folgende Fehler wurden gefunden und werden behoben:
 - Die sendMessage Methode ruft nur die sendEnvelope Methode auf. Überbleibsel von altem Code.
 - Ungenutzte Imports entfernen.
 
-### 15. What pieces of the component can be executed in parallel?
+### 15. Welche Teile können parallel ausgeführt werden?
 
-Die Paralellisierung findet in den aufgerufenen Klassen statt und ist somit bereits vorhanden.
+Die Parallelisierung findet in den aufgerufenen Klassen statt und ist somit bereits vorhanden.
 
-### 16. Are the operations thread-safe if they need to be?
+### 16. Sind die Operationen, bei denen Threadsicherheit benötigt wird, threadsicher?
 
 Müssen sie nicht.
 
-### 17. Is the layout suitable for all screen dimensions?
+### 17. Ist das Layout passend für alle Bildschirmdimensionen?
 
 Es gibt kein Layout.
 
-### 18. Do all methods and fields have the proper access modifiers?
+### 18. Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
 
 - routingManager und peers sollten nicht public sein, alle Zugriffe von außen sind zur Generierung von Debugausgaben bzw. zum manuellen Setzen einer Route zum Debuggen. Die Methode zur Generierung von Debugausgaben kann in den ConnectionManager verschoben werden.
 - registeredProtocols, getOrCreateConnection muss nicht public sein (wird nicht extern verwendet)

@@ -2,6 +2,7 @@ package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -59,6 +60,9 @@ public class MessagesActivity extends Activity {
     private MessagesAdapter adapter;
     private Conversation conversation;
     private final BonfireData db = BonfireData.getInstance(this);
+    NotificationManager mNotificationManager;
+    //rowid of Conversation that is viewed. If MessagesActivity is not open it is set to -1
+    public static long currentConversation = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +108,7 @@ public class MessagesActivity extends Activity {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     Uri imageUri = Uri.fromFile(theMessage.getImageFile());
-                    Log.i(TAG, "opening image in system viewer: "+imageUri.toString());
+                    Log.i(TAG, "opening image in system viewer: " + imageUri.toString());
                     intent.setDataAndType(imageUri, "image/*");
                     startActivity(intent);
                 } else {
@@ -169,11 +173,11 @@ public class MessagesActivity extends Activity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        UUID ackedUUID = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
-                        Log.i(TAG, "MSG_ACKED: "+ackedUUID.toString());
+                        UUID ackedUUID = (UUID) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
+                        Log.i(TAG, "MSG_ACKED: " + ackedUUID.toString());
 
                         // bestätigte Nachricht suchen
-                        for(Message m : messages) {
+                        for (Message m : messages) {
                             if (m.uuid.equals(ackedUUID)) {
                                 // update
                                 Message newMessage = db.getMessageByUUID(m.uuid);
@@ -185,17 +189,32 @@ public class MessagesActivity extends Activity {
                     }
                 },
                 new IntentFilter(ConnectionManager.MSG_ACKED_BROADCAST_EVENT));
+
+        //remove notification
+        mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel((int)convId);
+        currentConversation = conversation.rowid;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+
         // reload messages (possibly changed on disk)
         messages = db.getMessages(conversation);
         adapter.clear();
         adapter.addAll(messages);
         adapter.notifyDataSetChanged();
+        mNotificationManager.cancel((int) conversation.rowid);
+        currentConversation = conversation.rowid;
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        currentConversation = -1;
     }
 
     // ####### First-Start Tutorial #####################################################
@@ -297,8 +316,7 @@ public class MessagesActivity extends Activity {
                     "";
             if (conversation.getPeer() != null) {
                 info += "\nKontakt: " + conversation.getPeer().getNickname() +
-                        "\nName: " + conversation.getPeer().getFirstName() + " "+conversation.getPeer().getLastName() +
-                        "\nXMPP ID: " + conversation.getPeer().getXmppId();
+                        "\nName: " + conversation.getPeer().getFirstName() + " "+conversation.getPeer().getLastName();
             }
             UIHelper.Info(this, "Info", info);
             return true;

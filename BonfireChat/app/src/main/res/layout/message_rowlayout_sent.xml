@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:text="Datum/Uhrzeit"
+                    android:text="@string/date_time"
                     android:textColor="@color/secondarytext"
                     android:textSize="11sp" />
 

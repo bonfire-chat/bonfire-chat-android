@@ -121,4 +121,31 @@
     <string name="label_stats">Statistiken:</string>
     <string name="share_location_periodically">Meinen Standort regelmäßig mit diesem Kontakt teilen</string>
 
+    <string name="bluetooth_needed_for_working">Damit die App richtig funktioniert, wird Bluetooth benötigt.</string>
+    <string name="please_enable_bluetooth" >Bitte aktiviere Bluetooth</string>
+    <string name="enable_bluetooth" >Bluetooth aktivieren</string>
+    <string name="name_of_app">Bonfire</string>
+    <string name="date_time">Datum/Zeit</string>
+    <string name="nfc_instructions">Halte dein Handy Rückseite an Rückseite an ein anderes Handy, um deine Kontaktdaten per NFC zu teilen</string>
+    <string name="share_facebook">Auf Facebook teilen</string>
+    <string name="share_twitter">Auf Twitter Teilen</string>
+    <string name="send_location">Standort senden</string>
+    <string name="info">Info</string>
+    <string name="details_from">von:</string>
+    <string name="edit_account">Account bearbeiten</string>
+    <string name="account">Account</string>
+    <string name="communication_channels">Kommunikationskanäle</string>
+    <string name="use_bluetooth">Verwende Bluetooth</string>
+    <string name="use_wifi">Verwende Wi-Fi (Peer-to-Peer)</string>
+    <string name="use_mobile_data">Verwende Mobile Daten / Wi-Fi</string>
+    <string name="misc">Sonstiges</string>
+    <string name="send_debug_to_dashboard">Debuginfos an Dashboard senden</string>
+    <string name="show_internal_information">Zeige interne Informationen</string>
+    <string name="about_the_app">Über BonfireChat</string>
+    <string name="developed_at">Entwickelt an der TU Darmstadt</string>
+    <string name="developed_by">von Johannes, Jonas, Max, Matthias und Simon </string>
+    <string name="update">Update</string>
+    <string name="load_last_dev_build">Letzten Dev-Build laden</string>
+    <string name="exception_only_fresh_envelopes">Diese Methode verschickt nur jungfräuliche Umschläge.</string>
+
 </resources>
