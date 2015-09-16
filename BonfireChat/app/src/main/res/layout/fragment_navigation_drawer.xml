@@ -18,7 +18,7 @@
         android:id="@+id/linearLayout2"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="#02f6002a">
+        android:background="#b246f02a">
 
         <TextView
             android:layout_width="wrap_content"

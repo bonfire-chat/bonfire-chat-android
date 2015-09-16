@@ -39,6 +39,7 @@
         </PreferenceScreen>
 
         <Preference android:title="@string/update" android:summary="@string/load_last_dev_build" android:key="update_dev"/>
+        <Preference android:title="Homepage öffnen" android:key="goto_homepage"/>
 
     </PreferenceCategory>
 
