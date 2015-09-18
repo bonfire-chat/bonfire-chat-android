@@ -28,10 +28,7 @@ module.exports = function(grunt) {
         command: 'rm -rf <%=assets%> <%=partials%>'
       },
       removeGitRepository: {
-        command: [
-          'chmod -R 777 bp.wiki',
-          'rm -r bp.wiki'
-        ].join('&&')
+        command: 'rm -rf bp.wiki'
       },
       pdfconcat: {
         command: [
