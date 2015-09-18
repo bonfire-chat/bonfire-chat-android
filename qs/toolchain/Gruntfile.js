@@ -7,6 +7,7 @@ module.exports = function(grunt) {
     assets: '../anhang/assets',
     partials: '../anhang/partials',
     appendix: '../anhang/qs-anhang.pdf',
+    spec: '../spezifikation',
     qsSpec: '../spezifikation/qs-dokument.pdf',
     dst: '../qs-komplett.pdf',
 
@@ -63,6 +64,10 @@ module.exports = function(grunt) {
         src: '<%=assets%>/*.md',
         dest: '<%=partials%>/'
       }
+    },
+
+    latex: {
+      src: ['<%=spec%>/*.tex']
     }
 
   });
@@ -71,6 +76,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-wkhtmltopdf');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-latex');
 
   grunt.registerTask('prepare', ['concat', 'shell:collect']);
   grunt.registerTask('pdfconcat', ['shell:pdfconcat']);
@@ -79,7 +85,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['clean', 'prepare', 'build', 'link']);
   grunt.registerTask('build', []);
-  grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'pdfconcat', 'shell:marry']);
+  grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'latex', 'latex', 'pdfconcat', 'shell:marry']);
   grunt.registerTask('all', ['default', 'clean', 'open']);
 
 };
