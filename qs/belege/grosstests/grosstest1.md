@@ -20,7 +20,7 @@ Ergebnisse Test 2:
 Wir haben auf 166 Nachrichten 2 erfolgreiche Fälle und 164 Errors. 
 
 Eine genauere Betrachtung der Nachrichten zeigt folgendes: 
-Das Gerät C, ein weiterleitendes Gerät, dass selbst keine eigenen Nachrichten verschickt hat, hat viele Nachrichten empfangen, diese jedoch danach nicht 			weitergeleitet. Da dieses Gerät jedoch sehr zentral lag, hatten die anderen Handy 		Probleme Verbindungen ohne C aufzubauen(zu hohe Distanz)  
+Das Gerät C, ein weiterleitendes Gerät, dass selbst keine eigenen Nachrichten verschickt hat, hat viele Nachrichten empfangen, diese jedoch danach nicht 			weitergeleitet. Da dieses Gerät jedoch sehr zentral lag, hatten die anderen Handy Probleme Verbindungen ohne C aufzubauen (zu hohe Distanz).
 		
 Das Gerät J hatte überhaupt keine Verbindung zu anderen Handys. 
 
