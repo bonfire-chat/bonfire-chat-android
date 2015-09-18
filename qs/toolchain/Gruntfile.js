@@ -10,16 +10,22 @@ module.exports = function(grunt) {
 
     shell: {
       prepare: {
-        command: 'mkdir -p <%=assets%> <%=partials%>'
+        command: [
+          'mkdir -p <%=assets%> <%=partials%>',
+          'cp  <%=src%>/junit/bonfire-junit-report.html <%=assets%>/01-junit.html',
+          'cp -r <%=src%>/coverage/.css <%=assets%>',
+          'cp <%=src%>/coverage/index.html <%=assets%>/02-coverage.html',
+          'cp <%=src%>/documentation/Dokumentation.markdown <%=assets%>/03-documentation.markdown'
+        ].join('&&')
       },
       clean: {
-        command: 'true' // for removing unnecessary files in the future
+        command: 'rm -rf <%=assets%> <%=partials%>'
       },
       concat: {
         command: [
           'gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=<%=dst%> <%=partials%>/*.pdf',
           'echo writing QS appendix PDF file to <%=dst%>'
-          ].join('&&')
+        ].join('&&')
       },
       open: {
         command: 'exec evince <%=dst%>'
@@ -28,17 +34,25 @@ module.exports = function(grunt) {
 
     wkhtmltopdf: {
       junit: {
-        src: '<%=src%>/junit/bonfire-junit-report.html',
+        src: '<%=assets%>/01-junit.html',
         dest: '<%=partials%>/'
       },
       coverage: {
-        src: '<%=src%>/coverage/index.html',
+        src: '<%=assets%>/02-coverage.html',
+        dest: '<%=partials%>/'
+      }
+    },
+
+    markdownpdf: {
+      documentation: {
+        src: '<%=assets%>/03-documentation.markdown',
         dest: '<%=partials%>/'
       }
     }
 
   });
 
+  grunt.loadNpmTasks('grunt-markdown-pdf')
   grunt.loadNpmTasks('grunt-wkhtmltopdf');
   grunt.loadNpmTasks('grunt-shell');
 
@@ -47,9 +61,9 @@ module.exports = function(grunt) {
   grunt.registerTask('clean', ['shell:clean']);
   grunt.registerTask('open', ['shell:open']);
 
-  grunt.registerTask('default', ['prepare', 'build', 'render', 'clean']);
+  grunt.registerTask('default', ['clean', 'prepare', 'build', 'link']);
   grunt.registerTask('build', []);
-  grunt.registerTask('render', ['wkhtmltopdf', 'concat']);
-  grunt.registerTask('all', ['default', 'open']);
+  grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'concat']);
+  grunt.registerTask('all', ['default', 'clean', 'open']);
 
 };
