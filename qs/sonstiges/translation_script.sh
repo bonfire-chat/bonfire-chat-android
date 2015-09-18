@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for file in vorlage.md codereview-*.md 
+for file in $@
 do
   while read var
   do
