@@ -17,4 +17,5 @@ Create appendix:
 
 ```
 grunt
+grunt open
 ```
