@@ -33,7 +33,7 @@ module.exports = function(grunt) {
       marry: {
         command: [
           'gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=<%=dst%> <%=qsSpec%> <%=appendix%>',
-          'echo "writing final merged PDF file to <%=dst%> (QS document including appendix)"'
+          'echo "writing final merged PDF file to <%=dst%> (QS document including appendix) (Denkst du noch an die Checkliste?)"'
         ].join('&&')
       },
       open: {
