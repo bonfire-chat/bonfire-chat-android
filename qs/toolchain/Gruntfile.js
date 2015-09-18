@@ -6,7 +6,9 @@ module.exports = function(grunt) {
     src: '../belege',
     assets: '../anhang/assets',
     partials: '../anhang/partials',
-    dst: '../anhang/qs-anhang.pdf',
+    appendix: '../anhang/qs-anhang.pdf',
+    qsSpec: '../spezifikation/qs-dokument.pdf',
+    dst: '../qs-komplett.pdf',
 
     shell: {
       collect: {
@@ -23,8 +25,14 @@ module.exports = function(grunt) {
       },
       pdfconcat: {
         command: [
-          'gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=<%=dst%> <%=partials%>/*.pdf',
-          'echo writing QS appendix PDF file to <%=dst%>'
+          'gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=<%=appendix%> <%=partials%>/*.pdf',
+          'echo writing QS appendix PDF file to <%=appendix%>'
+        ].join('&&')
+      },
+      marry: {
+        command: [
+          'gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=<%=dst%> <%=qsSpec%> <%=appendix%>',
+          'echo "writing final merged PDF file to <%=dst%> (QS document including appendix)"'
         ].join('&&')
       },
       open: {
@@ -71,7 +79,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['clean', 'prepare', 'build', 'link']);
   grunt.registerTask('build', []);
-  grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'pdfconcat']);
+  grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'pdfconcat', 'shell:marry']);
   grunt.registerTask('all', ['default', 'clean', 'open']);
 
 };
