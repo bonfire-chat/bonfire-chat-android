@@ -13,10 +13,12 @@ module.exports = function(grunt) {
     dst: '../qs-komplett.pdf',
 
     shell: {
+      cloneRepository: {
+        command: 'git clone git@code.lauinger-it.de:studium/bp.wiki.git'
+      },
       collect: {
         command: [
           'mkdir -p <%=assets%> <%=partials%>',
-          'git clone git@code.lauinger-it.de:studium/bp.wiki.git',
           'cp bp.wiki/Dokumentation.markdown <%=assets%>/05-documentation.md',
           'cp  <%=src%>/junit/bonfire-junit-report.html <%=assets%>/01-junit.html',
           'cp -r <%=src%>/coverage/.css <%=assets%>',
@@ -27,7 +29,7 @@ module.exports = function(grunt) {
       clean: {
         command: 'rm -rf <%=assets%> <%=partials%>'
       },
-      removeGitRepository: {
+      removeRepository: {
         command: 'rm -rf bp.wiki'
       },
       pdfconcat: {
@@ -88,9 +90,10 @@ module.exports = function(grunt) {
   grunt.registerTask('pdfconcat', ['shell:pdfconcat']);
   grunt.registerTask('clean', ['shell:clean']);
   grunt.registerTask('open', ['shell:open']);
-  grunt.registerTask('removeGitRepository', ['shell:removeGitRepository']);
+  grunt.registerTask('removeRepository', ['shell:removeRepository']);
+  grunt.registerTask('cloneRepository', ['shell:cloneRepository']);
 
-  grunt.registerTask('default', ['clean', 'prepare', 'build', 'link', 'removeGitRepository']);
+  grunt.registerTask('default', ['clean', 'cloneRepository', 'prepare', 'build', 'link', 'removeRepository']);
   grunt.registerTask('build', []);
   grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'pdfconcat', 'shell:marry']);
   grunt.registerTask('all', ['default', 'clean', 'open']);
