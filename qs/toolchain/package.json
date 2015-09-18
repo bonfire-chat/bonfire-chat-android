@@ -14,5 +14,8 @@
     "grunt-markdown-pdf": "^3.0.0",
     "grunt-shell": "^1.1.2",
     "grunt-wkhtmltopdf": "^0.5.0"
+  },
+  "devDependencies": {
+    "grunt-latex": "^1.0.0"
   }
 }
