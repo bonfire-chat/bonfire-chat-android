@@ -36,7 +36,7 @@ Nachträgliche Anmerkung: Da C nur als Relaisstation gedient hat und niemand von
 Bei dem nächstem Test kann versucht werden, dass mehrere Handys zentral liegen. 
 	
 
-Test3: 
+Test 3: 
 -----------
 
 Da die Ergebnisse nicht unseren Erwartungen entsprachen beschlossen wir den Test hier abzubrechen. Der letzte Test unterliegt schwereren Bedingungen und bringt dadurch nur bei Erfolg von Test 1 oder 2 bessere Ergebnisse. 
