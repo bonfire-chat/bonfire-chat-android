@@ -9,19 +9,19 @@ module.exports = function(grunt) {
     dst: '../anhang/qs-anhang.pdf',
 
     shell: {
-      prepare: {
+      collect: {
         command: [
           'mkdir -p <%=assets%> <%=partials%>',
           'cp  <%=src%>/junit/bonfire-junit-report.html <%=assets%>/01-junit.html',
           'cp -r <%=src%>/coverage/.css <%=assets%>',
           'cp <%=src%>/coverage/index.html <%=assets%>/02-coverage.html',
-          'cp <%=src%>/documentation/Dokumentation.markdown <%=assets%>/03-documentation.markdown'
+          'cp <%=src%>/documentation/Dokumentation.markdown <%=assets%>/04-documentation.md'
         ].join('&&')
       },
       clean: {
         command: 'rm -rf <%=assets%> <%=partials%>'
       },
-      concat: {
+      pdfconcat: {
         command: [
           'gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=<%=dst%> <%=partials%>/*.pdf',
           'echo writing QS appendix PDF file to <%=dst%>'
@@ -32,20 +32,23 @@ module.exports = function(grunt) {
       }
     },
 
+    concat: {
+      reviews: {
+        src: ['<%=src%>/code-reviews/*.md'],
+        dest: '<%=assets%>/03-reviews.md'
+      }
+    },
+
     wkhtmltopdf: {
-      junit: {
-        src: '<%=assets%>/01-junit.html',
-        dest: '<%=partials%>/'
-      },
-      coverage: {
-        src: '<%=assets%>/02-coverage.html',
+      html: {
+        src: '<%=assets%>/*.html',
         dest: '<%=partials%>/'
       }
     },
 
     markdownpdf: {
-      documentation: {
-        src: '<%=assets%>/03-documentation.markdown',
+      md: {
+        src: '<%=assets%>/*.md',
         dest: '<%=partials%>/'
       }
     }
@@ -55,15 +58,16 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-markdown-pdf')
   grunt.loadNpmTasks('grunt-wkhtmltopdf');
   grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('prepare', ['shell:prepare']);
-  grunt.registerTask('concat', ['shell:concat']);
+  grunt.registerTask('prepare', ['concat:reviews', 'shell:collect']);
+  grunt.registerTask('pdfconcat', ['shell:pdfconcat']);
   grunt.registerTask('clean', ['shell:clean']);
   grunt.registerTask('open', ['shell:open']);
 
   grunt.registerTask('default', ['clean', 'prepare', 'build', 'link']);
   grunt.registerTask('build', []);
-  grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'concat']);
+  grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'pdfconcat']);
   grunt.registerTask('all', ['default', 'clean', 'open']);
 
 };
