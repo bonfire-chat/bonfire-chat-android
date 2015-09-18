@@ -1,0 +1,136 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DateHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.helper</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DateHelper (de.tudarmstadt.informatik.bp.bonfirechat.helper)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DateHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37,5%
+  </span>
+  <span class="absValue">
+    (3/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    17,6%
+  </span>
+  <span class="absValue">
+    (3/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.helper;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.text.ParseException;
+<i>4</i>&nbsp;import java.text.SimpleDateFormat;
+<i>5</i>&nbsp;import java.util.Date;
+<i>6</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;/**
+<i>9</i>&nbsp; * Created by mw on 22.05.15.
+<i>10</i>&nbsp; */
+<b class="nc"><i>11</i>&nbsp;public class DateHelper {</b>
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    public static String getNowString() {
+<b class="nc"><i>14</i>&nbsp;        return formatTime(new Date());</b>
+<i>15</i>&nbsp;    }
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    /**
+<i>18</i>&nbsp;     * Formats the passed date as a HH:mm time if on the current day, as dd.MM. otherwise
+<i>19</i>&nbsp;     * @param date
+<i>20</i>&nbsp;     * @return
+<i>21</i>&nbsp;     */
+<i>22</i>&nbsp;    public static String formatTimeOrDate(Date date) {
+<b class="nc"><i>23</i>&nbsp;        Date now = new Date();</b>
+<b class="nc"><i>24</i>&nbsp;        String formattedDate = formatDate(date);</b>
+<b class="nc"><i>25</i>&nbsp;        if (formatDate(now).equals(formattedDate)) return new SimpleDateFormat(&quot;HH:mm&quot;).format(date);</b>
+<b class="nc"><i>26</i>&nbsp;        else return formattedDate;</b>
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;    public static String formatTime(Date date) {
+<b class="fc"><i>29</i>&nbsp;        return new SimpleDateFormat(&quot;HH:mm:ss&quot;).format(date);</b>
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;    public static String formatDateTime(Date date) {
+<b class="fc"><i>32</i>&nbsp;        return new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;).format(date);</b>
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;    public static String formatDate(Date date) {
+<b class="nc"><i>35</i>&nbsp;        return new SimpleDateFormat(&quot;EEE dd.MM.yy&quot;).format(date);</b>
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;    public static Date parseDateTime(String string) throws ParseException {
+<b class="fc"><i>38</i>&nbsp;        return new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;).parse(string);</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public static String formatTimeDelta(Date start, Date end) {
+<i>42</i>&nbsp;        // start after end?
+<b class="nc"><i>43</i>&nbsp;        if (end.compareTo(start) &lt; 0) {</b>
+<b class="nc"><i>44</i>&nbsp;            Date tmp = start;</b>
+<b class="nc"><i>45</i>&nbsp;            start = end;</b>
+<b class="nc"><i>46</i>&nbsp;            end = tmp;</b>
+<i>47</i>&nbsp;        }
+<b class="nc"><i>48</i>&nbsp;        long interval = end.getTime() - start.getTime();</b>
+<b class="nc"><i>49</i>&nbsp;        long seconds = TimeUnit.SECONDS.convert(interval, TimeUnit.MILLISECONDS);</b>
+<b class="nc"><i>50</i>&nbsp;        return new StringBuilder().append(&quot;+ &quot;).append(seconds).append(&quot;s&quot;).toString();</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

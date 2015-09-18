@@ -1,0 +1,251 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ShareMyIdentityActivity</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ShareMyIdentityActivity (de.tudarmstadt.informatik.bp.bonfirechat.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ShareMyIdentityActivity</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 61)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.ui;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;/**
+<i>4</i>&nbsp; * Created by jonas on 16.06.15.
+<i>5</i>&nbsp; */
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import android.app.Activity;
+<i>8</i>&nbsp;import android.content.Intent;
+<i>9</i>&nbsp;import android.graphics.Bitmap;
+<i>10</i>&nbsp;import android.net.Uri;
+<i>11</i>&nbsp;import android.nfc.NdefMessage;
+<i>12</i>&nbsp;import android.nfc.NdefRecord;
+<i>13</i>&nbsp;import android.nfc.NfcAdapter;
+<i>14</i>&nbsp;import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+<i>15</i>&nbsp;import android.nfc.NfcEvent;
+<i>16</i>&nbsp;import android.os.Bundle;
+<i>17</i>&nbsp;import android.os.Parcelable;
+<i>18</i>&nbsp;import android.util.Log;
+<i>19</i>&nbsp;import android.view.Menu;
+<i>20</i>&nbsp;import android.view.MenuItem;
+<i>21</i>&nbsp;import android.view.View;
+<i>22</i>&nbsp;import android.widget.ImageView;
+<i>23</i>&nbsp;import android.widget.TextView;
+<i>24</i>&nbsp;import android.widget.Toast;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;import com.google.zxing.BarcodeFormat;
+<i>27</i>&nbsp;import com.google.zxing.WriterException;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.R;
+<i>30</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+<i>31</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
+<i>32</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
+<i>33</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
+<i>34</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRCodeEncoder;
+<i>35</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
+<i>36</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+<i>37</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
+<i>38</i>&nbsp;
+<b class="nc"><i>39</i>&nbsp;public class ShareMyIdentityActivity extends Activity implements CreateNdefMessageCallback {</b>
+<i>40</i>&nbsp;    NfcAdapter mNfcAdapter;
+<i>41</i>&nbsp;    TextView textView;
+<i>42</i>&nbsp;    BonfireData db;
+<i>43</i>&nbsp;    IPublicIdentity pubident;
+<i>44</i>&nbsp;    public static final String EXTRA_CONTACT_ID = &quot;ContactId&quot;;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    @Override
+<i>47</i>&nbsp;    public void onCreate(Bundle savedInstanceState) {
+<b class="nc"><i>48</i>&nbsp;        db = BonfireData.getInstance(this);</b>
+<b class="nc"><i>49</i>&nbsp;        pubident = db.getDefaultIdentity();</b>
+<b class="nc"><i>50</i>&nbsp;        super.onCreate(savedInstanceState);</b>
+<b class="nc"><i>51</i>&nbsp;        setContentView(R.layout.nfc_layout);</b>
+<b class="nc"><i>52</i>&nbsp;        getActionBar().setDisplayHomeAsUpEnabled(true);</b>
+<i>53</i>&nbsp;
+<b class="nc"><i>54</i>&nbsp;        ContactImageHelper.displayContactImage(pubident, (ImageView) findViewById(R.id.imageView2));</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;        // Check for available NFC Adapter
+<b class="nc"><i>57</i>&nbsp;        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);</b>
+<b class="nc"><i>58</i>&nbsp;        if (mNfcAdapter == null) {</b>
+<b class="nc"><i>59</i>&nbsp;            Toast.makeText(this, getString(R.string.nfc_is_not_available), Toast.LENGTH_LONG).show();</b>
+<b class="nc"><i>60</i>&nbsp;            ((TextView)findViewById(R.id.nfcNotice)).setVisibility(View.GONE);</b>
+<i>61</i>&nbsp;        } else {
+<i>62</i>&nbsp;            // Register callback
+<b class="nc"><i>63</i>&nbsp;            mNfcAdapter.setNdefPushMessageCallback(this, this);</b>
+<i>64</i>&nbsp;        }
+<i>65</i>&nbsp;
+<b class="nc"><i>66</i>&nbsp;        ((TextView)findViewById(R.id.txt_nickname)).setText(pubident.getNickname());</b>
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;        ImageView imageView = (ImageView) findViewById(R.id.qrCode);</b>
+<i>69</i>&nbsp;
+<b class="nc"><i>70</i>&nbsp;        int qrCodeDimension = 800;</b>
+<i>71</i>&nbsp;
+<b class="nc"><i>72</i>&nbsp;        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(QRcodeHelper.getIdentityURL(pubident), null,</b>
+<i>73</i>&nbsp;                &quot;TEXT_TYPE&quot;, BarcodeFormat.QR_CODE.toString(), qrCodeDimension);
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;        try {
+<b class="nc"><i>76</i>&nbsp;            Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();</b>
+<b class="nc"><i>77</i>&nbsp;            imageView.setImageBitmap(bitmap);</b>
+<b class="nc"><i>78</i>&nbsp;        } catch (WriterException e) {</b>
+<b class="nc"><i>79</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>80</i>&nbsp;        }</b>
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    @Override
+<i>84</i>&nbsp;    public NdefMessage createNdefMessage(NfcEvent event) {
+<b class="nc"><i>85</i>&nbsp;        String url = QRcodeHelper.getIdentityURL(pubident);</b>
+<b class="nc"><i>86</i>&nbsp;        NdefMessage msg = new NdefMessage(</b>
+<i>87</i>&nbsp;                new NdefRecord[] { NdefRecord.createMime(
+<i>88</i>&nbsp;                        &quot;application/de.tudarmstadt.informatik.bp.bonfirechat&quot;, url.getBytes())
+<i>89</i>&nbsp;                        ,NdefRecord.createApplicationRecord(&quot;de.tudarmstadt.informatik.bp.bonfirechat&quot;)
+<i>90</i>&nbsp;                });
+<b class="nc"><i>91</i>&nbsp;        return msg;</b>
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    @Override
+<i>95</i>&nbsp;    public void onResume() {
+<b class="nc"><i>96</i>&nbsp;        super.onResume();</b>
+<i>97</i>&nbsp;        // Check to see that the Activity started due to an Android Beam
+<b class="nc"><i>98</i>&nbsp;        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {</b>
+<b class="nc"><i>99</i>&nbsp;            processIntent(getIntent());</b>
+<i>100</i>&nbsp;        }
+<b class="nc"><i>101</i>&nbsp;    }</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    public void onNewIntent(Intent intent) {
+<i>105</i>&nbsp;        // onResume gets called after this to handle the intent
+<b class="nc"><i>106</i>&nbsp;        setIntent(intent);</b>
+<b class="nc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    void processIntent(Intent intent) {
+<b class="nc"><i>110</i>&nbsp;        textView = (TextView) findViewById(R.id.action_scan_nfc);</b>
+<b class="nc"><i>111</i>&nbsp;        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(</b>
+<i>112</i>&nbsp;                NfcAdapter.EXTRA_NDEF_MESSAGES);
+<i>113</i>&nbsp;        // only one message sent during the beam
+<b class="nc"><i>114</i>&nbsp;        NdefMessage msg = (NdefMessage) rawMsgs[0];</b>
+<i>115</i>&nbsp;        // record 0 contains the MIME type, record 1 is the AAR, if present
+<b class="nc"><i>116</i>&nbsp;        Log.d(&quot;TEST&quot;, new String(msg.getRecords()[0].getPayload()));</b>
+<b class="nc"><i>117</i>&nbsp;        Contact contact = contactFromUri(Uri.parse(new String(msg.getRecords()[0].getPayload())));</b>
+<b class="nc"><i>118</i>&nbsp;        Contact dbContact = db.getContactByPublicKey(contact.getPublicKey().asBase64());</b>
+<b class="nc"><i>119</i>&nbsp;        if(dbContact == null) {</b>
+<b class="nc"><i>120</i>&nbsp;            db.createContact(contact);</b>
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;        else {
+<b class="nc"><i>123</i>&nbsp;            contact = dbContact;</b>
+<i>124</i>&nbsp;        }
+<b class="nc"><i>125</i>&nbsp;        Intent intent1 = new Intent(this, ContactDetailsActivity.class);</b>
+<b class="nc"><i>126</i>&nbsp;        intent1.putExtra(EXTRA_CONTACT_ID, contact.rowid);</b>
+<b class="nc"><i>127</i>&nbsp;        startActivity(intent1);</b>
+<b class="nc"><i>128</i>&nbsp;        finish();</b>
+<b class="nc"><i>129</i>&nbsp;    }</b>
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public static Contact contactFromUri(Uri url) {
+<b class="nc"><i>132</i>&nbsp;        Contact contact = new Contact(</b>
+<i>133</i>&nbsp;                url.getQueryParameter(&quot;name&quot;), &quot;&quot;, &quot;&quot;, url.getQueryParameter(&quot;tel&quot;),
+<i>134</i>&nbsp;                url.getQueryParameter(&quot;key&quot;), &quot;&quot;, &quot;&quot;, 0);
+<b class="nc"><i>135</i>&nbsp;        return contact;</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    @Override
+<i>140</i>&nbsp;    public boolean onCreateOptionsMenu(Menu menu) {
+<b class="nc"><i>141</i>&nbsp;        getMenuInflater().inflate(R.menu.menu_sharemyidentity, menu);</b>
+<b class="nc"><i>142</i>&nbsp;        return true;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    @Override
+<i>146</i>&nbsp;    public boolean onOptionsItemSelected(MenuItem item) {
+<b class="nc"><i>147</i>&nbsp;        if (item.getItemId() == R.id.action_scan_qr) {</b>
+<b class="nc"><i>148</i>&nbsp;            IntentIntegrator inte = new IntentIntegrator(this);</b>
+<b class="nc"><i>149</i>&nbsp;            inte.initiateScan();</b>
+<i>150</i>&nbsp;        }
+<b class="nc"><i>151</i>&nbsp;        return super.onOptionsItemSelected(item);</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    /**
+<i>155</i>&nbsp;     * handle results from qr code scanning
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    @Override
+<i>158</i>&nbsp;    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+<b class="nc"><i>159</i>&nbsp;        super.onActivityResult(requestCode, resultCode, data);</b>
+<b class="nc"><i>160</i>&nbsp;        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);</b>
+<b class="nc"><i>161</i>&nbsp;        if (result != null &amp;&amp; result.getContents() != null) {</b>
+<b class="nc"><i>162</i>&nbsp;            Intent ii = new Intent(this, ContactDetailsActivity.class);</b>
+<b class="nc"><i>163</i>&nbsp;            ii.setAction(Intent.ACTION_VIEW);</b>
+<b class="nc"><i>164</i>&nbsp;            ii.setData(Uri.parse(result.getContents()));</b>
+<b class="nc"><i>165</i>&nbsp;            startActivity(ii);</b>
+<i>166</i>&nbsp;        }
+<b class="nc"><i>167</i>&nbsp;    }</b>
+<i>168</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

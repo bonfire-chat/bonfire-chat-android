@@ -1,0 +1,750 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ConnectionManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.network</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ConnectionManager (de.tudarmstadt.informatik.bp.bonfirechat.network)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ConnectionManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 146)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ConnectionManager$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ConnectionManager$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ConnectionManager$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 84)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ConnectionManager$4</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 262)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.network;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.app.NotificationManager;
+<i>4</i>&nbsp;import android.app.PendingIntent;
+<i>5</i>&nbsp;import android.app.TaskStackBuilder;
+<i>6</i>&nbsp;import android.content.Context;
+<i>7</i>&nbsp;import android.content.Intent;
+<i>8</i>&nbsp;import android.content.SharedPreferences;
+<i>9</i>&nbsp;import android.graphics.BitmapFactory;
+<i>10</i>&nbsp;import android.net.Uri;
+<i>11</i>&nbsp;import android.os.Bundle;
+<i>12</i>&nbsp;import android.os.Handler;
+<i>13</i>&nbsp;import android.preference.PreferenceManager;
+<i>14</i>&nbsp;import android.support.v4.app.NotificationCompat;
+<i>15</i>&nbsp;import android.support.v4.content.LocalBroadcastManager;
+<i>16</i>&nbsp;import android.util.Log;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;import com.google.android.gms.gcm.GoogleCloudMessaging;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;import org.jivesoftware.smack.SmackAndroid;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>23</i>&nbsp;import java.util.ArrayList;
+<i>24</i>&nbsp;import java.util.Date;
+<i>25</i>&nbsp;import java.util.Iterator;
+<i>26</i>&nbsp;import java.util.List;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.R;
+<i>29</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
+<i>30</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+<i>31</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+<i>32</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.RingBuffer;
+<i>33</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+<i>34</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+<i>35</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
+<i>36</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+<i>37</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+<i>38</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
+<i>39</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
+<i>40</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.LocationUdpPacket;
+<i>41</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+<i>42</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
+<i>43</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket;
+<i>44</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission;
+<i>45</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager;
+<i>46</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
+<i>47</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteProgressSegment;
+<i>48</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
+<i>49</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
+<i>50</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
+<i>51</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;/**
+<i>54</i>&nbsp; * Created by mw on 21.05.15.
+<i>55</i>&nbsp; *
+<i>56</i>&nbsp; */
+<i>57</i>&nbsp;public class ConnectionManager extends NonStopIntentService {
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private static final String TAG = &quot;ConnectionManager&quot;;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    // action intents which are sent to the service
+<i>62</i>&nbsp;    public static final String GO_ONLINE_ACTION = &quot;de.tudarmstadt.informatik.bp.bonfirechat.GO_ONLINE&quot;;
+<i>63</i>&nbsp;    public static final String SENDMESSAGE_ACTION = &quot;de.tudarmstadt.informatik.bp.bonfirechat.SENDMESSAGE&quot;;
+<i>64</i>&nbsp;    public static final String CONTINUE_BLUETOOTH_STARTUP_ACTION = &quot;de.tudarmstadt.informatik.bp.bonfirechat.CONTINUE_BLUETOOTH_STARTUP&quot;;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    // event intents which are broadcasted by the service
+<i>67</i>&nbsp;    public static final String MSG_SENT_BROADCAST_EVENT =
+<i>68</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.MSG_SENT_BROADCAST&quot;;
+<i>69</i>&nbsp;    public static final String MSG_ACKED_BROADCAST_EVENT =
+<i>70</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.MSG_ACKED_BROADCAST&quot;;
+<i>71</i>&nbsp;    public static final String NEW_CONVERSATION_BROADCAST_EVENT =
+<i>72</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.NEW_CONVERSATION_BROADCAST&quot;;
+<i>73</i>&nbsp;    public static final String CONTACT_LOCATION_UPDATED_BROADCAST_EVENT =
+<i>74</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.CONTACT_LOCATION_UPDATED_BROADCAST_EVENT&quot;;
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    // data in event intents broadcasted by the service
+<i>77</i>&nbsp;    public static final String MSG_RECEIVED_BROADCAST_EVENT =
+<i>78</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.MSG_RECEIVED_BROADCAST&quot;;
+<i>79</i>&nbsp;    public static final String EXTENDED_DATA_CONVERSATION_ID =
+<i>80</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.CONVERSATION_ID&quot;;
+<i>81</i>&nbsp;    public static final String EXTENDED_DATA_PROTOCOL_CLASS =
+<i>82</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.PROTOCOL_CLASS&quot;;
+<i>83</i>&nbsp;    public static final String EXTENDED_DATA_MESSAGE_TEXT =
+<i>84</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_TEXT&quot;;
+<i>85</i>&nbsp;    public static final String EXTENDED_DATA_MESSAGE_UUID =
+<i>86</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.MESSAGE_UUID&quot;;
+<i>87</i>&nbsp;    public static final String EXTENDED_DATA_CONTACT_ID =
+<i>88</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.CONTACT_ID&quot;;
+<i>89</i>&nbsp;    public static final String EXTENDED_DATA_ERROR =
+<i>90</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.ERROR&quot;;
+<i>91</i>&nbsp;    public static final String EXTENDED_DATA_RETRANSMISSION_COUNT =
+<i>92</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.RETRANSMISSION_COUNT&quot;;
+<i>93</i>&nbsp;    public static final String EXTENDED_DATA_TRACEROUTE =
+<i>94</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.TRACEROUTE&quot;;
+<i>95</i>&nbsp;    public static final String EXTENDED_DATA_ROUTING_TYPE =
+<i>96</i>&nbsp;            &quot;de.tudarmstadt.informatik.bp.bonfirechat.ROUTING_TYPE&quot;;
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    // buffer for storing which messages have already been handled
+<i>100</i>&nbsp;    // Those were either already sent in the first place, or received
+<b class="nc"><i>101</i>&nbsp;    private static final RingBuffer&lt;Packet&gt; processedPackets = new RingBuffer&lt;&gt;(250);</b>
+<i>102</i>&nbsp;
+<b class="nc"><i>103</i>&nbsp;    public static final RoutingManager routingManager = new RoutingManager();</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    // currently visible peers
+<b class="nc"><i>106</i>&nbsp;    public static final List&lt;Peer&gt; peers = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>107</i>&nbsp;    private static Handler handler = new Handler();</b>
+<i>108</i>&nbsp;
+<b class="nc"><i>109</i>&nbsp;    public static final Class[] registeredProtocols = new Class[]{</b>
+<i>110</i>&nbsp;            BluetoothProtocol.class,
+<i>111</i>&nbsp;            WifiProtocol.class,
+<i>112</i>&nbsp;            GcmProtocol.class };
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /**
+<i>116</i>&nbsp;     * Creates the ConnectionManager, called by Android creating the service
+<i>117</i>&nbsp;     */
+<i>118</i>&nbsp;    public ConnectionManager() {
+<b class="nc"><i>119</i>&nbsp;        super(&quot;BonFire_ConnectionManager&quot;);</b>
+<b class="nc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    @Override
+<i>123</i>&nbsp;    public void onCreate() {
+<b class="nc"><i>124</i>&nbsp;        super.onCreate();</b>
+<b class="nc"><i>125</i>&nbsp;        SmackAndroid.init(this);</b>
+<b class="nc"><i>126</i>&nbsp;        removeOutdatedPeersThread.run();</b>
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<b class="nc"><i>129</i>&nbsp;    public static List&lt;IProtocol&gt; connections = new ArrayList&lt;IProtocol&gt;();</b>
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public IProtocol getOrCreateConnection(Class typ) {
+<b class="nc"><i>132</i>&nbsp;        IProtocol p = getConnection(typ);</b>
+<b class="nc"><i>133</i>&nbsp;        if (p == null) {</b>
+<i>134</i>&nbsp;            try {
+<b class="nc"><i>135</i>&nbsp;                p = (IProtocol) typ.getDeclaredConstructor(Context.class).newInstance(ConnectionManager.this);</b>
+<b class="nc"><i>136</i>&nbsp;                p.setIdentity(BonfireData.getInstance(this).getDefaultIdentity());</b>
+<b class="nc"><i>137</i>&nbsp;                p.setOnPacketReceivedListener(packetListener);</b>
+<b class="nc"><i>138</i>&nbsp;                p.setOnPeerDiscoveredListener(peerListener);</b>
+<b class="nc"><i>139</i>&nbsp;            } catch (InstantiationException e) {</b>
+<b class="nc"><i>140</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>141</i>&nbsp;            } catch (IllegalAccessException e) {</b>
+<b class="nc"><i>142</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>143</i>&nbsp;            } catch (NoSuchMethodException e) {</b>
+<b class="nc"><i>144</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>145</i>&nbsp;            } catch (InvocationTargetException e) {</b>
+<b class="nc"><i>146</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>147</i>&nbsp;            }</b>
+<b class="nc"><i>148</i>&nbsp;            connections.add(p);</b>
+<b class="nc"><i>149</i>&nbsp;            Log.d(TAG, &quot;Die aktivierten connections sind: &quot; + connections.toString());</b>
+<i>150</i>&nbsp;        }
+<b class="nc"><i>151</i>&nbsp;        return p;</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    private IProtocol getConnection(Class typ) {
+<b class="nc"><i>155</i>&nbsp;        for(IProtocol p : connections) {</b>
+<b class="nc"><i>156</i>&nbsp;            if (typ.isInstance(p)) return p;</b>
+<b class="nc"><i>157</i>&nbsp;        }</b>
+<b class="nc"><i>158</i>&nbsp;        return null;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    private void closeConnection(Class typ) {
+<b class="nc"><i>162</i>&nbsp;        synchronized (connections) {</b>
+<b class="nc"><i>163</i>&nbsp;            Iterator&lt;IProtocol&gt; iter = connections.iterator();</b>
+<b class="nc"><i>164</i>&nbsp;            while (iter.hasNext()) {</b>
+<b class="nc"><i>165</i>&nbsp;                IProtocol p = iter.next();</b>
+<b class="nc"><i>166</i>&nbsp;                if (typ.isInstance(p)) {</b>
+<b class="nc"><i>167</i>&nbsp;                    iter.remove();</b>
+<b class="nc"><i>168</i>&nbsp;                    p.shutdown();</b>
+<i>169</i>&nbsp;                }
+<b class="nc"><i>170</i>&nbsp;            }</b>
+<b class="nc"><i>171</i>&nbsp;        }</b>
+<b class="nc"><i>172</i>&nbsp;        synchronized (peers) {</b>
+<b class="nc"><i>173</i>&nbsp;            Iterator&lt;Peer&gt; iter = peers.iterator();</b>
+<b class="nc"><i>174</i>&nbsp;            while (iter.hasNext()) {</b>
+<b class="nc"><i>175</i>&nbsp;                if (iter.next().getProtocolClass().equals(typ))</b>
+<b class="nc"><i>176</i>&nbsp;                    iter.remove();</b>
+<i>177</i>&nbsp;            }
+<b class="nc"><i>178</i>&nbsp;        }</b>
+<b class="nc"><i>179</i>&nbsp;    }</b>
+<i>180</i>&nbsp;
+<b class="nc"><i>181</i>&nbsp;    private OnPeerDiscoveredListener peerListener = new OnPeerDiscoveredListener() {</b>
+<i>182</i>&nbsp;        @Override
+<i>183</i>&nbsp;        public void discoveredPeer(IProtocol sender, byte[] address, String debugInfo) {
+<b class="nc"><i>184</i>&nbsp;            Peer found = new Peer(sender.getClass(), address, debugInfo);</b>
+<b class="nc"><i>185</i>&nbsp;            Log.d(TAG, &quot;Peer was discovered by &quot;+sender.toString()+&quot; : &quot;+Peer.formatMacAddress(address) + &quot;   &quot; + debugInfo);</b>
+<b class="nc"><i>186</i>&nbsp;            synchronized (peers) {</b>
+<b class="nc"><i>187</i>&nbsp;                int index = peers.indexOf(found);</b>
+<i>188</i>&nbsp;                // is this peer already known to us?
+<b class="nc"><i>189</i>&nbsp;                if (index != -1) {</b>
+<b class="nc"><i>190</i>&nbsp;                    peers.get(index).updateLastSeen(sender.getClass());</b>
+<i>191</i>&nbsp;                }
+<i>192</i>&nbsp;                // otherwise add it
+<i>193</i>&nbsp;                else {
+<b class="nc"><i>194</i>&nbsp;                    peers.add(found);</b>
+<i>195</i>&nbsp;                }
+<b class="nc"><i>196</i>&nbsp;            }</b>
+<b class="nc"><i>197</i>&nbsp;        }</b>
+<i>198</i>&nbsp;    };
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;    private Runnable removeOutdatedPeersThread = new Runnable() {</b>
+<i>201</i>&nbsp;        @Override
+<i>202</i>&nbsp;        public void run() {
+<b class="nc"><i>203</i>&nbsp;            synchronized (peers) {</b>
+<b class="nc"><i>204</i>&nbsp;                Iterator&lt;Peer&gt; iter = peers.iterator();</b>
+<b class="nc"><i>205</i>&nbsp;                while (iter.hasNext()) {</b>
+<b class="nc"><i>206</i>&nbsp;                    if (iter.next().isOutdated()) {</b>
+<b class="nc"><i>207</i>&nbsp;                        iter.remove();</b>
+<i>208</i>&nbsp;                    }
+<i>209</i>&nbsp;                }
+<b class="nc"><i>210</i>&nbsp;            }</b>
+<b class="nc"><i>211</i>&nbsp;            handler.postDelayed(removeOutdatedPeersThread, 1000 * 60 * 5); // every 5 minutes</b>
+<b class="nc"><i>212</i>&nbsp;        }</b>
+<i>213</i>&nbsp;    };
+<i>214</i>&nbsp;
+<b class="nc"><i>215</i>&nbsp;    private OnPacketReceivedListener packetListener = new OnPacketReceivedListener() {</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        @Override
+<i>218</i>&nbsp;        public void onPacketReceived(IProtocol sender, Packet packet) {
+<b class="nc"><i>219</i>&nbsp;            Identity thisIdentity = BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity();</b>
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;            // Traceroute...
+<i>222</i>&nbsp;            // TODO ~mw  : should be conditional, only if we have the users consent
+<b class="nc"><i>223</i>&nbsp;            String thisHopName = thisIdentity.getNickname();</b>
+<b class="nc"><i>224</i>&nbsp;            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet) ? &quot;RIGN&quot; : &quot;RECV&quot;, null, packet, packet.nextHopNickname, thisHopName);</b>
+<i>225</i>&nbsp;
+<b class="nc"><i>226</i>&nbsp;            Log.d(TAG, &quot;onPacketReceived: &quot; + sender.getClass().getSimpleName() + &quot;, &quot; + packet.toString());</b>
+<i>227</i>&nbsp;            // has this packet not yet been processed?
+<b class="nc"><i>228</i>&nbsp;            if (!processedPackets.contains(packet)) {</b>
+<i>229</i>&nbsp;                // remember this packet
+<b class="nc"><i>230</i>&nbsp;                processedPackets.enqueue(packet);</b>
+<i>231</i>&nbsp;                // remember path to sender
+<b class="nc"><i>232</i>&nbsp;                routingManager.registerPath(packet);</b>
+<i>233</i>&nbsp;                // if it is a payload packet, add traceroute segment for this node, segment for hop was already added by the receiving protocol
+<b class="nc"><i>234</i>&nbsp;                if (packet.getType() == PacketType.Payload) {</b>
+<b class="nc"><i>235</i>&nbsp;                    packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity().getNickname()));</b>
+<i>236</i>&nbsp;                }
+<i>237</i>&nbsp;                // is this packet sent to us?
+<b class="nc"><i>238</i>&nbsp;                if (packet.hasRecipient(thisIdentity)) {</b>
+<b class="nc"><i>239</i>&nbsp;                    Log.d(TAG, &quot;this packet is for us. &quot;);</b>
+<i>240</i>&nbsp;                    // is it  a payload packet?
+<b class="nc"><i>241</i>&nbsp;                    if (packet.getType() == PacketType.Payload) {</b>
+<b class="nc"><i>242</i>&nbsp;                        handlePayloadPacket((PayloadPacket) packet, sender);</b>
+<i>243</i>&nbsp;                    }
+<i>244</i>&nbsp;                    // is it an ACK packet?
+<b class="nc"><i>245</i>&nbsp;                    else if (packet.getType() == PacketType.Ack) {</b>
+<b class="nc"><i>246</i>&nbsp;                        handleAckPacket((AckPacket) packet, sender);</b>
+<i>247</i>&nbsp;                    }
+<i>248</i>&nbsp;                    // is it a UDP location broadcast?
+<b class="nc"><i>249</i>&nbsp;                    else if (packet.getType() == PacketType.LocationUdp) {</b>
+<b class="nc"><i>250</i>&nbsp;                        handleLocationUdpPacket((LocationUdpPacket) packet, sender);</b>
+<i>251</i>&nbsp;                    }
+<i>252</i>&nbsp;                    // otherwise it&#39;s an unknown packet type
+<i>253</i>&nbsp;                    else {
+<i>254</i>&nbsp;                        // TODO: team: evaluate: throw Exception instead?
+<b class="nc"><i>255</i>&nbsp;                        Log.e(TAG, &quot;received packet of unknown type&quot;);</b>
+<i>256</i>&nbsp;                    }
+<i>257</i>&nbsp;                } else {
+<b class="nc"><i>258</i>&nbsp;                    forwardPacket(packet);</b>
+<i>259</i>&nbsp;                }
+<i>260</i>&nbsp;            }
+<b class="nc"><i>261</i>&nbsp;        }</b>
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;        private void handlePayloadPacket(PayloadPacket packet, IProtocol sender) {
+<i>264</i>&nbsp;            // turn it into an Envelope, as those are the only supported PayloadPackets
+<b class="nc"><i>265</i>&nbsp;            Envelope envelope = (Envelope) packet;</b>
+<b class="nc"><i>266</i>&nbsp;            Log.i(TAG, &quot;handling PayloadPacket&quot;);</b>
+<i>267</i>&nbsp;            // traceroute stuff
+<b class="nc"><i>268</i>&nbsp;            TracerouteHandler.handleTraceroute(ConnectionManager.this, sender, &quot;Recv&quot;, envelope);</b>
+<b class="nc"><i>269</i>&nbsp;            BonfireAPI.publishTraceroute(envelope);</b>
+<i>270</i>&nbsp;            // unpack the Envelope to a Message and handle it
+<b class="nc"><i>271</i>&nbsp;            final Message message = envelope.toMessage(ConnectionManager.this);</b>
+<b class="nc"><i>272</i>&nbsp;            message.setTransferProtocol(sender.getClass());</b>
+<i>273</i>&nbsp;            // TODO if message is already in database, do not display push notification again
+<b class="nc"><i>274</i>&nbsp;            storeAndDisplayMessage(message);</b>
+<i>275</i>&nbsp;            // send ACK
+<b class="nc"><i>276</i>&nbsp;            acknowledgePacket(envelope);</b>
+<i>277</i>&nbsp;            // update statistics
+<b class="nc"><i>278</i>&nbsp;            CurrentStats.getInstance().messageReceived += 1;</b>
+<b class="nc"><i>279</i>&nbsp;        }</b>
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;        private void handleAckPacket (AckPacket packet, IProtocol sender) {
+<i>282</i>&nbsp;            // cancel the pending retransmission for this packet
+<b class="nc"><i>283</i>&nbsp;            Retransmission.cancel(packet.acknowledgesUUID);</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;            // mark message as acked in database
+<b class="nc"><i>286</i>&nbsp;            BonfireData db = BonfireData.getInstance(ConnectionManager.this);</b>
+<b class="nc"><i>287</i>&nbsp;            Message message = db.getMessageByUUID(packet.acknowledgesUUID);</b>
+<b class="nc"><i>288</i>&nbsp;            message.flags |= Message.FLAG_ACKNOWLEDGED;</b>
+<i>289</i>&nbsp;            // Traceroute aktualisieren
+<b class="nc"><i>290</i>&nbsp;            message.traceroute = packet.getTraceroute();</b>
+<i>291</i>&nbsp;            // Protokoll(e) anzeigen
+<i>292</i>&nbsp;            // TODO wenn mehrere Protokolle verwendet, evtl mehrere Icons?
+<b class="nc"><i>293</i>&nbsp;            message.setTransferProtocol(sender.getClass());</b>
+<b class="nc"><i>294</i>&nbsp;            message.error = null;</b>
+<b class="nc"><i>295</i>&nbsp;            db.updateMessage(message);</b>
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;            // notify the ui that the recipient has acknowledged this message
+<b class="nc"><i>298</i>&nbsp;            final Intent localIntent = new Intent(MSG_ACKED_BROADCAST_EVENT)</b>
+<i>299</i>&nbsp;                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.acknowledgesUUID)
+<i>300</i>&nbsp;                    .putExtra(EXTENDED_DATA_PROTOCOL_CLASS, sender.getClass())
+<i>301</i>&nbsp;                    .putExtra(EXTENDED_DATA_TRACEROUTE, (ArrayList&lt;TracerouteSegment&gt;) packet.getTraceroute());
+<i>302</i>&nbsp;
+<b class="nc"><i>303</i>&nbsp;            LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);</b>
+<b class="nc"><i>304</i>&nbsp;        }</b>
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;        private void handleLocationUdpPacket(LocationUdpPacket packet, IProtocol sender) {
+<b class="nc"><i>307</i>&nbsp;            BonfireData db = BonfireData.getInstance(ConnectionManager.this);</b>
+<b class="nc"><i>308</i>&nbsp;            Contact contact = db.getContactByPublicKey(packet.senderPublicKey);</b>
+<i>309</i>&nbsp;            // do we know this contact? has he at least sent us one regular message?
+<b class="nc"><i>310</i>&nbsp;            if (contact != null) {</b>
+<b class="nc"><i>311</i>&nbsp;                Log.i(TAG, &quot;received location broadcast: &quot; + contact.getNickname() + &quot; claims to be at &quot; + contact.getLastKnownLocation());</b>
+<i>312</i>&nbsp;                // update known location
+<b class="nc"><i>313</i>&nbsp;                contact.setLastKnownLocation(packet.getLocation(db.getDefaultIdentity()));</b>
+<i>314</i>&nbsp;                // save contact
+<b class="nc"><i>315</i>&nbsp;                db.updateContact(contact);</b>
+<i>316</i>&nbsp;                // notify UI
+<b class="nc"><i>317</i>&nbsp;                final Intent localIntent = new Intent(CONTACT_LOCATION_UPDATED_BROADCAST_EVENT)</b>
+<i>318</i>&nbsp;                        .putExtra(EXTENDED_DATA_CONTACT_ID, contact.rowid);
+<b class="nc"><i>319</i>&nbsp;                LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);</b>
+<i>320</i>&nbsp;            }
+<b class="nc"><i>321</i>&nbsp;        }</b>
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;        private void forwardPacket(Packet packet) {
+<i>324</i>&nbsp;            // if the packet packets TTL is not exceeded, forward it
+<b class="nc"><i>325</i>&nbsp;            if (packet.ttl -- &gt; 0) {</b>
+<b class="nc"><i>326</i>&nbsp;                sendPacket(ConnectionManager.this, packet);</b>
+<i>327</i>&nbsp;            }
+<b class="nc"><i>328</i>&nbsp;        }</b>
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;        private void storeAndDisplayMessage(Message message) {
+<b class="nc"><i>331</i>&nbsp;            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(ConnectionManager.this);</b>
+<b class="nc"><i>332</i>&nbsp;            Log.d(TAG, &quot;display message: &quot; + message.body);</b>
+<b class="nc"><i>333</i>&nbsp;            BonfireData data = BonfireData.getInstance(ConnectionManager.this);</b>
+<b class="nc"><i>334</i>&nbsp;            Conversation conversation = data.getConversationByPeer((Contact) message.sender);</b>
+<b class="nc"><i>335</i>&nbsp;            if (conversation == null) {</b>
+<b class="nc"><i>336</i>&nbsp;                Log.d(TAG, &quot;creating new conversation for peer &quot;+message.sender.getNickname());</b>
+<b class="nc"><i>337</i>&nbsp;                conversation = new Conversation((Contact) message.sender, message.sender.getNickname(), 0);</b>
+<b class="nc"><i>338</i>&nbsp;                data.createConversation(conversation);</b>
+<i>339</i>&nbsp;
+<b class="nc"><i>340</i>&nbsp;                final Intent localIntent = new Intent(NEW_CONVERSATION_BROADCAST_EVENT)</b>
+<i>341</i>&nbsp;                        // Puts the status into the Intent
+<i>342</i>&nbsp;                        .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid);
+<b class="nc"><i>343</i>&nbsp;                broadcastManager.sendBroadcast(localIntent);</b>
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;            }
+<b class="nc"><i>346</i>&nbsp;            Log.d(TAG, &quot;conversationId=&quot; + conversation.rowid);</b>
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;            long id = data.createMessage(message, conversation);</b>
+<b class="nc"><i>349</i>&nbsp;            if (id == -1) {</b>
+<b class="nc"><i>350</i>&nbsp;                Log.e(TAG, &quot;Unable to insert message to db, ignoring&quot;);</b>
+<b class="nc"><i>351</i>&nbsp;                return;</b>
+<i>352</i>&nbsp;            }
+<b class="nc"><i>353</i>&nbsp;            Log.d(TAG, &quot;message stored in db with uuid=&quot; + message.uuid);</b>
+<i>354</i>&nbsp;
+<b class="nc"><i>355</i>&nbsp;            final Intent localIntent = new Intent(MSG_RECEIVED_BROADCAST_EVENT)</b>
+<i>356</i>&nbsp;                    .putExtra(EXTENDED_DATA_CONVERSATION_ID, conversation.rowid)
+<i>357</i>&nbsp;                    .putExtra(EXTENDED_DATA_MESSAGE_UUID, message.uuid)
+<i>358</i>&nbsp;                    .putExtra(EXTENDED_DATA_MESSAGE_TEXT, message.body);
+<i>359</i>&nbsp;            // Broadcasts the Intent to receivers in this app.
+<b class="nc"><i>360</i>&nbsp;            broadcastManager.sendBroadcast(localIntent);</b>
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;
+<b class="nc"><i>363</i>&nbsp;            if(MessagesActivity.currentConversation == -1) {</b>
+<b class="nc"><i>364</i>&nbsp;                final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);</b>
+<b class="nc"><i>365</i>&nbsp;                intent.putExtra(&quot;ConversationId&quot;, conversation.rowid);</b>
+<b class="nc"><i>366</i>&nbsp;                final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);</b>
+<b class="nc"><i>367</i>&nbsp;                stackBuilder.addParentStack(MessagesActivity.class);</b>
+<b class="nc"><i>368</i>&nbsp;                stackBuilder.addNextIntent(intent);</b>
+<b class="nc"><i>369</i>&nbsp;                final PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);</b>
+<b class="nc"><i>370</i>&nbsp;                final Uri sound = Uri.parse(&quot;android.resource://&quot; + getPackageName() + &quot;/&quot; + R.raw.correct);</b>
+<b class="nc"><i>371</i>&nbsp;                final NotificationCompat.Builder mBuilder =</b>
+<i>372</i>&nbsp;                        new NotificationCompat.Builder(ConnectionManager.this)
+<i>373</i>&nbsp;                                .setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+<i>374</i>&nbsp;                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+<i>375</i>&nbsp;                                .setContentTitle(conversation.title)
+<i>376</i>&nbsp;                                .setContentText(message.getDisplayBody(ConnectionManager.this))
+<i>377</i>&nbsp;                                .setContentIntent(pi)
+<i>378</i>&nbsp;                                .setSound(sound)
+<i>379</i>&nbsp;                                .setAutoCancel(true)
+<i>380</i>&nbsp;                                .setVibrate(new long[]{500, 500, 150, 150, 150, 150, 300, 300, 300, 0});
+<i>381</i>&nbsp;
+<b class="nc"><i>382</i>&nbsp;                final NotificationManager mNotifyMgr =</b>
+<i>383</i>&nbsp;                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+<b class="nc"><i>384</i>&nbsp;                mNotifyMgr.notify((int) conversation.rowid, mBuilder.build());</b>
+<i>385</i>&nbsp;            }
+<b class="nc"><i>386</i>&nbsp;        }</b>
+<i>387</i>&nbsp;    };
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;    @Override
+<i>390</i>&nbsp;    protected void onHandleIntent(Intent intent) {
+<b class="nc"><i>391</i>&nbsp;        Log.d(TAG, &quot;ConnectionManager called with intent : &quot;+intent.getAction());</b>
+<b class="nc"><i>392</i>&nbsp;        final Bundle extras = intent.getExtras();</b>
+<b class="nc"><i>393</i>&nbsp;        final BonfireData db = BonfireData.getInstance(this);</b>
+<b class="nc"><i>394</i>&nbsp;        if (intent.getAction() == GO_ONLINE_ACTION) {</b>
+<i>395</i>&nbsp;
+<b class="nc"><i>396</i>&nbsp;            for(Class protocol : registeredProtocols) {</b>
+<b class="nc"><i>397</i>&nbsp;                if (isProtocolEnabled(protocol)) {</b>
+<b class="nc"><i>398</i>&nbsp;                    getOrCreateConnection(protocol);</b>
+<i>399</i>&nbsp;                } else {
+<b class="nc"><i>400</i>&nbsp;                    closeConnection(protocol);</b>
+<i>401</i>&nbsp;                }
+<i>402</i>&nbsp;            }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;            // Only do this on app start, but not after changing &#39;protocol enabled&#39; checkboxes in settings
+<b class="nc"><i>405</i>&nbsp;            if (intent.hasExtra(&quot;appStart&quot;)) {</b>
+<b class="nc"><i>406</i>&nbsp;                final Identity id = db.getDefaultIdentity();</b>
+<b class="nc"><i>407</i>&nbsp;                id.registerWithServer();</b>
+<b class="nc"><i>408</i>&nbsp;                db.updateIdentity(id);</b>
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;                // resend pending messages in database
+<i>411</i>&nbsp;                // TODO: jl: evaluate if this is too early (e.g. Bluetooth not granted yet?)
+<b class="nc"><i>412</i>&nbsp;                new ResendOldMessagesTask(this).start();</b>
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;                // start location broadcast service
+<b class="nc"><i>415</i>&nbsp;                new SendLocationBroadcastsService(this);</b>
+<b class="nc"><i>416</i>&nbsp;            }</b>
+<b class="nc"><i>417</i>&nbsp;        } else if (intent.getAction() == SENDMESSAGE_ACTION) {</b>
+<b class="nc"><i>418</i>&nbsp;            final Packet packet = (Packet) intent.getSerializableExtra(&quot;packet&quot;);</b>
+<b class="nc"><i>419</i>&nbsp;            Log.d(TAG, &quot;Loading packet &quot; + packet.toString());</b>
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;            // for traceroute ...
+<i>422</i>&nbsp;            // TODO ~mw  : should be conditional, only if we have the users consent
+<b class="nc"><i>423</i>&nbsp;            Identity thisIdentity = BonfireData.getInstance(this).getDefaultIdentity();</b>
+<b class="nc"><i>424</i>&nbsp;            packet.nextHopNickname = thisIdentity.getNickname();</b>
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;            List&lt;Peer&gt; chosenPeers;
+<b class="nc"><i>427</i>&nbsp;            synchronized (peers) {</b>
+<i>428</i>&nbsp;                // let RoutingManager decide where to send the packet to
+<b class="nc"><i>429</i>&nbsp;                chosenPeers = routingManager.chooseRecipients(packet, peers);</b>
+<b class="nc"><i>430</i>&nbsp;            }</b>
+<b class="nc"><i>431</i>&nbsp;            if (chosenPeers == null) {</b>
+<b class="nc"><i>432</i>&nbsp;                Log.e(TAG, &quot;don&#39;t know how to send this packet: &quot; + packet.toString());</b>
+<b class="nc"><i>433</i>&nbsp;                return;</b>
+<i>434</i>&nbsp;            }
+<b class="nc"><i>435</i>&nbsp;            for (final Peer peer : chosenPeers) {</b>
+<i>436</i>&nbsp;                // start a new thread for each send operation, so that sending to multiple devices
+<i>437</i>&nbsp;                // can be done in parallel
+<b class="nc"><i>438</i>&nbsp;                new Thread(new Runnable() {</b>
+<i>439</i>&nbsp;                    public void run() {
+<i>440</i>&nbsp;                        try {
+<b class="nc"><i>441</i>&nbsp;                            Class protocolClass = peer.getProtocolClass();</b>
+<b class="nc"><i>442</i>&nbsp;                            IProtocol protocol = getConnection(protocolClass);</b>
+<b class="nc"><i>443</i>&nbsp;                            if (protocol != null &amp;&amp; protocol.canSend()) {</b>
+<b class="nc"><i>444</i>&nbsp;                                StatsCollector.publishMessageHop(protocolClass, &quot;SEND&quot;, peer, packet, packet.nextHopNickname, null);</b>
+<b class="nc"><i>445</i>&nbsp;                                Log.i(TAG, &quot;Sending via &quot; + peer.toString());</b>
+<b class="nc"><i>446</i>&nbsp;                                protocol.sendPacket(packet, peer);</b>
+<i>447</i>&nbsp;                            } else
+<b class="nc"><i>448</i>&nbsp;                                throw new IllegalAccessException(&quot;Protocol &quot; + protocolClass.getSimpleName() + &quot; not ready&quot;);</b>
+<b class="nc"><i>449</i>&nbsp;                        } catch (Exception ex) {</b>
+<b class="nc"><i>450</i>&nbsp;                            ex.printStackTrace();</b>
+<b class="nc"><i>451</i>&nbsp;                            Log.e(TAG, &quot;Unable to send packet via peer:&quot; + peer.toString());</b>
+<b class="nc"><i>452</i>&nbsp;                        }</b>
+<b class="nc"><i>453</i>&nbsp;                    }</b>
+<i>454</i>&nbsp;                }).start();
+<b class="nc"><i>455</i>&nbsp;            }</b>
+<b class="nc"><i>456</i>&nbsp;            packet.setTimeSent(System.currentTimeMillis());</b>
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;
+<b class="nc"><i>459</i>&nbsp;            if (packet instanceof PayloadPacket &amp;&amp; packet.getHopCount() == 0) {</b>
+<b class="nc"><i>460</i>&nbsp;                Retransmission.add(this, (PayloadPacket) packet,</b>
+<i>461</i>&nbsp;                        ((PayloadPacket) packet).getTransmissionCount() * ConstOptions.RETRANSMISSION_TIMEOUT);
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;                // if a message object is specified, this packet was just generated on this phone
+<i>464</i>&nbsp;                // notify UI that sending has started
+<b class="nc"><i>465</i>&nbsp;                final Intent localIntent = new Intent(MSG_SENT_BROADCAST_EVENT)</b>
+<i>466</i>&nbsp;                        .putExtra(EXTENDED_DATA_MESSAGE_UUID, packet.uuid)
+<i>467</i>&nbsp;                        .putExtra(EXTENDED_DATA_ROUTING_TYPE, packet.getRoutingMode())
+<i>468</i>&nbsp;                        .putExtra(EXTENDED_DATA_RETRANSMISSION_COUNT, ((PayloadPacket) packet).getTransmissionCount());
+<i>469</i>&nbsp;
+<b class="nc"><i>470</i>&nbsp;                LocalBroadcastManager.getInstance(ConnectionManager.this).sendBroadcast(localIntent);</b>
+<i>471</i>&nbsp;            }
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;            // update statistics
+<b class="nc"><i>474</i>&nbsp;            CurrentStats.getInstance().messagesSent += 1;</b>
+<i>475</i>&nbsp;
+<b class="nc"><i>476</i>&nbsp;        } else if (intent.getAction() == CONTINUE_BLUETOOTH_STARTUP_ACTION) {</b>
+<b class="nc"><i>477</i>&nbsp;            BluetoothProtocol bt = (BluetoothProtocol) getConnection(BluetoothProtocol.class);</b>
+<b class="nc"><i>478</i>&nbsp;            if (bt != null) bt.continueStartup();</b>
+<i>479</i>&nbsp;
+<b class="nc"><i>480</i>&nbsp;        } else if (!extras.isEmpty()) {</b>
+<b class="nc"><i>481</i>&nbsp;            final GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);</b>
+<b class="nc"><i>482</i>&nbsp;            final String messageType = gcm.getMessageType(intent);</b>
+<i>483</i>&nbsp;
+<b class="nc"><i>484</i>&nbsp;            if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(intent.getAction())) {</b>
+<b class="nc"><i>485</i>&nbsp;                Log.w(TAG, &quot;GCM: Send error: &quot; + extras.toString());</b>
+<i>486</i>&nbsp;
+<b class="nc"><i>487</i>&nbsp;            } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(intent.getAction())) {</b>
+<b class="nc"><i>488</i>&nbsp;                Log.w(TAG, &quot;GCM: Deleted messages on server: &quot; + extras.toString());</b>
+<i>489</i>&nbsp;
+<b class="nc"><i>490</i>&nbsp;            } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {</b>
+<b class="nc"><i>491</i>&nbsp;                if (intent.hasExtra(&quot;new_phone_contact&quot;)) {</b>
+<b class="nc"><i>492</i>&nbsp;                    BonfireAPI.onNewPhoneContact(db, intent.getStringExtra(&quot;phone&quot;),</b>
+<i>493</i>&nbsp;                            intent.getStringExtra(&quot;publickey&quot;), intent.getStringExtra(&quot;nickname&quot;));
+<b class="nc"><i>494</i>&nbsp;                    return;</b>
+<i>495</i>&nbsp;                }
+<b class="nc"><i>496</i>&nbsp;                final GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);</b>
+<b class="nc"><i>497</i>&nbsp;                Log.i(TAG, &quot;gcmProto=&quot; + gcmProto);</b>
+<b class="nc"><i>498</i>&nbsp;                if (gcmProto == null) return;</b>
+<b class="nc"><i>499</i>&nbsp;                gcmProto.onHandleGcmIntent(intent);</b>
+<i>500</i>&nbsp;            }
+<i>501</i>&nbsp;        }
+<b class="nc"><i>502</i>&nbsp;    }</b>
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;    private boolean isProtocolEnabled(Class protocol) {
+<b class="nc"><i>505</i>&nbsp;        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);</b>
+<b class="nc"><i>506</i>&nbsp;        return preferences.getBoolean(&quot;enable_&quot; + protocol.getSimpleName(), true);</b>
+<i>507</i>&nbsp;    }
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    private void acknowledgePacket(Envelope packetToAck) {
+<b class="nc"><i>510</i>&nbsp;        AckPacket ack = new AckPacket(packetToAck.uuid, packetToAck.recipientPublicKey, packetToAck.senderPublicKey);</b>
+<b class="nc"><i>511</i>&nbsp;        ack.setDSR(packetToAck.getPath());</b>
+<i>512</i>&nbsp;        // set traceroute of the incoming packet, so that it will be transmitted back to the sender
+<i>513</i>&nbsp;        // ACK packets will not be added traceroute segments
+<b class="nc"><i>514</i>&nbsp;        ack.setTraceroute(packetToAck.getTraceroute());</b>
+<b class="nc"><i>515</i>&nbsp;        sendPacket(this, ack);</b>
+<b class="nc"><i>516</i>&nbsp;    }</b>
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;    // static helper method to enqueue
+<i>520</i>&nbsp;    public static void sendPacket(Context ctx, Packet packet) {
+<i>521</i>&nbsp;        // remember this packet
+<b class="nc"><i>522</i>&nbsp;        processedPackets.enqueue(packet);</b>
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;        // and dispatch sending intent
+<b class="nc"><i>525</i>&nbsp;        final Intent intent = new Intent(ctx, ConnectionManager.class);</b>
+<b class="nc"><i>526</i>&nbsp;        intent.setAction(ConnectionManager.SENDMESSAGE_ACTION);</b>
+<b class="nc"><i>527</i>&nbsp;        intent.putExtra(&quot;packet&quot;, packet);</b>
+<b class="nc"><i>528</i>&nbsp;        ctx.startService(intent);</b>
+<b class="nc"><i>529</i>&nbsp;    }</b>
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;    /**
+<i>532</i>&nbsp;     * this should not be called on a retransmission as it adds the current node as path node
+<i>533</i>&nbsp;     * @param ctx
+<i>534</i>&nbsp;     * @param envelope
+<i>535</i>&nbsp;     */
+<i>536</i>&nbsp;    public static void sendEnvelope(Context ctx, Envelope envelope) {
+<b class="nc"><i>537</i>&nbsp;        if (envelope.getHopCount() &gt; 0) throw new IllegalArgumentException(ctx.getString(R.string.exception_only_fresh_envelopes));</b>
+<i>538</i>&nbsp;
+<i>539</i>&nbsp;        // retrieve best path to target from RoutingManager, if known. otherwise use flooding
+<b class="nc"><i>540</i>&nbsp;        List&lt;byte[]&gt; hopsToTarget = routingManager.getPath(envelope);</b>
+<b class="nc"><i>541</i>&nbsp;        if (hopsToTarget == null) envelope.setFlooding();</b>
+<b class="nc"><i>542</i>&nbsp;        else envelope.setDSR(hopsToTarget);</b>
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;        // add first traceroute segment, all following will be added on receiving
+<b class="nc"><i>545</i>&nbsp;        envelope.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));</b>
+<i>546</i>&nbsp;        // set sent time for that hop, to allow calculating spent time on the air
+<b class="nc"><i>547</i>&nbsp;        envelope.setLastHopTimeSent(new Date());</b>
+<i>548</i>&nbsp;
+<b class="nc"><i>549</i>&nbsp;        sendPacket(ctx, envelope);</b>
+<b class="nc"><i>550</i>&nbsp;    }</b>
+<i>551</i>&nbsp;    public static void sendMessage(Context ctx, Message message) {
+<b class="nc"><i>552</i>&nbsp;        sendEnvelope(ctx, Envelope.fromMessage(message));</b>
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;        // add temporary traceroute segment, indication the message is still on its way
+<i>555</i>&nbsp;        // when the ACK packet for this message is received, the traceroute will be replaced entirely
+<i>556</i>&nbsp;        // by its reversed traceroute, so this segment will be removed then
+<b class="nc"><i>557</i>&nbsp;        IPublicIdentity identity = BonfireData.getInstance(ctx).getDefaultIdentity();</b>
+<b class="nc"><i>558</i>&nbsp;        message.addTracerouteSegment(new TracerouteNodeSegment(identity.getNickname(), identity.getImage()));</b>
+<b class="nc"><i>559</i>&nbsp;        message.addTracerouteSegment(new TracerouteProgressSegment());</b>
+<b class="nc"><i>560</i>&nbsp;    }</b>
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;    public static void retrySendMessage(Context ctx, Message message) {
+<i>563</i>&nbsp;        // delete pending transmission
+<b class="nc"><i>564</i>&nbsp;        Retransmission.cancel(message.uuid);</b>
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;        // reset some message properties
+<b class="nc"><i>567</i>&nbsp;        message.retransmissionCount = 0;</b>
+<b class="nc"><i>568</i>&nbsp;        message.traceroute = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>569</i>&nbsp;        message.error = null;</b>
+<b class="nc"><i>570</i>&nbsp;        message.flags &amp;= ~Message.FLAG_FAILED;</b>
+<b class="nc"><i>571</i>&nbsp;        message.flags &amp;= ~Message.FLAG_ACKNOWLEDGED;</b>
+<i>572</i>&nbsp;
+<b class="nc"><i>573</i>&nbsp;        sendMessage(ctx, message);</b>
+<b class="nc"><i>574</i>&nbsp;    }</b>
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;    public static void sendLocationUdpPacket(Context ctx, LocationUdpPacket packet) {
+<i>577</i>&nbsp;        // retrieve best path to target from RoutingManager, if known. otherwise use flooding
+<b class="nc"><i>578</i>&nbsp;        List&lt;byte[]&gt; hopsToTarget = routingManager.getPath(packet);</b>
+<b class="nc"><i>579</i>&nbsp;        if (hopsToTarget == null) packet.setFlooding();</b>
+<b class="nc"><i>580</i>&nbsp;        else packet.setDSR(hopsToTarget);</b>
+<i>581</i>&nbsp;        // send it
+<b class="nc"><i>582</i>&nbsp;        sendPacket(ctx, packet);</b>
+<b class="nc"><i>583</i>&nbsp;    }</b>
+<i>584</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RingBuffer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.helper</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RingBuffer (de.tudarmstadt.informatik.bp.bonfirechat.helper)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RingBuffer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.helper;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;/**
+<i>4</i>&nbsp; * Created by mw on 15.06.15.
+<i>5</i>&nbsp; */
+<i>6</i>&nbsp;public class RingBuffer&lt;T extends Object&gt; {
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;    private final Object[] content;
+<i>9</i>&nbsp;    private final int length;
+<i>10</i>&nbsp;    private int insertPosition;
+<i>11</i>&nbsp;
+<b class="fc"><i>12</i>&nbsp;    public RingBuffer(int length) {</b>
+<b class="fc"><i>13</i>&nbsp;        this.length = length;</b>
+<b class="fc"><i>14</i>&nbsp;        content = new Object[length];</b>
+<b class="fc"><i>15</i>&nbsp;        insertPosition = 0;</b>
+<b class="fc"><i>16</i>&nbsp;    }</b>
+<i>17</i>&nbsp;    public void enqueue(T element) {
+<b class="fc"><i>18</i>&nbsp;        content[insertPosition++] = element;</b>
+<b class="fc"><i>19</i>&nbsp;        insertPosition = insertPosition % length;</b>
+<b class="fc"><i>20</i>&nbsp;    }</b>
+<i>21</i>&nbsp;    public boolean contains(T element) {
+<b class="fc"><i>22</i>&nbsp;        for(int i = 0; i &lt; length; i++) {</b>
+<b class="fc"><i>23</i>&nbsp;            if (content[i] != null &amp;&amp; content[i].equals(element)) return true;</b>
+<i>24</i>&nbsp;        }
+<b class="fc"><i>25</i>&nbsp;        return false;</b>
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

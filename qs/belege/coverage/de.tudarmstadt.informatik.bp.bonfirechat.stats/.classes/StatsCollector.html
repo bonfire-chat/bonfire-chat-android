@@ -1,0 +1,366 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StatsCollector</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.stats</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StatsCollector (de.tudarmstadt.informatik.bp.bonfirechat.stats)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StatsCollector</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StatsCollector$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StatsCollector$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StatsCollector$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StatsCollector$4</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 89)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.stats;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.app.AlarmManager;
+<i>4</i>&nbsp;import android.content.BroadcastReceiver;
+<i>5</i>&nbsp;import android.content.Context;
+<i>6</i>&nbsp;import android.content.Intent;
+<i>7</i>&nbsp;import android.content.IntentFilter;
+<i>8</i>&nbsp;import android.os.AsyncTask;
+<i>9</i>&nbsp;import android.os.BatteryManager;
+<i>10</i>&nbsp;import android.util.Log;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;import java.io.BufferedOutputStream;
+<i>13</i>&nbsp;import java.io.IOException;
+<i>14</i>&nbsp;import java.net.HttpURLConnection;
+<i>15</i>&nbsp;import java.net.URL;
+<i>16</i>&nbsp;import java.util.Date;
+<i>17</i>&nbsp;import java.util.Hashtable;
+<i>18</i>&nbsp;import java.util.UUID;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
+<i>21</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+<i>22</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+<i>23</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
+<i>24</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
+<i>25</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
+<i>26</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * Created by johannes on 10.07.15.
+<i>30</i>&nbsp; */
+<i>31</i>&nbsp;public class StatsCollector extends BroadcastReceiver {
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    private static final String TAG = &quot;StatsCollector&quot;;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public static final long PUBLISH_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    // action in Intents which are sent to the service
+<i>38</i>&nbsp;    public static final String PUBLISH_STATS_ACTION = &quot;de.tudarmstadt.informatik.bp.bonfirechat.PUBLISH_STATS&quot;;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private StatsEntry stats;
+<i>41</i>&nbsp;    private int batteryLastLevel;
+<i>42</i>&nbsp;    private long batteryLastMeasured;
+<i>43</i>&nbsp;    private boolean isCharging;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public static String reporterIdentity;
+<i>46</i>&nbsp;
+<b class="nc"><i>47</i>&nbsp;    public StatsCollector(Context ctx) {</b>
+<i>48</i>&nbsp;        // get global stats object
+<b class="nc"><i>49</i>&nbsp;        stats = CurrentStats.getInstance();</b>
+<i>50</i>&nbsp;        // initialize measurement
+<b class="nc"><i>51</i>&nbsp;        batteryLastLevel = stats.batteryLevel;</b>
+<b class="nc"><i>52</i>&nbsp;        batteryLastMeasured = System.currentTimeMillis();</b>
+<i>53</i>&nbsp;        // listen for battery status
+<b class="nc"><i>54</i>&nbsp;        ctx.registerReceiver(this.batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));</b>
+<i>55</i>&nbsp;
+<b class="nc"><i>56</i>&nbsp;        reporterIdentity = BonfireData.getInstance(ctx).getDefaultIdentity().getNickname();</b>
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /*
+<i>61</i>&nbsp;     * handle stats intents
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public void onReceive(Context context, Intent intent) {
+<b class="nc"><i>65</i>&nbsp;        final BonfireData db = BonfireData.getInstance(context);</b>
+<b class="nc"><i>66</i>&nbsp;        Log.i(TAG, &quot;publishing latest stats data...&quot;);</b>
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);</b>
+<b class="nc"><i>69</i>&nbsp;        Intent batteryStatus = context.registerReceiver(null, ifilter);</b>
+<b class="nc"><i>70</i>&nbsp;        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);</b>
+<b class="nc"><i>71</i>&nbsp;        isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||</b>
+<i>72</i>&nbsp;                status == BatteryManager.BATTERY_STATUS_FULL;
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;        // save latest stats data to local database
+<b class="nc"><i>75</i>&nbsp;        updateStats();</b>
+<b class="nc"><i>76</i>&nbsp;        db.addStatsEntry(stats);</b>
+<i>77</i>&nbsp;
+<b class="nc"><i>78</i>&nbsp;        publishStats(db);</b>
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public static void publishMessageHop(final Class protocol, final String what, final Peer peer, final Packet pkg, final String lastHop, final String thisHop) {
+<b class="nc"><i>82</i>&nbsp;        final long dateTime = new Date().getTime();</b>
+<b class="nc"><i>83</i>&nbsp;        new Thread(new Runnable() {</b>
+<i>84</i>&nbsp;            @Override
+<i>85</i>&nbsp;            public void run() {
+<b class="nc"><i>86</i>&nbsp;                final Hashtable&lt;String,byte[]&gt; body = new Hashtable&lt;&gt;();</b>
+<b class="nc"><i>87</i>&nbsp;                String uid = pkg.uuid.toString();</b>
+<b class="nc"><i>88</i>&nbsp;                if (pkg instanceof AckPacket) uid = ((AckPacket)pkg).acknowledgesUUID.toString();</b>
+<b class="nc"><i>89</i>&nbsp;                body.put(&quot;uuid&quot;, BonfireAPI.encode(uid));</b>
+<b class="nc"><i>90</i>&nbsp;                body.put(&quot;datetime&quot;, BonfireAPI.encode(String.valueOf(dateTime)));</b>
+<b class="nc"><i>91</i>&nbsp;                body.put(&quot;string&quot;, BonfireAPI.encode(pkg.toString()));</b>
+<b class="nc"><i>92</i>&nbsp;                body.put(&quot;action&quot;, BonfireAPI.encode(what));</b>
+<b class="nc"><i>93</i>&nbsp;                body.put(&quot;peer&quot;, BonfireAPI.encode(peer == null ? &quot;&quot; : (&quot;to: &quot;+peer.toString())));</b>
+<b class="nc"><i>94</i>&nbsp;                body.put(&quot;protocol&quot;, BonfireAPI.encode(protocol == null ? &quot;&quot; : protocol.getSimpleName()));</b>
+<b class="nc"><i>95</i>&nbsp;                body.put(&quot;hop1&quot;, BonfireAPI.encode(lastHop == null ? &quot;&quot; : lastHop));</b>
+<b class="nc"><i>96</i>&nbsp;                body.put(&quot;hop2&quot;, BonfireAPI.encode(thisHop == null ? &quot;&quot; : thisHop));</b>
+<b class="nc"><i>97</i>&nbsp;                body.put(&quot;reporter&quot;, BonfireAPI.encode(reporterIdentity));</b>
+<i>98</i>&nbsp;                try {
+<b class="nc"><i>99</i>&nbsp;                    BonfireAPI.httpPost(&quot;traceroute&quot;, body);</b>
+<b class="nc"><i>100</i>&nbsp;                } catch (IOException e) {</b>
+<b class="nc"><i>101</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>102</i>&nbsp;                }</b>
+<b class="nc"><i>103</i>&nbsp;            }</b>
+<i>104</i>&nbsp;        }).start();
+<b class="nc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public static void publishError(final Class protocol, final String what, final UUID uuid, final String errMes) {
+<b class="nc"><i>108</i>&nbsp;        final long dateTime = new Date().getTime();</b>
+<b class="nc"><i>109</i>&nbsp;        new Thread(new Runnable() {</b>
+<i>110</i>&nbsp;            @Override
+<i>111</i>&nbsp;            public void run() {
+<b class="nc"><i>112</i>&nbsp;                final Hashtable&lt;String,byte[]&gt; body = new Hashtable&lt;&gt;();</b>
+<b class="nc"><i>113</i>&nbsp;                String uid = uuid == null ? &quot;&quot; : uuid.toString();</b>
+<b class="nc"><i>114</i>&nbsp;                body.put(&quot;uuid&quot;, BonfireAPI.encode(uid));</b>
+<b class="nc"><i>115</i>&nbsp;                body.put(&quot;datetime&quot;, BonfireAPI.encode(String.valueOf(dateTime)));</b>
+<b class="nc"><i>116</i>&nbsp;                body.put(&quot;string&quot;, BonfireAPI.encode(errMes));</b>
+<b class="nc"><i>117</i>&nbsp;                body.put(&quot;action&quot;, BonfireAPI.encode(what));</b>
+<b class="nc"><i>118</i>&nbsp;                body.put(&quot;peer&quot;, new byte[0]);</b>
+<b class="nc"><i>119</i>&nbsp;                body.put(&quot;protocol&quot;, new byte[0]);</b>
+<b class="nc"><i>120</i>&nbsp;                body.put(&quot;hop1&quot;, new byte[0]);</b>
+<b class="nc"><i>121</i>&nbsp;                body.put(&quot;hop2&quot;, new byte[0]);</b>
+<b class="nc"><i>122</i>&nbsp;                body.put(&quot;reporter&quot;, BonfireAPI.encode(reporterIdentity));</b>
+<i>123</i>&nbsp;                try {
+<b class="nc"><i>124</i>&nbsp;                    BonfireAPI.httpPost(&quot;traceroute&quot;, body);</b>
+<b class="nc"><i>125</i>&nbsp;                } catch (IOException e) {</b>
+<b class="nc"><i>126</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>127</i>&nbsp;                }</b>
+<b class="nc"><i>128</i>&nbsp;            }</b>
+<i>129</i>&nbsp;        }).start();
+<b class="nc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    private void publishStats(final BonfireData db) {
+<b class="nc"><i>133</i>&nbsp;        new AsyncTask&lt;Void, Void, Void&gt;() {</b>
+<i>134</i>&nbsp;            @Override
+<i>135</i>&nbsp;            protected Void doInBackground(Void... voids) {
+<i>136</i>&nbsp;                // publish stats object to the server API
+<b class="nc"><i>137</i>&nbsp;                final String postData = &quot;timestamp=&quot; + DateHelper.formatDateTime(stats.timestamp)</b>
+<i>138</i>&nbsp;                        + &quot;&amp;batterylevel=&quot; + stats.batteryLevel
+<i>139</i>&nbsp;                        + &quot;&amp;powerusage=&quot; + stats.powerUsage
+<i>140</i>&nbsp;                        + &quot;&amp;charging=&quot; + isCharging
+<i>141</i>&nbsp;                        + &quot;&amp;messages_sent=&quot; + stats.messagesSent
+<i>142</i>&nbsp;                        + &quot;&amp;messages_received=&quot; + stats.messageReceived
+<i>143</i>&nbsp;                        + &quot;&amp;lat=&quot; + stats.lat
+<i>144</i>&nbsp;                        + &quot;&amp;lng=&quot; + stats.lng
+<i>145</i>&nbsp;                        + &quot;&amp;reporter=&quot; + reporterIdentity;
+<i>146</i>&nbsp;
+<b class="nc"><i>147</i>&nbsp;                HttpURLConnection urlConnection = null;</b>
+<i>148</i>&nbsp;                try {
+<b class="nc"><i>149</i>&nbsp;                    urlConnection = (HttpURLConnection) new URL(BonfireAPI.API_ENDPOINT + &quot;/stats&quot;).openConnection();</b>
+<b class="nc"><i>150</i>&nbsp;                    urlConnection.setRequestProperty(&quot;Content-Type&quot;, &quot;application/x-www-form-urlencoded&quot;);</b>
+<b class="nc"><i>151</i>&nbsp;                    urlConnection.setDoOutput(true);</b>
+<b class="nc"><i>152</i>&nbsp;                    urlConnection.setChunkedStreamingMode(0);</b>
+<i>153</i>&nbsp;
+<b class="nc"><i>154</i>&nbsp;                    final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());</b>
+<b class="nc"><i>155</i>&nbsp;                    out.write(postData.getBytes(&quot;UTF-8&quot;));</b>
+<b class="nc"><i>156</i>&nbsp;                    out.flush();</b>
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;                    if (urlConnection.getResponseCode() != 200) {</b>
+<b class="nc"><i>159</i>&nbsp;                        Log.e(TAG, &quot;error publishing stats: server sent response code &quot; + urlConnection.getResponseCode());</b>
+<i>160</i>&nbsp;                    }
+<b class="nc"><i>161</i>&nbsp;                } catch (IOException e) {</b>
+<b class="nc"><i>162</i>&nbsp;                    e.printStackTrace();</b>
+<i>163</i>&nbsp;                } finally {
+<b class="nc"><i>164</i>&nbsp;                    if(urlConnection == null) urlConnection.disconnect();</b>
+<i>165</i>&nbsp;                }
+<b class="nc"><i>166</i>&nbsp;                return null;</b>
+<i>167</i>&nbsp;            }
+<i>168</i>&nbsp;        }.execute();
+<b class="nc"><i>169</i>&nbsp;    }</b>
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;    private BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {</b>
+<i>172</i>&nbsp;        @Override
+<i>173</i>&nbsp;        public void onReceive(Context context, Intent intent) {
+<b class="nc"><i>174</i>&nbsp;            final int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);</b>
+<b class="nc"><i>175</i>&nbsp;            stats.batteryLevel = level;</b>
+<b class="nc"><i>176</i>&nbsp;            Log.d(TAG, &quot;updating stats: setting battery level to &quot; + level);</b>
+<b class="nc"><i>177</i>&nbsp;        }</b>
+<i>178</i>&nbsp;    };
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    private void updateStats() {
+<i>182</i>&nbsp;        // bump time
+<b class="nc"><i>183</i>&nbsp;        stats.timestamp = new Date();</b>
+<i>184</i>&nbsp;
+<b class="nc"><i>185</i>&nbsp;        if(!isCharging) {</b>
+<i>186</i>&nbsp;            // update calculated battery consumption
+<b class="nc"><i>187</i>&nbsp;            stats.powerUsage = ((float) batteryLastLevel - (float) stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000 * 60 * 60;</b>
+<b class="nc"><i>188</i>&nbsp;            if (stats.powerUsage &lt; 0) stats.powerUsage = 0;</b>
+<b class="nc"><i>189</i>&nbsp;            batteryLastLevel = stats.batteryLevel;</b>
+<b class="nc"><i>190</i>&nbsp;            batteryLastMeasured = System.currentTimeMillis();</b>
+<i>191</i>&nbsp;        }
+<i>192</i>&nbsp;/*
+<i>193</i>&nbsp;        // update location
+<i>194</i>&nbsp;        final GpsTracker gps = GpsTracker.getInstance();
+<i>195</i>&nbsp;        if (gps.canGetLocation()) {
+<i>196</i>&nbsp;            stats.lat = (float) gps.getLatitude();
+<i>197</i>&nbsp;            stats.lng = (float) gps.getLongitude();
+<i>198</i>&nbsp;        }*/
+<b class="nc"><i>199</i>&nbsp;    }</b>
+<i>200</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

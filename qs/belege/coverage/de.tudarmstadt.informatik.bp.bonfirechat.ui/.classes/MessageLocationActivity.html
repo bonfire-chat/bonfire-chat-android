@@ -1,0 +1,160 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MessageLocationActivity</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MessageLocationActivity (de.tudarmstadt.informatik.bp.bonfirechat.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MessageLocationActivity</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.ui;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.os.Bundle;
+<i>4</i>&nbsp;import android.support.v4.app.FragmentActivity;
+<i>5</i>&nbsp;import android.util.Log;
+<i>6</i>&nbsp;import android.view.MenuItem;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import com.google.android.gms.maps.CameraUpdate;
+<i>9</i>&nbsp;import com.google.android.gms.maps.CameraUpdateFactory;
+<i>10</i>&nbsp;import com.google.android.gms.maps.GoogleMap;
+<i>11</i>&nbsp;import com.google.android.gms.maps.MapFragment;
+<i>12</i>&nbsp;import com.google.android.gms.maps.OnMapReadyCallback;
+<i>13</i>&nbsp;import com.google.android.gms.maps.model.LatLng;
+<i>14</i>&nbsp;import com.google.android.gms.maps.model.MarkerOptions;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;import java.util.UUID;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.R;
+<i>19</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+<i>20</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+<i>21</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;/**
+<i>24</i>&nbsp; * Created by johannes on 26.08.15.
+<i>25</i>&nbsp; */
+<b class="nc"><i>26</i>&nbsp;public class MessageLocationActivity extends FragmentActivity implements OnMapReadyCallback {</b>
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    private static final String TAG = &quot;MessageLocationActivity&quot;;
+<b class="nc"><i>29</i>&nbsp;    private final BonfireData db = BonfireData.getInstance(this);</b>
+<i>30</i>&nbsp;    private Message message;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    @Override
+<i>33</i>&nbsp;    protected void onCreate(Bundle savedInstanceState) {
+<b class="nc"><i>34</i>&nbsp;        super.onCreate(savedInstanceState);</b>
+<i>35</i>&nbsp;
+<b class="nc"><i>36</i>&nbsp;        getActionBar().setDisplayHomeAsUpEnabled(true);</b>
+<i>37</i>&nbsp;
+<b class="nc"><i>38</i>&nbsp;        setContentView(R.layout.activity_message_location);</b>
+<b class="nc"><i>39</i>&nbsp;        UUID msgUuid = (UUID) getIntent().getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);</b>
+<b class="nc"><i>40</i>&nbsp;        message = db.getMessageByUUID(msgUuid);</b>
+<b class="nc"><i>41</i>&nbsp;        if (message == null) {</b>
+<b class="nc"><i>42</i>&nbsp;            Log.e(TAG, &quot;Error, message with id &quot; + msgUuid + &quot; not found&quot;);</b>
+<i>43</i>&nbsp;        }
+<b class="nc"><i>44</i>&nbsp;        getActionBar().setTitle(R.string.message_location);</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        // display map
+<b class="nc"><i>47</i>&nbsp;        MapFragment mapFragment = (MapFragment) getFragmentManager()</b>
+<i>48</i>&nbsp;                .findFragmentById(R.id.map);
+<b class="nc"><i>49</i>&nbsp;        mapFragment.getMapAsync(this);</b>
+<b class="nc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    @Override
+<i>53</i>&nbsp;    public void onMapReady(GoogleMap map) {
+<i>54</i>&nbsp;        // extract position from message
+<b class="nc"><i>55</i>&nbsp;        String[] coords = message.body.split(&quot;:&quot;);</b>
+<b class="nc"><i>56</i>&nbsp;        LatLng position = new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;        // set map position
+<b class="nc"><i>59</i>&nbsp;        CameraUpdate center = CameraUpdateFactory.newLatLng(position);</b>
+<b class="nc"><i>60</i>&nbsp;        map.moveCamera(center);</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;        // show position marker
+<b class="nc"><i>63</i>&nbsp;        map.addMarker(new MarkerOptions()</b>
+<i>64</i>&nbsp;                .position(position)
+<i>65</i>&nbsp;                .title(message.sender.getNickname()));
+<b class="nc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    public boolean onOptionsItemSelected(MenuItem item) {
+<i>70</i>&nbsp;        // makes sure parameters like conversation id are present in parent activity
+<b class="nc"><i>71</i>&nbsp;        if (item.getItemId() == android.R.id.home) {</b>
+<b class="nc"><i>72</i>&nbsp;            finish();</b>
+<b class="nc"><i>73</i>&nbsp;            return true;</b>
+<i>74</i>&nbsp;        }
+<b class="nc"><i>75</i>&nbsp;        return super.onOptionsItemSelected(item);</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

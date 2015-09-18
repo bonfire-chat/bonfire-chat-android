@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Contents</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Contents (de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Contents</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Contents$Type</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;//
+<i>4</i>&nbsp;// * Copyright (C) 2008 ZXing authors
+<i>5</i>&nbsp;// *
+<i>6</i>&nbsp;// * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+<i>7</i>&nbsp;// * you may not use this file except in compliance with the License.
+<i>8</i>&nbsp;// * You may obtain a copy of the License at
+<i>9</i>&nbsp;// *
+<i>10</i>&nbsp;// * http://www.apache.org/licenses/LICENSE-2.0
+<i>11</i>&nbsp;// *
+<i>12</i>&nbsp;// * Unless required by applicable law or agreed to in writing, software
+<i>13</i>&nbsp;// * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+<i>14</i>&nbsp;// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<i>15</i>&nbsp;// * See the License for the specific language governing permissions and
+<i>16</i>&nbsp;// * limitations under the License.
+<i>17</i>&nbsp;//
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;import android.provider.ContactsContract;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;public final class Contents {
+<b class="nc"><i>22</i>&nbsp;    private Contents() {</b>
+<b class="nc"><i>23</i>&nbsp;    }</b>
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public static final class Type {
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;        // Plain text. Use Intent.putExtra(DATA, string). This can be used for URLs too, but string
+<i>28</i>&nbsp;        // must include &quot;http://&quot; or &quot;https://&quot;.
+<i>29</i>&nbsp;        public static final String TEXT = &quot;TEXT_TYPE&quot;;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;        // An email type. Use Intent.putExtra(DATA, string) where string is the email address.
+<i>32</i>&nbsp;        public static final String EMAIL = &quot;EMAIL_TYPE&quot;;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;        // Use Intent.putExtra(DATA, string) where string is the phone number to call.
+<i>35</i>&nbsp;        public static final String PHONE = &quot;PHONE_TYPE&quot;;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;        // An SMS type. Use Intent.putExtra(DATA, string) where string is the number to SMS.
+<i>38</i>&nbsp;        public static final String SMS = &quot;SMS_TYPE&quot;;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;        public static final String CONTACT = &quot;CONTACT_TYPE&quot;;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;        public static final String LOCATION = &quot;LOCATION_TYPE&quot;;
+<i>43</i>&nbsp;
+<b class="nc"><i>44</i>&nbsp;        private Type() {</b>
+<b class="nc"><i>45</i>&nbsp;        }</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public static final String URL_KEY = &quot;URL_KEY&quot;;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public static final String NOTE_KEY = &quot;NOTE_KEY&quot;;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    // When using Type.CONTACT, these arrays provide the keys for adding or retrieving multiple phone numbers and addresses.
+<b class="nc"><i>53</i>&nbsp;    public static final String[] PHONE_KEYS = {</b>
+<i>54</i>&nbsp;            ContactsContract.Intents.Insert.PHONE, ContactsContract.Intents.Insert.SECONDARY_PHONE,
+<i>55</i>&nbsp;            ContactsContract.Intents.Insert.TERTIARY_PHONE
+<i>56</i>&nbsp;    };
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;    public static final String[] PHONE_TYPE_KEYS = {</b>
+<i>59</i>&nbsp;            ContactsContract.Intents.Insert.PHONE_TYPE,
+<i>60</i>&nbsp;            ContactsContract.Intents.Insert.SECONDARY_PHONE_TYPE,
+<i>61</i>&nbsp;            ContactsContract.Intents.Insert.TERTIARY_PHONE_TYPE
+<i>62</i>&nbsp;    };
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;    public static final String[] EMAIL_KEYS = {</b>
+<i>65</i>&nbsp;            ContactsContract.Intents.Insert.EMAIL, ContactsContract.Intents.Insert.SECONDARY_EMAIL,
+<i>66</i>&nbsp;            ContactsContract.Intents.Insert.TERTIARY_EMAIL
+<i>67</i>&nbsp;    };
+<i>68</i>&nbsp;
+<b class="nc"><i>69</i>&nbsp;    public static final String[] EMAIL_TYPE_KEYS = {</b>
+<i>70</i>&nbsp;            ContactsContract.Intents.Insert.EMAIL_TYPE,
+<i>71</i>&nbsp;            ContactsContract.Intents.Insert.SECONDARY_EMAIL_TYPE,
+<i>72</i>&nbsp;            ContactsContract.Intents.Insert.TERTIARY_EMAIL_TYPE
+<i>73</i>&nbsp;    };
+<i>74</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

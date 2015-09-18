@@ -1,0 +1,135 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SocketProtocol</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.network</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SocketProtocol (de.tudarmstadt.informatik.bp.bonfirechat.network)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SocketProtocol</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.network;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.io.IOException;
+<i>4</i>&nbsp;import java.io.InputStream;
+<i>5</i>&nbsp;import java.io.ObjectInputStream;
+<i>6</i>&nbsp;import java.io.ObjectOutputStream;
+<i>7</i>&nbsp;import java.io.OutputStream;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+<i>10</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;/**
+<i>13</i>&nbsp; * Created by johannes on 22.05.15.
+<i>14</i>&nbsp; */
+<b class="nc"><i>15</i>&nbsp;public abstract class SocketProtocol implements IProtocol {</b>
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    protected Identity identity;
+<i>18</i>&nbsp;    protected OnPacketReceivedListener packetListener;
+<i>19</i>&nbsp;    protected OnPeerDiscoveredListener peerListener;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    protected void send(OutputStream output, Packet packet) throws IOException {
+<b class="nc"><i>22</i>&nbsp;        final ObjectOutputStream stream = new ObjectOutputStream(output);</b>
+<b class="nc"><i>23</i>&nbsp;        stream.writeObject(packet);</b>
+<b class="nc"><i>24</i>&nbsp;        stream.flush();</b>
+<b class="nc"><i>25</i>&nbsp;    }</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    protected Packet receive (InputStream input) throws IOException {
+<i>28</i>&nbsp;        try {
+<b class="nc"><i>29</i>&nbsp;            final ObjectInputStream stream = new ObjectInputStream(input);</b>
+<b class="nc"><i>30</i>&nbsp;            final Packet packet = (Packet) stream.readObject();</b>
+<b class="nc"><i>31</i>&nbsp;            return packet;</b>
+<b class="nc"><i>32</i>&nbsp;        } catch(ClassNotFoundException ex) {</b>
+<b class="nc"><i>33</i>&nbsp;            throw new IOException(&quot;Unable to deserialize packet, class not found (&quot;+ex.getMessage() + &quot;)&quot;);</b>
+<i>34</i>&nbsp;        }
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    @Override
+<i>38</i>&nbsp;    public void setIdentity(Identity identity) {
+<b class="nc"><i>39</i>&nbsp;        this.identity = identity;</b>
+<b class="nc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    @Override
+<i>43</i>&nbsp;    public void setOnPacketReceivedListener(OnPacketReceivedListener listener) {
+<b class="nc"><i>44</i>&nbsp;        this.packetListener = listener;</b>
+<b class="nc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Override
+<i>48</i>&nbsp;    public void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
+<b class="nc"><i>49</i>&nbsp;        this.peerListener = listener;</b>
+<b class="nc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>
