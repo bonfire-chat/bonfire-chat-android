@@ -15,7 +15,7 @@ module.exports = function(grunt) {
           'cp  <%=src%>/junit/bonfire-junit-report.html <%=assets%>/01-junit.html',
           'cp -r <%=src%>/coverage/.css <%=assets%>',
           'cp <%=src%>/coverage/index.html <%=assets%>/02-coverage.html',
-          'cp <%=src%>/documentation/Dokumentation.markdown <%=assets%>/04-documentation.md'
+          'cp <%=src%>/documentation/Dokumentation.markdown <%=assets%>/05-documentation.md'
         ].join('&&')
       },
       clean: {
@@ -36,6 +36,10 @@ module.exports = function(grunt) {
       reviews: {
         src: ['<%=src%>/code-reviews/*.md'],
         dest: '<%=assets%>/03-reviews.md'
+      },
+      manualTests: {
+        src: ['<%=src%>/manuelle-tests/ui/*.md'],
+        dest: '<%=assets%>/04-manual-tests.md'
       }
     },
 
@@ -60,7 +64,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('prepare', ['concat:reviews', 'shell:collect']);
+  grunt.registerTask('prepare', ['concat', 'shell:collect']);
   grunt.registerTask('pdfconcat', ['shell:pdfconcat']);
   grunt.registerTask('clean', ['shell:clean']);
   grunt.registerTask('open', ['shell:open']);
