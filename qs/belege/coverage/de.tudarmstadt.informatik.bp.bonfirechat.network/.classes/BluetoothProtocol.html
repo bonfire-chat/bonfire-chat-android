@@ -1,0 +1,518 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BluetoothProtocol</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.network</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BluetoothProtocol (de.tudarmstadt.informatik.bp.bonfirechat.network)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BluetoothProtocol</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 89)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BluetoothProtocol$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BluetoothProtocol$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BluetoothProtocol$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 18)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BluetoothProtocol$ConnectionHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 50)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 171)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.network;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.bluetooth.BluetoothAdapter;
+<i>4</i>&nbsp;import android.bluetooth.BluetoothDevice;
+<i>5</i>&nbsp;import android.bluetooth.BluetoothServerSocket;
+<i>6</i>&nbsp;import android.bluetooth.BluetoothSocket;
+<i>7</i>&nbsp;import android.content.BroadcastReceiver;
+<i>8</i>&nbsp;import android.content.Context;
+<i>9</i>&nbsp;import android.content.Intent;
+<i>10</i>&nbsp;import android.content.IntentFilter;
+<i>11</i>&nbsp;import android.os.Handler;
+<i>12</i>&nbsp;import android.util.Log;
+<i>13</i>&nbsp;import android.widget.Toast;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;import java.io.IOException;
+<i>16</i>&nbsp;import java.io.InputStream;
+<i>17</i>&nbsp;import java.io.ObjectInputStream;
+<i>18</i>&nbsp;import java.io.ObjectOutputStream;
+<i>19</i>&nbsp;import java.io.OutputStream;
+<i>20</i>&nbsp;import java.util.ArrayList;
+<i>21</i>&nbsp;import java.util.Collection;
+<i>22</i>&nbsp;import java.util.Date;
+<i>23</i>&nbsp;import java.util.Hashtable;
+<i>24</i>&nbsp;import java.util.List;
+<i>25</i>&nbsp;import java.util.Map;
+<i>26</i>&nbsp;import java.util.Random;
+<i>27</i>&nbsp;import java.util.Set;
+<i>28</i>&nbsp;import java.util.UUID;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+<i>31</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
+<i>32</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
+<i>33</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
+<i>34</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
+<i>35</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.ui.EnableBluetoothActivity;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;/**
+<i>38</i>&nbsp; * Created by johannes on 22.05.15.
+<i>39</i>&nbsp; */
+<i>40</i>&nbsp;public class BluetoothProtocol extends SocketProtocol {
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private static final String TAG = &quot;BluetoothProtocol&quot;;
+<b class="nc"><i>43</i>&nbsp;    private static final UUID BTMODULEUUID = UUID.fromString(&quot;D5AD0434-34AA-4B5C-B100-4964BFE3E739&quot;);</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    private Context ctx;
+<i>46</i>&nbsp;    private BluetoothAdapter adapter;
+<i>47</i>&nbsp;    private Handler searchLoopHandler;
+<i>48</i>&nbsp;
+<b class="nc"><i>49</i>&nbsp;    private Hashtable&lt;String, ConnectionHandler&gt; connections = new Hashtable&lt;&gt;();</b>
+<i>50</i>&nbsp;
+<b class="nc"><i>51</i>&nbsp;    BluetoothProtocol(Context ctx) {</b>
+<b class="nc"><i>52</i>&nbsp;        this.ctx = ctx;</b>
+<b class="nc"><i>53</i>&nbsp;        searchLoopHandler = new Handler();</b>
+<i>54</i>&nbsp;
+<b class="nc"><i>55</i>&nbsp;        adapter = BluetoothAdapter.getDefaultAdapter();</b>
+<b class="nc"><i>56</i>&nbsp;        ensureBluetoothUp();</b>
+<b class="nc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public static boolean isSupported() {
+<b class="nc"><i>60</i>&nbsp;        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();</b>
+<b class="nc"><i>61</i>&nbsp;        return mBluetoothAdapter != null;</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public Set&lt;Map.Entry&lt;String,ConnectionHandler&gt;&gt; getConnections() {
+<b class="nc"><i>65</i>&nbsp;        synchronized (connections) {</b>
+<b class="nc"><i>66</i>&nbsp;            return connections.entrySet();</b>
+<b class="nc"><i>67</i>&nbsp;        }</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    private boolean ensureBluetoothUp() {
+<b class="nc"><i>71</i>&nbsp;        if (adapter == null) {</b>
+<b class="nc"><i>72</i>&nbsp;            Log.d(TAG, &quot;device does not support Bluetooth&quot;);</b>
+<i>73</i>&nbsp;        } else {
+<b class="nc"><i>74</i>&nbsp;            Log.d(TAG, &quot;enabling bluetooth and requesting infinite discoverability&quot;);</b>
+<b class="nc"><i>75</i>&nbsp;            Intent intent =new Intent(ctx, EnableBluetoothActivity.class);</b>
+<b class="nc"><i>76</i>&nbsp;            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</b>
+<b class="nc"><i>77</i>&nbsp;            ctx.startActivity(intent);</b>
+<i>78</i>&nbsp;        }
+<b class="nc"><i>79</i>&nbsp;        return false;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /**
+<i>84</i>&nbsp;     * Called by ConnectionManager on receipt of CONTINUE_BLUETOOTH_STARTUP_ACTION.
+<i>85</i>&nbsp;     * This gets sent by EnableBluetoothActivity after the user has accepted the activation
+<i>86</i>&nbsp;     * of bluetooth discoverability via the required system UI.
+<i>87</i>&nbsp;     */
+<i>88</i>&nbsp;    public void continueStartup() {
+<b class="nc"><i>89</i>&nbsp;        Log.i(TAG, &quot;initializing Bluetooth&quot;);</b>
+<b class="nc"><i>90</i>&nbsp;        initializeBluetooth();</b>
+<i>91</i>&nbsp;        
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    private void initializeBluetooth() {
+<b class="nc"><i>95</i>&nbsp;        ctx.registerReceiver(onDeviceFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));</b>
+<b class="nc"><i>96</i>&nbsp;        searchDevicesThread.run();</b>
+<b class="nc"><i>97</i>&nbsp;        listeningThread.start();</b>
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;
+<b class="nc"><i>101</i>&nbsp;    public BroadcastReceiver onDeviceFoundReceiver = new BroadcastReceiver() {</b>
+<i>102</i>&nbsp;        @Override
+<i>103</i>&nbsp;        public synchronized void onReceive(Context context, Intent intent) {
+<b class="nc"><i>104</i>&nbsp;            String action = intent.getAction();</b>
+<b class="nc"><i>105</i>&nbsp;            if (BluetoothDevice.ACTION_FOUND.equals(action)){</b>
+<i>106</i>&nbsp;                // Get the BluetoothDevice object from the Intent
+<b class="nc"><i>107</i>&nbsp;                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);</b>
+<b class="nc"><i>108</i>&nbsp;                String name = device.getName();</b>
+<b class="nc"><i>109</i>&nbsp;                Log.d(TAG, &quot;device found: &quot; + name + &quot; - &quot; + device.getAddress());</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;                //TODO HACK: ignore non-bonfire devices...
+<i>112</i>&nbsp;                //maybe blacklisting after n unsuccessful socket.connect
+<b class="nc"><i>113</i>&nbsp;                if (name != null &amp;&amp; name.contains(&quot;BEACON&quot;)) return;</b>
+<i>114</i>&nbsp;
+<b class="nc"><i>115</i>&nbsp;                peerListener.discoveredPeer(BluetoothProtocol.this, Peer.addressFromString(device.getAddress()), name);</b>
+<i>116</i>&nbsp;            }
+<b class="nc"><i>117</i>&nbsp;        }</b>
+<i>118</i>&nbsp;    };
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;    private Runnable searchDevicesThread = new Runnable() {</b>
+<i>121</i>&nbsp;        @Override
+<i>122</i>&nbsp;        public void run() {
+<b class="nc"><i>123</i>&nbsp;            Log.d(TAG, &quot;starting next discovery interval&quot;);</b>
+<b class="nc"><i>124</i>&nbsp;            searchDevices();</b>
+<b class="nc"><i>125</i>&nbsp;            searchLoopHandler.postDelayed(searchDevicesThread, 120000);</b>
+<b class="nc"><i>126</i>&nbsp;        }</b>
+<i>127</i>&nbsp;    };
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public void searchDevices() {
+<b class="nc"><i>130</i>&nbsp;        if (adapter.isDiscovering()) {</b>
+<b class="nc"><i>131</i>&nbsp;            Log.d(TAG, &quot;stopping discovery&quot;);</b>
+<b class="nc"><i>132</i>&nbsp;            adapter.cancelDiscovery();</b>
+<i>133</i>&nbsp;        }
+<b class="nc"><i>134</i>&nbsp;        Log.d(TAG, &quot;starting discovery&quot;);</b>
+<b class="nc"><i>135</i>&nbsp;        adapter.startDiscovery();</b>
+<b class="nc"><i>136</i>&nbsp;    }</b>
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;    public Thread listeningThread = new Thread(new Runnable() {</b>
+<i>139</i>&nbsp;        @Override
+<i>140</i>&nbsp;        public void run() {
+<b class="nc"><i>141</i>&nbsp;            Log.d(TAG, &quot;running listener thread&quot;);</b>
+<i>142</i>&nbsp;            try {
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;                BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord(&quot;bonfire&quot;, BTMODULEUUID);</b>
+<i>145</i>&nbsp;                while(true) {
+<i>146</i>&nbsp;                    try {
+<b class="nc"><i>147</i>&nbsp;                        BluetoothSocket socket = server.accept();</b>
+<b class="nc"><i>148</i>&nbsp;                        ConnectionHandler handler = new ConnectionHandler(socket);</b>
+<b class="nc"><i>149</i>&nbsp;                        synchronized (connections) {</b>
+<b class="nc"><i>150</i>&nbsp;                            connections.put(socket.getRemoteDevice().getAddress(), handler);</b>
+<b class="nc"><i>151</i>&nbsp;                        }</b>
+<b class="nc"><i>152</i>&nbsp;                    } catch(IOException ex) {</b>
+<b class="nc"><i>153</i>&nbsp;                        Log.e(TAG, &quot;ConnectionHandler constructor fail&quot;);</b>
+<b class="nc"><i>154</i>&nbsp;                        Log.e(TAG, ex.getMessage());</b>
+<b class="nc"><i>155</i>&nbsp;                    }</b>
+<i>156</i>&nbsp;                }
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>159</i>&nbsp;                String errMes = &quot;MEEP MEEP MEEP: Exception in Blueooth Listener Thread, bluetooth connections won&#39;t work until app restart! &quot;;</b>
+<b class="nc"><i>160</i>&nbsp;                Log.e(TAG, errMes);</b>
+<b class="nc"><i>161</i>&nbsp;                StatsCollector.publishError(BluetoothProtocol.class, &quot;ERR&quot;, null, errMes);</b>
+<b class="nc"><i>162</i>&nbsp;                e.printStackTrace();</b>
+<i>163</i>&nbsp;            }
+<b class="nc"><i>164</i>&nbsp;        }</b>
+<i>165</i>&nbsp;    });
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    public class ConnectionHandler extends Thread {
+<i>168</i>&nbsp;        final BluetoothSocket socket;
+<i>169</i>&nbsp;        final InputStream input;
+<i>170</i>&nbsp;        final ObjectOutputStream stream;
+<i>171</i>&nbsp;        final byte[] peerMacAddress;
+<i>172</i>&nbsp;        final String formattedMacAddress;
+<b class="nc"><i>173</i>&nbsp;        int sent=0,received=0;</b>
+<b class="nc"><i>174</i>&nbsp;        public ConnectionHandler(BluetoothSocket socket) throws IOException {</b>
+<b class="nc"><i>175</i>&nbsp;            this.socket = socket;</b>
+<b class="nc"><i>176</i>&nbsp;            formattedMacAddress = socket.getRemoteDevice().getAddress();</b>
+<b class="nc"><i>177</i>&nbsp;            peerMacAddress = Peer.addressFromString(formattedMacAddress);</b>
+<b class="nc"><i>178</i>&nbsp;            input = socket.getInputStream();</b>
+<b class="nc"><i>179</i>&nbsp;            OutputStream output = socket.getOutputStream();</b>
+<b class="nc"><i>180</i>&nbsp;            stream = new ObjectOutputStream(output);</b>
+<b class="nc"><i>181</i>&nbsp;            this.start();</b>
+<b class="nc"><i>182</i>&nbsp;        }</b>
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;        @Override
+<i>185</i>&nbsp;        public void run() {
+<i>186</i>&nbsp;            try {
+<b class="nc"><i>187</i>&nbsp;                Log.d(TAG, &quot;Client connected: &quot; + formattedMacAddress);</b>
+<i>188</i>&nbsp;
+<b class="nc"><i>189</i>&nbsp;                final ObjectInputStream stream = new ObjectInputStream(input);</b>
+<i>190</i>&nbsp;                while(true) {
+<b class="nc"><i>191</i>&nbsp;                    final Packet packet = (Packet) stream.readObject();</b>
+<b class="nc"><i>192</i>&nbsp;                    Log.d(TAG, &quot;Received &quot; + packet.toString());</b>
+<b class="nc"><i>193</i>&nbsp;                    packet.addPathNode(peerMacAddress);</b>
+<i>194</i>&nbsp;                    // add traceroute segment to payload packets
+<b class="nc"><i>195</i>&nbsp;                    if (packet.getType() == PacketType.Payload) {</b>
+<b class="nc"><i>196</i>&nbsp;                        packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.BLUETOOTH, packet.getLastHopTimeSent(), new Date()));</b>
+<i>197</i>&nbsp;                    }
+<i>198</i>&nbsp;                    // hand over to the onMessageReceivedListener, which will take account for displaying
+<i>199</i>&nbsp;                    // the message and/or redistribute it to further recipients
+<b class="nc"><i>200</i>&nbsp;                    packetListener.onPacketReceived(BluetoothProtocol.this, packet);</b>
+<b class="nc"><i>201</i>&nbsp;                    received++;</b>
+<b class="nc"><i>202</i>&nbsp;                }</b>
+<b class="nc"><i>203</i>&nbsp;            } catch(ClassNotFoundException ex) {</b>
+<b class="nc"><i>204</i>&nbsp;                Log.e(TAG, &quot;Unable to deserialize packet, class not found (&quot;+ex.getMessage() + &quot;), closing connection!&quot;);</b>
+<b class="nc"><i>205</i>&nbsp;                teardown();</b>
+<b class="nc"><i>206</i>&nbsp;            } catch (IOException e) {</b>
+<i>207</i>&nbsp;                // On connection errors, tear down this connection and remove from the list
+<i>208</i>&nbsp;                // of active connections.
+<b class="nc"><i>209</i>&nbsp;                StatsCollector.publishError(BluetoothProtocol.class, &quot;ERR&quot;, null, &quot;Error in recv thread: &quot;+e.getMessage());</b>
+<b class="nc"><i>210</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>211</i>&nbsp;                teardown();</b>
+<b class="nc"><i>212</i>&nbsp;            }</b>
+<b class="nc"><i>213</i>&nbsp;        }</b>
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;        public void sendNetworkPacket(final Packet packet) {
+<b class="nc"><i>216</i>&nbsp;            Log.d(TAG, &quot;sendNetworkPacket to &quot;+formattedMacAddress+&quot; | &quot;+packet.toString());</b>
+<b class="nc"><i>217</i>&nbsp;            synchronized (ConnectionHandler.this.stream) {</b>
+<i>218</i>&nbsp;                try {
+<b class="nc"><i>219</i>&nbsp;                    stream.writeObject(packet);</b>
+<b class="nc"><i>220</i>&nbsp;                    stream.flush();</b>
+<b class="nc"><i>221</i>&nbsp;                    sent++;</b>
+<b class="nc"><i>222</i>&nbsp;                } catch(IOException ex) {</b>
+<b class="nc"><i>223</i>&nbsp;                    Log.w(TAG, &quot;sendNetworkPacket: Could not send to &quot;+formattedMacAddress+&quot; : &quot;+packet.toString());</b>
+<b class="nc"><i>224</i>&nbsp;                    Log.w(TAG, ex.getMessage());</b>
+<b class="nc"><i>225</i>&nbsp;                    StatsCollector.publishError(BluetoothProtocol.class, &quot;ERR&quot;, packet.uuid, &quot;Could not send to &quot; + formattedMacAddress + &quot; : &quot; + ex.getMessage());</b>
+<i>226</i>&nbsp;                    // Connection is broken, remove from list
+<b class="nc"><i>227</i>&nbsp;                    teardown();</b>
+<b class="nc"><i>228</i>&nbsp;                }</b>
+<b class="nc"><i>229</i>&nbsp;            }</b>
+<b class="nc"><i>230</i>&nbsp;        }</b>
+<i>231</i>&nbsp;        private void teardown() {
+<b class="nc"><i>232</i>&nbsp;            Log.w(TAG,&quot;ConnectionHandler: tearing down &quot;+formattedMacAddress);</b>
+<b class="nc"><i>233</i>&nbsp;            synchronized (connections) {</b>
+<b class="nc"><i>234</i>&nbsp;                connections.remove(formattedMacAddress);</b>
+<b class="nc"><i>235</i>&nbsp;            }</b>
+<i>236</i>&nbsp;            try {
+<b class="nc"><i>237</i>&nbsp;                socket.close();</b>
+<b class="nc"><i>238</i>&nbsp;            } catch (IOException e) {/*ignore*/}</b>
+<b class="nc"><i>239</i>&nbsp;        }</b>
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;        @Override
+<i>242</i>&nbsp;        public String toString() {
+<b class="nc"><i>243</i>&nbsp;            return &quot;BT.ConnectionHandler(&quot;+formattedMacAddress+&quot;, sent=&quot;+sent+&quot;, received=&quot;+received+&quot;)&quot;;</b>
+<i>244</i>&nbsp;        }
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    ConnectionHandler connectToDevice(BluetoothDevice device, UUID uuid) {
+<i>248</i>&nbsp;        try {
+<b class="nc"><i>249</i>&nbsp;            synchronized (connections) {</b>
+<b class="nc"><i>250</i>&nbsp;                if (connections.containsKey(device.getAddress()))</b>
+<b class="nc"><i>251</i>&nbsp;                    return connections.get(device.getAddress());</b>
+<b class="nc"><i>252</i>&nbsp;            }</b>
+<i>253</i>&nbsp;            if (ConstOptions.DELAYED_BT_CONNECTION &gt; 0) {
+<b class="nc"><i>254</i>&nbsp;                int delay = new Random().nextInt(ConstOptions.DELAYED_BT_CONNECTION) + 1;</b>
+<b class="nc"><i>255</i>&nbsp;                Log.d(TAG, &quot;delaying connection by &quot;+delay+&quot; ms&quot;);</b>
+<b class="nc"><i>256</i>&nbsp;                Thread.sleep(delay);</b>
+<i>257</i>&nbsp;            }
+<i>258</i>&nbsp;
+<b class="nc"><i>259</i>&nbsp;            BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(BTMODULEUUID);</b>
+<b class="nc"><i>260</i>&nbsp;            socket.connect();</b>
+<b class="nc"><i>261</i>&nbsp;            ConnectionHandler handler = new ConnectionHandler(socket);</b>
+<b class="nc"><i>262</i>&nbsp;            synchronized (connections) {</b>
+<b class="nc"><i>263</i>&nbsp;                connections.put(device.getAddress(), handler);</b>
+<b class="nc"><i>264</i>&nbsp;            }</b>
+<b class="nc"><i>265</i>&nbsp;            return handler;</b>
+<b class="nc"><i>266</i>&nbsp;        }catch(InterruptedException e){</b>
+<i>267</i>&nbsp;            //ignore
+<b class="nc"><i>268</i>&nbsp;            return null;</b>
+<b class="nc"><i>269</i>&nbsp;        } catch (IOException e) {</b>
+<i>270</i>&nbsp;            // do nothing, this exception will occur a lot because there will be Bluetooth
+<i>271</i>&nbsp;            // devices nearby that do not run BonfireChat, resulting in no suitable
+<i>272</i>&nbsp;            // ServerSocket to accept this connection
+<b class="nc"><i>273</i>&nbsp;            Log.e(TAG, &quot;Unable to connect to bluetooth device &quot;+device.getAddress()+&quot;, ignoring&quot;);</b>
+<b class="nc"><i>274</i>&nbsp;            Log.e(TAG, e.getMessage());</b>
+<b class="nc"><i>275</i>&nbsp;            StatsCollector.publishError(BluetoothProtocol.class, &quot;ERR&quot;, uuid,</b>
+<i>276</i>&nbsp;                    &quot;Unable to connect to bluetooth device &quot;+device.getAddress()+&quot;: &quot;+e.getMessage());
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;            try {
+<b class="nc"><i>279</i>&nbsp;                Log.w(TAG, &quot;Trying ugly workaround from the internet - here be dragons ...&quot;);</b>
+<i>280</i>&nbsp;
+<b class="nc"><i>281</i>&nbsp;                BluetoothSocket socket = (BluetoothSocket) device.getClass().getMethod(&quot;createInsecureRfcommSocket&quot;, new Class[] {int.class}).invoke(device,1);</b>
+<b class="nc"><i>282</i>&nbsp;                socket.connect();</b>
+<b class="nc"><i>283</i>&nbsp;                Log.i(TAG, &quot;W O W  - success!&quot;);</b>
+<i>284</i>&nbsp;
+<b class="nc"><i>285</i>&nbsp;                ConnectionHandler handler = new ConnectionHandler(socket);</b>
+<b class="nc"><i>286</i>&nbsp;                synchronized (connections) {</b>
+<b class="nc"><i>287</i>&nbsp;                    connections.put(device.getAddress(), handler);</b>
+<b class="nc"><i>288</i>&nbsp;                }</b>
+<b class="nc"><i>289</i>&nbsp;                return handler;</b>
+<i>290</i>&nbsp;
+<b class="nc"><i>291</i>&nbsp;            } catch(Exception ex2) {</b>
+<i>292</i>&nbsp;                // all kinds of exceptions...
+<b class="nc"><i>293</i>&nbsp;                Log.e(TAG, &quot;Ugly workaround did not work around: &quot;+ex2.getMessage());</b>
+<i>294</i>&nbsp;
+<b class="nc"><i>295</i>&nbsp;                return null;</b>
+<i>296</i>&nbsp;            }
+<i>297</i>&nbsp;        }
+<i>298</i>&nbsp;    }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;    // ###########################################################################
+<i>301</i>&nbsp;    // ###    Implementation of IProtocol
+<i>302</i>&nbsp;    // ###########################################################################
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    @Override
+<i>305</i>&nbsp;    public void sendPacket(Packet packet, Peer peer) {
+<b class="nc"><i>306</i>&nbsp;        Log.d(TAG, &quot;sending packet to peers via Bluetooth&quot;);</b>
+<i>307</i>&nbsp;        // Prevent discovery start while sending
+<b class="nc"><i>308</i>&nbsp;        searchLoopHandler.removeCallbacksAndMessages(null);</b>
+<b class="nc"><i>309</i>&nbsp;        if (adapter.isDiscovering()) {</b>
+<b class="nc"><i>310</i>&nbsp;            adapter.cancelDiscovery();</b>
+<i>311</i>&nbsp;        }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;        // send packet only to specified peer. Just try sending it to
+<i>315</i>&nbsp;        // the addresses, no discovering necessary to send the packet
+<b class="nc"><i>316</i>&nbsp;        ConnectionHandler socket = connectToDevice(adapter.getRemoteDevice(peer.getAddress()), packet.uuid);</b>
+<b class="nc"><i>317</i>&nbsp;        if (socket != null) {</b>
+<b class="nc"><i>318</i>&nbsp;            socket.sendNetworkPacket(packet);</b>
+<i>319</i>&nbsp;        }
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;        // Start discovery again after five seconds, if sendPacket is not called in the mean time.
+<b class="nc"><i>322</i>&nbsp;        searchLoopHandler.postDelayed(searchDevicesThread, 5555);</b>
+<b class="nc"><i>323</i>&nbsp;    }</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    @Override
+<i>326</i>&nbsp;    public boolean canSend() {
+<b class="nc"><i>327</i>&nbsp;        return true;</b>
+<i>328</i>&nbsp;    }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;    @Override
+<i>331</i>&nbsp;    public void shutdown() {
+<i>332</i>&nbsp;        // stop discovering
+<b class="nc"><i>333</i>&nbsp;        searchLoopHandler.removeCallbacksAndMessages(null);</b>
+<b class="nc"><i>334</i>&nbsp;        if (adapter.isDiscovering()) adapter.cancelDiscovery();</b>
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;        // close all connections
+<b class="nc"><i>337</i>&nbsp;        synchronized (connections) {</b>
+<b class="nc"><i>338</i>&nbsp;            for (ConnectionHandler c : connections.values()) {</b>
+<b class="nc"><i>339</i>&nbsp;                c.teardown();</b>
+<b class="nc"><i>340</i>&nbsp;            }</b>
+<b class="nc"><i>341</i>&nbsp;        }</b>
+<b class="nc"><i>342</i>&nbsp;    }</b>
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    @Override
+<i>345</i>&nbsp;    public String toString() {
+<b class="nc"><i>346</i>&nbsp;        if (adapter != null) {</b>
+<b class="nc"><i>347</i>&nbsp;            return &quot;BluetoothProtocol(name=&quot; + this.adapter.getName() + &quot;, mac=&quot; + this.adapter.getAddress() + &quot;)&quot;;</b>
+<i>348</i>&nbsp;        } else {
+<b class="nc"><i>349</i>&nbsp;            return &quot;BluetoothProtocol(device unsupported!)&quot;;</b>
+<i>350</i>&nbsp;        }
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

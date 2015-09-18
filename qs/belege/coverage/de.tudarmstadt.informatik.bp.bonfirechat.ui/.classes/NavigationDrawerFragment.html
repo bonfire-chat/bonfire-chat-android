@@ -1,0 +1,483 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NavigationDrawerFragment</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NavigationDrawerFragment (de.tudarmstadt.informatik.bp.bonfirechat.ui)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NavigationDrawerFragment</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 74)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">NavigationDrawerFragment$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NavigationDrawerFragment$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NavigationDrawerFragment$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NavigationDrawerFragment$4</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NavigationDrawerFragment$5</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 102)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.ui;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.app.Fragment;
+<i>4</i>&nbsp;import android.app.Activity;
+<i>5</i>&nbsp;import android.app.ActionBar;
+<i>6</i>&nbsp;import android.content.Intent;
+<i>7</i>&nbsp;import android.support.v4.app.ActionBarDrawerToggle;
+<i>8</i>&nbsp;import android.support.v4.view.GravityCompat;
+<i>9</i>&nbsp;import android.support.v4.widget.DrawerLayout;
+<i>10</i>&nbsp;import android.content.SharedPreferences;
+<i>11</i>&nbsp;import android.content.res.Configuration;
+<i>12</i>&nbsp;import android.os.Bundle;
+<i>13</i>&nbsp;import android.preference.PreferenceManager;
+<i>14</i>&nbsp;import android.view.LayoutInflater;
+<i>15</i>&nbsp;import android.view.Menu;
+<i>16</i>&nbsp;import android.view.MenuInflater;
+<i>17</i>&nbsp;import android.view.MenuItem;
+<i>18</i>&nbsp;import android.view.View;
+<i>19</i>&nbsp;import android.view.ViewGroup;
+<i>20</i>&nbsp;import android.widget.AdapterView;
+<i>21</i>&nbsp;import android.widget.ArrayAdapter;
+<i>22</i>&nbsp;import android.widget.ListView;
+<i>23</i>&nbsp;import android.widget.TextView;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.R;
+<i>26</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+<i>27</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+<i>28</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
+<i>29</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * Fragment used for managing interactions for and presentation of a navigation drawer.
+<i>33</i>&nbsp; * See the &lt;a href=&quot;https://developer.android.com/design/patterns/navigation-drawer.html#Interaction&quot;&gt;
+<i>34</i>&nbsp; * design guidelines&lt;/a&gt; for a complete explanation of the behaviors implemented here.
+<i>35</i>&nbsp; */
+<i>36</i>&nbsp;public class NavigationDrawerFragment extends Fragment {
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    /**
+<i>39</i>&nbsp;     * Remember the position of the selected item.
+<i>40</i>&nbsp;     */
+<i>41</i>&nbsp;    private static final String STATE_SELECTED_POSITION = &quot;selected_navigation_drawer_position&quot;;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    private static final String TAG = &quot;NavigationDrawerFrag&quot;;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    /**
+<i>46</i>&nbsp;     * A pointer to the current callbacks instance (the Activity).
+<i>47</i>&nbsp;     */
+<i>48</i>&nbsp;    private NavigationDrawerCallbacks mCallbacks;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    /**
+<i>51</i>&nbsp;     * Helper component that ties the action bar to the navigation drawer.
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    private ActionBarDrawerToggle mDrawerToggle;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    private DrawerLayout mDrawerLayout;
+<i>56</i>&nbsp;    private ListView mDrawerListView;
+<i>57</i>&nbsp;    private View rootView;
+<i>58</i>&nbsp;    private View mFragmentContainerView;
+<i>59</i>&nbsp;
+<b class="nc"><i>60</i>&nbsp;    private int mCurrentSelectedPosition = 0;</b>
+<i>61</i>&nbsp;    private boolean mFromSavedInstanceState;
+<i>62</i>&nbsp;    private boolean firstStart;
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;    public NavigationDrawerFragment() {</b>
+<b class="nc"><i>65</i>&nbsp;    }</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    public void onCreate(Bundle savedInstanceState) {
+<b class="nc"><i>69</i>&nbsp;        super.onCreate(savedInstanceState);</b>
+<i>70</i>&nbsp;
+<b class="nc"><i>71</i>&nbsp;        firstStart = UIHelper.shouldShowOobe(getActivity());</b>
+<i>72</i>&nbsp;
+<b class="nc"><i>73</i>&nbsp;        if (savedInstanceState != null) {</b>
+<b class="nc"><i>74</i>&nbsp;            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);</b>
+<b class="nc"><i>75</i>&nbsp;            mFromSavedInstanceState = true;</b>
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        // Select either the default item (0) or the last selected item.
+<b class="nc"><i>79</i>&nbsp;        selectItem(mCurrentSelectedPosition);</b>
+<b class="nc"><i>80</i>&nbsp;    }</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    @Override
+<i>83</i>&nbsp;    public void onActivityCreated(Bundle savedInstanceState) {
+<b class="nc"><i>84</i>&nbsp;        super.onActivityCreated(savedInstanceState);</b>
+<i>85</i>&nbsp;        // Indicate that this fragment would like to influence the set of actions in the action bar.
+<b class="nc"><i>86</i>&nbsp;        setHasOptionsMenu(true);</b>
+<b class="nc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    @Override
+<i>90</i>&nbsp;    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+<i>91</i>&nbsp;                             Bundle savedInstanceState) {
+<b class="nc"><i>92</i>&nbsp;        rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);</b>
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;        mDrawerListView = (ListView) rootView.findViewById(R.id.listView);</b>
+<b class="nc"><i>95</i>&nbsp;        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {</b>
+<i>96</i>&nbsp;            @Override
+<i>97</i>&nbsp;            public void onItemClick(AdapterView&lt;?&gt; parent, View view, int position, long id) {
+<b class="nc"><i>98</i>&nbsp;                selectItem(position);</b>
+<b class="nc"><i>99</i>&nbsp;            }</b>
+<i>100</i>&nbsp;        });
+<b class="nc"><i>101</i>&nbsp;        mDrawerListView.setAdapter(new ArrayAdapter&lt;String&gt;(</b>
+<i>102</i>&nbsp;                getActionBar().getThemedContext(),
+<i>103</i>&nbsp;                android.R.layout.simple_list_item_activated_1,
+<i>104</i>&nbsp;                android.R.id.text1,
+<i>105</i>&nbsp;                new String[]{
+<i>106</i>&nbsp;                        getString(R.string.title_conversations),
+<i>107</i>&nbsp;                        getString(R.string.title_contacts),
+<i>108</i>&nbsp;                        getString(R.string.title_settings),
+<i>109</i>&nbsp;                }));
+<b class="nc"><i>110</i>&nbsp;        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);</b>
+<i>111</i>&nbsp;
+<b class="nc"><i>112</i>&nbsp;        rootView.findViewById(R.id.btnShareIdentityQR).setOnClickListener(new View.OnClickListener() {</b>
+<i>113</i>&nbsp;            @Override
+<i>114</i>&nbsp;            public void onClick(View v) {
+<b class="nc"><i>115</i>&nbsp;                startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));</b>
+<b class="nc"><i>116</i>&nbsp;            }</b>
+<i>117</i>&nbsp;        });
+<b class="nc"><i>118</i>&nbsp;        rootView.findViewById(R.id.btnEditIdentity).setOnClickListener(new View.OnClickListener() {</b>
+<i>119</i>&nbsp;            @Override
+<i>120</i>&nbsp;            public void onClick(View v) {
+<b class="nc"><i>121</i>&nbsp;                startActivity(new Intent(getActivity(), IdentityActivity.class));</b>
+<b class="nc"><i>122</i>&nbsp;            }</b>
+<i>123</i>&nbsp;        });
+<b class="nc"><i>124</i>&nbsp;        return rootView;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public boolean isDrawerOpen() {
+<b class="nc"><i>128</i>&nbsp;        return mDrawerLayout != null &amp;&amp; mDrawerLayout.isDrawerOpen(mFragmentContainerView);</b>
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * Users of this fragment must call this method to set up the navigation drawer interactions.
+<i>133</i>&nbsp;     *
+<i>134</i>&nbsp;     * @param fragmentId   The android:id of this fragment in its activity&#39;s layout.
+<i>135</i>&nbsp;     * @param drawerLayout The DrawerLayout containing this fragment&#39;s UI.
+<i>136</i>&nbsp;     */
+<i>137</i>&nbsp;    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+<b class="nc"><i>138</i>&nbsp;        mFragmentContainerView = getActivity().findViewById(fragmentId);</b>
+<b class="nc"><i>139</i>&nbsp;        mDrawerLayout = drawerLayout;</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;        // set a custom shadow that overlays the main content when the drawer opens
+<b class="nc"><i>142</i>&nbsp;        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);</b>
+<i>143</i>&nbsp;
+<b class="nc"><i>144</i>&nbsp;        Identity identity = BonfireData.getInstance(getActivity()).getDefaultIdentity();</b>
+<b class="nc"><i>145</i>&nbsp;        if (identity != null)</b>
+<b class="nc"><i>146</i>&nbsp;            ((TextView) rootView.findViewById(R.id.txt_nickname)).setText(identity.getNickname());</b>
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;        // set up the drawer&#39;s list view with items and click listener
+<b class="nc"><i>149</i>&nbsp;        ActionBar actionBar = getActionBar();</b>
+<b class="nc"><i>150</i>&nbsp;        getActionBar().setDisplayHomeAsUpEnabled(true);</b>
+<b class="nc"><i>151</i>&nbsp;        actionBar.setHomeButtonEnabled(true);</b>
+<b class="nc"><i>152</i>&nbsp;        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);</b>
+<b class="nc"><i>153</i>&nbsp;        actionBar.setLogo(R.mipmap.ic_launcher);</b>
+<b class="nc"><i>154</i>&nbsp;        actionBar.setIcon(R.drawable.ic_drawer);</b>
+<i>155</i>&nbsp;
+<b class="nc"><i>156</i>&nbsp;        mDrawerToggle = new ActionBarDrawerToggle(</b>
+<i>157</i>&nbsp;                getActivity(),                    /* host Activity */
+<i>158</i>&nbsp;                mDrawerLayout,                    /* DrawerLayout object */
+<i>159</i>&nbsp;                R.drawable.ic_drawer,             /* nav drawer image to replace &#39;Up&#39; caret */
+<i>160</i>&nbsp;                R.string.navigation_drawer_open,  /* &quot;open drawer&quot; description for accessibility */
+<i>161</i>&nbsp;                R.string.navigation_drawer_close  /* &quot;close drawer&quot; description for accessibility */
+<b class="nc"><i>162</i>&nbsp;        ) {</b>
+<i>163</i>&nbsp;            @Override
+<i>164</i>&nbsp;            public void onDrawerClosed(View drawerView) {
+<b class="nc"><i>165</i>&nbsp;                super.onDrawerClosed(drawerView);</b>
+<b class="nc"><i>166</i>&nbsp;                if (!isAdded()) {</b>
+<b class="nc"><i>167</i>&nbsp;                    return;</b>
+<i>168</i>&nbsp;                }
+<b class="nc"><i>169</i>&nbsp;                getActivity().invalidateOptionsMenu();</b>
+<i>170</i>&nbsp;                //getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+<b class="nc"><i>171</i>&nbsp;            }</b>
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;            @Override
+<i>174</i>&nbsp;            public void onDrawerOpened(View drawerView) {
+<b class="nc"><i>175</i>&nbsp;                super.onDrawerOpened(drawerView);</b>
+<b class="nc"><i>176</i>&nbsp;                if (!isAdded()) {</b>
+<b class="nc"><i>177</i>&nbsp;                    return;</b>
+<i>178</i>&nbsp;                }
+<i>179</i>&nbsp;
+<b class="nc"><i>180</i>&nbsp;                if (firstStart) {</b>
+<i>181</i>&nbsp;                    // The user manually opened the drawer; store this flag to prevent auto-showing
+<i>182</i>&nbsp;                    // the navigation drawer automatically in the future.
+<b class="nc"><i>183</i>&nbsp;                    firstStart = false;</b>
+<b class="nc"><i>184</i>&nbsp;                    SharedPreferences sp = PreferenceManager</b>
+<i>185</i>&nbsp;                            .getDefaultSharedPreferences(getActivity());
+<b class="nc"><i>186</i>&nbsp;                    sp.edit().putBoolean(UIHelper.PREF_SHOW_OOBE, false).apply();</b>
+<i>187</i>&nbsp;                }
+<b class="nc"><i>188</i>&nbsp;                getActionBar().setTitle(R.string.app_name);</b>
+<b class="nc"><i>189</i>&nbsp;                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()</b>
+<b class="nc"><i>190</i>&nbsp;            }</b>
+<i>191</i>&nbsp;        };
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;        // If the user hasn&#39;t &#39;learned&#39; about the drawer, open it to introduce them to the drawer,
+<i>194</i>&nbsp;        // per the navigation drawer design guidelines.
+<b class="nc"><i>195</i>&nbsp;        if (firstStart &amp;&amp; !mFromSavedInstanceState) {</b>
+<b class="nc"><i>196</i>&nbsp;            mDrawerLayout.openDrawer(mFragmentContainerView);</b>
+<i>197</i>&nbsp;        }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;        // Defer code dependent on restoration of previous instance state.
+<b class="nc"><i>200</i>&nbsp;        mDrawerLayout.post(new Runnable() {</b>
+<i>201</i>&nbsp;            @Override
+<i>202</i>&nbsp;            public void run() {
+<b class="nc"><i>203</i>&nbsp;                mDrawerToggle.syncState();</b>
+<b class="nc"><i>204</i>&nbsp;            }</b>
+<i>205</i>&nbsp;        });
+<i>206</i>&nbsp;
+<b class="nc"><i>207</i>&nbsp;        mDrawerLayout.setDrawerListener(mDrawerToggle);</b>
+<b class="nc"><i>208</i>&nbsp;    }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public void selectItem(int position) {
+<b class="nc"><i>211</i>&nbsp;        mCurrentSelectedPosition = position;</b>
+<b class="nc"><i>212</i>&nbsp;        if (mDrawerListView != null) {</b>
+<b class="nc"><i>213</i>&nbsp;            mDrawerListView.setItemChecked(position, true);</b>
+<i>214</i>&nbsp;        }
+<b class="nc"><i>215</i>&nbsp;        if (mDrawerLayout != null) {</b>
+<b class="nc"><i>216</i>&nbsp;            mDrawerLayout.closeDrawer(mFragmentContainerView);</b>
+<i>217</i>&nbsp;        }
+<b class="nc"><i>218</i>&nbsp;        if (mCallbacks != null) {</b>
+<b class="nc"><i>219</i>&nbsp;            mCallbacks.onNavigationDrawerItemSelected(position);</b>
+<i>220</i>&nbsp;        }
+<b class="nc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    @Override
+<i>224</i>&nbsp;    public void onAttach(Activity activity) {
+<b class="nc"><i>225</i>&nbsp;        super.onAttach(activity);</b>
+<i>226</i>&nbsp;        try {
+<b class="nc"><i>227</i>&nbsp;            mCallbacks = (NavigationDrawerCallbacks) activity;</b>
+<b class="nc"><i>228</i>&nbsp;        } catch (ClassCastException e) {</b>
+<b class="nc"><i>229</i>&nbsp;            throw new ClassCastException(&quot;Activity must implement NavigationDrawerCallbacks.&quot;);</b>
+<b class="nc"><i>230</i>&nbsp;        }</b>
+<b class="nc"><i>231</i>&nbsp;    }</b>
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    @Override
+<i>234</i>&nbsp;    public void onDetach() {
+<b class="nc"><i>235</i>&nbsp;        super.onDetach();</b>
+<b class="nc"><i>236</i>&nbsp;        mCallbacks = null;</b>
+<b class="nc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    @Override
+<i>240</i>&nbsp;    public void onSaveInstanceState(Bundle outState) {
+<b class="nc"><i>241</i>&nbsp;        super.onSaveInstanceState(outState);</b>
+<b class="nc"><i>242</i>&nbsp;        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);</b>
+<b class="nc"><i>243</i>&nbsp;    }</b>
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    @Override
+<i>246</i>&nbsp;    public void onConfigurationChanged(Configuration newConfig) {
+<b class="nc"><i>247</i>&nbsp;        super.onConfigurationChanged(newConfig);</b>
+<i>248</i>&nbsp;        // Forward the new configuration the drawer toggle component.
+<b class="nc"><i>249</i>&nbsp;        mDrawerToggle.onConfigurationChanged(newConfig);</b>
+<b class="nc"><i>250</i>&nbsp;    }</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    @Override
+<i>253</i>&nbsp;    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+<i>254</i>&nbsp;        // If the drawer is open, show the global app actions in the action bar. See also
+<i>255</i>&nbsp;        // showGlobalContextActionBar, which controls the top-left area of the action bar.
+<b class="nc"><i>256</i>&nbsp;        if (mDrawerLayout != null &amp;&amp; isDrawerOpen()) {</b>
+<b class="nc"><i>257</i>&nbsp;            inflater.inflate(R.menu.global, menu);</b>
+<b class="nc"><i>258</i>&nbsp;            showGlobalContextActionBar();</b>
+<i>259</i>&nbsp;        }
+<b class="nc"><i>260</i>&nbsp;        super.onCreateOptionsMenu(menu, inflater);</b>
+<b class="nc"><i>261</i>&nbsp;    }</b>
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    @Override
+<i>264</i>&nbsp;    public boolean onOptionsItemSelected(MenuItem item) {
+<b class="nc"><i>265</i>&nbsp;        if (mDrawerToggle.onOptionsItemSelected(item)) {</b>
+<b class="nc"><i>266</i>&nbsp;            return true;</b>
+<i>267</i>&nbsp;        }
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;        return super.onOptionsItemSelected(item);</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    /**
+<i>273</i>&nbsp;     * Per the navigation drawer design guidelines, updates the action bar to show the global app
+<i>274</i>&nbsp;     * &#39;context&#39;, rather than just what&#39;s in the current screen.
+<i>275</i>&nbsp;     */
+<i>276</i>&nbsp;    private void showGlobalContextActionBar() {
+<b class="nc"><i>277</i>&nbsp;        ActionBar actionBar = getActionBar();</b>
+<i>278</i>&nbsp;        //actionBar.setDisplayShowHomeEnabled(false);
+<i>279</i>&nbsp;        //actionBar.setDisplayShowTitleEnabled(true);
+<i>280</i>&nbsp;        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;
+<b class="nc"><i>283</i>&nbsp;    }</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    private ActionBar getActionBar() {
+<b class="nc"><i>286</i>&nbsp;        return getActivity().getActionBar();</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    /**
+<i>290</i>&nbsp;     * Callbacks interface that all activities using this fragment must implement.
+<i>291</i>&nbsp;     */
+<i>292</i>&nbsp;    public static interface NavigationDrawerCallbacks {
+<i>293</i>&nbsp;        /**
+<i>294</i>&nbsp;         * Called when an item in the navigation drawer is selected.
+<i>295</i>&nbsp;         */
+<i>296</i>&nbsp;        void onNavigationDrawerItemSelected(int position);
+<i>297</i>&nbsp;    }
+<i>298</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

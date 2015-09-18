@@ -1,0 +1,253 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UIHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.helper</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UIHelper (de.tudarmstadt.informatik.bp.bonfirechat.helper)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UIHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UIHelper$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">UIHelper$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">UIHelper$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.helper;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.app.AlertDialog;
+<i>4</i>&nbsp;import android.content.Context;
+<i>5</i>&nbsp;import android.content.DialogInterface;
+<i>6</i>&nbsp;import android.content.SharedPreferences;
+<i>7</i>&nbsp;import android.preference.PreferenceManager;
+<i>8</i>&nbsp;import android.view.ViewGroup;
+<i>9</i>&nbsp;import android.view.WindowManager;
+<i>10</i>&nbsp;import android.widget.EditText;
+<i>11</i>&nbsp;import android.widget.FrameLayout;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;/**
+<i>16</i>&nbsp; * Created by mw on 21.05.15.
+<i>17</i>&nbsp; */
+<b class="nc"><i>18</i>&nbsp;public class UIHelper {</b>
+<i>19</i>&nbsp;
+<b class="nc"><i>20</i>&nbsp;    public interface OnOkClickListener {</b>
+<i>21</i>&nbsp;        void onOkClicked(String input);
+<i>22</i>&nbsp;    }
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    public static void InputBox(Context ctx, String title, String message, String defaultValue, final OnOkClickListener okListener) {
+<b class="nc"><i>25</i>&nbsp;        final EditText input = new EditText(ctx);</b>
+<b class="nc"><i>26</i>&nbsp;        input.setSingleLine();</b>
+<b class="nc"><i>27</i>&nbsp;        FrameLayout container = new FrameLayout(ctx);</b>
+<b class="nc"><i>28</i>&nbsp;        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);</b>
+<i>29</i>&nbsp;        //params.leftMargin = 60;
+<i>30</i>&nbsp;        //params.rightMargin = 60;
+<b class="nc"><i>31</i>&nbsp;        input.setLayoutParams(params);</b>
+<b class="nc"><i>32</i>&nbsp;        input.setText(defaultValue);</b>
+<b class="nc"><i>33</i>&nbsp;        container.addView(input);</b>
+<b class="nc"><i>34</i>&nbsp;        AlertDialog.Builder b = new AlertDialog.Builder(ctx)</b>
+<i>35</i>&nbsp;                .setTitle(title)
+<i>36</i>&nbsp;                .setMessage(message)
+<b class="nc"><i>37</i>&nbsp;                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {</b>
+<i>38</i>&nbsp;                    @Override
+<i>39</i>&nbsp;                    public void onClick(DialogInterface dialog, int which) {
+<b class="nc"><i>40</i>&nbsp;                        okListener.onOkClicked(input.getText().toString());</b>
+<b class="nc"><i>41</i>&nbsp;                    }</b>
+<i>42</i>&nbsp;                })
+<b class="nc"><i>43</i>&nbsp;                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {</b>
+<i>44</i>&nbsp;                    @Override
+<i>45</i>&nbsp;                    public void onClick(DialogInterface dialogInterface, int i) {
+<i>46</i>&nbsp;                        // do nothing
+<b class="nc"><i>47</i>&nbsp;                    }</b>
+<i>48</i>&nbsp;                })
+<i>49</i>&nbsp;                        //.setIcon(R.mipmap.ic_launcher)
+<i>50</i>&nbsp;                .setView(container);
+<b class="nc"><i>51</i>&nbsp;        AlertDialog d = b.create();</b>
+<b class="nc"><i>52</i>&nbsp;        d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);</b>
+<b class="nc"><i>53</i>&nbsp;        d.show();</b>
+<b class="nc"><i>54</i>&nbsp;    }</b>
+<i>55</i>&nbsp;    public static void Info(Context ctx, String title, String message) {
+<b class="nc"><i>56</i>&nbsp;        AlertDialog.Builder b = new AlertDialog.Builder(ctx)</b>
+<i>57</i>&nbsp;                .setTitle(title)
+<i>58</i>&nbsp;                .setMessage(message)
+<b class="nc"><i>59</i>&nbsp;                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {</b>
+<i>60</i>&nbsp;                    @Override
+<i>61</i>&nbsp;                    public void onClick(DialogInterface dialog, int which) {
+<b class="nc"><i>62</i>&nbsp;                        dialog.dismiss();</b>
+<b class="nc"><i>63</i>&nbsp;                    }</b>
+<i>64</i>&nbsp;                });
+<b class="nc"><i>65</i>&nbsp;        AlertDialog d = b.create();</b>
+<b class="nc"><i>66</i>&nbsp;        d.show();</b>
+<b class="nc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Per the design guidelines, you should show the drawer on launch until the user manually
+<i>73</i>&nbsp;     * expands it. This shared preference tracks this.
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public static final String PREF_SHOW_OOBE = &quot;show_oobe&quot;;
+<i>76</i>&nbsp;    public static final String PREF_SHOW_CONTACTS_SHOWCASE = &quot;show_contacts_showcase&quot;;
+<i>77</i>&nbsp;    public static final String PREF_SHOW_CONVERSATION_SHOWCASE = &quot;show_conversation_showcase&quot;;
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public static boolean shouldShowOobe(Context context) {
+<b class="nc"><i>80</i>&nbsp;        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);</b>
+<b class="nc"><i>81</i>&nbsp;        return sp.getBoolean(PREF_SHOW_OOBE, true) || ConstOptions.ALWAYS_SHOW_OOBE;</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public static boolean shouldShowContactsTutorial(Context context) {
+<b class="nc"><i>85</i>&nbsp;        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);</b>
+<b class="nc"><i>86</i>&nbsp;        return sp.getBoolean(PREF_SHOW_CONTACTS_SHOWCASE, true);</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;    public static boolean shouldShowConversationTutorial(Context context) {
+<b class="nc"><i>89</i>&nbsp;        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);</b>
+<b class="nc"><i>90</i>&nbsp;        return sp.getBoolean(PREF_SHOW_CONVERSATION_SHOWCASE, true);</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public static void flagShownContactsTutorial(Context context) {
+<b class="nc"><i>94</i>&nbsp;        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);</b>
+<b class="nc"><i>95</i>&nbsp;        SharedPreferences.Editor editor = sp.edit();</b>
+<b class="nc"><i>96</i>&nbsp;        editor.putBoolean(PREF_SHOW_CONTACTS_SHOWCASE, false);</b>
+<b class="nc"><i>97</i>&nbsp;        editor.commit();</b>
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;    public static void flagShownConversationTutorial(Context context) {
+<b class="nc"><i>100</i>&nbsp;        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);</b>
+<b class="nc"><i>101</i>&nbsp;        SharedPreferences.Editor editor = sp.edit();</b>
+<b class="nc"><i>102</i>&nbsp;        editor.putBoolean(PREF_SHOW_CONVERSATION_SHOWCASE, false);</b>
+<b class="nc"><i>103</i>&nbsp;        editor.commit();</b>
+<b class="nc"><i>104</i>&nbsp;    }</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

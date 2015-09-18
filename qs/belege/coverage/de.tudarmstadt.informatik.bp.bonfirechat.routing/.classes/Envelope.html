@@ -1,0 +1,226 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Envelope</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.routing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Envelope (de.tudarmstadt.informatik.bp.bonfirechat.routing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Envelope</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23,8%
+  </span>
+  <span class="absValue">
+    (15/ 63)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.routing;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.content.Context;
+<i>4</i>&nbsp;import android.os.Environment;
+<i>5</i>&nbsp;import android.util.Log;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import org.abstractj.kalium.crypto.Box;
+<i>8</i>&nbsp;import org.abstractj.kalium.keys.PublicKey;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.io.File;
+<i>11</i>&nbsp;import java.io.FileInputStream;
+<i>12</i>&nbsp;import java.io.FileOutputStream;
+<i>13</i>&nbsp;import java.io.IOException;
+<i>14</i>&nbsp;import java.nio.charset.Charset;
+<i>15</i>&nbsp;import java.util.ArrayList;
+<i>16</i>&nbsp;import java.util.Arrays;
+<i>17</i>&nbsp;import java.util.Date;
+<i>18</i>&nbsp;import java.util.UUID;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+<i>21</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
+<i>22</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+<i>23</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+<i>24</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;/**
+<i>27</i>&nbsp; * Created by johannes on 15.06.15.
+<i>28</i>&nbsp; *
+<i>29</i>&nbsp; * An Envelope represents a message on its way. Envelopes are for being sent and recieved and
+<i>30</i>&nbsp; * should describe a message uniquely, including network parameters.
+<i>31</i>&nbsp; */
+<i>32</i>&nbsp;public class Envelope extends PayloadPacket {
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public final Date sentTime;
+<i>35</i>&nbsp;    public final byte[] senderPublicKey;
+<i>36</i>&nbsp;    public byte[] encryptedBody;
+<i>37</i>&nbsp;    public byte[] nonce;
+<i>38</i>&nbsp;    public int flags;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public static final int FLAG_BINARY = 1;
+<i>41</i>&nbsp;    public static final int FLAG_LOCATION = 2;
+<i>42</i>&nbsp;    public static final int FLAG_ENCRYPTED = 4;
+<i>43</i>&nbsp;    public static final int FLAG_TRACEROUTE = 8;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public Envelope(UUID uuid, Date sentTime, byte[] recipientPublicKey, byte[] senderPublicKey, byte[] encryptedBody) {
+<b class="fc"><i>46</i>&nbsp;        super(senderPublicKey, recipientPublicKey, uuid);</b>
+<b class="fc"><i>47</i>&nbsp;        this.sentTime = sentTime;</b>
+<b class="fc"><i>48</i>&nbsp;        this.senderPublicKey = senderPublicKey;</b>
+<b class="fc"><i>49</i>&nbsp;        this.encryptedBody = encryptedBody;</b>
+<b class="fc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public static Envelope fromMessage(Message message) {
+<b class="fc"><i>54</i>&nbsp;        byte[] publicKey = message.recipients.get(0).getPublicKey().asByteArray();</b>
+<i>55</i>&nbsp;        byte[] bodyBytes;
+<b class="fc"><i>56</i>&nbsp;        if (message.hasFlag(Message.FLAG_IS_FILE)) {</b>
+<i>57</i>&nbsp;            try {
+<b class="nc"><i>58</i>&nbsp;                File file = new File(message.body);</b>
+<b class="nc"><i>59</i>&nbsp;                FileInputStream inputStream = new FileInputStream(file);</b>
+<b class="nc"><i>60</i>&nbsp;                bodyBytes = new byte[(int)file.length()];</b>
+<b class="nc"><i>61</i>&nbsp;                inputStream.read(bodyBytes);</b>
+<b class="nc"><i>62</i>&nbsp;                inputStream.close();</b>
+<b class="nc"><i>63</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>64</i>&nbsp;                throw new IllegalArgumentException(&quot;Unable to convert IS_FILE message: &quot;+e.getMessage());</b>
+<b class="nc"><i>65</i>&nbsp;            }</b>
+<i>66</i>&nbsp;        } else {
+<i>67</i>&nbsp;            // Concatenate Sender Nickname and Message Text to be stored in Encrypted Body
+<b class="fc"><i>68</i>&nbsp;            String parts = message.sender.getNickname() + &quot;|&quot; + message.body;</b>
+<b class="fc"><i>69</i>&nbsp;            bodyBytes = parts.getBytes(Charset.forName(&quot;UTF-8&quot;));</b>
+<i>70</i>&nbsp;        }
+<b class="fc"><i>71</i>&nbsp;        Envelope envelope = new Envelope(</b>
+<i>72</i>&nbsp;                message.uuid,
+<i>73</i>&nbsp;                new Date(),
+<i>74</i>&nbsp;                publicKey,
+<i>75</i>&nbsp;                message.sender.getPublicKey().asByteArray(),
+<i>76</i>&nbsp;                bodyBytes);
+<b class="fc"><i>77</i>&nbsp;        if (message.hasFlag(Message.FLAG_ENCRYPTED)) {</b>
+<b class="nc"><i>78</i>&nbsp;            Identity sender = (Identity)message.sender;</b>
+<b class="nc"><i>79</i>&nbsp;            Box crypto = new Box(new PublicKey(publicKey), sender.privateKey);</b>
+<b class="nc"><i>80</i>&nbsp;            envelope.nonce = CryptoHelper.generateNonce();</b>
+<b class="nc"><i>81</i>&nbsp;            envelope.encryptedBody = crypto.encrypt(envelope.nonce, envelope.encryptedBody);</b>
+<b class="nc"><i>82</i>&nbsp;            envelope.flags |= FLAG_ENCRYPTED;</b>
+<i>83</i>&nbsp;        }
+<b class="fc"><i>84</i>&nbsp;        if (message.hasFlag(Message.FLAG_IS_FILE))</b>
+<b class="nc"><i>85</i>&nbsp;            envelope.flags |= FLAG_BINARY;</b>
+<i>86</i>&nbsp;
+<b class="fc"><i>87</i>&nbsp;        if (message.hasFlag(Message.FLAG_IS_LOCATION))</b>
+<b class="nc"><i>88</i>&nbsp;            envelope.flags |= FLAG_LOCATION;</b>
+<b class="fc"><i>89</i>&nbsp;        return envelope;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public Message toMessage(Context ctx) {
+<b class="nc"><i>93</i>&nbsp;        byte[] body = encryptedBody;</b>
+<b class="nc"><i>94</i>&nbsp;        int msgFlags = 0;</b>
+<i>95</i>&nbsp;        Contact theContact;
+<b class="nc"><i>96</i>&nbsp;        if (getRoutingMode() == ROUTING_MODE_DSR) {</b>
+<b class="nc"><i>97</i>&nbsp;            msgFlags |= Message.FLAG_ROUTING_DSR;</b>
+<b class="nc"><i>98</i>&nbsp;        } else if (getRoutingMode() == ROUTING_MODE_FLOODING) {</b>
+<b class="nc"><i>99</i>&nbsp;            msgFlags |= Message.FLAG_ROUTING_FLOODING;</b>
+<i>100</i>&nbsp;        }
+<b class="nc"><i>101</i>&nbsp;        if (hasFlag(FLAG_ENCRYPTED)) {</b>
+<b class="nc"><i>102</i>&nbsp;            Identity id = BonfireData.getInstance(ctx).getDefaultIdentity();</b>
+<b class="nc"><i>103</i>&nbsp;            Box crypto = new Box(new PublicKey(senderPublicKey), id.privateKey);</b>
+<b class="nc"><i>104</i>&nbsp;            body = crypto.decrypt(nonce, body);</b>
+<b class="nc"><i>105</i>&nbsp;            msgFlags |= Message.FLAG_ENCRYPTED;</b>
+<i>106</i>&nbsp;        }
+<b class="nc"><i>107</i>&nbsp;        if (hasFlag(FLAG_LOCATION)) {</b>
+<b class="nc"><i>108</i>&nbsp;            msgFlags |= Message.FLAG_IS_LOCATION;</b>
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;        String messageBody;
+<b class="nc"><i>112</i>&nbsp;        if (hasFlag(FLAG_BINARY)) {</b>
+<b class="nc"><i>113</i>&nbsp;            theContact = BonfireData.getInstance(ctx).getContactByPublicKey(senderPublicKey);</b>
+<b class="nc"><i>114</i>&nbsp;            File target = Message.getImageFile(this.uuid);</b>
+<i>115</i>&nbsp;            try {
+<b class="nc"><i>116</i>&nbsp;                FileOutputStream os = new FileOutputStream(target);</b>
+<b class="nc"><i>117</i>&nbsp;                os.write(body);</b>
+<b class="nc"><i>118</i>&nbsp;                os.close();</b>
+<b class="nc"><i>119</i>&nbsp;                messageBody = target.getAbsolutePath();</b>
+<b class="nc"><i>120</i>&nbsp;                msgFlags |= Message.FLAG_IS_FILE;</b>
+<b class="nc"><i>121</i>&nbsp;            } catch(IOException ex) {</b>
+<b class="nc"><i>122</i>&nbsp;                messageBody = &quot;ERROR:&quot; + ex.getMessage();</b>
+<b class="nc"><i>123</i>&nbsp;            }</b>
+<b class="nc"><i>124</i>&nbsp;        } else {</b>
+<b class="nc"><i>125</i>&nbsp;            String[] parts = new String(body, Charset.forName(&quot;UTF-8&quot;)).split(&quot;\\|&quot;, 2);</b>
+<b class="nc"><i>126</i>&nbsp;            theContact = Contact.findOrCreate(ctx, senderPublicKey, parts[0]);</b>
+<b class="nc"><i>127</i>&nbsp;            messageBody = parts[1];</b>
+<i>128</i>&nbsp;        }
+<b class="nc"><i>129</i>&nbsp;        Message message = new Message(messageBody, theContact, sentTime, msgFlags, uuid);</b>
+<b class="nc"><i>130</i>&nbsp;        message.traceroute = getTraceroute();</b>
+<b class="nc"><i>131</i>&nbsp;        Log.w(&quot;Envelope&quot;, &quot;unpacking envelope. traceroute : &quot; + message.traceroute);</b>
+<b class="nc"><i>132</i>&nbsp;        return message;</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    public boolean hasFlag(int flag) {
+<b class="fc"><i>136</i>&nbsp;        return (flag &amp; flags) == flag;</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    @Override
+<i>140</i>&nbsp;    public String toString() {
+<b class="nc"><i>141</i>&nbsp;        return super.toString() + &quot;:Envelope(...)&quot;;</b>
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

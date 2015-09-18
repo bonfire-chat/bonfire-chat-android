@@ -1,0 +1,386 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BonfireData</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.data</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BonfireData (de.tudarmstadt.informatik.bp.bonfirechat.data)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BonfireData</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 166)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.data;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.content.ContentValues;
+<i>4</i>&nbsp;import android.content.Context;
+<i>5</i>&nbsp;import android.database.Cursor;
+<i>6</i>&nbsp;import android.database.sqlite.SQLiteDatabase;
+<i>7</i>&nbsp;import android.database.sqlite.SQLiteOpenHelper;
+<i>8</i>&nbsp;import android.util.Log;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.util.ArrayList;
+<i>11</i>&nbsp;import java.util.Date;
+<i>12</i>&nbsp;import java.util.UUID;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
+<i>15</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+<i>16</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
+<i>17</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
+<i>18</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+<i>19</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;/**
+<i>22</i>&nbsp; * Created by simon on 05.05.15.
+<i>23</i>&nbsp; */
+<i>24</i>&nbsp;public class BonfireData extends SQLiteOpenHelper{
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    private static final String CONTACTS = &quot;contacts&quot;;
+<i>27</i>&nbsp;    private static final String CONVERSATIONS = &quot;conversations&quot;;
+<i>28</i>&nbsp;    private static final String MESSAGES = &quot;messages&quot;;
+<i>29</i>&nbsp;    private static final String STATS = &quot;stats&quot;;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    private static final String IDENTITIES = &quot;identity&quot;;
+<i>32</i>&nbsp;    // rowid is not included in &quot;*&quot; by default
+<b class="nc"><i>33</i>&nbsp;    private static final String[] ALL_COLS = new String[]{ &quot;rowid&quot;, &quot;*&quot; };</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    private static final String TAG = &quot;BonfireData&quot;;
+<i>36</i>&nbsp;
+<b class="nc"><i>37</i>&nbsp;    private Identity cachedDefaultIdentity = null;</b>
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private static BonfireData instance;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public static BonfireData getInstance(Context ctx) {
+<b class="nc"><i>42</i>&nbsp;        if (instance == null) instance = new BonfireData(ctx);</b>
+<b class="nc"><i>43</i>&nbsp;        return instance;</b>
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    private BonfireData(Context context) {
+<b class="nc"><i>47</i>&nbsp;        super(context, &quot;CommunicationData&quot;, null, 19);</b>
+<i>48</i>&nbsp;
+<b class="nc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @Override
+<i>52</i>&nbsp;    public void onCreate(SQLiteDatabase db){
+<b class="nc"><i>53</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + CONTACTS + &quot;(nickname TEXT, firstName TEXT, lastName TEXT, phoneNumber TEXT, publicKey TEXT UNIQUE, wifiMacAddress TEXT, bluetoothMacAddress TEXT, lastKnownLocation TEXT, shareLocation INT, image TEXT)&quot;);</b>
+<b class="nc"><i>54</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + CONVERSATIONS + &quot;(peer INT, conversationType INT, title TEXT)&quot;);</b>
+<b class="nc"><i>55</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + MESSAGES + &quot;(uuid TEXT NOT NULL PRIMARY KEY, conversation INT NOT NULL, sender INT NOT NULL, flags INT NOT NULL, protocol TEXT, body TEXT, sentDate TEXT, insertDate INT, traceroute BLOB, retries INT, error TEXT)&quot;);</b>
+<b class="nc"><i>56</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + IDENTITIES + &quot;(nickname TEXT, privatekey TEXT, publickey TEXT, username TEXT, phone TEXT, image TEXT)&quot;);</b>
+<b class="nc"><i>57</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + STATS + &quot;(timestamp DATETIME, batterylevel INT, powerusage FLOAT, messages_sent INT, messages_received INT, lat FLOAT, lng FLOAT)&quot;);</b>
+<b class="nc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+<b class="nc"><i>61</i>&nbsp;        if (oldVersion &gt;= newVersion)</b>
+<b class="nc"><i>62</i>&nbsp;            return;</b>
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;        db.execSQL(&quot;DROP TABLE IF EXISTS &quot; + MESSAGES);</b>
+<b class="nc"><i>65</i>&nbsp;        db.execSQL(&quot;DROP TABLE IF EXISTS &quot; + CONVERSATIONS);</b>
+<b class="nc"><i>66</i>&nbsp;        db.execSQL(&quot;DROP TABLE IF EXISTS &quot; + CONTACTS);</b>
+<b class="nc"><i>67</i>&nbsp;        db.execSQL(&quot;DROP TABLE IF EXISTS &quot; + IDENTITIES);</b>
+<i>68</i>&nbsp;
+<b class="nc"><i>69</i>&nbsp;        onCreate(db);</b>
+<b class="nc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public boolean createContact(Contact contact){
+<b class="nc"><i>74</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>75</i>&nbsp;        contact.rowid = db.insert(CONTACTS, null, contact.getContentValues());</b>
+<b class="nc"><i>76</i>&nbsp;        if(contact.rowid == -1)</b>
+<b class="nc"><i>77</i>&nbsp;            return false;</b>
+<b class="nc"><i>78</i>&nbsp;        return true;</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public void createIdentity(Identity identity){
+<b class="nc"><i>82</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>83</i>&nbsp;        identity.rowid = db.insert(IDENTITIES, null, identity.getContentValues());</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public void createConversation(Conversation conversation){
+<b class="nc"><i>87</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>88</i>&nbsp;        conversation.rowid = db.insert(CONVERSATIONS, null, conversation.getContentValues());</b>
+<b class="nc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public long createMessage(Message message, Conversation conversation){
+<b class="nc"><i>92</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>93</i>&nbsp;        ContentValues values = message.getContentValues();</b>
+<b class="nc"><i>94</i>&nbsp;        values.put(&quot;conversation&quot;, conversation.rowid);</b>
+<b class="nc"><i>95</i>&nbsp;        values.put(&quot;insertDate&quot;, (new Date()).getTime());</b>
+<b class="nc"><i>96</i>&nbsp;        return db.insert(MESSAGES, null, values);</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    public Identity getDefaultIdentity() {
+<b class="nc"><i>100</i>&nbsp;        if (cachedDefaultIdentity != null) {</b>
+<b class="nc"><i>101</i>&nbsp;            return cachedDefaultIdentity;</b>
+<i>102</i>&nbsp;        }
+<b class="nc"><i>103</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>104</i>&nbsp;        Cursor cursor = db.query(IDENTITIES, ALL_COLS, null, null, null, null, null, &quot;1&quot;);</b>
+<b class="nc"><i>105</i>&nbsp;        if (cursor.moveToNext()) {</b>
+<b class="nc"><i>106</i>&nbsp;            cachedDefaultIdentity = Identity.fromCursor(cursor);</b>
+<i>107</i>&nbsp;        }
+<b class="nc"><i>108</i>&nbsp;        cursor.close();</b>
+<b class="nc"><i>109</i>&nbsp;        return cachedDefaultIdentity;</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public ArrayList&lt;Conversation&gt; getConversations(){
+<b class="nc"><i>113</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>114</i>&nbsp;        ArrayList&lt;Conversation&gt; conversations = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>115</i>&nbsp;        String rawQuery = &quot;SELECT c.rowid, c.*, m.sentDate FROM &quot; + CONVERSATIONS + &quot; c LEFT OUTER JOIN &quot; + MESSAGES + &quot; m ON c.rowid=m.conversation GROUP BY c.rowid ORDER BY m.sentDate DESC&quot;;</b>
+<b class="nc"><i>116</i>&nbsp;        Cursor conversationCursor = db.rawQuery(rawQuery, null);</b>
+<b class="nc"><i>117</i>&nbsp;        while(conversationCursor.moveToNext()){</b>
+<b class="nc"><i>118</i>&nbsp;            Contact contact = getContactById(conversationCursor.getInt(conversationCursor.getColumnIndex(&quot;peer&quot;)));</b>
+<b class="nc"><i>119</i>&nbsp;            Conversation conversation = Conversation.fromCursor(contact, conversationCursor);</b>
+<b class="nc"><i>120</i>&nbsp;            conversation.addMessages(this.getMessages(conversation));</b>
+<b class="nc"><i>121</i>&nbsp;            conversations.add(conversation);</b>
+<b class="nc"><i>122</i>&nbsp;        }</b>
+<b class="nc"><i>123</i>&nbsp;        conversationCursor.close();</b>
+<b class="nc"><i>124</i>&nbsp;        return conversations;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public Conversation getConversationByPeer(Contact peer){
+<b class="nc"><i>128</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>129</i>&nbsp;        Cursor conversationCursor = db.query(CONVERSATIONS, ALL_COLS, &quot;peer = ?&quot;, new String[]{String.valueOf(peer.rowid)}, null, null, null);</b>
+<b class="nc"><i>130</i>&nbsp;        Conversation conversation = null;</b>
+<b class="nc"><i>131</i>&nbsp;        if(conversationCursor.moveToNext()){</b>
+<b class="nc"><i>132</i>&nbsp;            conversation = Conversation.fromCursor(peer, conversationCursor);</b>
+<i>133</i>&nbsp;        }
+<b class="nc"><i>134</i>&nbsp;        conversationCursor.close();</b>
+<b class="nc"><i>135</i>&nbsp;        return conversation;</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;    public Conversation getConversationById(long rowid){
+<b class="nc"><i>138</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>139</i>&nbsp;        Cursor conversationCursor = db.query(CONVERSATIONS, ALL_COLS, &quot;rowid = ?&quot;, new String[]{String.valueOf(rowid)}, null, null, null);</b>
+<b class="nc"><i>140</i>&nbsp;        Conversation conversation = null;</b>
+<b class="nc"><i>141</i>&nbsp;        if(conversationCursor.moveToNext()){</b>
+<b class="nc"><i>142</i>&nbsp;            long peerId = conversationCursor.getInt(conversationCursor.getColumnIndex(&quot;peer&quot;));</b>
+<b class="nc"><i>143</i>&nbsp;            Log.d(TAG, &quot;Found conversation with id=&quot; + rowid + &quot; and peerId=&quot; + peerId);</b>
+<b class="nc"><i>144</i>&nbsp;            conversation = Conversation.fromCursor(</b>
+<i>145</i>&nbsp;                    getContactById(peerId),
+<i>146</i>&nbsp;                    conversationCursor);
+<i>147</i>&nbsp;        }
+<b class="nc"><i>148</i>&nbsp;        conversationCursor.close();</b>
+<b class="nc"><i>149</i>&nbsp;        return conversation;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public Message getMessageByUUID(UUID id){
+<b class="nc"><i>153</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>154</i>&nbsp;        Cursor cursor = db.query(MESSAGES, null, &quot;uuid=?&quot;, new String[]  {id.toString()}, null, null, null);</b>
+<b class="nc"><i>155</i>&nbsp;        if (!cursor.moveToNext()) return null;</b>
+<b class="nc"><i>156</i>&nbsp;        Message message = Message.fromCursor(cursor, this);</b>
+<b class="nc"><i>157</i>&nbsp;        cursor.close();</b>
+<b class="nc"><i>158</i>&nbsp;        return message;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;    public ArrayList&lt;Message&gt; getMessages(Conversation conversation){
+<b class="nc"><i>161</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>162</i>&nbsp;        ArrayList&lt;Message&gt; messages = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>163</i>&nbsp;        Cursor messageCursor = db.query(MESSAGES, null, &quot;conversation=?&quot;, new String[]{String.valueOf(conversation.rowid)}, null, null, &quot;sentDate ASC&quot;);</b>
+<b class="nc"><i>164</i>&nbsp;        while(messageCursor.moveToNext()){</b>
+<b class="nc"><i>165</i>&nbsp;            messages.add(Message.fromCursor(messageCursor, this));</b>
+<i>166</i>&nbsp;        }
+<b class="nc"><i>167</i>&nbsp;        messageCursor.close();</b>
+<b class="nc"><i>168</i>&nbsp;        return messages;</b>
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;    public ArrayList&lt;Message&gt; getPendingMessages() {
+<b class="nc"><i>171</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>172</i>&nbsp;        ArrayList&lt;Message&gt; messages = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>173</i>&nbsp;        Cursor messageCursor = db.query(MESSAGES, null, &quot;retries &lt; ? AND sender == -1 AND NOT flags &amp; &quot; + Message.FLAG_ACKNOWLEDGED, new String[]{String.valueOf(ConstOptions.MAX_RETRANSMISSIONS)}, null, null, &quot;&quot;);</b>
+<b class="nc"><i>174</i>&nbsp;        while(messageCursor.moveToNext()){</b>
+<b class="nc"><i>175</i>&nbsp;            messages.add(Message.fromCursor(messageCursor, this));</b>
+<i>176</i>&nbsp;        }
+<b class="nc"><i>177</i>&nbsp;        messageCursor.close();</b>
+<b class="nc"><i>178</i>&nbsp;        return messages;</b>
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    public boolean deleteContact(Contact contact){
+<i>182</i>&nbsp;        // delete conversation with this contact
+<b class="nc"><i>183</i>&nbsp;        Conversation conversation = getConversationByPeer(contact);</b>
+<b class="nc"><i>184</i>&nbsp;        if (conversation != null) {</b>
+<b class="nc"><i>185</i>&nbsp;            deleteConversation(conversation);</b>
+<i>186</i>&nbsp;        }
+<i>187</i>&nbsp;
+<b class="nc"><i>188</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
+<i>189</i>&nbsp;        try {
+<b class="nc"><i>190</i>&nbsp;            db.delete(CONTACTS, &quot;rowid=?&quot;, new String[] { String.valueOf(contact.rowid) });</b>
+<i>191</i>&nbsp;        }
+<b class="nc"><i>192</i>&nbsp;        catch(Exception e) {</b>
+<b class="nc"><i>193</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>194</i>&nbsp;            return false;</b>
+<b class="nc"><i>195</i>&nbsp;        }</b>
+<b class="nc"><i>196</i>&nbsp;        return true;</b>
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;    
+<i>200</i>&nbsp;    public boolean deleteConversation(Conversation conversation){
+<i>201</i>&nbsp;
+<b class="nc"><i>202</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
+<i>203</i>&nbsp;        try {
+<b class="nc"><i>204</i>&nbsp;            db.delete(CONVERSATIONS, &quot;rowid=?&quot;, new String[] { String.valueOf(conversation.rowid) });</b>
+<b class="nc"><i>205</i>&nbsp;            db.delete(MESSAGES, &quot;conversation=?&quot;, new String[] { String.valueOf(conversation.rowid) });</b>
+<i>206</i>&nbsp;        }
+<b class="nc"><i>207</i>&nbsp;        catch(Exception e) {</b>
+<b class="nc"><i>208</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>209</i>&nbsp;        }</b>
+<b class="nc"><i>210</i>&nbsp;        return true;</b>
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    public boolean deleteMessage(Message message){
+<i>215</i>&nbsp;
+<b class="nc"><i>216</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
+<i>217</i>&nbsp;        try {
+<b class="nc"><i>218</i>&nbsp;            db.delete(MESSAGES, &quot;uuid=?&quot;, new String[] { String.valueOf(message.uuid) });</b>
+<i>219</i>&nbsp;        }
+<b class="nc"><i>220</i>&nbsp;        catch(Exception e) {</b>
+<b class="nc"><i>221</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>222</i>&nbsp;        }</b>
+<b class="nc"><i>223</i>&nbsp;        return true;</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;    public ArrayList&lt;Contact&gt; getContacts(){
+<b class="nc"><i>228</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>229</i>&nbsp;        ArrayList&lt;Contact&gt; contacts = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>230</i>&nbsp;        Cursor cursor = db.query(CONTACTS, ALL_COLS, null, null, null, null, &quot;nickname COLLATE NOCASE&quot;);</b>
+<b class="nc"><i>231</i>&nbsp;        while(cursor.moveToNext()){</b>
+<b class="nc"><i>232</i>&nbsp;            contacts.add(Contact.fromCursor(cursor));</b>
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;        cursor.close();</b>
+<b class="nc"><i>235</i>&nbsp;        return contacts;</b>
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;    public ArrayList&lt;Contact&gt; getContactsToShareLocationWith(){
+<b class="nc"><i>238</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>239</i>&nbsp;        ArrayList&lt;Contact&gt; contacts = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>240</i>&nbsp;        Cursor cursor = db.query(CONTACTS, ALL_COLS, &quot;shareLocation == 1&quot;, null, null, null, null);</b>
+<b class="nc"><i>241</i>&nbsp;        while(cursor.moveToNext()){</b>
+<b class="nc"><i>242</i>&nbsp;            contacts.add(Contact.fromCursor(cursor));</b>
+<i>243</i>&nbsp;        }
+<b class="nc"><i>244</i>&nbsp;        cursor.close();</b>
+<b class="nc"><i>245</i>&nbsp;        return contacts;</b>
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    public Contact getContactByPublicKey(byte[] publicKey) {
+<b class="nc"><i>249</i>&nbsp;        String publicKeyString = CryptoHelper.toBase64(publicKey);</b>
+<b class="nc"><i>250</i>&nbsp;        return getContactByPublicKey(publicKeyString);</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;    public Contact getContactByPublicKey(String publicKey){
+<b class="nc"><i>253</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>254</i>&nbsp;        Cursor cursor = db.query(CONTACTS, ALL_COLS, &quot;publicKey = ?&quot;, new String[]{ publicKey }, null, null, null);</b>
+<b class="nc"><i>255</i>&nbsp;        if (!cursor.moveToNext()) return null;</b>
+<b class="nc"><i>256</i>&nbsp;        Contact c = Contact.fromCursor(cursor);</b>
+<b class="nc"><i>257</i>&nbsp;        cursor.close();</b>
+<b class="nc"><i>258</i>&nbsp;        return c;</b>
+<i>259</i>&nbsp;    }
+<i>260</i>&nbsp;    public Contact getContactById(long id){
+<b class="nc"><i>261</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>262</i>&nbsp;        Cursor cursor = db.query(CONTACTS, ALL_COLS, &quot;rowid = ?&quot;, new String[]{ String.valueOf(id) }, null, null, null);</b>
+<b class="nc"><i>263</i>&nbsp;        if (!cursor.moveToNext()) return null;</b>
+<b class="nc"><i>264</i>&nbsp;        Contact c = Contact.fromCursor(cursor);</b>
+<b class="nc"><i>265</i>&nbsp;        cursor.close();</b>
+<b class="nc"><i>266</i>&nbsp;        return c;</b>
+<i>267</i>&nbsp;    }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    public void updateContact(Contact contact) {
+<b class="nc"><i>270</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
+<b class="nc"><i>271</i>&nbsp;        db.update(CONTACTS, contact.getContentValues(), &quot; rowid = ? &quot;, new String[]{String.valueOf(contact.rowid)});</b>
+<b class="nc"><i>272</i>&nbsp;    }</b>
+<i>273</i>&nbsp;    public void updateMessage(Message message) {
+<b class="nc"><i>274</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
+<b class="nc"><i>275</i>&nbsp;        db.update(MESSAGES, message.getContentValues(), &quot; uuid = ? &quot;, new String[]{String.valueOf(message.uuid)});</b>
+<b class="nc"><i>276</i>&nbsp;    }</b>
+<i>277</i>&nbsp;    public void updateIdentity(Identity identity) {
+<b class="nc"><i>278</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
+<b class="nc"><i>279</i>&nbsp;        db.update(IDENTITIES, identity.getContentValues(), &quot; rowid = ? &quot;, new String[]{String.valueOf(identity.rowid)});</b>
+<b class="nc"><i>280</i>&nbsp;    }</b>
+<i>281</i>&nbsp;    public void updateConversation(Conversation conversation) {
+<b class="nc"><i>282</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
+<b class="nc"><i>283</i>&nbsp;        db.update(CONVERSATIONS, conversation.getContentValues(), &quot; rowid = ? &quot;, new String[]{String.valueOf(conversation.rowid)});</b>
+<b class="nc"><i>284</i>&nbsp;    }</b>
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    public void addStatsEntry(StatsEntry stats) {
+<b class="nc"><i>287</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>288</i>&nbsp;        stats.rowid = db.insert(STATS, null, stats.getContentValues());</b>
+<b class="nc"><i>289</i>&nbsp;    }</b>
+<i>290</i>&nbsp;    public StatsEntry getLatestStatsEntry() {
+<b class="nc"><i>291</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
+<b class="nc"><i>292</i>&nbsp;        Cursor cursor = db.query(STATS, ALL_COLS, null, null, null, null, null);</b>
+<i>293</i>&nbsp;        StatsEntry result;
+<b class="nc"><i>294</i>&nbsp;        if (!cursor.moveToLast()) {</b>
+<b class="nc"><i>295</i>&nbsp;            Log.i(TAG, &quot;no latest stats object found in database. Creating a new one...&quot;);</b>
+<b class="nc"><i>296</i>&nbsp;            result = new StatsEntry();</b>
+<i>297</i>&nbsp;        } else {
+<b class="nc"><i>298</i>&nbsp;            result = StatsEntry.fromCursor(cursor);</b>
+<i>299</i>&nbsp;        }
+<b class="nc"><i>300</i>&nbsp;        cursor.close();</b>
+<b class="nc"><i>301</i>&nbsp;        return result;</b>
+<i>302</i>&nbsp;    }
+<i>303</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

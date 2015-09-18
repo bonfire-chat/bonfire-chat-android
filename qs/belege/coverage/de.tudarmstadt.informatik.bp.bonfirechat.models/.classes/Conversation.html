@@ -1,0 +1,191 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Conversation</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.models</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Conversation (de.tudarmstadt.informatik.bp.bonfirechat.models)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Conversation</td>
+<td class="coverageStat">
+  <span class="percent">
+    55,6%
+  </span>
+  <span class="absValue">
+    (5/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63,6%
+  </span>
+  <span class="absValue">
+    (21/ 33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Conversation$ConversationType</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (6/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (24/ 36)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.models;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.content.ContentValues;
+<i>4</i>&nbsp;import android.database.Cursor;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;import java.util.ArrayList;
+<i>7</i>&nbsp;import java.util.List;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;/**
+<i>12</i>&nbsp; * Created by johannes on 05.05.15.
+<i>13</i>&nbsp; */
+<i>14</i>&nbsp;public class Conversation {
+<i>15</i>&nbsp;    private final Contact peer;
+<i>16</i>&nbsp;    private final ArrayList&lt;Message&gt; messages;
+<i>17</i>&nbsp;    public long rowid;
+<i>18</i>&nbsp;    public String title;
+<i>19</i>&nbsp;    public ConversationType conversationType = ConversationType.Single;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public enum ConversationType {
+<b class="fc"><i>22</i>&nbsp;        Single,</b>
+<i>23</i>&nbsp;        GroupChat
+<b class="fc"><i>24</i>&nbsp;    }</b>
+<b class="fc"><i>25</i>&nbsp;</b>
+<b class="fc"><i>26</i>&nbsp;    public Conversation(Contact peer, String title, int rowid, List&lt;Message&gt; messages) {</b>
+<i>27</i>&nbsp;        this.peer = peer;
+<i>28</i>&nbsp;        this.title = title;
+<b class="fc"><i>29</i>&nbsp;        this.messages = new ArrayList&lt;&gt;(messages);</b>
+<b class="fc"><i>30</i>&nbsp;        this.rowid = rowid;</b>
+<b class="fc"><i>31</i>&nbsp;    }</b>
+<b class="fc"><i>32</i>&nbsp;</b>
+<b class="fc"><i>33</i>&nbsp;    public Conversation(Contact peer, String title, int rowid){</b>
+<b class="fc"><i>34</i>&nbsp;        this.peer = peer;</b>
+<i>35</i>&nbsp;        this.title = title;
+<b class="fc"><i>36</i>&nbsp;        this.messages = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>37</i>&nbsp;        this.rowid = rowid;</b>
+<b class="fc"><i>38</i>&nbsp;    }</b>
+<b class="fc"><i>39</i>&nbsp;</b>
+<b class="fc"><i>40</i>&nbsp;    public void addMessages(ArrayList&lt;Message&gt; messages){</b>
+<b class="fc"><i>41</i>&nbsp;        this.messages.addAll(messages);</b>
+<i>42</i>&nbsp;    }
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    public Message getLastMessage() {</b>
+<b class="fc"><i>45</i>&nbsp;        if(messages.size() &gt; 0) {</b>
+<i>46</i>&nbsp;            return messages.get(messages.size() - 1);
+<i>47</i>&nbsp;        } else {
+<b class="fc"><i>48</i>&nbsp;            return null;</b>
+<b class="fc"><i>49</i>&nbsp;        }</b>
+<i>50</i>&nbsp;    }
+<b class="fc"><i>51</i>&nbsp;    public String getLastMessageDate() {</b>
+<i>52</i>&nbsp;        if(messages.size() &gt; 0)
+<i>53</i>&nbsp;            return DateHelper.formatTimeOrDate(messages.get(messages.size() - 1).sentTime);
+<i>54</i>&nbsp;        else
+<b class="nc"><i>55</i>&nbsp;            return &quot;&quot;;</b>
+<b class="nc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;    public String getName() {
+<b class="nc"><i>58</i>&nbsp;        if (title != null &amp;&amp; !title.equals(&quot;&quot;)) return title;</b>
+<i>59</i>&nbsp;        if (peer != null) return peer.getNickname();
+<i>60</i>&nbsp;        return &quot;(unnamed)&quot;;
+<b class="nc"><i>61</i>&nbsp;    }</b>
+<b class="nc"><i>62</i>&nbsp;    public Contact getPeer() {</b>
+<b class="nc"><i>63</i>&nbsp;        return peer;</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<b class="nc"><i>66</i>&nbsp;    public ContentValues getContentValues(){</b>
+<i>67</i>&nbsp;        ContentValues values = new ContentValues();
+<i>68</i>&nbsp;        if (peer != null) values.put(&quot;peer&quot;, peer.rowid);
+<i>69</i>&nbsp;        values.put(&quot;conversationType&quot;, conversationType.ordinal());
+<b class="nc"><i>70</i>&nbsp;        values.put(&quot;title&quot;, title);</b>
+<b class="nc"><i>71</i>&nbsp;        return values;</b>
+<b class="nc"><i>72</i>&nbsp;    }</b>
+<b class="nc"><i>73</i>&nbsp;</b>
+<b class="nc"><i>74</i>&nbsp;    public static Conversation fromCursor(Contact contact, Cursor cursor){</b>
+<i>75</i>&nbsp;        Conversation conversation = new Conversation(contact,
+<i>76</i>&nbsp;               cursor.getString(cursor.getColumnIndex(&quot;title&quot;)),
+<i>77</i>&nbsp;               cursor.getInt(cursor.getColumnIndex(&quot;rowid&quot;)));
+<b class="fc"><i>78</i>&nbsp;        conversation.conversationType = ConversationType.values()[cursor.getInt(cursor.getColumnIndex(&quot;conversationType&quot;))];</b>
+<i>79</i>&nbsp;        return conversation;
+<i>80</i>&nbsp;    }
+<b class="fc"><i>81</i>&nbsp;</b>
+<b class="fc"><i>82</i>&nbsp;}</b>
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>

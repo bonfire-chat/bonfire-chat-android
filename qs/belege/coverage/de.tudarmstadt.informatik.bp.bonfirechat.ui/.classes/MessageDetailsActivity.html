@@ -1,0 +1,602 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MessageDetailsActivity</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">de.tudarmstadt.informatik.bp.bonfirechat.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MessageDetailsActivity (de.tudarmstadt.informatik.bp.bonfirechat.ui)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MessageDetailsActivity</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 165)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MessageDetailsActivity$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MessageDetailsActivity$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MessageDetailsActivity$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MessageDetailsActivity$4</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MessageDetailsActivity$5</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MessageDetailsActivity$ViewHolder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 220)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.ui;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import android.app.Activity;
+<i>4</i>&nbsp;import android.content.BroadcastReceiver;
+<i>5</i>&nbsp;import android.content.Context;
+<i>6</i>&nbsp;import android.content.Intent;
+<i>7</i>&nbsp;import android.content.IntentFilter;
+<i>8</i>&nbsp;import android.graphics.Color;
+<i>9</i>&nbsp;import android.net.Uri;
+<i>10</i>&nbsp;import android.os.AsyncTask;
+<i>11</i>&nbsp;import android.os.Bundle;
+<i>12</i>&nbsp;import android.support.v4.content.LocalBroadcastManager;
+<i>13</i>&nbsp;import android.util.Log;
+<i>14</i>&nbsp;import android.view.LayoutInflater;
+<i>15</i>&nbsp;import android.view.MenuItem;
+<i>16</i>&nbsp;import android.view.View;
+<i>17</i>&nbsp;import android.view.ViewStub;
+<i>18</i>&nbsp;import android.widget.ImageView;
+<i>19</i>&nbsp;import android.widget.LinearLayout;
+<i>20</i>&nbsp;import android.widget.ListView;
+<i>21</i>&nbsp;import android.widget.ProgressBar;
+<i>22</i>&nbsp;import android.widget.TextView;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;import com.google.android.gms.maps.model.LatLng;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;import java.io.File;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;import java.util.UUID;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.R;
+<i>32</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
+<i>33</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
+<i>34</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
+<i>35</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+<i>36</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
+<i>37</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
+<i>38</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteProgressSegment;
+<i>39</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
+<i>40</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+<i>41</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+<i>42</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;/**
+<i>45</i>&nbsp; * Created by johannes on 16.08.15.
+<i>46</i>&nbsp; */
+<b class="nc"><i>47</i>&nbsp;public class MessageDetailsActivity extends Activity {</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    private static final String TAG = &quot;MessageDetailsActivity&quot;;
+<b class="nc"><i>50</i>&nbsp;    private final BonfireData db = BonfireData.getInstance(this);</b>
+<i>51</i>&nbsp;    private Message message;
+<b class="nc"><i>52</i>&nbsp;    final ViewHolder v = new ViewHolder();</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    protected void onCreate(Bundle savedInstanceState) {
+<b class="nc"><i>56</i>&nbsp;        super.onCreate(savedInstanceState);</b>
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;        getActionBar().setDisplayHomeAsUpEnabled(true);</b>
+<i>59</i>&nbsp;
+<b class="nc"><i>60</i>&nbsp;        setContentView(R.layout.activity_message_details);</b>
+<b class="nc"><i>61</i>&nbsp;        UUID msgUuid = (UUID) getIntent().getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);</b>
+<b class="nc"><i>62</i>&nbsp;        message = db.getMessageByUUID(msgUuid);</b>
+<b class="nc"><i>63</i>&nbsp;        if (message == null) {</b>
+<b class="nc"><i>64</i>&nbsp;            Log.e(TAG, &quot;Error, message with id &quot; + msgUuid + &quot; not found&quot;);</b>
+<i>65</i>&nbsp;        }
+<b class="nc"><i>66</i>&nbsp;        getActionBar().setTitle(R.string.message_details);</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;        // show basic, locally available data
+<b class="nc"><i>69</i>&nbsp;        final ViewStub messageStub = (ViewStub) findViewById(R.id.message_stub);</b>
+<b class="nc"><i>70</i>&nbsp;        inflateMessageView(messageStub);</b>
+<b class="nc"><i>71</i>&nbsp;        inflateContactsView();</b>
+<b class="nc"><i>72</i>&nbsp;        inflateMessageDatails();</b>
+<b class="nc"><i>73</i>&nbsp;        inflateTraceroute();</b>
+<b class="nc"><i>74</i>&nbsp;        inflateDebugInfo();</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;        // register retry sending button
+<b class="nc"><i>77</i>&nbsp;        findViewById(R.id.button_retry_send).setOnClickListener(new View.OnClickListener() {</b>
+<i>78</i>&nbsp;            @Override
+<i>79</i>&nbsp;            public void onClick(View view) {
+<b class="nc"><i>80</i>&nbsp;                Log.d(TAG, &quot;retry sending message&quot;);</b>
+<b class="nc"><i>81</i>&nbsp;                ConnectionManager.retrySendMessage(MessageDetailsActivity.this, message);</b>
+<b class="nc"><i>82</i>&nbsp;                db.updateMessage(message);</b>
+<i>83</i>&nbsp;                // update views
+<b class="nc"><i>84</i>&nbsp;                if (v.ackIcon != null) v.ackIcon.setVisibility(View.GONE);</b>
+<b class="nc"><i>85</i>&nbsp;                if (v.onItsWay != null) v.onItsWay.setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>86</i>&nbsp;                v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);</b>
+<b class="nc"><i>87</i>&nbsp;                v.encryptedIcon.setColorFilter(Color.GRAY);</b>
+<b class="nc"><i>88</i>&nbsp;                v.errorIcon.setVisibility(View.GONE);</b>
+<b class="nc"><i>89</i>&nbsp;                inflateMessageDatails();</b>
+<b class="nc"><i>90</i>&nbsp;                inflateDebugInfo();</b>
+<b class="nc"><i>91</i>&nbsp;                inflateTraceroute();</b>
+<b class="nc"><i>92</i>&nbsp;            }</b>
+<i>93</i>&nbsp;        });
+<i>94</i>&nbsp;
+<b class="nc"><i>95</i>&nbsp;        LocalBroadcastManager.getInstance(this).registerReceiver(</b>
+<b class="nc"><i>96</i>&nbsp;                new BroadcastReceiver() {</b>
+<i>97</i>&nbsp;                    @Override
+<i>98</i>&nbsp;                    public void onReceive(Context context, Intent intent) {
+<b class="nc"><i>99</i>&nbsp;                        UUID sentUUID = (UUID) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);</b>
+<b class="nc"><i>100</i>&nbsp;                        Log.i(TAG, &quot;MSG_SENT: &quot; + sentUUID.toString() + &quot; - &quot; + intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));</b>
+<i>101</i>&nbsp;                        // wurde diese Nachricht gesendet?
+<b class="nc"><i>102</i>&nbsp;                        if (message.uuid.equals(sentUUID)) {</b>
+<b class="nc"><i>103</i>&nbsp;                            if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {</b>
+<b class="nc"><i>104</i>&nbsp;                                message.error = intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);</b>
+<b class="nc"><i>105</i>&nbsp;                                message.flags |= Message.FLAG_FAILED;</b>
+<i>106</i>&nbsp;                            }
+<i>107</i>&nbsp;                            // set retransmission count for UI
+<b class="nc"><i>108</i>&nbsp;                            message.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, message.retransmissionCount);</b>
+<b class="nc"><i>109</i>&nbsp;                            db.updateMessage(message);</b>
+<i>110</i>&nbsp;                            // update views
+<b class="nc"><i>111</i>&nbsp;                            if (v.ackIcon != null) v.ackIcon.setVisibility(message.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);</b>
+<b class="nc"><i>112</i>&nbsp;                            if (v.onItsWay != null) v.onItsWay.setVisibility((message.hasFlag(Message.FLAG_ACKNOWLEDGED) || message.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);</b>
+<b class="nc"><i>113</i>&nbsp;                            if (message.hasFlag(Message.FLAG_ENCRYPTED)) {</b>
+<b class="nc"><i>114</i>&nbsp;                                v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);</b>
+<b class="nc"><i>115</i>&nbsp;                                v.encryptedIcon.setColorFilter(Color.GRAY);</b>
+<i>116</i>&nbsp;                            } else {
+<b class="nc"><i>117</i>&nbsp;                                v.encryptedIcon.setImageResource(R.drawable.ic_lock_open_black_24dp);</b>
+<b class="nc"><i>118</i>&nbsp;                                v.encryptedIcon.setColorFilter(Color.RED);</b>
+<i>119</i>&nbsp;                            }
+<b class="nc"><i>120</i>&nbsp;                            if (message.hasFlag(Message.FLAG_FAILED)) {</b>
+<b class="nc"><i>121</i>&nbsp;                                v.errorIcon.setVisibility(View.VISIBLE);</b>
+<i>122</i>&nbsp;                            } else {
+<b class="nc"><i>123</i>&nbsp;                                v.errorIcon.setVisibility(View.GONE);</b>
+<i>124</i>&nbsp;                            }
+<b class="nc"><i>125</i>&nbsp;                            inflateMessageDatails();</b>
+<b class="nc"><i>126</i>&nbsp;                            inflateDebugInfo();</b>
+<b class="nc"><i>127</i>&nbsp;                            inflateTraceroute();</b>
+<i>128</i>&nbsp;                        }
+<b class="nc"><i>129</i>&nbsp;                    }</b>
+<i>130</i>&nbsp;                },
+<i>131</i>&nbsp;                new IntentFilter(ConnectionManager.MSG_SENT_BROADCAST_EVENT));
+<b class="nc"><i>132</i>&nbsp;        LocalBroadcastManager.getInstance(this).registerReceiver(</b>
+<b class="nc"><i>133</i>&nbsp;                new BroadcastReceiver() {</b>
+<i>134</i>&nbsp;                    @Override
+<i>135</i>&nbsp;                    public void onReceive(Context context, Intent intent) {
+<b class="nc"><i>136</i>&nbsp;                        UUID ackedUUID = (UUID) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);</b>
+<b class="nc"><i>137</i>&nbsp;                        Log.i(TAG, &quot;MSG_ACKED: &quot; + ackedUUID.toString());</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;                        // wurde diese Nachricht bestätigt?
+<b class="nc"><i>140</i>&nbsp;                        if (message.uuid.equals(ackedUUID)) {</b>
+<i>141</i>&nbsp;                            // update
+<b class="nc"><i>142</i>&nbsp;                            message = db.getMessageByUUID(message.uuid);</b>
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;                            // show acked icon
+<b class="nc"><i>145</i>&nbsp;                            v.ackIcon.setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>146</i>&nbsp;                            v.onItsWay.setVisibility(View.GONE);</b>
+<i>147</i>&nbsp;                            // update traceroute
+<b class="nc"><i>148</i>&nbsp;                            inflateTraceroute();</b>
+<i>149</i>&nbsp;                        }
+<b class="nc"><i>150</i>&nbsp;                    }</b>
+<i>151</i>&nbsp;                },
+<i>152</i>&nbsp;                new IntentFilter(ConnectionManager.MSG_ACKED_BROADCAST_EVENT));
+<b class="nc"><i>153</i>&nbsp;    }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    @Override
+<i>156</i>&nbsp;    public boolean onOptionsItemSelected(MenuItem item) {
+<i>157</i>&nbsp;        // makes sure parameters like conversation id are present in parent activity
+<b class="nc"><i>158</i>&nbsp;        if (item.getItemId() == android.R.id.home) {</b>
+<b class="nc"><i>159</i>&nbsp;            finish();</b>
+<b class="nc"><i>160</i>&nbsp;            return true;</b>
+<i>161</i>&nbsp;        }
+<b class="nc"><i>162</i>&nbsp;        return super.onOptionsItemSelected(item);</b>
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<b class="nc"><i>165</i>&nbsp;    class ViewHolder {</b>
+<i>166</i>&nbsp;        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, errorIcon, messageImage;
+<i>167</i>&nbsp;        TextView messageBody, dateTime;
+<i>168</i>&nbsp;        ProgressBar thumbLoading, onItsWay;
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    private void inflateMessageView(ViewStub stub) {
+<b class="nc"><i>172</i>&nbsp;        switch (message.direction()) {</b>
+<i>173</i>&nbsp;            case Received:
+<b class="nc"><i>174</i>&nbsp;                stub.setLayoutResource(R.layout.message_rowlayout_received);</b>
+<b class="nc"><i>175</i>&nbsp;                break;</b>
+<i>176</i>&nbsp;            case Sent:
+<i>177</i>&nbsp;            default:
+<b class="nc"><i>178</i>&nbsp;                stub.setLayoutResource(R.layout.message_rowlayout_sent);</b>
+<i>179</i>&nbsp;                break;
+<i>180</i>&nbsp;        }
+<i>181</i>&nbsp;
+<b class="nc"><i>182</i>&nbsp;        View view = stub.inflate();</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;        view.findViewById(R.id.message_photo).setVisibility(View.GONE);</b>
+<i>185</i>&nbsp;
+<b class="nc"><i>186</i>&nbsp;        if (message.direction() == Message.MessageDirection.Sent) {</b>
+<b class="nc"><i>187</i>&nbsp;            v.ackIcon = (ImageView) view.findViewById(R.id.message_ack);</b>
+<b class="nc"><i>188</i>&nbsp;            v.onItsWay = (ProgressBar) view.findViewById(R.id.on_its_way);</b>
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;        v.messageBody = (TextView) view.findViewById(R.id.message_body);</b>
+<b class="nc"><i>192</i>&nbsp;        v.messageImage = (ImageView) view.findViewById(R.id.message_image);</b>
+<b class="nc"><i>193</i>&nbsp;        v.thumbLoading = (ProgressBar) view.findViewById(R.id.thumb_loading);</b>
+<b class="nc"><i>194</i>&nbsp;        v.dateTime = (TextView) view.findViewById(R.id.message_time);</b>
+<b class="nc"><i>195</i>&nbsp;        v.contactPhoto = (ImageView) view.findViewById(R.id.message_photo);</b>
+<b class="nc"><i>196</i>&nbsp;        v.encryptedIcon = (ImageView) view.findViewById(R.id.message_encrypted);</b>
+<b class="nc"><i>197</i>&nbsp;        v.protocolIcon = (ImageView) view.findViewById(R.id.message_proto);</b>
+<b class="nc"><i>198</i>&nbsp;        v.errorIcon = (ImageView) view.findViewById(R.id.message_error);</b>
+<b class="nc"><i>199</i>&nbsp;        view.setTag(v);</b>
+<i>200</i>&nbsp;
+<b class="nc"><i>201</i>&nbsp;        v.messageBody.setText(message.body);</b>
+<b class="nc"><i>202</i>&nbsp;        v.dateTime.setText(DateHelper.formatTime(message.sentTime));</b>
+<b class="nc"><i>203</i>&nbsp;        v.dateTime.setTextColor(Color.GRAY);</b>
+<b class="nc"><i>204</i>&nbsp;        if (message.hasFlag(Message.FLAG_ENCRYPTED)) {</b>
+<b class="nc"><i>205</i>&nbsp;            v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);</b>
+<b class="nc"><i>206</i>&nbsp;            v.encryptedIcon.setColorFilter(Color.GRAY);</b>
+<i>207</i>&nbsp;        } else {
+<b class="nc"><i>208</i>&nbsp;            v.encryptedIcon.setImageResource(R.drawable.ic_lock_open_black_24dp);</b>
+<b class="nc"><i>209</i>&nbsp;            v.encryptedIcon.setColorFilter(Color.RED);</b>
+<i>210</i>&nbsp;        }
+<b class="nc"><i>211</i>&nbsp;        if (message.hasFlag(Message.FLAG_FAILED)) {</b>
+<b class="nc"><i>212</i>&nbsp;            v.errorIcon.setVisibility(View.VISIBLE);</b>
+<i>213</i>&nbsp;        } else {
+<b class="nc"><i>214</i>&nbsp;            v.errorIcon.setVisibility(View.GONE);</b>
+<i>215</i>&nbsp;        }
+<b class="nc"><i>216</i>&nbsp;        if (v.ackIcon != null) v.ackIcon.setVisibility(message.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);</b>
+<b class="nc"><i>217</i>&nbsp;        if (v.onItsWay != null) v.onItsWay.setVisibility((message.hasFlag(Message.FLAG_ACKNOWLEDGED) || message.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);</b>
+<b class="nc"><i>218</i>&nbsp;        v.protocolIcon.setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>219</i>&nbsp;        if (message.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);</b>
+<b class="nc"><i>220</i>&nbsp;        else if (message.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);</b>
+<b class="nc"><i>221</i>&nbsp;        else if (message.hasFlag(Message.FLAG_PROTO_CLOUD)) v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);</b>
+<b class="nc"><i>222</i>&nbsp;        else v.protocolIcon.setVisibility(View.GONE);</b>
+<i>223</i>&nbsp;
+<b class="nc"><i>224</i>&nbsp;        if (message.hasFlag(Message.FLAG_IS_FILE)) {</b>
+<i>225</i>&nbsp;            // Handle message type &quot;FILE&quot; (image)
+<b class="nc"><i>226</i>&nbsp;            v.messageBody.setVisibility(View.GONE);</b>
+<b class="nc"><i>227</i>&nbsp;            v.messageImage.setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>228</i>&nbsp;            v.messageImage.setImageURI(Uri.parse(&quot;file://&quot; + message.body));</b>
+<b class="nc"><i>229</i>&nbsp;            v.thumbLoading.setVisibility(View.GONE);</b>
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;        } else if(message.hasFlag(Message.FLAG_IS_LOCATION)) {</b>
+<i>232</i>&nbsp;            // Handle message type &quot;LOCATION&quot;
+<b class="nc"><i>233</i>&nbsp;            v.messageBody.setVisibility(View.GONE);</b>
+<i>234</i>&nbsp;
+<b class="nc"><i>235</i>&nbsp;            final File previewFile = message.getImageFile();</b>
+<b class="nc"><i>236</i>&nbsp;            if (previewFile.exists()) {</b>
+<b class="nc"><i>237</i>&nbsp;                v.messageImage.setImageURI(Uri.parse(&quot;file://&quot; + previewFile.getAbsolutePath()));</b>
+<b class="nc"><i>238</i>&nbsp;                v.messageImage.setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>239</i>&nbsp;                v.thumbLoading.setVisibility(View.GONE);</b>
+<i>240</i>&nbsp;            } else {
+<b class="nc"><i>241</i>&nbsp;                v.messageImage.setVisibility(View.GONE);</b>
+<b class="nc"><i>242</i>&nbsp;                v.thumbLoading.setVisibility(View.VISIBLE);</b>
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;                // extract coordinates from message
+<b class="nc"><i>245</i>&nbsp;                String[] coords = message.body.split(&quot;:&quot;);</b>
+<b class="nc"><i>246</i>&nbsp;                LatLng location = new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;                // load map preview from Google Maps static map API
+<b class="nc"><i>249</i>&nbsp;                (new AsyncTask&lt;LatLng, Void, Boolean&gt;() {</b>
+<i>250</i>&nbsp;                    @Override
+<i>251</i>&nbsp;                    protected Boolean doInBackground(LatLng... locations) {
+<i>252</i>&nbsp;                        // download map preview
+<b class="nc"><i>253</i>&nbsp;                        return BonfireAPI.downloadMapPreview(locations[0], previewFile);</b>
+<i>254</i>&nbsp;                    }
+<i>255</i>&nbsp;                    @Override
+<i>256</i>&nbsp;                    protected void onPostExecute(Boolean ok) {
+<b class="nc"><i>257</i>&nbsp;                        if (ok) {</b>
+<i>258</i>&nbsp;                            // display map preview image
+<b class="nc"><i>259</i>&nbsp;                            v.messageImage.setImageURI(Uri.parse(&quot;file://&quot; + previewFile.getAbsolutePath()));</b>
+<b class="nc"><i>260</i>&nbsp;                            v.messageImage.setVisibility(View.VISIBLE);</b>
+<i>261</i>&nbsp;                        } else {
+<b class="nc"><i>262</i>&nbsp;                            v.messageBody.setVisibility(View.VISIBLE);</b>
+<i>263</i>&nbsp;                        }
+<b class="nc"><i>264</i>&nbsp;                        v.thumbLoading.setVisibility(View.GONE);</b>
+<b class="nc"><i>265</i>&nbsp;                    }</b>
+<i>266</i>&nbsp;                }).execute(location);
+<i>267</i>&nbsp;            }
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;        } else {</b>
+<i>270</i>&nbsp;            // Handle message type &quot;TEXT&quot;
+<b class="nc"><i>271</i>&nbsp;            v.messageBody.setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>272</i>&nbsp;            v.thumbLoading.setVisibility(View.GONE);</b>
+<b class="nc"><i>273</i>&nbsp;            v.messageImage.setVisibility(View.GONE);</b>
+<b class="nc"><i>274</i>&nbsp;            v.messageImage.setImageDrawable(null);</b>
+<i>275</i>&nbsp;        }
+<b class="nc"><i>276</i>&nbsp;    }</b>
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    private void inflateContactsView() {
+<i>279</i>&nbsp;        List&lt;Contact&gt; contacts;
+<i>280</i>&nbsp;
+<b class="nc"><i>281</i>&nbsp;        switch (message.direction()) {</b>
+<i>282</i>&nbsp;            case Received:
+<b class="nc"><i>283</i>&nbsp;                ((TextView) findViewById(R.id.label_senders)).setText(R.string.details_from);</b>
+<b class="nc"><i>284</i>&nbsp;                contacts = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>285</i>&nbsp;                contacts.add(new Contact(message.sender.getNickname(), &quot;&quot;, &quot;&quot;, message.sender.getPhoneNumber(), message.sender.getPublicKey(), &quot;&quot;, &quot;&quot;, 0));</b>
+<b class="nc"><i>286</i>&nbsp;                break;</b>
+<i>287</i>&nbsp;            case Sent:
+<i>288</i>&nbsp;            default:
+<b class="nc"><i>289</i>&nbsp;                ((TextView) findViewById(R.id.label_senders)).setText(R.string.details_to);</b>
+<b class="nc"><i>290</i>&nbsp;                contacts = message.recipients;</b>
+<i>291</i>&nbsp;                break;
+<i>292</i>&nbsp;        }
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;        ListView contactsList = (ListView) findViewById(R.id.contactsList);</b>
+<b class="nc"><i>295</i>&nbsp;        contactsList.setAdapter(new ContactsAdapter(this, contacts));</b>
+<b class="nc"><i>296</i>&nbsp;    }</b>
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    private void inflateMessageDatails() {
+<b class="nc"><i>299</i>&nbsp;        ((TextView) findViewById(R.id.datetime)).setText(DateHelper.formatDateTime(message.sentTime));</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;        // display error?
+<b class="nc"><i>302</i>&nbsp;        if (message.hasFlag(Message.FLAG_FAILED)) {</b>
+<b class="nc"><i>303</i>&nbsp;            findViewById(R.id.group_infos).setVisibility(View.GONE);</b>
+<b class="nc"><i>304</i>&nbsp;            findViewById(R.id.group_proto).setVisibility(View.GONE);</b>
+<i>305</i>&nbsp;        }
+<i>306</i>&nbsp;        else {
+<b class="nc"><i>307</i>&nbsp;            findViewById(R.id.group_infos).setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>308</i>&nbsp;            findViewById(R.id.group_proto).setVisibility(View.VISIBLE);</b>
+<i>309</i>&nbsp;
+<b class="nc"><i>310</i>&nbsp;            if (message.hasFlag(Message.FLAG_PROTO_BT)) {</b>
+<b class="nc"><i>311</i>&nbsp;                ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_bluetooth));</b>
+<b class="nc"><i>312</i>&nbsp;                ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_bluetooth_black_24dp);</b>
+<b class="nc"><i>313</i>&nbsp;                findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>314</i>&nbsp;            } else if (message.hasFlag(Message.FLAG_PROTO_WIFI)) {</b>
+<b class="nc"><i>315</i>&nbsp;                ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_wifi_direct));</b>
+<b class="nc"><i>316</i>&nbsp;                ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_network_wifi_black_24dp);</b>
+<b class="nc"><i>317</i>&nbsp;                findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>318</i>&nbsp;            } else if (message.hasFlag(Message.FLAG_PROTO_CLOUD)) {</b>
+<b class="nc"><i>319</i>&nbsp;                ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_cloud));</b>
+<b class="nc"><i>320</i>&nbsp;                ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_cloud_black_24dp);</b>
+<b class="nc"><i>321</i>&nbsp;                findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);</b>
+<i>322</i>&nbsp;            } else {
+<b class="nc"><i>323</i>&nbsp;                findViewById(R.id.label_message_proto).setVisibility(View.GONE);</b>
+<b class="nc"><i>324</i>&nbsp;                findViewById(R.id.message_big_proto).setVisibility(View.GONE);</b>
+<i>325</i>&nbsp;            }
+<i>326</i>&nbsp;        }
+<b class="nc"><i>327</i>&nbsp;    }</b>
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    private void inflateTraceroute() {
+<b class="nc"><i>330</i>&nbsp;        List&lt;TracerouteSegment&gt; traceroute = message.traceroute;</b>
+<b class="nc"><i>331</i>&nbsp;        LinearLayout tracerouteList = (LinearLayout) findViewById(R.id.tracedHopsList);</b>
+<b class="nc"><i>332</i>&nbsp;        tracerouteList.removeAllViews();</b>
+<b class="nc"><i>333</i>&nbsp;        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);</b>
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;        for (TracerouteSegment segment: traceroute) {</b>
+<b class="nc"><i>336</i>&nbsp;            Log.d(TAG, &quot;adding &quot; + segment);</b>
+<i>337</i>&nbsp;            View view;
+<b class="nc"><i>338</i>&nbsp;            if (segment instanceof TracerouteNodeSegment) {</b>
+<b class="nc"><i>339</i>&nbsp;                view = inflater.inflate(R.layout.traceroute_rowlayout_node, null);</b>
+<b class="nc"><i>340</i>&nbsp;                TracerouteNodeSegment node = (TracerouteNodeSegment) segment;</b>
+<i>341</i>&nbsp;
+<b class="nc"><i>342</i>&nbsp;                ((TextView) view.findViewById(R.id.name)).setText(node.getNickname());</b>
+<b class="nc"><i>343</i>&nbsp;                BonfireData db = BonfireData.getInstance(this);</b>
+<b class="nc"><i>344</i>&nbsp;                ContactImageHelper.displayContactImage(node.getImage(), (ImageView) view.findViewById(R.id.icon));</b>
+<b class="nc"><i>345</i>&nbsp;            }</b>
+<b class="nc"><i>346</i>&nbsp;            else if (segment instanceof TracerouteProgressSegment) {</b>
+<b class="nc"><i>347</i>&nbsp;                view = inflater.inflate(R.layout.traceroute_rowlayout_progress, null);</b>
+<i>348</i>&nbsp;            }
+<i>349</i>&nbsp;            else {
+<b class="nc"><i>350</i>&nbsp;                view = inflater.inflate(R.layout.traceroute_rowlayout_hop, null);</b>
+<b class="nc"><i>351</i>&nbsp;                TracerouteHopSegment hop = (TracerouteHopSegment) segment;</b>
+<i>352</i>&nbsp;
+<b class="nc"><i>353</i>&nbsp;                if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.BLUETOOTH) {</b>
+<b class="nc"><i>354</i>&nbsp;                    ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_bluetooth_black_24dp);</b>
+<b class="nc"><i>355</i>&nbsp;                    ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_bluetooth));</b>
+<i>356</i>&nbsp;                }
+<b class="nc"><i>357</i>&nbsp;                else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.WIFI) {</b>
+<b class="nc"><i>358</i>&nbsp;                    ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_network_wifi_black_24dp);</b>
+<b class="nc"><i>359</i>&nbsp;                    ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_wifi_direct));</b>
+<i>360</i>&nbsp;                }
+<b class="nc"><i>361</i>&nbsp;                else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.GCM) {</b>
+<b class="nc"><i>362</i>&nbsp;                    ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_cloud_black_24dp);</b>
+<b class="nc"><i>363</i>&nbsp;                    ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_cloud));</b>
+<i>364</i>&nbsp;                }
+<i>365</i>&nbsp;                else {
+<b class="nc"><i>366</i>&nbsp;                    findViewById(R.id.protocol_icon).setVisibility(View.GONE);</b>
+<b class="nc"><i>367</i>&nbsp;                    findViewById(R.id.protocol).setVisibility(View.GONE);</b>
+<i>368</i>&nbsp;                }
+<i>369</i>&nbsp;
+<b class="nc"><i>370</i>&nbsp;                ((TextView) view.findViewById(R.id.time)).setText(hop.getTimeDelta());</b>
+<i>371</i>&nbsp;            }
+<b class="nc"><i>372</i>&nbsp;            tracerouteList.addView(view);</b>
+<b class="nc"><i>373</i>&nbsp;        }</b>
+<b class="nc"><i>374</i>&nbsp;    }</b>
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;    private void inflateDebugInfo() {
+<b class="nc"><i>377</i>&nbsp;        ((TextView) findViewById(R.id.retries)).setText(&quot;&quot;+message.retransmissionCount);</b>
+<b class="nc"><i>378</i>&nbsp;        ((TextView) findViewById(R.id.uuid)).setText(message.uuid.toString().substring(0, 8));</b>
+<b class="nc"><i>379</i>&nbsp;        if (message.hasFlag(Message.FLAG_ROUTING_DSR)) {</b>
+<b class="nc"><i>380</i>&nbsp;            ((TextView) findViewById(R.id.routing)).setText(R.string.routing_dsr);</b>
+<b class="nc"><i>381</i>&nbsp;        } else if (message.hasFlag(Message.FLAG_ROUTING_FLOODING)) {</b>
+<b class="nc"><i>382</i>&nbsp;            ((TextView) findViewById(R.id.routing)).setText(R.string.routing_flooding);</b>
+<i>383</i>&nbsp;        } else {
+<b class="nc"><i>384</i>&nbsp;            ((TextView) findViewById(R.id.routing)).setText(R.string.routing_unknown);</b>
+<i>385</i>&nbsp;        }
+<b class="nc"><i>386</i>&nbsp;        if (message.hasFlag(Message.FLAG_FAILED)) {</b>
+<b class="nc"><i>387</i>&nbsp;            ((TextView) findViewById(R.id.error)).setText(message.error);</b>
+<b class="nc"><i>388</i>&nbsp;            findViewById(R.id.error).setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>389</i>&nbsp;            findViewById(R.id.label_error_message).setVisibility(View.VISIBLE);</b>
+<b class="nc"><i>390</i>&nbsp;            findViewById(R.id.group_error).setVisibility(View.VISIBLE);</b>
+<i>391</i>&nbsp;        } else {
+<b class="nc"><i>392</i>&nbsp;            ((TextView) findViewById(R.id.error)).setText(&quot;&quot;);</b>
+<b class="nc"><i>393</i>&nbsp;            findViewById(R.id.error).setVisibility(View.GONE);</b>
+<b class="nc"><i>394</i>&nbsp;            findViewById(R.id.label_error_message).setVisibility(View.GONE);</b>
+<b class="nc"><i>395</i>&nbsp;            findViewById(R.id.group_error).setVisibility(View.GONE);</b>
+<i>396</i>&nbsp;        }
+<b class="nc"><i>397</i>&nbsp;    }</b>
+<i>398</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2015-09-18 03:04</div>
+</div>
+</body>
+</html>
