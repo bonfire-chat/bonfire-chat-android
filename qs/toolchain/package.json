@@ -1,0 +1,16 @@
+{
+  "name": "qs-toolchain",
+  "version": "1.0.0",
+  "description": "generating QS appendix as needed, on steroids",
+  "repository": "https://code.lauinger-it.de/studium/bp.git",
+  "keywords": [
+    "awesome"
+  ],
+  "author": "Johannes Lauinger",
+  "license": "Bonfire License",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-shell": "^1.1.2",
+    "grunt-wkhtmltopdf": "^0.5.0"
+  }
+}
