@@ -24,7 +24,7 @@ module.exports = function(grunt) {
           'cp -r <%=src%>/coverage/.css <%=assets%>',
           'cp <%=src%>/coverage/index.html <%=assets%>/02-coverage.html',
           'cp <%=reviewChecklist%> <%=partials%>/03-00-checklist.pdf',
-          'cp -r <%=src%>/lint/lint-resuls_files <%=assets%>',
+          'cp -r <%=src%>/lint/lint-results_files <%=assets%>',
           'cp <%=src%>/lint/lint-results.html <%=assets%>/06-lint.html'
         ].join('&&')
       },
