@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +39,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
  */
 public class IdentityActivity extends Activity  {
 
-    //public static final String EXTRA_IDENTITY_ID = "IdentityId";
+    private static final String TAG = "IdentityActivity";
 
     Identity identity;
 
@@ -49,13 +50,18 @@ public class IdentityActivity extends Activity  {
         super.onCreate(savedInstanceState);
         if (getIntent().hasExtra("isWelcomeScreen")) {
             isWelcomeScreen = true;
+            setTheme(R.style.Theme_NoBackground);
             setContentView(R.layout.activity_identity_welcome);
-            getActionBar().setTitle(getString(R.string.title_welcome));
-            getActionBar().hide();
-        }else {
+            if (getActionBar() != null) {
+                getActionBar().setTitle(getString(R.string.title_welcome));
+                getActionBar().hide();
+            }
+        } else {
             setContentView(R.layout.activity_identity);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setTitle(getString(R.string.title_edit_account));
+            if (getActionBar() != null) {
+                getActionBar().setDisplayHomeAsUpEnabled(true);
+                getActionBar().setTitle(getString(R.string.title_edit_account));
+            }
         }
 
         BonfireData db = BonfireData.getInstance(this);
@@ -63,9 +69,14 @@ public class IdentityActivity extends Activity  {
 
         getEdit(R.id.nickname).setText(identity.nickname);
         getEdit(R.id.phone).setText(identity.phone);
-        ImageView contactImage = ((ImageView)findViewById(R.id.contact_image));
-        if(!identity.getImage().equals(""))
-            contactImage.setImageURI(Uri.parse("file://" + identity.getImage()));
+        ImageView contactImage = ((ImageView) findViewById(R.id.contact_image));
+        if(contactImage != null) {
+            contactImage.setOnClickListener(onImageClicked);
+            if(!identity.getImage().equals("")) {
+                contactImage.setImageURI(Uri.parse("file://" + identity.getImage()));
+            }
+            findViewById(R.id.change_contact_image).setOnClickListener(onImageClicked);
+        }
 
         if (!isWelcomeScreen) {
             String pubkey = identity.getPublicKey().asBase64();
@@ -75,9 +86,6 @@ public class IdentityActivity extends Activity  {
 
         Button saveButton = (Button) findViewById(R.id.save);
         if (saveButton != null ) saveButton.setOnClickListener(onSaveButtonClicked);
-
-        ImageView imageView = (ImageView) findViewById(R.id.contact_image);
-        if(imageView != null) imageView.setOnClickListener(onImageClicked);
     }
 
     private EditText getEdit(int id) {
@@ -168,7 +176,7 @@ public class IdentityActivity extends Activity  {
 
             SharedPreferences.Editor preferences = PreferenceManager.getDefaultSharedPreferences(IdentityActivity.this).edit();
             preferences.putString("my_nickname", identity.nickname);
-            preferences.commit();
+            preferences.apply();
 
         }
     };

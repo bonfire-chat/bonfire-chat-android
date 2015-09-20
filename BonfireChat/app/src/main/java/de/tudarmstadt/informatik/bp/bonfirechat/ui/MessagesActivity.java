@@ -238,13 +238,6 @@ public class MessagesActivity extends Activity {
                     showcaseView.setContentText(getString(R.string.tutorial_messages_share_image_desc));
                     showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_share_image));
                     showcaseView.setButtonText(getString(R.string.next));
-                    break;
-                case 2:
-                    showcaseView.setContentTitle(getString(R.string.tutorial_messages_share_location));
-                    showcaseView.setContentText(getString(R.string.tutorial_messages_share_location_desc));
-                    showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_share_location));
-                    showcaseView.setButtonText(getString(R.string.next));
-                    break;
                 case 3:
                     showcaseView.setContentTitle(getString(R.string.tutorial_messages_details));
                     showcaseView.setContentText(getString(R.string.tutorial_messages_details_desc));

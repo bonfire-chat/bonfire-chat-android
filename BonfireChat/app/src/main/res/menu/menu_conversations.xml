@@ -1,18 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
     <item android:id="@+id/action_add_conversation" android:title="@string/action_add_conversation"
-        app:showAsAction="ifRoom" android:icon="@android:drawable/ic_menu_add" />
-    <item android:id="@+id/action_edit_identity" android:title="@string/action_edit_account"
-        app:showAsAction="never"/>
+        android:showAsAction="ifRoom" android:icon="@android:drawable/ic_menu_add"
+        tools:ignore="AppCompatResource" />
 
+    <item android:id="@+id/action_edit_identity" android:title="@string/action_edit_account"
+        android:showAsAction="never"
+        tools:ignore="AppCompatResource" />
 
     <item android:id="@+id/action_share_with_facebook" android:title="@string/share_facebook"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" android:showAsAction="never"
+        tools:ignore="AppCompatResource" />
 
     <item android:id="@+id/action_share_with_twitter" android:title="@string/share_twitter"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" android:showAsAction="never"
+        tools:ignore="AppCompatResource" />
 
 
 

@@ -1,4 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/scrollView">
@@ -18,7 +20,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/label_nickname"
             android:textStyle="bold"
-            android:id="@+id/label_nickname" />
+            android:id="@+id/label_nickname"
+            android:labelFor="@+id/nickname"/>
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -33,7 +36,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/label_phone"
             android:id="@+id/label_phone"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:labelFor="@+id/phone"/>
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -48,7 +52,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/label_publickey"
             android:id="@+id/label_publickey"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:labelFor="@+id/publickey"/>
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -75,13 +80,13 @@
             android:layout_height="200dp"
             android:layout_marginTop="20dp">
 
-            <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
-                android:name="com.google.android.gms.maps.MapFragment"
+            <fragment android:name="com.google.android.gms.maps.MapFragment"
                 android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 map:mapType="normal"
-                map:cameraZoom="15" />
+                map:cameraZoom="15"
+                tools:ignore="MissingPrefix" />
             <View android:id="@+id/transparent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -291,8 +292,15 @@ public class MessageDetailsActivity extends Activity {
                 break;
         }
 
-        ListView contactsList = (ListView) findViewById(R.id.contactsList);
-        contactsList.setAdapter(new ContactsAdapter(this, contacts));
+        LinearLayout contactsList = (LinearLayout) findViewById(R.id.contactsList);
+        contactsList.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        for (Contact contact: contacts) {
+            View view = inflater.inflate(R.layout.contacts_layout, contactsList);
+            ((TextView) view.findViewById(R.id.name)).setText(contact.getNickname());
+            ContactImageHelper.displayCompoundContactImage(this, contact, (TextView) view.findViewById(R.id.name));
+        }
     }
 
     private void inflateMessageDatails() {
@@ -301,53 +309,55 @@ public class MessageDetailsActivity extends Activity {
         // display error?
         if (message.hasFlag(Message.FLAG_FAILED)) {
             findViewById(R.id.group_infos).setVisibility(View.GONE);
-            findViewById(R.id.group_proto).setVisibility(View.GONE);
+            findViewById(R.id.label_message_proto).setVisibility(View.GONE);
         }
         else {
             findViewById(R.id.group_infos).setVisibility(View.VISIBLE);
-            findViewById(R.id.group_proto).setVisibility(View.VISIBLE);
+            findViewById(R.id.label_message_proto).setVisibility(View.VISIBLE);
+
+            TextView protoView = (TextView) findViewById(R.id.label_message_proto);
 
             if (message.hasFlag(Message.FLAG_PROTO_BT)) {
-                ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_bluetooth));
-                ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_bluetooth_black_24dp);
-                findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);
+                protoView.setText(getString(R.string.protocol_bluetooth));
+                protoView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_bluetooth_black_24dp, 0, 0, 0);
+                protoView.setVisibility(View.VISIBLE);
             } else if (message.hasFlag(Message.FLAG_PROTO_WIFI)) {
-                ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_wifi_direct));
-                ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_network_wifi_black_24dp);
-                findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);
+                protoView.setText(getString(R.string.protocol_wifi_direct));
+                protoView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_network_wifi_black_24dp, 0, 0, 0);
+                protoView.setVisibility(View.VISIBLE);
             } else if (message.hasFlag(Message.FLAG_PROTO_CLOUD)) {
-                ((TextView) findViewById(R.id.label_message_proto)).setText(getString(R.string.protocol_cloud));
-                ((ImageView) findViewById(R.id.message_big_proto)).setImageResource(R.drawable.ic_cloud_black_24dp);
-                findViewById(R.id.message_big_proto).setVisibility(View.VISIBLE);
+                protoView.setText(getString(R.string.protocol_cloud));
+                protoView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_cloud_black_24dp, 0, 0, 0);
+                protoView.setVisibility(View.VISIBLE);
             } else {
-                findViewById(R.id.label_message_proto).setVisibility(View.GONE);
-                findViewById(R.id.message_big_proto).setVisibility(View.GONE);
+                protoView.setVisibility(View.GONE);
             }
         }
     }
 
     private void inflateTraceroute() {
         List<TracerouteSegment> traceroute = message.traceroute;
+
         LinearLayout tracerouteList = (LinearLayout) findViewById(R.id.tracedHopsList);
         tracerouteList.removeAllViews();
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        View view = null;
         for (TracerouteSegment segment: traceroute) {
             Log.d(TAG, "adding " + segment);
-            View view;
             if (segment instanceof TracerouteNodeSegment) {
-                view = inflater.inflate(R.layout.traceroute_rowlayout_node, null);
+                view = inflater.inflate(R.layout.traceroute_rowlayout_node, tracerouteList, false);
                 TracerouteNodeSegment node = (TracerouteNodeSegment) segment;
 
+                ContactImageHelper.displayCompoundContactImage(this, node.getImage(), (TextView) view.findViewById(R.id.name));
+                Log.d(TAG, "setting text to contact: " + node.getNickname() + " for view " + view);
                 ((TextView) view.findViewById(R.id.name)).setText(node.getNickname());
-                BonfireData db = BonfireData.getInstance(this);
-                ContactImageHelper.displayContactImage(node.getImage(), (ImageView) view.findViewById(R.id.icon));
             }
             else if (segment instanceof TracerouteProgressSegment) {
-                view = inflater.inflate(R.layout.traceroute_rowlayout_progress, null);
+                inflater.inflate(R.layout.traceroute_rowlayout_progress, tracerouteList, false);
             }
             else {
-                view = inflater.inflate(R.layout.traceroute_rowlayout_hop, null);
+                view = inflater.inflate(R.layout.traceroute_rowlayout_hop, tracerouteList, false);
                 TracerouteHopSegment hop = (TracerouteHopSegment) segment;
 
                 if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.BLUETOOTH) {

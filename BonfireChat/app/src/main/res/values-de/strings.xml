@@ -7,17 +7,8 @@
 
     <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
     <string name="navigation_drawer_close">Navigationsleiste schließen</string>
-
-    <string name="action_settings">Einstellungen</string>
-    <string name="action_credits">Über Bonfire Chat</string>
     <string name="action_add_conversation">Neue Unterhaltung</string>
-    <string name="action_add_contact">Neuer Kontakt</string>
-
-    <string name="new_contact">Neuer Kontakt</string>
-    <string name="search_contact_by_name">Nach Name suchen:</string>
     <string name="title_activity_contact_details">Kontaktdetails</string>
-
-    <string name="hello_world">Hallo, Welt!</string>
     <string name="action_save">Speichern</string>
     <string name="title_activity_search_user">Nach einem Benutzer suchen</string>
 
@@ -32,7 +23,6 @@
     <string name="action_create_conversation">Unterhaltung beginnen</string>
     <string name="action_edit_title">Titel ändern</string>
     <string name="action_share_image">Bild senden</string>
-    <string name="action_info">Informationen</string>
     <string name="action_set_path">Nachrichtenweg zuweisen</string>
     <string name="action_clear_path">Nachrichtenweg zurücksetzen</string>
     <string name="action_debug_info">Diagnoseinformationen</string>
@@ -45,9 +35,6 @@
     <string name="protocol_wifi_direct">WiFi Direct</string>
     <string name="protocol_cloud">Cloud</string>
     <string name="nfc_is_not_available">NFC ist nicht verfügbar</string>
-    <string name="registering_title">Registrieren …</string>
-    <string name="registering_message">Eile mit Weile.</string>
-    <string name="registering_failed">Fehler beim Speichern</string>
 
     <string name="action_login_ok">Weiter</string>
     <string name="login_phone_number_hint">Handynummer (optional)</string>
@@ -74,8 +61,6 @@
     <string name="tutorial_messages_change_title_desc">Hier klicken, um den Titel dieser Unterhaltung zu ändern</string>
     <string name="tutorial_messages_share_image">Bild verschicken</string>
     <string name="tutorial_messages_share_image_desc">Klicke hier, um ein Bild zu versenden</string>
-    <string name="tutorial_messages_share_location">Standort teilen</string>
-    <string name="tutorial_messages_share_location_desc">Klicke hier, um deinen Standort zu übertragen</string>
     <string name="tutorial_messages_details">Übrigens</string>
     <string name="tutorial_messages_details_desc">Klicke lang auf eine Nachricht und wähle das Details-Icon, um Details zur Übertragung anzusehen.</string>
     <string name="tutorial_contacts_your_contact">Deine Kontaktdaten</string>
@@ -145,5 +130,15 @@
     <string name="update">Update</string>
     <string name="load_last_dev_build">Letzten Dev-Build laden</string>
     <string name="exception_only_fresh_envelopes">Diese Methode verschickt nur jungfräuliche Umschläge.</string>
+    <string name="send_a_location_udp_cast">send a location udp cast</string>
+    <string name="contact_image">Kontaktbild</string>
+    <string name="protocol">Protokoll</string>
+    <string name="send">Senden</string>
+    <string name="message_image">Nachrichtenbild</string>
+    <string name="message_acknowledged">Nachricht bestätigt</string>
+    <string name="qr_code">QR-Code</string>
+    <string name="path_arrow">Wegpfeil</string>
+    <string name="duration">Zeitdauer</string>
+    <string name="change_contact_image">Bild ändern</string>
 
 </resources>
