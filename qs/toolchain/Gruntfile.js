@@ -23,7 +23,9 @@ module.exports = function(grunt) {
           'cp  <%=src%>/junit/bonfire-junit-report.html <%=assets%>/01-junit.html',
           'cp -r <%=src%>/coverage/.css <%=assets%>',
           'cp <%=src%>/coverage/index.html <%=assets%>/02-coverage.html',
-          'cp <%=reviewChecklist%> <%=partials%>/03-00-checklist.pdf'
+          'cp <%=reviewChecklist%> <%=partials%>/03-00-checklist.pdf',
+          'cp -r <%=src%>/lint/lint-resuls_files <%=assets%>',
+          'cp <%=src%>/lint/lint-results.html <%=assets%>/06-lint.html'
         ].join('&&')
       },
       clean: {
@@ -86,7 +88,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-latex');
 
-  grunt.registerTask('prepare', ['concat', 'latex', 'latex', 'shell:collect']);
+  grunt.registerTask('prepare', ['concat']);
   grunt.registerTask('pdfconcat', ['shell:pdfconcat']);
   grunt.registerTask('clean', ['shell:clean']);
   grunt.registerTask('open', ['shell:open']);
@@ -94,7 +96,7 @@ module.exports = function(grunt) {
   grunt.registerTask('cloneRepository', ['shell:cloneRepository']);
 
   grunt.registerTask('default', ['clean', 'cloneRepository', 'prepare', 'build', 'link', 'removeRepository']);
-  grunt.registerTask('build', []);
+  grunt.registerTask('build', ['latex', 'latex', 'shell:collect']);
   grunt.registerTask('link', ['wkhtmltopdf', 'markdownpdf', 'pdfconcat', 'shell:marry']);
   grunt.registerTask('all', ['default', 'clean', 'open']);
 
