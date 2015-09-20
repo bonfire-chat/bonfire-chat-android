@@ -11,16 +11,15 @@ clean:
 dirs:
 	mkdir -p $(ASSETS) $(PARTIALS)
 
+
 $(PARTIALS)/codereviews.tex: belege/code-reviews/*.md
-	cat $^ | pandoc -r markdown -w latex -o $@
-	sed -i '' 's/\\subsection/\\clearpage\\subsection/' $@
+	cat $^ | pandoc -r markdown -w latex | sed 's/\\subsection/\\clearpage\\subsection/' > $@
 
 $(PARTIALS)/manuelle-tests-ui-reports.tex: belege/manuelle-tests/ui/*.md
-	cat $^ | pandoc -r markdown -w latex -o $@
-	sed -i '' 's/\\subsection/\\clearpage\\subsection/' $@
+	cat $^ | pandoc -r markdown -w latex | sed 's/\\subsection/\\clearpage\\subsection/' > $@
 
-$(ASSETS)/05-documentation.md: bp.wiki/Dokumentation.markdown
-	cp $< $@
+$(PARTIALS)/dokumentation.tex: ../docs/Dokumentation.md
+	pandoc -r markdown -w latex -o $@ $<
 
 $(PARTIALS)/coverage.pdf: belege/coverage/index.html
 	wkhtmltopdf $< $@
@@ -28,10 +27,10 @@ $(PARTIALS)/coverage.pdf: belege/coverage/index.html
 $(PARTIALS)/junit.pdf: belege/junit/bonfire-junit-report.html
 	wkhtmltopdf $< $@
 
-$(PARTIALS)/lint-results%.pdf: belege/lint/lint-results%.tmp
+$(PARTIALS)/lint-results%.pdf: belege/lint/lint-results%.tmp.html
 	wkhtmltopdf --lowquality $< $@
 
-belege/lint/lint-results%.tmp: belege/lint/lint-results%.html
+belege/lint/lint-results%.tmp.html: belege/lint/lint-results%.html
 	cat $< > $@
 	echo "<style> body,pre {background: white; } body,*{ color: black} body a {color:#00a!important} </style>" >> $@
 
