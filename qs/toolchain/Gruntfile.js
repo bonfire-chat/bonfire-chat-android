@@ -29,7 +29,8 @@ module.exports = function(grunt) {
         command: 'exec evince <%=dst%>'
       },
       convertCodeReviews: {
-        command: 'pandoc -r markdown -w latex -o <%=partials%>/codereviews.tex <%= assets %>/03-reviews.md'
+        command: "pandoc -r markdown -w latex -o <%=partials%>/codereviews.tex <%= assets %>/03-reviews.md \
+        && sed -i '' 's/\\\\subsection/\\\\clearpage\\\\subsection/' <%=partials%>/codereviews.tex"
       }
     },
 
@@ -49,7 +50,8 @@ module.exports = function(grunt) {
         src: '<%=assets%>/*.html',
         dest: '<%=partials%>/',
         args: [
-          '--print-media-type'
+          //'--print-media-type',
+          '--lowquality',
         ]
       }
     },
