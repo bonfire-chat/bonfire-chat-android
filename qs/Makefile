@@ -28,10 +28,10 @@ $(PARTIALS)/coverage.pdf: belege/coverage/index.html
 $(PARTIALS)/junit.pdf: belege/junit/bonfire-junit-report.html
 	wkhtmltopdf $< $@
 
-$(PARTIALS)/lint-results%.pdf: belege/lint/lint-results%-prep.html
+$(PARTIALS)/lint-results%.pdf: belege/lint/lint-results%.tmp
 	wkhtmltopdf --lowquality $< $@
 
-belege/lint/lint-results%-prep.html: belege/lint/lint-results%.html
+belege/lint/lint-results%.tmp: belege/lint/lint-results%.html
 	cat $< > $@
 	echo "<style> body,pre {background: white; } body,*{ color: black} body a {color:#00a!important} </style>" >> $@
 
