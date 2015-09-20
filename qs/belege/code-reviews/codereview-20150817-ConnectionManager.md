@@ -16,7 +16,7 @@ Ja.
 
 #### 3. Wurde die Klassenstruktur gut entworfen und erfüllt sie alle Anforderungen, oder sind Verbesserungen nötig?
 
-Ja sie ist sinnvoll erstellt und es sind keine Verbesserungen bekannt.
+Ja, sie ist sinnvoll erstellt und es sind keine Verbesserungen bekannt.
 
 #### 4. Gibt es Klassen, die aufgrund neuer Implementierungen überflüssig geworden sind?
 
@@ -32,7 +32,7 @@ Ja.
 
 #### 7. Enthält das Codeteil Funktionen, die wiederverwendet werden können? Sind diese in einer Helper-Klasse untergebracht?
 
-Die Klasse ist dafür zuständig Nachrichten zu versenden und diese weiterzuleiten. Immer wenn dies geschieht erledigt das der ConnectionManager. Insofern gitb es keine Funktionen die später wiederverwendet werden können.
+Die Klasse ist dafür zuständig Nachrichten zu versenden und diese weiterzuleiten. Immer wenn dies geschieht erledigt das der ConnectionManager. Insofern gibt es keine Funktionen die später wiederverwendet werden können.
 
 #### 8. Wurden existierende Helper-Funktionen benutzt? Ist keine doppelte Funktionalität implementiert?
 
@@ -40,15 +40,15 @@ Es gibt keine bereits existierenden Helper-Methoden.
 
 #### 9. Werden alle Eingabeparameter validiert?
 
-Es gibt keine Eingabeparameter im klassischen Sinne. Besitzt ein Handy keine Wifi oder Bluetooth funktionalität, dann unterliegt es den Protokolen dieser Klassen dies zu überprüfen. Werden Nachrichten an benachbarte Peers verschickt so ist es nicht möglich diese zu validieren, da diese sich außer Reichweite bewegt haben können.
+Es gibt keine Eingabeparameter im klassischen Sinne. Besitzt ein Handy keine Wifi- oder Bluetooth-Funktionalität, dann unterliegt es den Klassen dieser Protokolle dies zu überprüfen. Werden Nachrichten an benachbarte Peers verschickt, so ist es nicht möglich diese zu validieren, da diese sich außer Reichweite bewegt haben können.
 
 #### 10. Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
 
-Der Connection Manager startet die Protokolle Wifi, Bluetooth und GCM. Diese überprüfen häufig welche Geräte sich in der unmittelbaren Nähe befinden und verbrauchen damit Strom. Da dies jedoch eine wichtige Funktionalität ist für die Funktionalität der App, kann dies nicht vermieden werden. Will ein User nur eins der Protokole benutzen so kann er dies in den Einstellungen auswählen.
+Der ConnectionManager startet die Protokolle Wifi, Bluetooth und GCM. Die Protokolle Wifi und Bluetooth überprüfen häufig, welche Geräte sich in der unmittelbaren Nähe befinden und verbrauchen damit Strom. Da dies jedoch eine wichtige Funktionalität ist für die Funktionalität der App, kann dies nicht vermieden werden. Will ein User nur eins der Protokole benutzen so kann er dies in den Einstellungen auswählen.
 
 #### 11. Ist es unbedingt nötig, den Code in einem UI-Thread laufen zu lassen oder würde ein Background-Thread ausreichen?
 
-Der Großteil des Codes im ConnectionManager läuft bereits in einem Hintergrundthread. Nur einige statische Methoden dienen als Helper für UI-Klassen, diese müssen daher im UI Thread laufen.
+Der Großteil des Codes im ConnectionManager läuft bereits in einem Hintergrundthread. Nur einige statische Methoden dienen als Helper für UI-Klassen, diese müssen daher im UI-Thread laufen.
 
 #### 12. Werden alle möglichen Fehlschläge behandelt?
 
@@ -63,8 +63,8 @@ Bei dem Handlen mit der Datenbank kann ein try-catch Block eingefügt werden.
 Nein, folgende Fehler wurden gefunden und werden behoben:
 
 - Fehler wurden nicht userfreundlich dargestellt
-- Es befinden sich TODO Blöcke im Code, die abgearbeitet werden müssen.
-- Die CanSend funktionaliät returned immer true und ist noch nicht implementiert -> BluetoothProtokol & WifiProtokol
+- Es befinden sich TODO-Blöcke im Code, die abgearbeitet werden müssen.
+- Die CanSend-Funktionalität returned immer true und ist noch nicht implementiert -> BluetoothProtokol & WifiProtokol
 - Die sendMessage Methode ruft nur die sendEnvelope Methode auf. Überbleibsel von altem Code.
 - Ungenutzte Imports entfernen.
 
