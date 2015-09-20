@@ -1,0 +1,9 @@
+
+@page { margin: 205mm 25mm 25mm 25mm;  }
+
+table { border-collapse: collapse; }
+td, th {
+  border: 1px solid #bbb; vertical-align: top;
+}
+td { padding: 8px;  }
+th { padding: 8px 8px; background: #eee; text-align: left; }
