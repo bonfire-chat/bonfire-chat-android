@@ -28,15 +28,15 @@ $(PARTIALS)/coverage.pdf: belege/coverage/index.html
 $(PARTIALS)/junit.pdf: belege/junit/bonfire-junit-report.html
 	wkhtmltopdf $< $@
 
-$(PARTIALS)/lint-results.pdf: belege/lint/lint-results-prep.html
+$(PARTIALS)/lint-results%.pdf: belege/lint/lint-results%-prep.html
 	wkhtmltopdf --lowquality $< $@
 
-belege/lint/lint-results-prep.html: belege/lint/lint-results.html
+belege/lint/lint-results%-prep.html: belege/lint/lint-results%.html
 	cat $< > $@
 	echo "<style> body,pre {background: white; } body,*{ color: black} body a {color:#00a!important} </style>" >> $@
 
 qs-dokument.pdf: qs-dokument.tex anhang/anhang.tex spezifikation/*.tex $(PARTIALS)/codereviews.tex $(PARTIALS)/manuelle-tests-ui-reports.tex \
-									$(PARTIALS)/coverage.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/lint-results.pdf
+									$(PARTIALS)/coverage.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/lint-results-1.pdf $(PARTIALS)/lint-results-2.pdf
 	pdflatex qs-dokument.tex
 	pdflatex qs-dokument.tex
 
