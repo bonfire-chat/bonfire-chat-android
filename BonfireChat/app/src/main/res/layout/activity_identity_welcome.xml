@@ -6,7 +6,7 @@
     android:background="@drawable/welcome_background">
 
     <TextView android:layout_height="wrap_content" android:layout_width="wrap_content"
-        android:text="@string/name_of_app" android:textSize="60dp"
+        android:text="@string/name_of_app" android:textSize="60sp"
         android:textColor="#ffffff"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"

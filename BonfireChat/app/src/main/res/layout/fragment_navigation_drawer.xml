@@ -21,10 +21,10 @@
         android:background="#b246f02a">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
+            android:text=""
             android:id="@+id/txt_nickname"
             android:padding="11dp"
             android:layout_weight="1"
@@ -36,7 +36,8 @@
             android:id="@+id/btnShareIdentityQR"
             android:src="@drawable/ic_share_black_24dp"
             android:tint="#ffffff"
-            style="@android:style/Widget.ActionButton"/>
+            style="@android:style/Widget.ActionButton"
+            android:contentDescription="@string/share_my_identity" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -44,7 +45,8 @@
             android:id="@+id/btnEditIdentity"
             android:src="@android:drawable/ic_menu_edit"
             android:tint="#ffffff"
-            style="@android:style/Widget.ActionButton" />
+            style="@android:style/Widget.ActionButton"
+            android:contentDescription="@string/edit_account" />
     </LinearLayout>
 
 </RelativeLayout>

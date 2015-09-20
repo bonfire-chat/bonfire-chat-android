@@ -22,10 +22,6 @@ import java.util.List;
 public class ContactsAdapter extends ArrayAdapter<Contact> {
     private final Context context;
 
-    public List<Contact> getObjects() {
-        return objects;
-    }
-
     private final List<Contact> objects;
     boolean[] itemSelected;
 
@@ -43,16 +39,29 @@ public class ContactsAdapter extends ArrayAdapter<Contact> {
             itemSelected = new boolean[this.objects.size()];
     }
 
+    static class ViewHolder {
+        TextView name;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.contacts_layout, parent, false);
-        TextView name = (TextView) rowView.findViewById(R.id.name);
-        ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
+        View rowView = convertView;
 
-        name.setText(objects.get(position).getNickname());
-        ContactImageHelper.displayContactImage(objects.get(position), icon);
+        if (rowView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            rowView = inflater.inflate(R.layout.contacts_layout, parent, false);
+            ViewHolder holder = new ViewHolder();
+            holder.name = (TextView) rowView.findViewById(R.id.name);
+            rowView.setTag(holder);
+        }
+
+        Contact entry = objects.get(position);
+        if (entry != null) {
+            ViewHolder holder = (ViewHolder) rowView.getTag();
+            holder.name.setText(entry.getNickname());
+            ContactImageHelper.displayCompoundContactImage(context, objects.get(position), holder.name);
+        }
+
         Log.d("ContactsAdapter", "getview position=" + position+"   selected="+itemSelected[position] );
         rowView.setSelected(itemSelected[position]);
         rowView.setBackgroundColor(itemSelected[position] ? Color.parseColor("#ffbbff") : Color.TRANSPARENT);

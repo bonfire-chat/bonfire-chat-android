@@ -7,17 +7,8 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-    <string name="action_credits">About Bonfire Chat</string>
     <string name="action_add_conversation">New Conversation</string>
-    <string name="action_add_contact">New Contact</string>
-
-    <string name="new_contact">New Contact</string>
-    <string name="search_contact_by_name">Search By Name:</string>
     <string name="title_activity_contact_details">Contact Details</string>
-
-    <string name="hello_world">Hello World!</string>
     <string name="action_save">Save</string>
     <string name="title_activity_search_user">Look Up A User</string>
 
@@ -32,7 +23,6 @@
     <string name="action_create_conversation">Start Conversation</string>
     <string name="action_edit_title">Edit Title</string>
     <string name="action_share_image">Send Image</string>
-    <string name="action_info">Info</string>
     <string name="action_set_path">Set Path</string>
     <string name="action_clear_path">Clear Path</string>
     <string name="action_debug_info">Debug Info</string>
@@ -45,9 +35,6 @@
     <string name="protocol_wifi_direct">WiFi Direct</string>
     <string name="protocol_cloud">Cloud</string>
     <string name="nfc_is_not_available">NFC is not available</string>
-    <string name="registering_title">Registering …</string>
-    <string name="registering_message">This will take only a few seconds.</string>
-    <string name="registering_failed">Registering failed</string>
     <string name="exception_only_fresh_envelopes">This method only sends fresh envelopes</string>
 
     <string name="action_login_ok">Continue</string>
@@ -74,8 +61,6 @@
     <string name="tutorial_messages_change_title_desc">click here to change the title of this conversation</string>
     <string name="tutorial_messages_share_image">send an image</string>
     <string name="tutorial_messages_share_image_desc">click here to send an image in a message</string>
-    <string name="tutorial_messages_share_location">share location</string>
-    <string name="tutorial_messages_share_location_desc">click here to share your current location</string>
     <string name="tutorial_messages_details">Last but not least</string>
     <string name="tutorial_messages_details_desc">to see details about a message\'s transmission, long-click on it and select the details icon</string>
     <string name="tutorial_contacts_your_contact">your contact data</string>
@@ -130,7 +115,7 @@
     <string name="share_facebook">Share with Facebook</string>
     <string name="share_twitter">Share with Twitter</string>
     <string name="send_location">Send location</string>
-    <string name="info">Info</string>
+    <string name="info">information</string>
     <string name="edit_account">Edit account</string>
     <string name="account">Account</string>
     <string name="communication_channels">Communication channels</string>
@@ -145,4 +130,14 @@
     <string name="developed_by">by Johannes, Jonas, Max, Matthias and Simon</string>
     <string name="update">Update</string>
     <string name="load_last_dev_build">Load last development build</string>
+    <string name="send_a_location_udp_cast">send a location udp cast</string>
+    <string name="contact_image">contact image</string>
+    <string name="protocol">Protokoll</string>
+    <string name="send">send</string>
+    <string name="message_image">message image</string>
+    <string name="message_acknowledged">message acknowledged</string>
+    <string name="qr_code">QR-Code</string>
+    <string name="path_arrow">path arrow</string>
+    <string name="duration">duration</string>
+    <string name="change_contact_image">change image</string>
 </resources>

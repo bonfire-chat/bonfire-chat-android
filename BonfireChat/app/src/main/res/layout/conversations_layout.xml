@@ -10,8 +10,8 @@
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="6dip"
-        android:contentDescription="TODO"
+        android:layout_marginEnd="6dip"
+        android:contentDescription="@string/contact_image"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
@@ -19,11 +19,11 @@
         android:layout_width="fill_parent"
         android:layout_height="26dip"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/icon"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/icon"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:text="hallo"
+        android:text=""
         android:textSize="12sp" />
 
     <TextView
@@ -31,24 +31,24 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/lastMessage"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/icon"
+        android:layout_toEndOf="@id/icon"
         android:gravity="center_vertical"
-        android:text="Max Mustermann"
+        android:text=""
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/lastMessageDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:text="00:00"
-        android:layout_marginRight="2dip"
+        android:text=""
+        android:layout_marginEnd="2dip"
         android:layout_marginTop="5dip"
         android:textSize="12sp"
         android:textColor="#999999"/>

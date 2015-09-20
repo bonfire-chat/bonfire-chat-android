@@ -8,7 +8,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-//import de.tudarmstadt.informatik.bp.bonfirechat.helper.PreferenceFragment;
 
 import android.os.Environment;
 import android.preference.CheckBoxPreference;

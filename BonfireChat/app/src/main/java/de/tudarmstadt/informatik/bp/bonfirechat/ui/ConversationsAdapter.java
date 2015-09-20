@@ -68,7 +68,9 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
             v = (ViewHolder) convertView.getTag();
         }
 
-        ContactImageHelper.displayContactImage(objects.get(position).getPeer(), v.icon);
+        if (position < objects.size()) {
+            ContactImageHelper.displayContactImage(objects.get(position).getPeer(), v.icon);
+        }
 
         v.name.setText(getItem(position).getName());
         Message lastMessage = getItem(position).getLastMessage();

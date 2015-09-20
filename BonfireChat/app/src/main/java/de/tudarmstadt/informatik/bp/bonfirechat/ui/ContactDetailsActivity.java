@@ -143,12 +143,13 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
 
     private void fixMapScrolling() {
         final ScrollView mainScrollView = (ScrollView) findViewById(R.id.scrollView);
-        View transparentView = findViewById(R.id.transparent);
+        final View transparentView = findViewById(R.id.transparent);
 
         transparentView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                transparentView.performClick();
                 int action = event.getAction();
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:

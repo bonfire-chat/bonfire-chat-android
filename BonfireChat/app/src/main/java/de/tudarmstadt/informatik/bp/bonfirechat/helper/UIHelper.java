@@ -78,7 +78,7 @@ public class UIHelper {
 
     public static boolean shouldShowOobe(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(PREF_SHOW_OOBE, true) || ConstOptions.ALWAYS_SHOW_OOBE;
+        return sp.getBoolean(PREF_SHOW_OOBE, true);
     }
 
     public static boolean shouldShowContactsTutorial(Context context) {
@@ -94,13 +94,13 @@ public class UIHelper {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(PREF_SHOW_CONTACTS_SHOWCASE, false);
-        editor.commit();
+        editor.apply();
     }
     public static void flagShownConversationTutorial(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(PREF_SHOW_CONVERSATION_SHOWCASE, false);
-        editor.commit();
+        editor.apply();
     }
 
 }

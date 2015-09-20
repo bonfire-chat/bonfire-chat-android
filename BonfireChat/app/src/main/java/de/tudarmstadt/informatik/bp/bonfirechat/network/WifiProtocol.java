@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -164,6 +166,7 @@ public class WifiProtocol extends SocketProtocol {
     }
 
     private final BroadcastReceiver wifiBroadcastReceiver = new BroadcastReceiver() {
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -183,7 +186,7 @@ public class WifiProtocol extends SocketProtocol {
 
                 //updatePeers();
 
-                WifiP2pDeviceList list = (WifiP2pDeviceList) intent.getParcelableExtra(WifiP2pManager.EXTRA_P2P_DEVICE_LIST);
+                WifiP2pDeviceList list = intent.getParcelableExtra(WifiP2pManager.EXTRA_P2P_DEVICE_LIST);
                 for (WifiP2pDevice device : list.getDeviceList()) {
                     Log.d(TAG, "Wifi found device: " + device.status + "|" +device.deviceName+"|"+ device.deviceAddress);
                     if (device.status == WifiP2pDevice.AVAILABLE) {
