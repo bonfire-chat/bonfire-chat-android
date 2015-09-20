@@ -3,6 +3,47 @@
     Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
 
 
+\section{Checkstyle und Android Lint}
+
+Um eine hohe Code-Qualität sicherzustellen und damit die Wartbarkeit der
+Anwendung zu verbessern, wurde wie im QS-Dokument festgelegt Checkstyle eingesetzt.
+
+Zusätzlich haben wir das von Google entwickelte und empfohlene ``Android Lint''
+genutzt.
+Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde,
+als wir begonnen haben, ``Android Lint'' einzusetzen. Dann wurden initial alle
+Warnungen und Empfehlungen abgearbeitet (Commit XXXXXXXXXXXXX TODO).
+Die Warnungen und Empfehlungen werden direkt in der von uns verwendeten
+Entwicklungsumgebung Android Studio angezeigt, sodass diese anschließend während
+der Programmierung direkt umgesetzt werden konnten. Daher ist der zweite Report,
+der zum Abschluss des Projekts erstellt wurde, leer.
+
+
+\subsection{Checkstyle}
+\subsection{Android Lint}
+
+
+\clearpage
+
+% ---------------------------------------------------------------------------
+% Code Reviews (Einleitung)
+
+\section{Code Reviews}
+
+Zur Sicherstellung der Wartbarkeit durch hohe Code-Qualität wurde bei jedem
+Sprint-Treffen mit dem Auftraggeber ein Code Review durchgeführt.
+
+% ---------------------------------------------------------------------------
+% Code Reviews: Checkliste
+
+\subsection{Checkliste}
+
+\input{spezifikation/code-review-checklist}
+
+% ---------------------------------------------------------------------------
+% Code Reviews: Ergebnisse
+\input{anhang/partials/codereviews.tex}
+
 
 % ---------------------------------------------------------------------------
 % Automatisierte Tests: (Einleitung)
@@ -33,33 +74,15 @@ sodass wir stattdessen mit Mockito erstellte Mock-Objekte übergeben können, od
 % ---------------------------------------------------------------------------
 % Automatisierte Tests: Ergebnisse
 
-\includepdf[pages=1,scale=.8,pagecommand=\subsection{Ergebnisse}]{anhang/partials/01-junit.pdf}
-\includepdf[pages=2-,scale=.8,pagecommand={}]{anhang/partials/01-junit.pdf}
+\includepdf[pages=1,scale=.8,pagecommand=\subsection{Ergebnisse}]{anhang/partials/junit.pdf}
+\includepdf[pages=2-,scale=.8,pagecommand={}]{anhang/partials/junit.pdf}
 
 
 % ---------------------------------------------------------------------------
 % Automatisierte Tests: Test Coverage
 
-\includepdf[pages=-,scale=.8,pagecommand=\subsection{Test Coverage}]{anhang/partials/02-coverage.pdf}
+\includepdf[pages=-,scale=.8,pagecommand=\subsection{Test Coverage}]{anhang/partials/coverage.pdf}
 
-
-\clearpage
-
-% ---------------------------------------------------------------------------
-% Code Reviews (Einleitung)
-
-\section{Code Reviews}
-
-% ---------------------------------------------------------------------------
-% Code Reviews: Checkliste
-
-\subsection{Checkliste}
-
-\input{spezifikation/code-review-checklist}
-
-% ---------------------------------------------------------------------------
-% Code Reviews: Ergebnisse
-\input{anhang/partials/codereviews.tex}
 
 
 \clearpage
