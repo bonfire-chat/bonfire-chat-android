@@ -1,0 +1,77 @@
+
+    (Am Ende des Projekts nachzureichen)\\\\
+    Beleg für durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso die Durchführung nicht möglich oder nicht erfolgt ist. \\
+
+
+
+% ---------------------------------------------------------------------------
+% Automatisierte Tests: (Einleitung)
+
+\section{Automatisierte Tests}
+
+Es wurden JUnit-Tests für die automatisiert testbaren Codeteile durchgeführt.
+Im folgenden findet sich zunächst eine Liste aller Tests sowie der Testergebnisse,
+außerdem das Ergebnis der Test-Coverage-Analyse, aufgeschlüsselt nach Packages.
+\\\\
+Wie bereits im QS-Dokument beschrieben, war ein Testen des UI- und Netzwerkcodes
+(Packages bonfirechat.network und bonfirechat.ui)
+mit dem JUnit-Framework nicht möglich, da die Android-Klassenbibliothek dort nicht
+zur Verfügung steht. Das gleiche gilt für die Datenbankklasse, da diese von einer
+Android-internen Klasse erbt. Daher konnte auch die Klasse bonfire.data.BonfireData
+nicht mit automatisierten Tests versehen werden.
+\\\\
+Zusammenfassend gilt, dass wir automatisierte Tests für alle Methoden geschrieben haben,
+die
+\begin{itemize}
+\item keine Klassen der Android-Klassenbibliothek verwenden,
+\item Klassen der Android-Klassenbibliothek nur als Parameter übergeben bekommen,
+sodass wir stattdessen mit Mockito erstellte Mock-Objekte übergeben können, oder
+\item mit vertretbarem Aufwand angepasst werden konnten, sodass der vorhergehende Punkt zutrifft.
+\end{itemize}
+
+
+% ---------------------------------------------------------------------------
+% Automatisierte Tests: Ergebnisse
+
+\includepdf[pages=1,scale=.8,pagecommand=\subsection{Ergebnisse}]{anhang/partials/01-junit.pdf}
+\includepdf[pages=2-,scale=.8,pagecommand={}]{anhang/partials/01-junit.pdf}
+
+
+% ---------------------------------------------------------------------------
+% Automatisierte Tests: Test Coverage
+
+\includepdf[pages=-,scale=.8,pagecommand=\subsection{Test Coverage}]{anhang/partials/02-coverage.pdf}
+
+
+\clearpage
+
+% ---------------------------------------------------------------------------
+% Code Reviews (Einleitung)
+
+\section{Code Reviews}
+
+% ---------------------------------------------------------------------------
+% Code Reviews: Checkliste
+
+\subsection{Checkliste}
+
+\input{spezifikation/code-review-checklist}
+
+% ---------------------------------------------------------------------------
+% Code Reviews: Ergebnisse
+
+
+\clearpage
+
+\section{Manuelle Tests der Benutzeroberfläche}
+
+Da uns der Aufwand für die Nutzung eines Instrumented-Test-Frameworks
+für das recht einfache User Interface der App unverhältnismäßig
+erscheint, werden manuelle Tests anhand der folgenden Testpläne
+vorgenommen.
+
+\input{belege/manuelle-tests/ui/00-testplan.tex}
+
+\clearpage
+\section{Erhebung von Netzwerkstatistiken}
+\input{belege/manuelle-tests/netzwerk/00-testplan.tex}

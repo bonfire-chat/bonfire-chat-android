@@ -1,0 +1,70 @@
+\documentclass[accentcolor=tud0b,12pt,paper=a4]{tudreport}
+
+\usepackage[utf8]{inputenc}
+\usepackage{ngerman}
+\usepackage{parcolumns}
+\usepackage{parskip}
+
+% include wkhtmltopdf stuff
+\usepackage{pdfpages}
+
+% code review checklist
+\usepackage{enumerate}
+
+% pandoc
+\usepackage{longtable}
+\usepackage{booktabs}
+% fix for pandoc 1.14
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% clickable hyperlinks in the table of contents
+\usepackage{hyperref}
+
+\newcommand{\titlerow}[2]{
+  \begin{parcolumns}[colwidths={1=.15\linewidth}]{2}
+    \colchunk[1]{#1:}
+    \colchunk[2]{#2}
+  \end{parcolumns}
+  \vspace{0.2cm}
+}
+
+\title{Entwicklung eines adaptiven Chat-Systems}
+\subtitle{Qualitätssicherungsdokument}
+\subsubtitle{%
+  \titlerow{Gruppe 9}{%
+    Johannes Lauinger <johannes.lauinger@gmail.com>\\
+    Jonas Mönnig <jonas.moennig@gmx.de>\\
+    Mattias Hofmann <chaterMH@web.de>\\
+    Maximilian Weller <maximilian.weller@stud.tu-darmstadt.de>\\
+    Simon-Konstantin Thiem <simon-konstantin.thiem@stud.tu-darmstadt.de>}
+  \titlerow{Teamleiter}{Benjamin Tumele <B.Tumele@gmx.de>}
+  \titlerow{Auftraggeber}{%
+    Alexander Frömmgen <froemmge@dvs.tu-darmstadt.de>\\
+    Fachgebiet Datenbanken und Verteilte Systeme\\
+    Fachbereich Informatik\\
+    Jens Heuschkel <jens.heuschkel@tk.informatik.tu-darmstadt.de>\\
+    Fachgebiet Telekooperation\\
+    Fachbereich Informatik}
+  \titlerow{Abgabedatum}{06.07.2015}}
+\institution{Bachelor-Praktikum SoSe~2015\\Fachbereich Informatik}
+
+\begin{document}
+
+  \maketitle
+  \tableofcontents
+
+  \chapter{Einleitung}
+  \input{spezifikation/einleitung}
+
+  \chapter{Qualitätsziele}
+  \input{spezifikation/qualiziele}
+
+
+\appendix
+  \chapter{Anhang}
+  \input{anhang/anhang}
+
+
+
+\end{document}
