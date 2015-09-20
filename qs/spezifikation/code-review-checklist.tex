@@ -1,36 +1,21 @@
-\documentclass[accentcolor=tud2d,12pt,paper=a4,colorbacktitle]{tudexercise}
 
-\usepackage[utf8]{inputenc}
-\usepackage{ngerman}
-\usepackage{enumerate}
-
-\title{Code Review}
-\subtitle{BonfireChat}
-\subsubtitle{Bachelorpraktikum 2015}
-
-\begin{document}
-
-  \maketitle
-
-  \begin{enumerate}[ 1.]
-    \item Ist die Funktionalität korrekt?
-    \item Sind die Klassen, Funktionen und Variablen angemessen benannt?
-    \item Wurde die Klassenstruktur gut entworfen und erfüllt sie alle Anforderungen, oder sind Verbesserungen nötig?
-    \item Gibt es Klassen, die aufgrund neuer Implementierungen überflüssig geworden sind?
-    \item Gibt es unnötig überladene Funktionen oder Konstruktoren?
-    \item Wurde die Datenbankstruktur gut entworfen?
-    \item Enthält das Codeteil Funktionen, die wiederverwendet werden können? Sind diese in einer Helper-Klasse untergebracht?
-    \item Wurden existierende Helper-Funktionen benutzt? Ist keine doppelte Funktionalität implementiert?
-    \item Werden alle Eingabeparameter validiert?
-    \item Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
-    \item Ist es unbedingt nötig, den Code in einem UI-Thread laufen zu lassen oder würde ein Background-Thread ausreichen?
-    \item Werden alle möglichen Fehlschläge behandelt?
-    \item Findet eine "Graceful Degradation" statt?
-    \item Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
-    \item Welche Teile können parallel ausgeführt werden?
-    \item Sind die Operationen, bei denen Threadsicherheit benötigt wird, threadsicher?
-    \item Ist das Layout passend für alle Bildschirmdimensionen?
-    \item Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
-  \end{enumerate}
-
-\end{document}
+\begin{enumerate}[ 1.]
+  \item Ist die Funktionalität korrekt?
+  \item Sind die Klassen, Funktionen und Variablen angemessen benannt?
+  \item Wurde die Klassenstruktur gut entworfen und erfüllt sie alle Anforderungen, oder sind Verbesserungen nötig?
+  \item Gibt es Klassen, die aufgrund neuer Implementierungen überflüssig geworden sind?
+  \item Gibt es unnötig überladene Funktionen oder Konstruktoren?
+  \item Wurde die Datenbankstruktur gut entworfen?
+  \item Enthält das Codeteil Funktionen, die wiederverwendet werden können? Sind diese in einer Helper-Klasse untergebracht?
+  \item Wurden existierende Helper-Funktionen benutzt? Ist keine doppelte Funktionalität implementiert?
+  \item Werden alle Eingabeparameter validiert?
+  \item Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
+  \item Ist es unbedingt nötig, den Code in einem UI-Thread laufen zu lassen oder würde ein Background-Thread ausreichen?
+  \item Werden alle möglichen Fehlschläge behandelt?
+  \item Findet eine ``Graceful Degradation'' statt?
+  \item Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
+  \item Welche Teile können parallel ausgeführt werden?
+  \item Sind die Operationen, bei denen Threadsicherheit benötigt wird, threadsicher?
+  \item Ist das Layout passend für alle Bildschirmdimensionen?
+  \item Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
+\end{enumerate}
