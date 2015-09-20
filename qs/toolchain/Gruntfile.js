@@ -27,6 +27,9 @@ module.exports = function(grunt) {
       },
       open: {
         command: 'exec evince <%=dst%>'
+      },
+      convertCodeReviews: {
+        command: 'pandoc -r markdown -w latex -o <%=partials%>/codereviews.tex <%= assets %>/03-reviews.md'
       }
     },
 
@@ -62,7 +65,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-latex');
 
-  grunt.registerTask('prepare', ['concat', 'shell:collect', 'wkhtmltopdf']);
+  grunt.registerTask('prepare', [
+    'concat',
+    'shell:collect',
+    'shell:convertCodeReviews',
+    'wkhtmltopdf',
+  ]);
   grunt.registerTask('clean', ['shell:clean']);
   grunt.registerTask('open', ['shell:open']);
 
