@@ -6,10 +6,23 @@
 \section{Checkstyle und Android Lint}
 
 Um eine hohe Code-Qualität sicherzustellen und damit die Wartbarkeit der
-Anwendung zu verbessern, wurde wie im QS-Dokument festgelegt Checkstyle eingesetzt.
+Anwendung zu verbessern, wurden statische Analysetools eingesetzt.
+
+\clearpage
+\subsection{Checkstyle}
+
+
+\clearpage
+\subsection{Android Lint}
 
 Zusätzlich haben wir das von Google entwickelte und empfohlene ``Android Lint''
-genutzt.
+genutzt. Dieses Tool gibt Empfehlungen zur Einhaltung der Android-Programmierrichtlinien.
+
+Dadurch verbessert sich einerseits die Wartbarkeit, denn durch das Befolgen der im Android-Umfeld üblichen
+ Konventionen und die Verwendung von allgemein bekannten und anerkannten Entwurfsmustern, ist der Code zukünftigen
+Entwicklern leichter verständlich.
+Andererseits enthalten die Reports Empfehlungen zur Verbesserung der Performance, Usability, Accessibility und Korrektheit.
+
 Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde,
 als wir begonnen haben, ``Android Lint'' einzusetzen. Dann wurden initial alle
 Warnungen und Empfehlungen abgearbeitet (Commit XXXXXXXXXXXXX TODO).
@@ -18,9 +31,6 @@ Entwicklungsumgebung Android Studio angezeigt, sodass diese anschließend währe
 der Programmierung direkt umgesetzt werden konnten. Daher ist der zweite Report,
 der zum Abschluss des Projekts erstellt wurde, leer.
 
-
-\subsection{Checkstyle}
-\subsection{Android Lint}
 
 \includepdf[pages=1,scale=.8,pagecommand=\subsubsection{Initialer ``Android Lint''-Report}]{anhang/partials/lint-results.pdf}
 \includepdf[pages=2-,scale=.8,pagecommand={}]{anhang/partials/lint-results.pdf}
