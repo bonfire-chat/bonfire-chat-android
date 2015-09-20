@@ -1,10 +1,12 @@
-Testplan für manuelles Testen der drahtlosen Übertragung sowie des
-Routing-Algorithmus
 
+Dieser Abschnitt beschreibt einen Testplan für manuelles Testen der
+drahtlosen Übertragung sowie des Routing-Algorithmus.
+
+\\\\
 
 % ----------------------------------------------------------------------
 
-\subsection{Definitionen}\label{i-definitionen}
+\subsubsection{N-i: Definitionen}\label{i-definitionen}
 
 \paragraph{Allgemeine Ausgangskonfiguration der
 Knoten:}\label{allgemeine-ausgangskonfiguration-der-knoten}
@@ -19,10 +21,10 @@ mit Nickname, GCM-ID und PublicKey am Server) abgeschlossen ist.
 % II
 
 \clearpage
-\subsection{Testfälle für die allgemeine
+\subsubsection{N-ii: Testfälle für die allgemeine
 Übertragung}\label{ii-testfuxe4lle-fuxfcr-die-allgemeine-uxfcbertragung}
 
-\paragraph{N-II-1. Test der direkten Übertragung via Flooding /
+\paragraph{N-ii-1. Test der direkten Übertragung via Flooding /
 Bluetooth}\label{test-der-direkten-uxfcbertragung-via-flooding-bluetooth}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
@@ -46,7 +48,7 @@ versendet wurde, das ACK mit Routingmodus DSR (0x02).\tabularnewline
 \bottomrule
 \end{longtable}
 
-\paragraph{N-II-2. Test der direkten Übertragung via DSR /
+\paragraph{N-ii-2. Test der direkten Übertragung via DSR /
 Bluetooth}\label{test-der-direkten-uxfcbertragung-via-dsr-bluetooth}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
@@ -65,7 +67,7 @@ nur an Gerät A gesendet. Darüber hinaus identisch zu Test
 \bottomrule
 \end{longtable}
 
-\paragraph{N-II-3. Test der direkten Übertragung via Server / Google Cloud
+\paragraph{N-ii-3. Test der direkten Übertragung via Server / Google Cloud
 Messaging}\label{test-der-direkten-uxfcbertragung-via-server-google-cloud-messaging}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
@@ -95,7 +97,7 @@ Flooding (0x01) versendet wurde, das ACK mit Routingmodus DSR
 % III
 
 \clearpage
-\subsection{Testfälle für Wegfindung per Flooding und einfaches
+\subsubsection{N-iii: Testfälle für Wegfindung per Flooding und einfaches
 Routing}\label{iii-testfuxe4lle-fuxfcr-wegfindung-per-flooding-und-einfaches-routing}
 
 In diesen Tests werden folgende Teile des Routing getestet: * Finden des
@@ -104,7 +106,7 @@ dem die Nachricht den Empfänger zuerst erreicht (= schnellster Pfad) *
 Speichern des schnellsten Pfades zu einem Empfänger * Verwenden des
 gespeicherten schnellsten Pfades für künftige Nachrichten
 
-\paragraph{N-III-1. Bluetooth-Wegfindung - Flooding mit drei
+\paragraph{N-iii-1. Bluetooth-Wegfindung - Flooding mit drei
 Knoten}\label{bluetooth-wegfindung---flooding-mit-drei-knoten}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
@@ -122,7 +124,7 @@ etc.\tabularnewline
 \bottomrule
 \end{longtable}
 
-\paragraph{N-III-2. Bluetooth-Wegfindung zum nächsten Knoten mit
+\paragraph{N-iii-2. Bluetooth-Wegfindung zum nächsten Knoten mit
 Internetverbindung}\label{bluetooth-wegfindung-zum-nuxe4chsten-knoten-mit-internetverbindung}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
@@ -146,20 +148,25 @@ Dashboard ersichtlich.\tabularnewline
 \bottomrule
 \end{longtable}
 
-\paragraph{N-III-3.}\label{section}
+\paragraph{N-iii-3.}\label{section}
 
 TODO Test beschreiben
 
 
+
+
+% ------------------------------------------------------------------------
+% IV
+
 \clearpage
-\subsection{Testfälle für sich verändernde
+\subsubsection{N-iv: Testfälle für sich verändernde
 Routen}\label{iv-testfuxe4lle-fuxfcr-sich-veruxe4ndernde-routen}
 
 In diesen Tests wird überprüft, ob der Routingalgorithmus bei
 ausfallenden Pfaden korrekt reagiert.
 
-\paragraph{\texorpdfstring{N-IV-1. ``Abreißende''
-Bluetooth-Verbindung}{N-IV-1. Abreißende Bluetooth-Verbindung}}\label{abreiuxdfende-bluetooth-verbindung}
+\paragraph{\texorpdfstring{N-iv-1. ``Abreißende''
+Bluetooth-Verbindung}{N-iv-1. Abreißende Bluetooth-Verbindung}}\label{abreiuxdfende-bluetooth-verbindung}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
@@ -183,8 +190,13 @@ senden. Da dies fehlschlägt, wird beim Retry nach 20 Sekunden versucht,
 \bottomrule
 \end{longtable}
 
+
+
+% ------------------------------------------------------------------------
+% V
+
 \clearpage
-\subsection{Testfälle für Störeinflüsse im
+\subsubsection{N-v: Testfälle für Störeinflüsse im
 Netzwerk}\label{v-testfuxe4lle-fuxfcr-stuxf6reinfluxfcsse-im-netzwerk}
 
 Hier soll überprüft werden, wie sich die App bei äußeren Störeinflüssen
@@ -197,9 +209,9 @@ Da dies teilweise sporadische Fehler sind, welche sich schwer
 reproduzieren lassen, ist die Aussagekraft der folgenden Tests leider
 nur bedingt gegeben.
 
-\paragraph{\texorpdfstring{N-V-1. ``Socket wird unerwartet während der
+\paragraph{\texorpdfstring{N-v-1. ``Socket wird unerwartet während der
 Verbindung
-geschlossen''}{N-V-1. Socket wird unerwartet während der Verbindung geschlossen}}\label{socket-wird-unerwartet-wuxe4hrend-der-verbindung-geschlossen}
+geschlossen''}{N-v-1. Socket wird unerwartet während der Verbindung geschlossen}}\label{socket-wird-unerwartet-wuxe4hrend-der-verbindung-geschlossen}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
@@ -209,7 +221,7 @@ Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
 \bottomrule
 \end{longtable}
 
-\paragraph{N-V-2. Benutzer schaltet Bluetooth im Telefon
+\paragraph{N-v-2. Benutzer schaltet Bluetooth im Telefon
 aus}\label{benutzer-schaltet-bluetooth-im-telefon-aus}
 
 \begin{longtable}{p{8cm}p{8.5cm}}

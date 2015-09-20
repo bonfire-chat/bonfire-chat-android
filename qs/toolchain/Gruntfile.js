@@ -29,19 +29,15 @@ module.exports = function(grunt) {
         command: 'exec evince <%=dst%>'
       },
       convertCodeReviews: {
-        command: "pandoc -r markdown -w latex -o <%=partials%>/codereviews.tex <%= assets %>/03-reviews.md \
+        command: "cat <%=src%>/code-reviews/*.md | \
+        pandoc -r markdown -w latex -o <%=partials%>/codereviews.tex \
         && sed -i '' 's/\\\\subsection/\\\\clearpage\\\\subsection/' <%=partials%>/codereviews.tex"
-      }
-    },
-
-    concat: {
-      reviews: {
-        src: ['<%=src%>/code-reviews/*.md'],
-        dest: '<%=assets%>/03-reviews.md'
       },
-      manualTests: {
-        src: ['bp.wiki/Manueller-Test-UI.markdown', '<%=src%>/manuelle-tests/ui/*.md'],
-        dest: '<%=assets%>/04-manual-tests.md'
+      convertManualTestReports: {
+        command: "cat <%=src%>/manuelle-tests/ui/*.md | \
+        pandoc -r markdown -w latex | \
+        sed 's/\\\\subsection/\\\\clearpage\\\\subsection/' \
+        > <%=partials%>/manuelle-tests-ui-reports.tex"
       }
     },
 
@@ -64,13 +60,12 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-wkhtmltopdf');
   grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-latex');
 
   grunt.registerTask('prepare', [
-    'concat',
     'shell:collect',
     'shell:convertCodeReviews',
+    'shell:convertManualTestReports',
     'wkhtmltopdf',
   ]);
   grunt.registerTask('clean', ['shell:clean']);
