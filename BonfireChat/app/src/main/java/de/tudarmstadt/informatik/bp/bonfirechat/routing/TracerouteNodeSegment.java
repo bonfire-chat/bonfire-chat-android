@@ -13,7 +13,7 @@ public class TracerouteNodeSegment implements TracerouteSegment {
         image = "";
     }
 
-    public TracerouteNodeSegment(String nickname, String image){
+    public TracerouteNodeSegment(String nickname, String image) {
         this.nickname = nickname;
         this.image = image;
     }
@@ -22,7 +22,7 @@ public class TracerouteNodeSegment implements TracerouteSegment {
         return nickname;
     }
 
-    public String getImage(){
+    public String getImage() {
         return image;
     }
 

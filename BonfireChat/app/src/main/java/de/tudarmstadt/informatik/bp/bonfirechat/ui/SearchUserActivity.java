@@ -16,7 +16,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -105,7 +104,7 @@ public class SearchUserActivity extends Activity {
         protected Contact[] doInBackground(String... params) {
             HttpClient httpclient = new DefaultHttpClient();
 
-            String keyword = "%"+params[0]+"%";
+            String keyword = "%" + params[0] + "%";
 
             try {
                 HttpGet httppost = new HttpGet(BonfireAPI.API_ENDPOINT + "/search?nickname=" + URLEncoder.encode(keyword, "UTF-8"));
@@ -114,7 +113,7 @@ public class SearchUserActivity extends Activity {
                 JSONTokener tokener = new JSONTokener(s.next());
                 JSONArray array = (JSONArray) tokener.nextValue();
                 Contact[] d = new Contact[array.length()];
-                for(int i = 0; i < d.length; i++) {
+                for (int i = 0; i < d.length; i++) {
                     JSONObject obj = array.getJSONObject(i);
                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                             BonfireAPI.DOWNLOADS_DIRECTORY + UUID.randomUUID().toString() + ".jpg");
@@ -122,8 +121,7 @@ public class SearchUserActivity extends Activity {
                     try {
                         BonfireAPI.httpGetToFile(BonfireAPI.API_ENDPOINT + "/avatar?publickey=" + obj.getString("publickey"), file);
                         filename = file.getAbsolutePath();
-                    }
-                    catch (IOException e){
+                    } catch (IOException e) {
                         filename = "";
                     }
                     d[i] = new Contact(obj.getString("nickname"), obj.getString("nickname"), "",
@@ -132,9 +130,7 @@ public class SearchUserActivity extends Activity {
                 }
                 return d;
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -143,8 +139,10 @@ public class SearchUserActivity extends Activity {
         @Override
         protected void onPostExecute(Contact[] contacts) {
             adapter.clear();
-            if (contacts == null) return;
-            for(Contact contact : contacts) {
+            if (contacts == null) {
+                return;
+            }
+            for (Contact contact : contacts) {
                 adapter.add(contact);
             }
         }

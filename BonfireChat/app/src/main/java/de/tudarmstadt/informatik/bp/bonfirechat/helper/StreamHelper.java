@@ -1,23 +1,16 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 
 import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -30,10 +23,16 @@ import java.util.Formatter;
 /**
  * Created by mw on 16.06.15.
  */
-public class StreamHelper {
+public final class StreamHelper {
+
+    private static final int BUFFER_SIZE = 16384;
+
+    private StreamHelper() { }
 
     public static String convertStreamToString(java.io.InputStream is) {
-        if (is == null) return "";
+        if (is == null) {
+            return "";
+        }
         java.util.Scanner s = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }
@@ -52,19 +51,17 @@ public class StreamHelper {
             ObjectOutput out = new ObjectOutputStream(bos);
             out.writeObject(object);
             return bos.toByteArray();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new byte[]{};
         }
     }
 
-    public static <T extends Serializable> T deserialize (byte[] bytes) {
+    public static <T extends Serializable> T deserialize(byte[] bytes) {
         try {
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
             ObjectInput in = new ObjectInputStream(bis);
             return (T) in.readObject();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -88,47 +85,46 @@ public class StreamHelper {
         int actualWidth = options.outWidth;
 
 
-        float maxWidth = 800.0f;
-        float maxHeight = 600.0f;
+        final float maxWidth = 800.0f;
+        final float maxHeight = 600.0f;
         float imgRatio = actualWidth / actualHeight;
         float maxRatio = maxWidth / maxHeight;
 
-//      width and height values are set maintaining the aspect ratio of the image
-
+        // width and height values are set maintaining the aspect ratio of the image
         if (actualHeight > maxHeight || actualWidth > maxWidth) {
-            if (imgRatio < maxRatio) {               imgRatio = maxHeight / actualHeight;                actualWidth = (int) (imgRatio * actualWidth);               actualHeight = (int) maxHeight;             } else if (imgRatio > maxRatio) {
+            if (imgRatio < maxRatio) {
+                actualHeight = (int) maxHeight;
+            } else if (imgRatio > maxRatio) {
                 imgRatio = maxWidth / actualWidth;
                 actualHeight = (int) (imgRatio * actualHeight);
                 actualWidth = (int) maxWidth;
             } else {
                 actualHeight = (int) maxHeight;
                 actualWidth = (int) maxWidth;
-
             }
         }
 
-//      setting inSampleSize value allows to load a scaled down version of the original image
-
+        // setting inSampleSize value allows to load a scaled down version of the original image
         options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
 
-//      inJustDecodeBounds set to false to load the actual bitmap
+        // inJustDecodeBounds set to false to load the actual bitmap
         options.inJustDecodeBounds = false;
 
-//      this options allow android to claim the bitmap memory if it runs low on memory
+        // this options allow android to claim the bitmap memory if it runs low on memory
         options.inPurgeable = true;
         options.inInputShareable = true;
-        options.inTempStorage = new byte[16 * 1024];
+        options.inTempStorage = new byte[BUFFER_SIZE];
 
         inputStream = resolver.openInputStream(imageUri);
         try {
-//          load the bitmap from its path
+        // load the bitmap from its path
             bmp = BitmapFactory.decodeStream(inputStream, null, options);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
 
         }
         try {
-            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight,Bitmap.Config.ARGB_8888);
+            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
         }
@@ -156,9 +152,14 @@ public class StreamHelper {
         int inSampleSize = 1;
 
         if (height > reqHeight || width > reqWidth) {
-            final int heightRatio = Math.round((float) height/ (float) reqHeight);
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;      }       final float totalPixels = width * height;       final float totalReqPixelsCap = reqWidth * reqHeight * 2;       while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+
+        final float totalPixels = width * height;
+        final float totalReqPixelsCap = reqWidth * reqHeight * 2;
+        while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
             inSampleSize++;
         }
 

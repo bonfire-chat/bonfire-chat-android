@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.inputmethodservice.ExtractEditText;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -56,6 +55,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
 public class MessagesActivity extends Activity {
 
     private static final String TAG = "MessagesActivity";
+
+    private static final int ACTIVITY_IMAGE_CODE = 42;
+
     List<Message> messages = new ArrayList<>();
     private MessagesAdapter adapter;
     private Conversation conversation;
@@ -130,7 +132,9 @@ public class MessagesActivity extends Activity {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         long conversationId = intent.getLongExtra(ConnectionManager.EXTENDED_DATA_CONVERSATION_ID, -1);
-                        if (conversationId != conversation.rowid) return;
+                        if (conversationId != conversation.rowid) {
+                            return;
+                        }
                         UUID uuid = (UUID) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
                         appendMessage(db.getMessageByUUID(uuid));
                     }
@@ -140,9 +144,9 @@ public class MessagesActivity extends Activity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        UUID sentUUID = (UUID)intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
+                        UUID sentUUID = (UUID) intent.getSerializableExtra(ConnectionManager.EXTENDED_DATA_MESSAGE_UUID);
                         Log.i(TAG, "MSG_SENT: " + sentUUID.toString() + " - " + intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR));
-                        for(Message m : messages) {
+                        for (Message m : messages) {
                             if (m.uuid.equals(sentUUID)) {
                                 if (intent.hasExtra(ConnectionManager.EXTENDED_DATA_ERROR)) {
                                     m.error = intent.getStringExtra(ConnectionManager.EXTENDED_DATA_ERROR);
@@ -152,15 +156,15 @@ public class MessagesActivity extends Activity {
                                     int routingType = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_ROUTING_TYPE, 0);
                                     if (routingType == Packet.ROUTING_MODE_DSR) {
                                         m.flags |= Message.FLAG_ROUTING_DSR;
-                                        m.flags &=~ Message.FLAG_ROUTING_FLOODING;
+                                        m.flags &= ~Message.FLAG_ROUTING_FLOODING;
                                     } else {
                                         m.flags |= Message.FLAG_ROUTING_FLOODING;
-                                        m.flags &=~ Message.FLAG_ROUTING_DSR;
+                                        m.flags &= ~Message.FLAG_ROUTING_DSR;
                                     }
                                 }
                                 // set retransmission count for UI
-                                m.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, m.retransmissionCount);
-                                BonfireData db = BonfireData.getInstance(MessagesActivity.this);
+                                m.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT,
+                                        m.retransmissionCount);
                                 db.updateMessage(m);
                                 ((MessagesAdapter) lv.getAdapter()).notifyDataSetChanged();
                                 return;
@@ -193,7 +197,7 @@ public class MessagesActivity extends Activity {
         //remove notification
         mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel((int)convId);
+        mNotificationManager.cancel((int) convId);
         currentConversation = conversation.rowid;
     }
 
@@ -212,21 +216,21 @@ public class MessagesActivity extends Activity {
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         currentConversation = -1;
     }
 
     // ####### First-Start Tutorial #####################################################
     private ShowcaseView showcaseView;
-    private int tutorial_counter = 0;
+    private int tutorialCounter = 0;
     /**
      * Handles clicks on Close button of first-start tutorial view
      */
     private View.OnClickListener showcaseListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch(tutorial_counter++) {
+            switch (tutorialCounter++) {
                 case 0:
                     showcaseView.setContentTitle(getString(R.string.tutorial_messages_change_title));
                     showcaseView.setContentText(getString(R.string.tutorial_messages_change_title_desc));
@@ -241,7 +245,8 @@ public class MessagesActivity extends Activity {
                 case 3:
                     showcaseView.setContentTitle(getString(R.string.tutorial_messages_details));
                     showcaseView.setContentText(getString(R.string.tutorial_messages_details_desc));
-                    showcaseView.setTarget(new PointTarget(200, 600));
+                    final int lastButNotLeastX = 200, lastButNotLeastY = 600;
+                    showcaseView.setTarget(new PointTarget(lastButNotLeastX, lastButNotLeastY));
                     showcaseView.setButtonText(getString(R.string.got_it));
                     break;
                 case 4:
@@ -284,7 +289,7 @@ public class MessagesActivity extends Activity {
     private void appendMessage(Message message) {
         messages.add(message);
         ListView lv = (ListView) findViewById(R.id.messages_view);
-        ((MessagesAdapter)lv.getAdapter()).add(message);
+        ((MessagesAdapter) lv.getAdapter()).add(message);
     }
 
 
@@ -304,18 +309,17 @@ public class MessagesActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            String info  = "Titel: " + conversation.title + "\nId: " + conversation.rowid +
-                    "\nTyp: "+conversation.conversationType.toString()+
-                    "";
+            String info  = "Titel: " + conversation.title + "\nId: " + conversation.rowid
+                    + "\nTyp: " + conversation.conversationType.toString();
             if (conversation.getPeer() != null) {
-                info += "\nKontakt: " + conversation.getPeer().getNickname() +
-                        "\nName: " + conversation.getPeer().getFirstName() + " "+conversation.getPeer().getLastName();
+                info += "\nKontakt: " + conversation.getPeer().getNickname()
+                        + "\nName: " + conversation.getPeer().getFirstName() + " " + conversation.getPeer().getLastName();
             }
-            UIHelper.Info(this, "Info", info);
+            UIHelper.info(this, "Info", info);
             return true;
 
         } else if (id == R.id.action_edit_title) {
-            UIHelper.InputBox(this, getString(R.string.action_edit_title), "",
+            UIHelper.inputBox(this, getString(R.string.action_edit_title), "",
                     conversation.getName(),
                     new UIHelper.OnOkClickListener() {
                         @Override
@@ -336,7 +340,8 @@ public class MessagesActivity extends Activity {
         } else if (id == R.id.action_send_location_udp) {
             GpsTracker gps = GpsTracker.getInstance();
             if (gps.canGetLocation()) {
-                LocationUdpPacket p = new LocationUdpPacket(db.getDefaultIdentity(), conversation.getPeer().getPublicKey().asByteArray(), gps.getLatitude(), gps.getLongitude());
+                LocationUdpPacket p = new LocationUdpPacket(db.getDefaultIdentity(),
+                        conversation.getPeer().getPublicKey().asByteArray(), gps.getLatitude(), gps.getLongitude());
                 ConnectionManager.sendLocationUdpPacket(this, p);
             } else {
                 Toast toast = Toast.makeText(this, R.string.toast_location_not_available, Toast.LENGTH_SHORT);
@@ -352,26 +357,26 @@ public class MessagesActivity extends Activity {
         } else if (id == R.id.action_share_image) {
             Intent i = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, 42);
+            startActivityForResult(i, ACTIVITY_IMAGE_CODE);
 
         } else if (id == R.id.action_show_debug) {
             String debug = ConstOptions.getDebugInfo();
             Log.d("DEBUG", debug);
-            UIHelper.Info(this, "Debug", debug);
+            UIHelper.info(this, "Debug", debug);
 
         } else if (id == R.id.action_share_location) {
             GpsTracker gps = GpsTracker.getInstance();
             if (gps.canGetLocation()) {
                 Log.d("Location", gps.getLatitude() + " : " + gps.getLongitude());
-                Message message = new Message(gps.getLatitude() + ":" + gps.getLongitude(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_LOCATION | Message.FLAG_ENCRYPTED, conversation.getPeer());
+                Message message = new Message(gps.getLatitude() + ":" + gps.getLongitude(), db.getDefaultIdentity(),
+                        new Date(), Message.FLAG_IS_LOCATION | Message.FLAG_ENCRYPTED, conversation.getPeer());
 
                 db.createMessage(message, conversation);
                 appendMessage(message);
 
                 Log.d(TAG, "sending message id " + message.uuid);
                 ConnectionManager.sendMessage(MessagesActivity.this, message);
-            }
-            else {
+            } else {
                 Toast toast = Toast.makeText(this, R.string.toast_location_not_available, Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -382,8 +387,8 @@ public class MessagesActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 42 && data != null) {
-            Log.d(TAG, "result from image picker: "+data.getData().toString());
+        if (requestCode == ACTIVITY_IMAGE_CODE && data != null) {
+            Log.d(TAG, "result from image picker: " + data.getData().toString());
             UUID uuid = UUID.randomUUID();
 
             File file = Message.getImageFile(uuid);
@@ -393,7 +398,8 @@ public class MessagesActivity extends Activity {
                 StreamHelper.writeImageToStream(this.getContentResolver(), data.getData(), out);
                 out.close();
 
-                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(), Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, uuid, conversation.getPeer(), new ArrayList<TracerouteSegment>());
+                Message message = new Message(file.getAbsolutePath(), db.getDefaultIdentity(), new Date(),
+                        Message.FLAG_IS_FILE | Message.FLAG_ENCRYPTED, uuid, conversation.getPeer(), new ArrayList<TracerouteSegment>());
 
                 db.createMessage(message, conversation);
                 appendMessage(message);
@@ -414,7 +420,7 @@ public class MessagesActivity extends Activity {
         CharSequence[] peerList;
         synchronized (ConnectionManager.peers) {
             peerList = new CharSequence[ConnectionManager.peers.size()];
-            for(int i = 0; i < ConnectionManager.peers.size(); i++) {
+            for (int i = 0; i < ConnectionManager.peers.size(); i++) {
                 peerList[i] = Peer.formatMacAddress(ConnectionManager.peers.get(i).getAddress());
             }
         }
@@ -453,7 +459,6 @@ public class MessagesActivity extends Activity {
     }
 
     private void deleteSelectedItems() {
-        BonfireData db = BonfireData.getInstance(this);
         boolean[] mySelected = adapter.itemSelected;
 
         for (int position = adapter.getCount() - 1; position >= 0; position--) {

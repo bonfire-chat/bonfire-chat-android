@@ -20,7 +20,6 @@ import java.util.UUID;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
@@ -33,6 +32,7 @@ public class StatsCollector extends BroadcastReceiver {
     private static final String TAG = "StatsCollector";
 
     public static final long PUBLISH_INTERVAL = AlarmManager.INTERVAL_HALF_HOUR;
+    private static final int RESPONSE_OK = 200;
 
     // action in Intents which are sent to the service
     public static final String PUBLISH_STATS_ACTION = "de.tudarmstadt.informatik.bp.bonfirechat.PUBLISH_STATS";
@@ -68,8 +68,8 @@ public class StatsCollector extends BroadcastReceiver {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
         int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL;
+        isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING
+                || status == BatteryManager.BATTERY_STATUS_FULL;
 
         // save latest stats data to local database
         updateStats();
@@ -78,19 +78,22 @@ public class StatsCollector extends BroadcastReceiver {
         publishStats(db);
     }
 
-    public static void publishMessageHop(final Class protocol, final String what, final Peer peer, final Packet pkg, final String lastHop, final String thisHop) {
+    public static void publishMessageHop(final Class protocol, final String what, final Peer peer,
+                                         final Packet pkg, final String lastHop, final String thisHop) {
         final long dateTime = new Date().getTime();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final Hashtable<String,byte[]> body = new Hashtable<>();
+                final Hashtable<String, byte[]> body = new Hashtable<>();
                 String uid = pkg.uuid.toString();
-                if (pkg instanceof AckPacket) uid = ((AckPacket)pkg).acknowledgesUUID.toString();
+                if (pkg instanceof AckPacket) {
+                    uid = ((AckPacket) pkg).acknowledgesUUID.toString();
+                }
                 body.put("uuid", BonfireAPI.encode(uid));
                 body.put("datetime", BonfireAPI.encode(String.valueOf(dateTime)));
                 body.put("string", BonfireAPI.encode(pkg.toString()));
                 body.put("action", BonfireAPI.encode(what));
-                body.put("peer", BonfireAPI.encode(peer == null ? "" : ("to: "+peer.toString())));
+                body.put("peer", BonfireAPI.encode(peer == null ? "" : ("to: " + peer.toString())));
                 body.put("protocol", BonfireAPI.encode(protocol == null ? "" : protocol.getSimpleName()));
                 body.put("hop1", BonfireAPI.encode(lastHop == null ? "" : lastHop));
                 body.put("hop2", BonfireAPI.encode(thisHop == null ? "" : thisHop));
@@ -109,7 +112,7 @@ public class StatsCollector extends BroadcastReceiver {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final Hashtable<String,byte[]> body = new Hashtable<>();
+                final Hashtable<String, byte[]> body = new Hashtable<>();
                 String uid = uuid == null ? "" : uuid.toString();
                 body.put("uuid", BonfireAPI.encode(uid));
                 body.put("datetime", BonfireAPI.encode(String.valueOf(dateTime)));
@@ -130,7 +133,7 @@ public class StatsCollector extends BroadcastReceiver {
     }
 
     private void publishStats(final BonfireData db) {
-        new AsyncTask<Void, Void, Void>() {
+        (new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
                 // publish stats object to the server API
@@ -155,17 +158,19 @@ public class StatsCollector extends BroadcastReceiver {
                     out.write(postData.getBytes("UTF-8"));
                     out.flush();
 
-                    if (urlConnection.getResponseCode() != 200) {
+                    if (urlConnection.getResponseCode() != RESPONSE_OK) {
                         Log.e(TAG, "error publishing stats: server sent response code " + urlConnection.getResponseCode());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
-                    if(urlConnection == null) urlConnection.disconnect();
+                    if (urlConnection == null) {
+                        urlConnection.disconnect();
+                    }
                 }
                 return null;
             }
-        }.execute();
+        }).execute();
     }
 
     private BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {
@@ -182,10 +187,13 @@ public class StatsCollector extends BroadcastReceiver {
         // bump time
         stats.timestamp = new Date();
 
-        if(!isCharging) {
+        if (!isCharging) {
             // update calculated battery consumption
-            stats.powerUsage = ((float) batteryLastLevel - (float) stats.batteryLevel) / (System.currentTimeMillis() - batteryLastMeasured) * 1000 * 60 * 60;
-            if (stats.powerUsage < 0) stats.powerUsage = 0;
+            stats.powerUsage = ((float) batteryLastLevel - (float) stats.batteryLevel)
+                    / (System.currentTimeMillis() - batteryLastMeasured) * 1000 * 60 * 60;
+            if (stats.powerUsage < 0) {
+                stats.powerUsage = 0;
+            }
             batteryLastLevel = stats.batteryLevel;
             batteryLastMeasured = System.currentTimeMillis();
         }

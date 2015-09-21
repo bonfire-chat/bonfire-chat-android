@@ -20,18 +20,17 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.net.URLEncoder;
 import java.util.List;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
+import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
-import static android.widget.AdapterView.*;
+import static android.widget.AdapterView.OnItemClickListener;
 
 /**
  * conversations list
@@ -131,7 +130,8 @@ public class ConversationsFragment extends Fragment {
                 return true;
             case R.id.action_share_with_twitter:
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://twitter.com/share?text=" + URLEncoder.encode(getString(R.string.share_text)) + "&url=" + URLEncoder.encode(ConstOptions.APP_HOMEPAGE))));
+                        Uri.parse("http://twitter.com/share?text=" + URLEncoder.encode(getString(R.string.share_text))
+                                + "&url=" + URLEncoder.encode(ConstOptions.APP_HOMEPAGE))));
                 return true;
         }
 
@@ -226,6 +226,4 @@ public class ConversationsFragment extends Fragment {
             return false;
         }
     };
-
-
 }

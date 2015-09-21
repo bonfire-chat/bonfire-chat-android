@@ -10,18 +10,18 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
-import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
-
 /**
  * Created by mw on 21.05.15.
  */
-public class UIHelper {
+public final class UIHelper {
+
+    private UIHelper() { }
 
     public interface OnOkClickListener {
         void onOkClicked(String input);
     }
 
-    public static void InputBox(Context ctx, String title, String message, String defaultValue, final OnOkClickListener okListener) {
+    public static void inputBox(Context ctx, String title, String message, String defaultValue, final OnOkClickListener okListener) {
         final EditText input = new EditText(ctx);
         input.setSingleLine();
         FrameLayout container = new FrameLayout(ctx);
@@ -52,7 +52,7 @@ public class UIHelper {
         d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         d.show();
     }
-    public static void Info(Context ctx, String title, String message) {
+    public static void info(Context ctx, String title, String message) {
         AlertDialog.Builder b = new AlertDialog.Builder(ctx)
                 .setTitle(title)
                 .setMessage(message)

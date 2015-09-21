@@ -57,17 +57,17 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, getString(R.string.nfc_is_not_available), Toast.LENGTH_LONG).show();
-            ((TextView)findViewById(R.id.nfcNotice)).setVisibility(View.GONE);
+            findViewById(R.id.nfcNotice).setVisibility(View.GONE);
         } else {
             // Register callback
             mNfcAdapter.setNdefPushMessageCallback(this, this);
         }
 
-        ((TextView)findViewById(R.id.txt_nickname)).setText(pubident.getNickname());
+        ((TextView) findViewById(R.id.txt_nickname)).setText(pubident.getNickname());
 
         ImageView imageView = (ImageView) findViewById(R.id.qrCode);
 
-        int qrCodeDimension = 800;
+        final int qrCodeDimension = 800;
 
         QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(QRcodeHelper.getIdentityURL(pubident), null,
                 "TEXT_TYPE", BarcodeFormat.QR_CODE.toString(), qrCodeDimension);
@@ -84,9 +84,9 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
     public NdefMessage createNdefMessage(NfcEvent event) {
         String url = QRcodeHelper.getIdentityURL(pubident);
         NdefMessage msg = new NdefMessage(
-                new NdefRecord[] { NdefRecord.createMime(
-                        "application/de.tudarmstadt.informatik.bp.bonfirechat", url.getBytes())
-                        ,NdefRecord.createApplicationRecord("de.tudarmstadt.informatik.bp.bonfirechat")
+                new NdefRecord[] {NdefRecord.createMime(
+                        "application/de.tudarmstadt.informatik.bp.bonfirechat", url.getBytes()),
+                        NdefRecord.createApplicationRecord("de.tudarmstadt.informatik.bp.bonfirechat")
                 });
         return msg;
     }
@@ -116,10 +116,9 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         Log.d("TEST", new String(msg.getRecords()[0].getPayload()));
         Contact contact = contactFromUri(Uri.parse(new String(msg.getRecords()[0].getPayload())));
         Contact dbContact = db.getContactByPublicKey(contact.getPublicKey().asBase64());
-        if(dbContact == null) {
+        if (dbContact == null) {
             db.createContact(contact);
-        }
-        else {
+        } else {
             contact = dbContact;
         }
         Intent intent1 = new Intent(this, ContactDetailsActivity.class);

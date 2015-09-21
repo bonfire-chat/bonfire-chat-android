@@ -18,7 +18,6 @@ import java.net.URL;
 import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
@@ -62,17 +61,19 @@ public class GcmProtocol extends SocketProtocol {
                             .openConnection();
                     onHandleMessage(urlConnection.getInputStream(), senderId);
                 } finally {
-                    if(urlConnection == null) urlConnection.disconnect();
+                    if (urlConnection == null) {
+                        urlConnection.disconnect();
+                    }
                 }
             } else {
                 final String dataString = intent.getStringExtra("msg");
-                Log.i("GcmProtocol", "onHandleGcmIntent: "+ dataString);
+                Log.i("GcmProtocol", "onHandleGcmIntent: " + dataString);
                 onHandleMessage(new ByteArrayInputStream(Base64.decode(dataString, Base64.DEFAULT)), senderId);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (Exception e) {
-            Log.e("GcmProtocol", "Unable to deserialize: "+e.getMessage());
+            Log.e("GcmProtocol", "Unable to deserialize: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -81,7 +82,9 @@ public class GcmProtocol extends SocketProtocol {
             final Packet packet = receive(inputStream);
 
             //TODO: HACK - this should better be done by the server
-            if (packet.getNextHop() != null) packet.removeNextHop();
+            if (packet.getNextHop() != null) {
+                packet.removeNextHop();
+            }
             packet.addPathNode(senderId.getBytes());
             //end todo
 
@@ -93,7 +96,7 @@ public class GcmProtocol extends SocketProtocol {
             packet.addPathNode(serverFakeMacAddress);
             packetListener.onPacketReceived(this, packet);
         } catch (Exception e) {
-            Log.e("GcmProtocol", "Unable to deserialize: "+e.getMessage());
+            Log.e("GcmProtocol", "Unable to deserialize: " + e.getMessage());
             e.printStackTrace();
         }
     }

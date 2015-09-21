@@ -10,18 +10,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -41,12 +37,14 @@ public class BluetoothProtocol extends SocketProtocol {
 
     private static final String TAG = "BluetoothProtocol";
     private static final UUID BTMODULEUUID = UUID.fromString("D5AD0434-34AA-4B5C-B100-4964BFE3E739");
+    private static final int SEARCH_DEVICES_RESTART_INTERVAL = 120000;
+    private static final int RETRANSMISSION_DEVICE_SEARCH_INTERVAL = 5555;
 
     private Context ctx;
     private BluetoothAdapter adapter;
     private Handler searchLoopHandler;
 
-    private Hashtable<String, ConnectionHandler> connections = new Hashtable<>();
+    private final Hashtable<String, ConnectionHandler> connections = new Hashtable<>();
 
     BluetoothProtocol(Context ctx) {
         this.ctx = ctx;
@@ -61,7 +59,7 @@ public class BluetoothProtocol extends SocketProtocol {
         return mBluetoothAdapter != null;
     }
 
-    public Set<Map.Entry<String,ConnectionHandler>> getConnections() {
+    public Set<Map.Entry<String, ConnectionHandler>> getConnections() {
         synchronized (connections) {
             return connections.entrySet();
         }
@@ -72,7 +70,7 @@ public class BluetoothProtocol extends SocketProtocol {
             Log.d(TAG, "device does not support Bluetooth");
         } else {
             Log.d(TAG, "enabling bluetooth and requesting infinite discoverability");
-            Intent intent =new Intent(ctx, EnableBluetoothActivity.class);
+            Intent intent = new Intent(ctx, EnableBluetoothActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ctx.startActivity(intent);
         }
@@ -88,7 +86,6 @@ public class BluetoothProtocol extends SocketProtocol {
     public void continueStartup() {
         Log.i(TAG, "initializing Bluetooth");
         initializeBluetooth();
-        
     }
 
     private void initializeBluetooth() {
@@ -102,7 +99,7 @@ public class BluetoothProtocol extends SocketProtocol {
         @Override
         public synchronized void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)){
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String name = device.getName();
@@ -110,7 +107,9 @@ public class BluetoothProtocol extends SocketProtocol {
 
                 //TODO HACK: ignore non-bonfire devices...
                 //maybe blacklisting after n unsuccessful socket.connect
-                if (name != null && name.contains("BEACON")) return;
+                if (name != null && name.contains("BEACON")) {
+                    return;
+                }
 
                 peerListener.discoveredPeer(BluetoothProtocol.this, Peer.addressFromString(device.getAddress()), name);
             }
@@ -122,7 +121,7 @@ public class BluetoothProtocol extends SocketProtocol {
         public void run() {
             Log.d(TAG, "starting next discovery interval");
             searchDevices();
-            searchLoopHandler.postDelayed(searchDevicesThread, 120000);
+            searchLoopHandler.postDelayed(searchDevicesThread, SEARCH_DEVICES_RESTART_INTERVAL);
         }
     };
 
@@ -142,14 +141,14 @@ public class BluetoothProtocol extends SocketProtocol {
             try {
 
                 BluetoothServerSocket server = adapter.listenUsingInsecureRfcommWithServiceRecord("bonfire", BTMODULEUUID);
-                while(true) {
+                while (true) {
                     try {
                         BluetoothSocket socket = server.accept();
                         ConnectionHandler handler = new ConnectionHandler(socket);
                         synchronized (connections) {
                             connections.put(socket.getRemoteDevice().getAddress(), handler);
                         }
-                    } catch(IOException ex) {
+                    } catch (IOException ex) {
                         Log.e(TAG, "ConnectionHandler constructor fail");
                         Log.e(TAG, ex.getMessage());
                     }
@@ -170,7 +169,7 @@ public class BluetoothProtocol extends SocketProtocol {
         final ObjectOutputStream stream;
         final byte[] peerMacAddress;
         final String formattedMacAddress;
-        int sent=0,received=0;
+        int sent = 0, received = 0;
         public ConnectionHandler(BluetoothSocket socket) throws IOException {
             this.socket = socket;
             formattedMacAddress = socket.getRemoteDevice().getAddress();
@@ -186,73 +185,76 @@ public class BluetoothProtocol extends SocketProtocol {
             try {
                 Log.d(TAG, "Client connected: " + formattedMacAddress);
 
-                final ObjectInputStream stream = new ObjectInputStream(input);
-                while(true) {
-                    final Packet packet = (Packet) stream.readObject();
+                final ObjectInputStream localStream = new ObjectInputStream(input);
+                while (true) {
+                    final Packet packet = (Packet) localStream.readObject();
                     Log.d(TAG, "Received " + packet.toString());
                     packet.addPathNode(peerMacAddress);
                     // add traceroute segment to payload packets
                     if (packet.getType() == PacketType.Payload) {
-                        packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.BLUETOOTH, packet.getLastHopTimeSent(), new Date()));
+                        packet.addTracerouteSegment(new TracerouteHopSegment(
+                                TracerouteHopSegment.ProtocolType.BLUETOOTH, packet.getLastHopTimeSent(), new Date()));
                     }
                     // hand over to the onMessageReceivedListener, which will take account for displaying
                     // the message and/or redistribute it to further recipients
                     packetListener.onPacketReceived(BluetoothProtocol.this, packet);
                     received++;
                 }
-            } catch(ClassNotFoundException ex) {
-                Log.e(TAG, "Unable to deserialize packet, class not found ("+ex.getMessage() + "), closing connection!");
+            } catch (ClassNotFoundException ex) {
+                Log.e(TAG, "Unable to deserialize packet, class not found (" + ex.getMessage() + "), closing connection!");
                 teardown();
             } catch (IOException e) {
                 // On connection errors, tear down this connection and remove from the list
                 // of active connections.
-                StatsCollector.publishError(BluetoothProtocol.class, "ERR", null, "Error in recv thread: "+e.getMessage());
+                StatsCollector.publishError(BluetoothProtocol.class, "ERR", null, "Error in recv thread: " + e.getMessage());
                 e.printStackTrace();
                 teardown();
             }
         }
 
         public void sendNetworkPacket(final Packet packet) {
-            Log.d(TAG, "sendNetworkPacket to "+formattedMacAddress+" | "+packet.toString());
+            Log.d(TAG, "sendNetworkPacket to " + formattedMacAddress + " | " + packet.toString());
             synchronized (ConnectionHandler.this.stream) {
                 try {
                     stream.writeObject(packet);
                     stream.flush();
                     sent++;
-                } catch(IOException ex) {
-                    Log.w(TAG, "sendNetworkPacket: Could not send to "+formattedMacAddress+" : "+packet.toString());
+                } catch (IOException ex) {
+                    Log.w(TAG, "sendNetworkPacket: Could not send to " + formattedMacAddress + " : " + packet.toString());
                     Log.w(TAG, ex.getMessage());
-                    StatsCollector.publishError(BluetoothProtocol.class, "ERR", packet.uuid, "Could not send to " + formattedMacAddress + " : " + ex.getMessage());
+                    StatsCollector.publishError(BluetoothProtocol.class, "ERR", packet.uuid,
+                            "Could not send to " + formattedMacAddress + " : " + ex.getMessage());
                     // Connection is broken, remove from list
                     teardown();
                 }
             }
         }
         private void teardown() {
-            Log.w(TAG,"ConnectionHandler: tearing down "+formattedMacAddress);
+            Log.w(TAG, "ConnectionHandler: tearing down " + formattedMacAddress);
             synchronized (connections) {
                 connections.remove(formattedMacAddress);
             }
             try {
                 socket.close();
-            } catch (IOException e) {/*ignore*/}
+            } catch (IOException e) { /*ignore*/ }
         }
 
         @Override
         public String toString() {
-            return "BT.ConnectionHandler("+formattedMacAddress+", sent="+sent+", received="+received+")";
+            return "BT.ConnectionHandler(" + formattedMacAddress + ", sent=" + sent + ", received=" + received + ")";
         }
     }
 
     ConnectionHandler connectToDevice(BluetoothDevice device, UUID uuid) {
         try {
             synchronized (connections) {
-                if (connections.containsKey(device.getAddress()))
+                if (connections.containsKey(device.getAddress())) {
                     return connections.get(device.getAddress());
+                }
             }
             if (ConstOptions.DELAYED_BT_CONNECTION > 0) {
                 int delay = new Random().nextInt(ConstOptions.DELAYED_BT_CONNECTION) + 1;
-                Log.d(TAG, "delaying connection by "+delay+" ms");
+                Log.d(TAG, "delaying connection by " + delay + " ms");
                 Thread.sleep(delay);
             }
 
@@ -263,22 +265,23 @@ public class BluetoothProtocol extends SocketProtocol {
                 connections.put(device.getAddress(), handler);
             }
             return handler;
-        }catch(InterruptedException e){
+        } catch (InterruptedException e) {
             //ignore
             return null;
         } catch (IOException e) {
             // do nothing, this exception will occur a lot because there will be Bluetooth
             // devices nearby that do not run BonfireChat, resulting in no suitable
             // ServerSocket to accept this connection
-            Log.e(TAG, "Unable to connect to bluetooth device "+device.getAddress()+", ignoring");
+            Log.e(TAG, "Unable to connect to bluetooth device " + device.getAddress() + ", ignoring");
             Log.e(TAG, e.getMessage());
             StatsCollector.publishError(BluetoothProtocol.class, "ERR", uuid,
-                    "Unable to connect to bluetooth device "+device.getAddress()+": "+e.getMessage());
+                    "Unable to connect to bluetooth device " + device.getAddress() + ": " + e.getMessage());
 
             try {
                 Log.w(TAG, "Trying ugly workaround from the internet - here be dragons ...");
 
-                BluetoothSocket socket = (BluetoothSocket) device.getClass().getMethod("createInsecureRfcommSocket", new Class[] {int.class}).invoke(device,1);
+                BluetoothSocket socket = (BluetoothSocket) device.getClass().getMethod("createInsecureRfcommSocket",
+                        new Class[] {int.class}).invoke(device, 1);
                 socket.connect();
                 Log.i(TAG, "W O W  - success!");
 
@@ -288,9 +291,9 @@ public class BluetoothProtocol extends SocketProtocol {
                 }
                 return handler;
 
-            } catch(Exception ex2) {
+            } catch (Exception ex2) {
                 // all kinds of exceptions...
-                Log.e(TAG, "Ugly workaround did not work around: "+ex2.getMessage());
+                Log.e(TAG, "Ugly workaround did not work around: " + ex2.getMessage());
 
                 return null;
             }
@@ -319,7 +322,7 @@ public class BluetoothProtocol extends SocketProtocol {
         }
 
         // Start discovery again after five seconds, if sendPacket is not called in the mean time.
-        searchLoopHandler.postDelayed(searchDevicesThread, 5555);
+        searchLoopHandler.postDelayed(searchDevicesThread, RETRANSMISSION_DEVICE_SEARCH_INTERVAL);
     }
 
     @Override
@@ -331,7 +334,9 @@ public class BluetoothProtocol extends SocketProtocol {
     public void shutdown() {
         // stop discovering
         searchLoopHandler.removeCallbacksAndMessages(null);
-        if (adapter.isDiscovering()) adapter.cancelDiscovery();
+        if (adapter.isDiscovering()) {
+            adapter.cancelDiscovery();
+        }
 
         // close all connections
         synchronized (connections) {

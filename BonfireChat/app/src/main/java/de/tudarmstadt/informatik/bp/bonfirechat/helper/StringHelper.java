@@ -6,7 +6,9 @@ import java.util.regex.Pattern;
 /**
  * Created by johannes on 28.08.15.
  */
-public class StringHelper {
+public final class StringHelper {
+
+    private StringHelper() { }
 
     public static boolean regexMatch(String pattern, String... strings) {
         Pattern regex = Pattern.compile(pattern);
