@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.7">
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/data/BonfireAPI.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/data/BonfireData.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/data/ConstOptions.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/ContactImageHelper.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/CryptoHelper.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/DateHelper.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/RingBuffer.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/StreamHelper.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/StringHelper.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/UIHelper.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/zxing/Contents.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/zxing/IntentIntegrator.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/zxing/IntentResult.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/zxing/QRCodeEncoder.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/helper/zxing/QRcodeHelper.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/location/GpsTracker.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/models/Contact.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/models/Conversation.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/models/IPublicIdentity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/models/Identity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/models/Message.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/models/MyPublicKey.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/BluetoothProtocol.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/ConnectionManager.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/GcmBroadcastReceiver.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/GcmProtocol.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/IProtocol.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/NonStopIntentService.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/OnPacketReceivedListener.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/OnPeerDiscoveredListener.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/Peer.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/ResendOldMessagesTask.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/SendLocationBroadcastsService.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/SocketProtocol.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/TracerouteHandler.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/WifiProtocol.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/AckPacket.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/Envelope.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/LocationUdpPacket.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/Packet.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/PacketType.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/PayloadPacket.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/Retransmission.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/RoutingManager.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/TracerouteHopSegment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/TracerouteNodeSegment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/TracerouteProgressSegment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/routing/TracerouteSegment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/stats/CurrentStats.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/stats/StatsCollector.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/stats/StatsEntry.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/ContactDetailsActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/ContactLocationActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/ContactsAdapter.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/ContactsFragment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/ConversationsAdapter.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/ConversationsFragment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/EnableBluetoothActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/IdentityActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/MainActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/MessageDetailsActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/MessageLocationActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/MessagesActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/MessagesAdapter.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/NavigationDrawerFragment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/SearchUserActivity.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/SettingsFragment.java">
+</file>
+<file name="/home/johannes/studium/s4/bp/BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/ui/ShareMyIdentityActivity.java">
+</file>
+</checkstyle>
