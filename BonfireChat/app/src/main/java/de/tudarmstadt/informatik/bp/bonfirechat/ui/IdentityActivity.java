@@ -191,21 +191,6 @@ public class IdentityActivity extends Activity  {
         }
     };
 
-    public class MyAsyncTask extends AsyncTask<Identity, Object, String> {
-
-        private Context ctx;
-
-        public MyAsyncTask(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected String doInBackground(Identity... params) {
-            String ok = params[0].updateImage(ctx);
-            return ok;
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ACTIVITY_CODE_IMAGE && data != null) {
@@ -226,7 +211,13 @@ public class IdentityActivity extends Activity  {
             final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
             db.updateIdentity(identity);
 
-            new MyAsyncTask(this).execute(identity);
+            (new AsyncTask<Identity, Object, String>() {
+                @Override
+                protected String doInBackground(Identity... params) {
+                    String ok = params[0].updateImage(IdentityActivity.this);
+                    return ok;
+                }
+            }).execute(identity);
 
             ((ImageView) findViewById(R.id.contact_image)).setImageURI(Uri.parse("file://" + identity.getImage()));
         }

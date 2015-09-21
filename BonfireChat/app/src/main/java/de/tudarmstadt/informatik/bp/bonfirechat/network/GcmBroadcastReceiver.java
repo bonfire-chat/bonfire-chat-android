@@ -27,7 +27,11 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
     private static final String SENDER_ID = "1083776418239";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    public static String regid = "";
+    private static String regid = "";
+
+    public static String getRegid() {
+        return regid;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {

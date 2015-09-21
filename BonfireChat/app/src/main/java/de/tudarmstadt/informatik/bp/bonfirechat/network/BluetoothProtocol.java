@@ -236,7 +236,7 @@ public class BluetoothProtocol extends SocketProtocol {
             }
             try {
                 socket.close();
-            } catch (IOException e) { /*ignore*/ }
+            } catch (IOException e) { Log.d(TAG, "ignoring Bluetooth connection error"); }
         }
 
         @Override

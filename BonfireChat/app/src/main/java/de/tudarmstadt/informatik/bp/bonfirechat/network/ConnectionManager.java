@@ -104,12 +104,10 @@ public class ConnectionManager extends NonStopIntentService {
     public static final RoutingManager routingManager = new RoutingManager();
 
     // currently visible peers
-    @SuppressWarnings("CheckStyle")
-    public static final List<Peer> peers = new ArrayList<>();
+    private static final List<Peer> peers = new ArrayList<>();
     private static Handler handler = new Handler();
 
-    @SuppressWarnings("CheckStyle")
-    public static final Class[] registeredProtocols = new Class[]{
+    static final Class[] registeredProtocols = new Class[]{
             BluetoothProtocol.class,
             WifiProtocol.class,
             GcmProtocol.class };
@@ -130,7 +128,7 @@ public class ConnectionManager extends NonStopIntentService {
     }
 
     @SuppressWarnings("CheckStyle")
-    public static final List<IProtocol> connections = new ArrayList<>();
+    private static final List<IProtocol> connections = new ArrayList<>();
 
     public IProtocol getOrCreateConnection(Class typ) {
         IProtocol p = getConnection(typ);
@@ -156,6 +154,13 @@ public class ConnectionManager extends NonStopIntentService {
             }
         }
         return null;
+    }
+
+    public static List<IProtocol> getConnections() {
+        return connections;
+    }
+    public static List<Peer> getPeers() {
+        return peers;
     }
 
     private void closeConnection(Class typ) {
@@ -359,7 +364,7 @@ public class ConnectionManager extends NonStopIntentService {
             broadcastManager.sendBroadcast(localIntent);
 
 
-            if (MessagesActivity.currentConversation == -1) {
+            if (MessagesActivity.getCurrentConversation() == -1) {
                 final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
                 intent.putExtra("ConversationId", conversation.rowid);
                 final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
@@ -458,7 +463,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             if (packet instanceof PayloadPacket && packet.getHopCount() == 0) {
                 Retransmission.add(this, (PayloadPacket) packet,
-                        ((PayloadPacket) packet).getTransmissionCount() * ConstOptions.RETRANSMISSION_TIMEOUT);
+                        (long) ((PayloadPacket) packet).getTransmissionCount() * ConstOptions.RETRANSMISSION_TIMEOUT);
 
                 // if a message object is specified, this packet was just generated on this phone
                 // notify UI that sending has started

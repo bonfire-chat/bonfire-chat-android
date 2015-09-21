@@ -22,6 +22,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * Created by mw on 18.05.15.
  */
@@ -102,7 +104,7 @@ public class Identity implements IPublicIdentity {
         try {
             String plaintext = "nickname=" + URLEncoder.encode(nickname, "UTF-8")
                     + "&phone=" + URLEncoder.encode(phone, "UTF-8")
-                    + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.regid, "UTF-8");
+                    + "&gcmid=" + URLEncoder.encode(GcmBroadcastReceiver.getRegid(), "UTF-8");
 
             Box b = new Box(BonfireAPI.SERVER_PUBLICKEY, privateKey);
             byte[] nonce = CryptoHelper.generateNonce();
@@ -114,7 +116,7 @@ public class Identity implements IPublicIdentity {
             body.put("data", BonfireAPI.encode(ciphertext));
             String result = BonfireAPI.httpPost("register", body).trim();
             if (result.startsWith("ok=")) {
-                serverUid = Integer.valueOf(result.substring(3));
+                serverUid = parseInt(result.substring(3));
                 return null;
             } else {
                 return result;
@@ -136,9 +138,8 @@ public class Identity implements IPublicIdentity {
                 e.printStackTrace();
             }
             body.put("image", os.toByteArray());
-            String result = null;
             try {
-                result = BonfireAPI.httpPost("avatar", body).trim();
+                BonfireAPI.httpPost("avatar", body);
             } catch (IOException e) {
                 e.printStackTrace();
             }

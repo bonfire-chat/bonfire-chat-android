@@ -87,7 +87,12 @@ public final class StreamHelper {
 
         final float maxWidth = 800.0f;
         final float maxHeight = 600.0f;
-        float imgRatio = actualWidth / actualHeight;
+        float imgRatio;
+        if (actualHeight != 0) {
+            imgRatio = (float) actualWidth / actualHeight;
+        } else {
+            imgRatio = 1;
+        }
         float maxRatio = maxWidth / maxHeight;
 
         // width and height values are set maintaining the aspect ratio of the image
@@ -137,12 +142,12 @@ public final class StreamHelper {
         Matrix scaleMatrix = new Matrix();
         scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
 
-        Canvas canvas = new Canvas(scaledBitmap);
-        canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
-
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 60, toStream);
-
+        if (scaledBitmap != null) {
+            Canvas canvas = new Canvas(scaledBitmap);
+            canvas.setMatrix(scaleMatrix);
+            canvas.drawBitmap(bmp, middleX - (float) bmp.getWidth() / 2, middleY - (float) bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 60, toStream);
+        }
     }
 
 

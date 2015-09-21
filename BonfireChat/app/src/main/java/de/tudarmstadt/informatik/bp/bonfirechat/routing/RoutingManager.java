@@ -21,10 +21,11 @@ public class RoutingManager {
 
     public void registerPath(Packet packet) {
         String key = CryptoHelper.toBase64(packet.senderPublicKey);
-        String pathDebug = "";
+        StringBuilder pathDebugBuilder = new StringBuilder();
         for (byte[] a : packet.getPath()) {
-            pathDebug += " -> " + Peer.formatMacAddress(a);
+            pathDebugBuilder.append(" -> ").append(Peer.formatMacAddress(a));
         }
+        String pathDebug = pathDebugBuilder.toString();
         Log.i("routingManager", "registerPath to " + key + " " + pathDebug);
         shortestPaths.put(key, packet.getPath());
     }

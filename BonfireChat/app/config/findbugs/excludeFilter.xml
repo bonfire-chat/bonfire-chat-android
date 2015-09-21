@@ -7,4 +7,10 @@
     <Match>
         <Class name="~.*\.Manifest\$.*"/>
     </Match>
+    <Match>
+        <Bug pattern="EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
 </FindBugsFilter>

@@ -64,13 +64,19 @@ public class MessagesActivity extends Activity {
     private final BonfireData db = BonfireData.getInstance(this);
     NotificationManager mNotificationManager;
     //rowid of Conversation that is viewed. If MessagesActivity is not open it is set to -1
-    public static long currentConversation = -1;
+    private static long currentConversation = -1;
+
+    public static long getCurrentConversation() {
+        return currentConversation;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         setContentView(R.layout.activity_messages);
         long convId = getIntent().getLongExtra("ConversationId", 0);
@@ -242,6 +248,7 @@ public class MessagesActivity extends Activity {
                     showcaseView.setContentText(getString(R.string.tutorial_messages_share_image_desc));
                     showcaseView.setTarget(new ActionItemTarget(MessagesActivity.this, R.id.action_share_image));
                     showcaseView.setButtonText(getString(R.string.next));
+                    break;
                 case 3:
                     showcaseView.setContentTitle(getString(R.string.tutorial_messages_details));
                     showcaseView.setContentText(getString(R.string.tutorial_messages_details_desc));
@@ -255,6 +262,8 @@ public class MessagesActivity extends Activity {
                     ((EditText) findViewById(R.id.textinput)).setInputType(InputType.TYPE_CLASS_TEXT);
                     findViewById(R.id.textinput).requestFocus();
                     showcaseView.hide();
+                    break;
+                default:
                     break;
             }
         }
@@ -418,10 +427,10 @@ public class MessagesActivity extends Activity {
 
     public void showSelectPath() {
         CharSequence[] peerList;
-        synchronized (ConnectionManager.peers) {
-            peerList = new CharSequence[ConnectionManager.peers.size()];
-            for (int i = 0; i < ConnectionManager.peers.size(); i++) {
-                peerList[i] = Peer.formatMacAddress(ConnectionManager.peers.get(i).getAddress());
+        synchronized (ConnectionManager.getPeers()) {
+            peerList = new CharSequence[ConnectionManager.getPeers().size()];
+            for (int i = 0; i < ConnectionManager.getPeers().size(); i++) {
+                peerList[i] = Peer.formatMacAddress(ConnectionManager.getPeers().get(i).getAddress());
             }
         }
         final CharSequence[] peerList2 = peerList;

@@ -30,9 +30,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 
 /**
+ * Note: class is final
+ *
  * Created by mw on 16.08.15.
  */
-public class WifiProtocol extends SocketProtocol {
+public final class WifiProtocol extends SocketProtocol {
 
     public static final String TAG = "WifiProtocol";
     private Context context;

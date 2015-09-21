@@ -298,7 +298,7 @@ public final class BonfireData extends SQLiteOpenHelper {
 
     public void addStatsEntry(StatsEntry stats) {
         SQLiteDatabase db = getWritableDatabase();
-        stats.rowid = db.insert(STATS, null, stats.getContentValues());
+        db.insert(STATS, null, stats.getContentValues());
     }
     public StatsEntry getLatestStatsEntry() {
         SQLiteDatabase db = getWritableDatabase();

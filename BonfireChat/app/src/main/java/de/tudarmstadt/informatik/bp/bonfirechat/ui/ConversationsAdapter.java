@@ -43,7 +43,7 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
         }
     }
 
-    class ViewHolder {
+    static class ViewHolder {
         ImageView icon;
         TextView name;
         TextView lastMessage;

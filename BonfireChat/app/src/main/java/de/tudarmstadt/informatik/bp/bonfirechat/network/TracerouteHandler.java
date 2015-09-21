@@ -2,6 +2,8 @@ package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.content.Context;
 
+import java.nio.charset.Charset;
+
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 
@@ -18,7 +20,7 @@ public final class TracerouteHandler {
         }
         final String traceMsg = mode + " via " + protocol.getClass().getSimpleName()
                 + " by " + BonfireData.getInstance(ctx).getDefaultIdentity().getNickname() + "\n";
-        envelope.encryptedBody = concatByteArrays(envelope.encryptedBody, traceMsg.getBytes());
+        envelope.encryptedBody = concatByteArrays(envelope.encryptedBody, traceMsg.getBytes(Charset.defaultCharset()));
     }
 
     public static byte[] concatByteArrays(byte[] a, byte[] b) {

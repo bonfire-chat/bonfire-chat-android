@@ -30,7 +30,7 @@ public final class ConstOptions {
 
     public static String getDebugInfo() {
         StringBuilder debug = new StringBuilder();
-        for (IProtocol c : ConnectionManager.connections) {
+        for (IProtocol c : ConnectionManager.getConnections()) {
             debug.append("\nProtocol: " + c.toString());
             if (c instanceof BluetoothProtocol) {
                 BluetoothProtocol proto = (BluetoothProtocol) c;
@@ -42,7 +42,7 @@ public final class ConstOptions {
         debug.append("\n");
         debug.append(ConnectionManager.routingManager.toString());
         debug.append("\n");
-        for (Peer p : ConnectionManager.peers) {
+        for (Peer p : ConnectionManager.getPeers()) {
             debug.append("\n" + p.toString());
         }
         return debug.toString();

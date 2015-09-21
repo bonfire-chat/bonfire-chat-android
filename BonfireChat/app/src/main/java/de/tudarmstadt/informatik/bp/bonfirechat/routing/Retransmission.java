@@ -25,8 +25,6 @@ public final class Retransmission implements Runnable {
     private static final Hashtable<UUID, Retransmission> pendingRetransmissions = new Hashtable<>();
 
     private PayloadPacket packet;
-    //timeout in milliseconds
-    private int timeout;
     private Handler handler;
     private Context context;
 
