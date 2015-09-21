@@ -31,7 +31,7 @@ $(PARTIALS)/javadoc.pdf: belege/junit/javadoc.html
 $(PARTIALS)/junit.pdf: belege/junit/bonfire-junit-report.html
 	wkhtmltopdf $< $@
 
-$(PARTIALS)/checkstyle%.pdf: belege/checkstyle/checkstyle%.html
+$(PARTIALS)/checkstyle%.pdf: belege/checkstyle/checkstyle%.xml.html
 	cd toolchain && ./make-checkstyle-html.sh
 	wkhtmltopdf --lowquality $< $@
 

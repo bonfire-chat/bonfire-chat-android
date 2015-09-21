@@ -1,3 +1,7 @@
 #!/bin/bash
 
-saxon -s:../../BonfireChat/app/build/reports/checkstyle/checkstyle.xml -xsl:checkstyle-noframes-sorted.xsl -o:../belege/checkstyle/checkstyle.html
+for file in ../belege/checkstyle/*.xml
+do
+  dst=$file".html"
+  saxon -s:$file -xsl:checkstyle-noframes-sorted.xsl -o:$dst
+done
