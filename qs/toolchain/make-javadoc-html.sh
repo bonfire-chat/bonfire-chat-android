@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEST=javadoc.html
+DEST=../belege/junit/javadoc.html
 
 cat javadoc-partials-start.html > $DEST
 

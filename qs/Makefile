@@ -24,6 +24,10 @@ $(PARTIALS)/dokumentation.tex: ../docs/Dokumentation.md
 $(PARTIALS)/coverage.pdf: belege/coverage/index.html
 	wkhtmltopdf $< $@
 
+$(PARTIALS)/javadoc.pdf: belege/junit/javadoc.html
+	cd toolchain && ./make-javadoc-html.sh
+	wkhtmltopdf $< $@
+
 $(PARTIALS)/junit.pdf: belege/junit/bonfire-junit-report.html
 	wkhtmltopdf $< $@
 
@@ -36,7 +40,7 @@ belege/lint/lint-results%.tmp.html: belege/lint/lint-results%.html
 
 qs-dokument.pdf: qs-dokument.tex anhang/*.tex spezifikation/*.tex \
 		$(PARTIALS)/codereviews.tex $(PARTIALS)/manuelle-tests-ui-reports.tex $(PARTIALS)/dokumentation.tex \
-		$(PARTIALS)/coverage.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/lint-results-1.pdf $(PARTIALS)/lint-results-2.pdf
+		$(PARTIALS)/coverage.pdf $(PARTIALS)/javadoc.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/lint-results-1.pdf $(PARTIALS)/lint-results-2.pdf
 	pdflatex qs-dokument.tex
 	pdflatex qs-dokument.tex
 
