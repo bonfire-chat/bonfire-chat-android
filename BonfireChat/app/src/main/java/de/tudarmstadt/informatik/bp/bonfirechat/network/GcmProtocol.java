@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;

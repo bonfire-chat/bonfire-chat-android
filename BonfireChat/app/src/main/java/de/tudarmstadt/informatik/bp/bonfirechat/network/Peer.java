@@ -1,7 +1,5 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import java.util.Arrays;
-
 /**
  * Created by johannes on 30.07.15.
  *
