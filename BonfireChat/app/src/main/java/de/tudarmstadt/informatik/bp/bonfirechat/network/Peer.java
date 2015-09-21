@@ -31,7 +31,7 @@ public class Peer {
     }
 
     public byte[] getAddress() {
-        return address;
+        return address.clone();
     }
 
     public Class getProtocolClass() {
@@ -54,13 +54,9 @@ public class Peer {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof byte[]) {
-            return Arrays.equals(address, (byte[]) other);
-        } else if (other instanceof Peer) {
-            return Arrays.equals(address, ((Peer) other).address);
-        } else {
-            return false;
-        }
+        return address.equals(other instanceof byte[] ? (byte[]) other
+            : other instanceof Peer ? ((Peer) other).address
+            : other);
     }
 
     @Override

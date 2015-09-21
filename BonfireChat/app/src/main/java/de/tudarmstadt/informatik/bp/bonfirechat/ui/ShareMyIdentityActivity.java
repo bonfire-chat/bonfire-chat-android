@@ -26,6 +26,9 @@ import android.widget.Toast;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
@@ -83,11 +86,16 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         String url = QRcodeHelper.getIdentityURL(pubident);
-        NdefMessage msg = new NdefMessage(
-                new NdefRecord[] {NdefRecord.createMime(
-                        "application/de.tudarmstadt.informatik.bp.bonfirechat", url.getBytes()),
-                        NdefRecord.createApplicationRecord("de.tudarmstadt.informatik.bp.bonfirechat")
-                });
+        NdefMessage msg = null;
+        try {
+            msg = new NdefMessage(
+                    new NdefRecord[] {NdefRecord.createMime(
+                            "application/de.tudarmstadt.informatik.bp.bonfirechat", url.getBytes("UTF-8")),
+                            NdefRecord.createApplicationRecord("de.tudarmstadt.informatik.bp.bonfirechat")
+                    });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return msg;
     }
 
@@ -113,18 +121,23 @@ public class ShareMyIdentityActivity extends Activity implements CreateNdefMessa
         // only one message sent during the beam
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
-        Log.d("TEST", new String(msg.getRecords()[0].getPayload()));
-        Contact contact = contactFromUri(Uri.parse(new String(msg.getRecords()[0].getPayload())));
-        Contact dbContact = db.getContactByPublicKey(contact.getPublicKey().asBase64());
-        if (dbContact == null) {
-            db.createContact(contact);
-        } else {
-            contact = dbContact;
+        Log.d("TEST", new String(msg.getRecords()[0].getPayload(), Charset.defaultCharset()));
+        Contact contact = null;
+        try {
+            contact = contactFromUri(Uri.parse(new String(msg.getRecords()[0].getPayload(), "UTF-8")));
+            Contact dbContact = db.getContactByPublicKey(contact.getPublicKey().asBase64());
+            if (dbContact == null) {
+                db.createContact(contact);
+            } else {
+                contact = dbContact;
+            }
+            Intent intent1 = new Intent(this, ContactDetailsActivity.class);
+            intent1.putExtra(EXTRA_CONTACT_ID, contact.rowid);
+            startActivity(intent1);
+            finish();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        Intent intent1 = new Intent(this, ContactDetailsActivity.class);
-        intent1.putExtra(EXTRA_CONTACT_ID, contact.rowid);
-        startActivity(intent1);
-        finish();
     }
 
     public static Contact contactFromUri(Uri url) {

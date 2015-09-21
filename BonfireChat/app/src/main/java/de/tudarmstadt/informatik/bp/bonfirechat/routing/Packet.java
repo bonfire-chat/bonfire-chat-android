@@ -47,10 +47,6 @@ public abstract class Packet implements Serializable {
     public static final int ROUTING_MODE_FLOODING = 1;
     public static final int ROUTING_MODE_DSR = 2;
 
-    public long getTimeSent() {
-        return timeSent;
-    }
-
     public void setTimeSent(long timeSent) {
         this.timeSent = timeSent;
     }
@@ -80,7 +76,7 @@ public abstract class Packet implements Serializable {
     }
 
     public Date getLastHopTimeSent() {
-        return lastHopTimeSent;
+        return (Date) lastHopTimeSent.clone();
     }
     public void setLastHopTimeSent(Date lastHopTimeSent) {
         this.lastHopTimeSent = lastHopTimeSent;

@@ -64,10 +64,13 @@ public final class BonfireAPI {
             Log.i(TAG, theString);
             return theString;
         } catch (IOException e) {
-            String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+            String theErrMes = "";
+            if (urlConnection != null) {
+                 theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+            }
             throw new IOException("HTTP Get request failed, Exception: " + e.toString() + ", Body: " + theErrMes);
         } finally {
-            if (urlConnection == null) {
+            if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }
@@ -117,10 +120,13 @@ public final class BonfireAPI {
             Log.i(TAG, target.getAbsolutePath());
 
         } catch (IOException e) {
-            String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+            String theErrMes = "";
+            if (urlConnection != null) {
+                theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
+            }
             throw new IOException("HTTP Get request failed, Exception: " + e.toString() + ", Body: " + theErrMes);
         } finally {
-            if (urlConnection == null) {
+            if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }
@@ -128,13 +134,12 @@ public final class BonfireAPI {
 
     public static String httpPost(String apiMethod, Hashtable<String, byte[]> body) throws IOException {
         HttpURLConnection urlConnection = null;
-        try {
-            urlConnection = (HttpURLConnection) new URL(API_ENDPOINT + "/" + apiMethod).openConnection();
-            urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=Je8PPsja_x");
-            urlConnection.setDoOutput(true);
-            urlConnection.setChunkedStreamingMode(0);
+        urlConnection = (HttpURLConnection) new URL(API_ENDPOINT + "/" + apiMethod).openConnection();
+        urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=Je8PPsja_x");
+        urlConnection.setDoOutput(true);
+        urlConnection.setChunkedStreamingMode(0);
 
-            final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+        try (final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream())) {
             for (Map.Entry<String, byte[]> part : body.entrySet()) {
                 if (part.getKey().equals("image")) {
                     out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey()
@@ -158,7 +163,7 @@ public final class BonfireAPI {
             String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
             throw new IOException("HTTP Post request failed, Exception: " + e.toString() + ", Body: " + theErrMes);
         } finally {
-            if (urlConnection == null) {
+            if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }

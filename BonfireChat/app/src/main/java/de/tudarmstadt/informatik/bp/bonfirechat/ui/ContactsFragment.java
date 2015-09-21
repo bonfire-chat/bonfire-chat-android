@@ -44,14 +44,6 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        /* if (UIHelper.shouldShowContactsTutorial(getActivity())) {
-            showcaseView = new ShowcaseView.Builder(getActivity())
-                    .setStyle(R.style.CustomShowcaseTheme2)
-                    .setOnClickListener(showcaseListener)
-                    .build();
-            tutorialCounter = 0;
-            showcaseListener.onClick(null);
-        }*/
     }
 
     @Override
@@ -91,45 +83,6 @@ public class ContactsFragment extends Fragment {
 
         return rootView;
     }
-
-    // ####### First-Start Tutorial #####################################################
-    private ShowcaseView showcaseView;
-    private int tutorialCounter = 0;
-    /**
-     * Handles clicks on Close button of first-start tutorial view
-     */
-    private View.OnClickListener showcaseListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (tutorialCounter++) {
-                case 0:
-                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_your_contact));
-                    showcaseView.setContentText(getString(R.string.tutorial_contacts_your_contact_desc));
-                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_nfc));
-                    showcaseView.setButtonText(getString(R.string.next));
-                    break;
-                case 1:
-                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_scan_qr));
-                    showcaseView.setContentText(getString(R.string.tutorial_contacts_scan_qr_desc));
-                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_qr));
-                    showcaseView.setButtonText(getString(R.string.next));
-                    break;
-                case 2:
-                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_search));
-                    showcaseView.setContentText(getString(R.string.tutorial_contacts_search_desc));
-                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_search));
-                    showcaseView.setButtonText(getString(R.string.got_it));
-                    break;
-                case 3:
-                    UIHelper.flagShownContactsTutorial(getActivity());
-                    showcaseView.hide();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-    // ####### End First-Start Tutorial #####################################################
 
     @Override
     public void onAttach(Activity activity) {

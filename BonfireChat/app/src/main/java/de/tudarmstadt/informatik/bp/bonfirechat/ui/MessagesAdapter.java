@@ -29,10 +29,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
  */
 public class MessagesAdapter extends ArrayAdapter<Message> {
 
-    Context context;
     boolean[] itemSelected;
 
-    class ViewHolder {
+    static class ViewHolder {
         ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, errorIcon, messageImage;
         TextView messageBody, dateTime;
         ProgressBar thumbLoading, onItsWay;
@@ -40,7 +39,6 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
 
     public MessagesAdapter(Context context, List<Message> objects) {
         super(context, R.layout.message_rowlayout_received, objects);
-        this.context = context;
         itemSelected = new boolean[objects.size()];
     }
 
@@ -81,6 +79,9 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
                     convertView = inflater.inflate(R.layout.message_rowlayout_sent, parent, false);
                     v.ackIcon = (ImageView) convertView.findViewById(R.id.message_ack);
                     v.onItsWay = (ProgressBar) convertView.findViewById(R.id.on_its_way);
+                    break;
+                default:
+                    convertView = inflater.inflate(R.layout.message_rowlayout_received, parent, false);
                     break;
             }
 

@@ -274,7 +274,7 @@ public class NavigationDrawerFragment extends Fragment {
      * 'context', rather than just what's in the current screen.
      */
     private void showGlobalContextActionBar() {
-        ActionBar actionBar = getActionBar();
+        getActionBar();
         //actionBar.setDisplayShowHomeEnabled(false);
         //actionBar.setDisplayShowTitleEnabled(true);
         //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);

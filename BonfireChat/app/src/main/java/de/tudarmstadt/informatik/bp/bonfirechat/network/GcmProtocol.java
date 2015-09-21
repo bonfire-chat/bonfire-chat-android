@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Date;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
@@ -61,7 +62,7 @@ public class GcmProtocol extends SocketProtocol {
                             .openConnection();
                     onHandleMessage(urlConnection.getInputStream(), senderId);
                 } finally {
-                    if (urlConnection == null) {
+                    if (urlConnection != null) {
                         urlConnection.disconnect();
                     }
                 }
@@ -85,7 +86,7 @@ public class GcmProtocol extends SocketProtocol {
             if (packet.getNextHop() != null) {
                 packet.removeNextHop();
             }
-            packet.addPathNode(senderId.getBytes());
+            packet.addPathNode(senderId.getBytes("UTF-8"));
             //end todo
 
             // add traceroute segment to payload packets
@@ -110,7 +111,7 @@ public class GcmProtocol extends SocketProtocol {
             //TODO this should better be done by the server
             String nextHopId = "";
             if (packet.getNextHop() != null) {
-                nextHopId = new String(packet.getNextHop());
+                nextHopId = new String(packet.getNextHop(), "UTF-8");
             }
             //end todo
 

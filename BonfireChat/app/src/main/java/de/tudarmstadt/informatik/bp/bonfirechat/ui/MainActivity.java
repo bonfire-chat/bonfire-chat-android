@@ -136,6 +136,8 @@ public class MainActivity extends Activity
                 GpsTracker.init(this);
                 initializeStats();
                 break;
+            default:
+                break;
         }
     }
 
@@ -200,6 +202,8 @@ public class MainActivity extends Activity
                 break;
             case 2:
                 mTitle = getString(R.string.title_settings);
+                break;
+            default:
                 break;
         }
         ActionBar actionBar = getActionBar();

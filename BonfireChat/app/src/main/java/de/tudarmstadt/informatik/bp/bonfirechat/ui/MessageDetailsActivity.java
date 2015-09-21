@@ -171,8 +171,8 @@ public class MessageDetailsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    class ViewHolder {
-        ImageView contactPhoto, encryptedIcon, protocolIcon, ackIcon, errorIcon, messageImage;
+    static class ViewHolder {
+        ImageView encryptedIcon, protocolIcon, ackIcon, errorIcon, messageImage;
         TextView messageBody, dateTime;
         ProgressBar thumbLoading, onItsWay;
     }
@@ -201,7 +201,6 @@ public class MessageDetailsActivity extends Activity {
         v.messageImage = (ImageView) view.findViewById(R.id.message_image);
         v.thumbLoading = (ProgressBar) view.findViewById(R.id.thumb_loading);
         v.dateTime = (TextView) view.findViewById(R.id.message_time);
-        v.contactPhoto = (ImageView) view.findViewById(R.id.message_photo);
         v.encryptedIcon = (ImageView) view.findViewById(R.id.message_encrypted);
         v.protocolIcon = (ImageView) view.findViewById(R.id.message_proto);
         v.errorIcon = (ImageView) view.findViewById(R.id.message_error);

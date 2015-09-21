@@ -42,7 +42,7 @@ public class StatsCollector extends BroadcastReceiver {
     private long batteryLastMeasured;
     private boolean isCharging;
 
-    public static String reporterIdentity;
+    private static String reporterIdentity;
 
     public StatsCollector(Context ctx) {
         // get global stats object
@@ -75,7 +75,7 @@ public class StatsCollector extends BroadcastReceiver {
         updateStats();
         db.addStatsEntry(stats);
 
-        publishStats(db);
+        publishStats();
     }
 
     public static void publishMessageHop(final Class protocol, final String what, final Peer peer,
@@ -132,7 +132,7 @@ public class StatsCollector extends BroadcastReceiver {
         }).start();
     }
 
-    private void publishStats(final BonfireData db) {
+    private void publishStats() {
         (new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -154,17 +154,20 @@ public class StatsCollector extends BroadcastReceiver {
                     urlConnection.setDoOutput(true);
                     urlConnection.setChunkedStreamingMode(0);
 
-                    final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-                    out.write(postData.getBytes("UTF-8"));
-                    out.flush();
+                    try (final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream())) {
+                        out.write(postData.getBytes("UTF-8"));
+                        out.flush();
 
-                    if (urlConnection.getResponseCode() != RESPONSE_OK) {
-                        Log.e(TAG, "error publishing stats: server sent response code " + urlConnection.getResponseCode());
+                        if (urlConnection.getResponseCode() != RESPONSE_OK) {
+                            Log.e(TAG, "error publishing stats: server sent response code " + urlConnection.getResponseCode());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (urlConnection == null) {
+                    if (urlConnection != null) {
                         urlConnection.disconnect();
                     }
                 }

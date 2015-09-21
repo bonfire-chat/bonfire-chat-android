@@ -113,8 +113,6 @@ public class ConversationsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
         switch (item.getItemId()) {
             case R.id.action_add_conversation:
                 // just open ContactsFragment, because that provides the intended functionality anyway

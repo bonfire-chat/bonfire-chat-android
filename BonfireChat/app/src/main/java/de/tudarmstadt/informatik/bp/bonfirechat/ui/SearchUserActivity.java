@@ -109,7 +109,7 @@ public class SearchUserActivity extends Activity {
             try {
                 HttpGet httppost = new HttpGet(BonfireAPI.API_ENDPOINT + "/search?nickname=" + URLEncoder.encode(keyword, "UTF-8"));
                 HttpResponse response = httpclient.execute(httppost);
-                java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent()).useDelimiter("\\A");
+                java.util.Scanner s = new java.util.Scanner(response.getEntity().getContent(), "UTF-8").useDelimiter("\\A");
                 JSONTokener tokener = new JSONTokener(s.next());
                 JSONArray array = (JSONArray) tokener.nextValue();
                 Contact[] d = new Contact[array.length()];
