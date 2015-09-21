@@ -32,6 +32,7 @@ $(PARTIALS)/junit.pdf: belege/junit/bonfire-junit-report.html
 	wkhtmltopdf $< $@
 
 $(PARTIALS)/checkstyle%.pdf: belege/checkstyle/checkstyle%.html
+	cd toolchain && ./make-checkstyle-html.sh
 	wkhtmltopdf --lowquality $< $@
 
 $(PARTIALS)/lint-results%.pdf: belege/lint/lint-results%.tmp.html
@@ -41,9 +42,13 @@ belege/lint/lint-results%.tmp.html: belege/lint/lint-results%.html
 	cat $< > $@
 	echo "<style> body,pre {background: white; } body,*{ color: black} body a {color:#00a!important} </style>" >> $@
 
+$(PARTIALS)/findbugs%.pdf: belege/findbugs/findbugs%.html
+	wkhtmltopdf --lowquality $< $@
+
 qs-dokument.pdf: qs-dokument.tex anhang/*.tex spezifikation/*.tex \
 		$(PARTIALS)/codereviews.tex $(PARTIALS)/manuelle-tests-ui-reports.tex $(PARTIALS)/dokumentation.tex \
-		$(PARTIALS)/coverage.pdf $(PARTIALS)/javadoc.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/checkstyle-1.pdf $(PARTIALS)/lint-results-1.pdf $(PARTIALS)/lint-results-2.pdf
+		$(PARTIALS)/coverage.pdf $(PARTIALS)/javadoc.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/checkstyle-1.pdf \
+		$(PARTIALS)/lint-results-1.pdf $(PARTIALS)/lint-results-2.pdf $(PARTIALS)/findbugs-1.pdf
 	pdflatex qs-dokument.tex
 	pdflatex qs-dokument.tex
 

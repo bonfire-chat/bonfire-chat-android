@@ -68,7 +68,6 @@ task checkstyle(type: Checkstyle) {
     source 'src'
     include '**/*.java'
     exclude '**/gen/**','**/*Test.java'
-    style '/home/johannes/Downloads/checkstyle-noframes-sorted.xsl'
     classpath = files()
 }
 
