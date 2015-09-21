@@ -63,12 +63,6 @@
     <string name="tutorial_messages_share_image_desc">Klicke hier, um ein Bild zu versenden</string>
     <string name="tutorial_messages_details">Übrigens</string>
     <string name="tutorial_messages_details_desc">Klicke lang auf eine Nachricht und wähle das Details-Icon, um Details zur Übertragung anzusehen.</string>
-    <string name="tutorial_contacts_your_contact">Deine Kontaktdaten</string>
-    <string name="tutorial_contacts_your_contact_desc">Hier klicken, um deine Kontaktdaten weiterzugeben</string>
-    <string name="tutorial_contacts_scan_qr">QR-Code scannen</string>
-    <string name="tutorial_contacts_scan_qr_desc">Hier klicken, um einen QR-Code zu scannen, um einen Kontakt hinzuzufügen</string>
-    <string name="tutorial_contacts_search">Kontakt suchen</string>
-    <string name="tutorial_contacts_search_desc">Hier klicken, um einen Kontakt über das Internet zu suchen</string>
     <string name="tutorial_main_welcome">Willkommen!</string>
     <string name="tutorial_main_welcome_desc">Hier kannst du Kontakte hinzufügen und Konversationen starten</string>
     <string name="tutorial_main_your_contact">Deine Kontaktdaten</string>

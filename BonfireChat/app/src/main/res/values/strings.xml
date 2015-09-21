@@ -63,12 +63,6 @@
     <string name="tutorial_messages_share_image_desc">click here to send an image in a message</string>
     <string name="tutorial_messages_details">Last but not least</string>
     <string name="tutorial_messages_details_desc">to see details about a message\'s transmission, long-click on it and select the details icon</string>
-    <string name="tutorial_contacts_your_contact">your contact data</string>
-    <string name="tutorial_contacts_your_contact_desc">click here to share your contact data with others</string>
-    <string name="tutorial_contacts_scan_qr">scan QR-code</string>
-    <string name="tutorial_contacts_scan_qr_desc">click here to scan a QR-code and add a contact</string>
-    <string name="tutorial_contacts_search">search for contacts</string>
-    <string name="tutorial_contacts_search_desc">click here to search for contact on the internet</string>
     <string name="tutorial_main_welcome">Welcome!</string>
     <string name="tutorial_main_welcome_desc">you can add contacts and start conversations</string>
     <string name="tutorial_main_your_contact">your contact data</string>
