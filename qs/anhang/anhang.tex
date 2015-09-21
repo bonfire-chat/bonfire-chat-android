@@ -21,6 +21,8 @@ Um hohe Qualität des geschriebenen Quellcodes sicherzustellen, haben wir das be
 
 Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als begonnen haben, ``Checkstyle'' einzusetzen. Anschließend haben wir alle bereits vorhandenen Warnungen in Commit XXXXXXXX TODO abgearbeitet. Da mit dem Plugin ``Checkstyle-IDEA'' alle Warnungen direkt in unserer Entwicklungsumgebung angezeigt werden, konnten diese ab dann direkt bei der Programmierung behoben werden, sodass der zweite, zum Abschluss des Projektes erstellte, Report leer ist.
 
+Wir haben bei der Checkstyle-Überprüfung auf die Überprüfung verzichtet, ob Felder als private deklariert werden können, da es bei Android eine empfohlene Vorgehensweise ist, einige Felder öffentlich zu deklarieren. Dies sorgt auf mobilen Geräten für mehr Effizienz, da zum Zugreifen auf ein solches Feld keine Methode über einen Call-Stack aufgerufen werden müssen.
+
 
 \includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer ``Checkstyle''-Report}]{anhang/partials/checkstyle-1.pdf}
 \includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/checkstyle-1.pdf}
@@ -66,6 +68,9 @@ Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als wir mit
 
 \includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer ``FindBugs''-Report}]{anhang/partials/findbugs-1.pdf}
 \includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/findbugs-1.pdf}
+
+\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler ``FindBugs''-Report}]{anhang/partials/findbugs-2.pdf}
+\includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/findbugs-2.pdf}
 
 
 \clearpage
