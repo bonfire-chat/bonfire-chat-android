@@ -61,7 +61,7 @@
     0%
   </span>
   <span class="absValue">
-    (0/ 166)
+    (0/ 155)
   </span>
 </td>
 </tr>
@@ -120,7 +120,7 @@
 <i>46</i>&nbsp;    private BonfireData(Context context) {
 <b class="nc"><i>47</i>&nbsp;        super(context, &quot;CommunicationData&quot;, null, 19);</b>
 <i>48</i>&nbsp;
-<b class="nc"><i>49</i>&nbsp;    }</b>
+<i>49</i>&nbsp;    }
 <i>50</i>&nbsp;
 <i>51</i>&nbsp;    @Override
 <i>52</i>&nbsp;    public void onCreate(SQLiteDatabase db){
@@ -129,11 +129,11 @@
 <b class="nc"><i>55</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + MESSAGES + &quot;(uuid TEXT NOT NULL PRIMARY KEY, conversation INT NOT NULL, sender INT NOT NULL, flags INT NOT NULL, protocol TEXT, body TEXT, sentDate TEXT, insertDate INT, traceroute BLOB, retries INT, error TEXT)&quot;);</b>
 <b class="nc"><i>56</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + IDENTITIES + &quot;(nickname TEXT, privatekey TEXT, publickey TEXT, username TEXT, phone TEXT, image TEXT)&quot;);</b>
 <b class="nc"><i>57</i>&nbsp;        db.execSQL(&quot;CREATE TABLE if not exists &quot; + STATS + &quot;(timestamp DATETIME, batterylevel INT, powerusage FLOAT, messages_sent INT, messages_received INT, lat FLOAT, lng FLOAT)&quot;);</b>
-<b class="nc"><i>58</i>&nbsp;    }</b>
+<i>58</i>&nbsp;    }
 <i>59</i>&nbsp;    @Override
 <i>60</i>&nbsp;    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
 <b class="nc"><i>61</i>&nbsp;        if (oldVersion &gt;= newVersion)</b>
-<b class="nc"><i>62</i>&nbsp;            return;</b>
+<i>62</i>&nbsp;            return;
 <i>63</i>&nbsp;
 <b class="nc"><i>64</i>&nbsp;        db.execSQL(&quot;DROP TABLE IF EXISTS &quot; + MESSAGES);</b>
 <b class="nc"><i>65</i>&nbsp;        db.execSQL(&quot;DROP TABLE IF EXISTS &quot; + CONVERSATIONS);</b>
@@ -141,7 +141,7 @@
 <b class="nc"><i>67</i>&nbsp;        db.execSQL(&quot;DROP TABLE IF EXISTS &quot; + IDENTITIES);</b>
 <i>68</i>&nbsp;
 <b class="nc"><i>69</i>&nbsp;        onCreate(db);</b>
-<b class="nc"><i>70</i>&nbsp;    }</b>
+<i>70</i>&nbsp;    }
 <i>71</i>&nbsp;
 <i>72</i>&nbsp;
 <i>73</i>&nbsp;    public boolean createContact(Contact contact){
@@ -155,12 +155,12 @@
 <i>81</i>&nbsp;    public void createIdentity(Identity identity){
 <b class="nc"><i>82</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
 <b class="nc"><i>83</i>&nbsp;        identity.rowid = db.insert(IDENTITIES, null, identity.getContentValues());</b>
-<b class="nc"><i>84</i>&nbsp;    }</b>
+<i>84</i>&nbsp;    }
 <i>85</i>&nbsp;
 <i>86</i>&nbsp;    public void createConversation(Conversation conversation){
 <b class="nc"><i>87</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
 <b class="nc"><i>88</i>&nbsp;        conversation.rowid = db.insert(CONVERSATIONS, null, conversation.getContentValues());</b>
-<b class="nc"><i>89</i>&nbsp;    }</b>
+<i>89</i>&nbsp;    }
 <i>90</i>&nbsp;
 <i>91</i>&nbsp;    public long createMessage(Message message, Conversation conversation){
 <b class="nc"><i>92</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
@@ -343,24 +343,24 @@
 <i>269</i>&nbsp;    public void updateContact(Contact contact) {
 <b class="nc"><i>270</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
 <b class="nc"><i>271</i>&nbsp;        db.update(CONTACTS, contact.getContentValues(), &quot; rowid = ? &quot;, new String[]{String.valueOf(contact.rowid)});</b>
-<b class="nc"><i>272</i>&nbsp;    }</b>
+<i>272</i>&nbsp;    }
 <i>273</i>&nbsp;    public void updateMessage(Message message) {
 <b class="nc"><i>274</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
 <b class="nc"><i>275</i>&nbsp;        db.update(MESSAGES, message.getContentValues(), &quot; uuid = ? &quot;, new String[]{String.valueOf(message.uuid)});</b>
-<b class="nc"><i>276</i>&nbsp;    }</b>
+<i>276</i>&nbsp;    }
 <i>277</i>&nbsp;    public void updateIdentity(Identity identity) {
 <b class="nc"><i>278</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
 <b class="nc"><i>279</i>&nbsp;        db.update(IDENTITIES, identity.getContentValues(), &quot; rowid = ? &quot;, new String[]{String.valueOf(identity.rowid)});</b>
-<b class="nc"><i>280</i>&nbsp;    }</b>
+<i>280</i>&nbsp;    }
 <i>281</i>&nbsp;    public void updateConversation(Conversation conversation) {
 <b class="nc"><i>282</i>&nbsp;        SQLiteDatabase db = this.getWritableDatabase();</b>
 <b class="nc"><i>283</i>&nbsp;        db.update(CONVERSATIONS, conversation.getContentValues(), &quot; rowid = ? &quot;, new String[]{String.valueOf(conversation.rowid)});</b>
-<b class="nc"><i>284</i>&nbsp;    }</b>
+<i>284</i>&nbsp;    }
 <i>285</i>&nbsp;
 <i>286</i>&nbsp;    public void addStatsEntry(StatsEntry stats) {
 <b class="nc"><i>287</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
 <b class="nc"><i>288</i>&nbsp;        stats.rowid = db.insert(STATS, null, stats.getContentValues());</b>
-<b class="nc"><i>289</i>&nbsp;    }</b>
+<i>289</i>&nbsp;    }
 <i>290</i>&nbsp;    public StatsEntry getLatestStatsEntry() {
 <b class="nc"><i>291</i>&nbsp;        SQLiteDatabase db = getWritableDatabase();</b>
 <b class="nc"><i>292</i>&nbsp;        Cursor cursor = db.query(STATS, ALL_COLS, null, null, null, null, null);</b>
@@ -380,7 +380,7 @@
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-18 03:04</div>
+    <div style="float:right;">generated on 2015-09-21 17:48</div>
 </div>
 </body>
 </html>
