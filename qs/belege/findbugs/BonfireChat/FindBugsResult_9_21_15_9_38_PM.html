@@ -1,0 +1,2807 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>FindBugs Report</title>
+<style type="text/css">
+		.tablerow0 {
+			background: #EEEEEE;
+		}
+
+		.tablerow1 {
+			background: white;
+		}
+
+		.detailrow0 {
+			background: #EEEEEE;
+		}
+
+		.detailrow1 {
+			background: white;
+		}
+
+		.tableheader {
+			background: #b9b9fe;
+			font-size: larger;
+		}
+		</style>
+</head>
+<body>
+<h1>FindBugs Report</h1>
+<p>Produced using <a href="http://findbugs.sourceforge.net">FindBugs</a>3.0.1.</p>
+<p>Project: 
+			BonfireChat</p>
+<h2>Metrics</h2>
+<p>8361 lines of code analyzed,
+	in 222 classes, 
+	in 15 packages.</p>
+<table width="500" cellpadding="5" cellspacing="2">
+<tr class="tableheader">
+<th align="left">Metric</th>
+<th align="right">Total</th>
+<th align="right">Density*</th>
+</tr>
+<tr class="tablerow0">
+<td>High Priority Warnings</td>
+<td align="right">13</td>
+<td align="right">1.55</td>
+</tr>
+<tr class="tablerow1">
+<td>Medium Priority Warnings</td>
+<td align="right">137</td>
+<td align="right">16.39</td>
+</tr>
+<tr class="$totalClass">
+<td>
+<b>Total Warnings</b>
+</td>
+<td align="right">
+<b>150</b>
+</td>
+<td align="right">
+<b>17.94</b>
+</td>
+</tr>
+</table>
+<p>
+<i>(* Defects per Thousand lines of non-commenting source statements)</i>
+</p>
+<p>
+<br/>
+<br/>
+</p>
+<h2>Summary</h2>
+<table width="500" cellpadding="5" cellspacing="2">
+<tr class="tableheader">
+<th align="left">Warning Type</th>
+<th align="right">Number</th>
+</tr>
+<tr class="tablerow0">
+<td>
+<a href="#Warnings_BAD_PRACTICE">Bad practice Warnings</a>
+</td>
+<td align="right">78</td>
+</tr>
+<tr class="tablerow1">
+<td>
+<a href="#Warnings_CORRECTNESS">Correctness Warnings</a>
+</td>
+<td align="right">11</td>
+</tr>
+<tr class="tablerow0">
+<td>
+<a href="#Warnings_EXPERIMENTAL">Experimental Warnings</a>
+</td>
+<td align="right">1</td>
+</tr>
+<tr class="tablerow1">
+<td>
+<a href="#Warnings_I18N">Internationalization Warnings</a>
+</td>
+<td align="right">6</td>
+</tr>
+<tr class="tablerow0">
+<td>
+<a href="#Warnings_MALICIOUS_CODE">Malicious code vulnerability Warnings</a>
+</td>
+<td align="right">22</td>
+</tr>
+<tr class="tablerow1">
+<td>
+<a href="#Warnings_MT_CORRECTNESS">Multithreaded correctness Warnings</a>
+</td>
+<td align="right">1</td>
+</tr>
+<tr class="tablerow0">
+<td>
+<a href="#Warnings_PERFORMANCE">Performance Warnings</a>
+</td>
+<td align="right">10</td>
+</tr>
+<tr class="tablerow1">
+<td>
+<a href="#Warnings_STYLE">Dodgy code Warnings</a>
+</td>
+<td align="right">20</td>
+</tr>
+<tr class="tablerow0">
+<td>
+<b>Total</b>
+</td>
+<td align="right">
+<b>149</b>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h1>Warnings</h1>
+<p>Click on each warning link to see a full description of the issue, and
+	    details of how to resolve it.</p>
+<h2>
+<a name="Warnings_BAD_PRACTICE">Bad practice Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS">Equals checks for incompatible operand</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.Peer.equals(Object) checks for operand being a byte[] <br/>
+<br/>
+<br/>In file Peer.java,
+					
+						line 53<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.Peer<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.Peer.equals(Object)<br/>Actual type byte[]<br/>At Peer.java:[line 53]<br/>At Peer.java:[line 53]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#HE_EQUALS_USE_HASHCODE">Class defines equals() and uses Object.hashCode()</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.Peer defines equals and uses Object.hashCode()<br/>
+<br/>
+<br/>In file Peer.java,
+					
+						lines 53
+						    to 60<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.Peer<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.Peer.equals(Object)<br/>At Peer.java:[lines 53-60]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#SE_BAD_FIELD">Non-transient non-serializable instance field in serializable class</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Class de.tudarmstadt.informatik.bp.bonfirechat.models.Contact defines non-transient non-serializable instance field publicKey<br/>
+<br/>
+<br/>In file Contact.java,
+					
+						lines 
+						    to <br/>In class de.tudarmstadt.informatik.bp.bonfirechat.models.Contact<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.models.Contact.publicKey<br/>Actual type de.tudarmstadt.informatik.bp.bonfirechat.models.MyPublicKey<br/>In Contact.java</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#DE_MIGHT_IGNORE">Method might ignore exception</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol$ConnectionHandler.teardown() might ignore java.io.IOException<br/>
+<br/>
+<br/>In file BluetoothProtocol.java,
+					
+						line 238<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol$ConnectionHandler<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol$ConnectionHandler.teardown()<br/>Exception class java.io.IOException<br/>At BluetoothProtocol.java:[line 238]<br/>At BluetoothProtocol.java:[line 238]<br/>At BluetoothProtocol.java:[line 238]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#HE_INHERITS_EQUALS_USE_HASHCODE">Class inherits equals() and uses Object.hashCode()</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket inherits equals and uses Object.hashCode()<br/>
+<br/>
+<br/>In file AckPacket.java,
+					
+						lines 13
+						    to 20<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.AckPacket<br/>At AckPacket.java:[lines 13-20]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#HE_INHERITS_EQUALS_USE_HASHCODE">Class inherits equals() and uses Object.hashCode()</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope inherits equals and uses Object.hashCode()<br/>
+<br/>
+<br/>In file Envelope.java,
+					
+						lines 46
+						    to 141<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope<br/>At Envelope.java:[lines 46-141]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#HE_INHERITS_EQUALS_USE_HASHCODE">Class inherits equals() and uses Object.hashCode()</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.LocationUdpPacket inherits equals and uses Object.hashCode()<br/>
+<br/>
+<br/>In file LocationUdpPacket.java,
+					
+						lines 24
+						    to 39<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.LocationUdpPacket<br/>At LocationUdpPacket.java:[lines 24-39]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#HE_EQUALS_USE_HASHCODE">Class defines equals() and uses Object.hashCode()</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet defines equals and uses Object.hashCode()<br/>
+<br/>
+<br/>In file Packet.java,
+					
+						lines 142
+						    to 146<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.equals(Object)<br/>At Packet.java:[lines 142-146]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#HE_EQUALS_USE_HASHCODE">Class defines equals() and uses Object.hashCode()</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket defines equals and uses Object.hashCode()<br/>
+<br/>
+<br/>In file PayloadPacket.java,
+					
+						lines 26
+						    to 36<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.routing.PayloadPacket.equals(Object)<br/>At PayloadPacket.java:[lines 26-36]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$anim doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 10<br/>In class android.support.v7.appcompat.R$anim<br/>At R.java:[line 10]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$attr doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 20<br/>In class android.support.v7.appcompat.R$attr<br/>At R.java:[line 20]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$bool doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 191<br/>In class android.support.v7.appcompat.R$bool<br/>At R.java:[line 191]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$color doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 199<br/>In class android.support.v7.appcompat.R$color<br/>At R.java:[line 199]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$dimen doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 259<br/>In class android.support.v7.appcompat.R$dimen<br/>At R.java:[line 259]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$drawable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 309<br/>In class android.support.v7.appcompat.R$drawable<br/>At R.java:[line 309]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$id doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 366<br/>In class android.support.v7.appcompat.R$id<br/>At R.java:[line 366]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$integer doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 431<br/>In class android.support.v7.appcompat.R$integer<br/>At R.java:[line 431]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$layout doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 436<br/>In class android.support.v7.appcompat.R$layout<br/>At R.java:[line 436]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$string doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 461<br/>In class android.support.v7.appcompat.R$string<br/>At R.java:[line 461]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$style doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 479<br/>In class android.support.v7.appcompat.R$style<br/>At R.java:[line 479]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name android.support.v7.appcompat.R$styleable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						lines 729
+						    to 993<br/>In class android.support.v7.appcompat.R$styleable<br/>At R.java:[lines 729-993]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$attr doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 10<br/>In class com.github.amlcurran.showcaseview.R$attr<br/>At R.java:[line 10]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$dimen doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 23<br/>In class com.github.amlcurran.showcaseview.R$dimen<br/>At R.java:[line 23]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$drawable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 31<br/>In class com.github.amlcurran.showcaseview.R$drawable<br/>At R.java:[line 31]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$id doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 41<br/>In class com.github.amlcurran.showcaseview.R$id<br/>At R.java:[line 41]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$layout doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 46<br/>In class com.github.amlcurran.showcaseview.R$layout<br/>At R.java:[line 46]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$string doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 50<br/>In class com.github.amlcurran.showcaseview.R$string<br/>At R.java:[line 50]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$style doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 53<br/>In class com.github.amlcurran.showcaseview.R$style<br/>At R.java:[line 53]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.github.amlcurran.showcaseview.R$styleable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						lines 62
+						    to 65<br/>In class com.github.amlcurran.showcaseview.R$styleable<br/>At R.java:[lines 62-65]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$attr doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 10<br/>In class com.google.android.gms.gcm.R$attr<br/>At R.java:[line 10]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$color doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 31<br/>In class com.google.android.gms.gcm.R$color<br/>At R.java:[line 31]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$drawable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 45<br/>In class com.google.android.gms.gcm.R$drawable<br/>At R.java:[line 45]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$id doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 73<br/>In class com.google.android.gms.gcm.R$id<br/>At R.java:[line 73]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$integer doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 83<br/>In class com.google.android.gms.gcm.R$integer<br/>At R.java:[line 83]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$raw doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 86<br/>In class com.google.android.gms.gcm.R$raw<br/>At R.java:[line 86]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$string doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 88<br/>In class com.google.android.gms.gcm.R$string<br/>At R.java:[line 88]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$style doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 124<br/>In class com.google.android.gms.gcm.R$style<br/>At R.java:[line 124]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.gcm.R$styleable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						lines 126
+						    to 131<br/>In class com.google.android.gms.gcm.R$styleable<br/>At R.java:[lines 126-131]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$attr doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 10<br/>In class com.google.android.gms.maps.R$attr<br/>At R.java:[line 10]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$color doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 31<br/>In class com.google.android.gms.maps.R$color<br/>At R.java:[line 31]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$drawable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 45<br/>In class com.google.android.gms.maps.R$drawable<br/>At R.java:[line 45]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$id doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 73<br/>In class com.google.android.gms.maps.R$id<br/>At R.java:[line 73]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$integer doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 83<br/>In class com.google.android.gms.maps.R$integer<br/>At R.java:[line 83]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$raw doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 86<br/>In class com.google.android.gms.maps.R$raw<br/>At R.java:[line 86]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$string doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 88<br/>In class com.google.android.gms.maps.R$string<br/>At R.java:[line 88]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$style doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 124<br/>In class com.google.android.gms.maps.R$style<br/>At R.java:[line 124]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.maps.R$styleable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						lines 126
+						    to 131<br/>In class com.google.android.gms.maps.R$styleable<br/>At R.java:[lines 126-131]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$attr doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 10<br/>In class com.google.android.gms.R$attr<br/>At R.java:[line 10]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$color doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 31<br/>In class com.google.android.gms.R$color<br/>At R.java:[line 31]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$drawable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 45<br/>In class com.google.android.gms.R$drawable<br/>At R.java:[line 45]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$id doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 73<br/>In class com.google.android.gms.R$id<br/>At R.java:[line 73]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$integer doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 83<br/>In class com.google.android.gms.R$integer<br/>At R.java:[line 83]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$raw doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 86<br/>In class com.google.android.gms.R$raw<br/>At R.java:[line 86]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$string doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 88<br/>In class com.google.android.gms.R$string<br/>At R.java:[line 88]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$style doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 124<br/>In class com.google.android.gms.R$style<br/>At R.java:[line 124]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name com.google.android.gms.R$styleable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						lines 126
+						    to 131<br/>In class com.google.android.gms.R$styleable<br/>At R.java:[lines 126-131]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_METHOD_NAMING_CONVENTION">Method names should start with a lower case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The method name de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper.Info(Context, String, String) doesn't start with a lower case letter<br/>
+<br/>
+<br/>In file UIHelper.java,
+					
+						lines 56
+						    to 67<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper.Info(Context, String, String)<br/>At UIHelper.java:[lines 56-67]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_METHOD_NAMING_CONVENTION">Method names should start with a lower case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The method name de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper.InputBox(Context, String, String, String, UIHelper$OnOkClickListener) doesn't start with a lower case letter<br/>
+<br/>
+<br/>In file UIHelper.java,
+					
+						lines 25
+						    to 54<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper.InputBox(Context, String, String, String, UIHelper$OnOkClickListener)<br/>At UIHelper.java:[lines 25-54]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.Manifest$permission doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file Manifest.java,
+					
+						line 11<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.Manifest$permission<br/>At Manifest.java:[line 11]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$anim doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 11<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$anim<br/>At R.java:[line 11]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$attr doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 21<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$attr<br/>At R.java:[line 21]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$bool doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1357<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$bool<br/>At R.java:[line 1357]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$color doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1365<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$color<br/>At R.java:[line 1365]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$dimen doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1442<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$dimen<br/>At R.java:[line 1442]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$drawable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1501<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$drawable<br/>At R.java:[line 1501]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$id doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1613<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$id<br/>At R.java:[line 1613]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$integer doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1797<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$integer<br/>At R.java:[line 1797]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$layout doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1803<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$layout<br/>At R.java:[line 1803]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$menu doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1852<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$menu<br/>At R.java:[line 1852]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$mipmap doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1865<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$mipmap<br/>At R.java:[line 1865]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$raw doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1868<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$raw<br/>At R.java:[line 1868]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$string doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 1871<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$string<br/>At R.java:[line 1871]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$style doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 2054<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$style<br/>At R.java:[line 2054]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$styleable doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						lines 2320
+						    to 6286<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$styleable<br/>At R.java:[lines 2320-6286]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.R$xml doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file R.java,
+					
+						line 2317<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.R$xml<br/>At R.java:[line 2317]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>The class name de.tudarmstadt.informatik.bp.bonfirechat.ui.IdentityActivity$myAsyncTask doesn't start with an upper case letter<br/>
+<br/>
+<br/>In file IdentityActivity.java,
+					
+						lines 193
+						    to 204<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.IdentityActivity$myAsyncTask<br/>At IdentityActivity.java:[lines 193-204]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#OS_OPEN_STREAM">Method may fail to close stream</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable) may fail to close stream<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 120<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable)<br/>Need to close java.io.OutputStream <br/>At BonfireAPI.java:[line 120]<br/>At BonfireAPI.java:[line 120]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#OS_OPEN_STREAM">Method may fail to close stream</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector$3.doInBackground(Void[]) may fail to close stream<br/>
+<br/>
+<br/>In file StatsCollector.java,
+					
+						line 154<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector$3<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector$3.doInBackground(Void[])<br/>Need to close java.io.OutputStream <br/>At StatsCollector.java:[line 154]<br/>At StatsCollector.java:[line 154]</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="Warnings_CORRECTNESS">Correctness Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NP_ALWAYS_NULL">Null pointer dereference</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGet(String)<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 67<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGet(String)<br/>Value loaded from urlConnection<br/>Dereferenced at BonfireAPI.java:[line 67]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NP_ALWAYS_NULL">Null pointer dereference</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGetToFile(String, File)<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 108<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGetToFile(String, File)<br/>Value loaded from urlConnection<br/>Dereferenced at BonfireAPI.java:[line 108]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NP_ALWAYS_NULL">Null pointer dereference</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable)<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 143<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable)<br/>Value loaded from urlConnection<br/>Dereferenced at BonfireAPI.java:[line 143]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NP_NULL_ON_SOME_PATH_EXCEPTION">Possible null pointer dereference in method on exception path</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Possible null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGet(String) on exception path<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 64<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGet(String)<br/>Value loaded from urlConnection<br/>Dereferenced at BonfireAPI.java:[line 64]<br/>Null value at BonfireAPI.java:[line 56]<br/>Known null at BonfireAPI.java:[line 58]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NP_NULL_ON_SOME_PATH_EXCEPTION">Possible null pointer dereference in method on exception path</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Possible null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGetToFile(String, File) on exception path<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 105<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGetToFile(String, File)<br/>Value loaded from urlConnection<br/>Dereferenced at BonfireAPI.java:[line 105]<br/>Null value at BonfireAPI.java:[line 88]<br/>Known null at BonfireAPI.java:[line 90]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NP_NULL_ON_SOME_PATH_EXCEPTION">Possible null pointer dereference in method on exception path</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Possible null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable) on exception path<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 140<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable)<br/>Value loaded from urlConnection<br/>Dereferenced at BonfireAPI.java:[line 140]<br/>Null value at BonfireAPI.java:[line 113]<br/>Known null at BonfireAPI.java:[line 115]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NP_NULL_ON_SOME_PATH_EXCEPTION">Possible null pointer dereference in method on exception path</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Possible null pointer dereference of scaledBitmap in de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper.writeImageToStream(ContentResolver, Uri, OutputStream) on exception path<br/>
+<br/>
+<br/>In file StreamHelper.java,
+					
+						line 148<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper.writeImageToStream(ContentResolver, Uri, OutputStream)<br/>Value loaded from scaledBitmap<br/>Dereferenced at StreamHelper.java:[line 148]<br/>Null value at StreamHelper.java:[line 75]<br/>Known null at StreamHelper.java:[line 132]<br/>Known null at StreamHelper.java:[line 133]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NP_ALWAYS_NULL">Null pointer dereference</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.onHandleGcmIntent(Intent)<br/>
+<br/>
+<br/>In file GcmProtocol.java,
+					
+						line 65<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.onHandleGcmIntent(Intent)<br/>Value loaded from urlConnection<br/>Dereferenced at GcmProtocol.java:[line 65]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NP_ALWAYS_NULL">Null pointer dereference</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Null pointer dereference of urlConnection in de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector$3.doInBackground(Void[])<br/>
+<br/>
+<br/>In file StatsCollector.java,
+					
+						line 164<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector$3<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector$3.doInBackground(Void[])<br/>Value loaded from urlConnection<br/>Dereferenced at StatsCollector.java:[line 164]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NP_NULL_ON_SOME_PATH_EXCEPTION">Possible null pointer dereference in method on exception path</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Possible null pointer dereference of convertView in de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter.getView(int, View, ViewGroup) on exception path<br/>
+<br/>
+<br/>In file MessagesAdapter.java,
+					
+						line 87<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter.getView(int, View, ViewGroup)<br/>Value loaded from convertView<br/>Dereferenced at MessagesAdapter.java:[line 87]<br/>Null value at MessagesAdapter.java:[line 73]<br/>Known null at MessagesAdapter.java:[line 76]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#UWF_UNWRITTEN_FIELD">Unwritten field</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Unwritten field: de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.showcaseView<br/>
+<br/>
+<br/>In file ContactsFragment.java,
+					
+						line 38<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.showcaseView<br/>At ContactsFragment.java:[line 38]</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="Warnings_EXPERIMENTAL">Experimental Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">Method may fail to clean up stream or resource on checked exception</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope.toMessage(Context) may fail to clean up java.io.OutputStream on checked exception<br/>
+<br/>
+<br/>In file Envelope.java,
+					
+						line 116<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope.toMessage(Context)<br/>Reference type java.io.OutputStream<br/>1 instances of obligation remaining<br/>Obligation to clean up resource created at Envelope.java:[line 116] is not discharged<br/>Path continues at Envelope.java:[line 117]<br/>Path continues at Envelope.java:[line 121]<br/>Path continues at Envelope.java:[line 122]<br/>Path continues at Envelope.java:[line 124]<br/>Path continues at Envelope.java:[line 129]<br/>Path continues at Envelope.java:[line 130]<br/>Path continues at Envelope.java:[line 131]<br/>Path continues at Envelope.java:[line 132]<br/>Remaining obligations: {OutputStream x 1}</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="Warnings_I18N">Internationalization Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#DM_DEFAULT_ENCODING">Reliance on default encoding</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Found reliance on default encoding in de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.onHandleMessage(InputStream, String): String.getBytes()<br/>
+<br/>
+<br/>In file GcmProtocol.java,
+					
+						line 85<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.onHandleMessage(InputStream, String)<br/>Called method String.getBytes()<br/>At GcmProtocol.java:[line 85]<br/>At GcmProtocol.java:[line 85]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#DM_DEFAULT_ENCODING">Reliance on default encoding</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Found reliance on default encoding in de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.sendPacket(Packet, Peer): new String(byte[])<br/>
+<br/>
+<br/>In file GcmProtocol.java,
+					
+						line 110<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.sendPacket(Packet, Peer)<br/>Called method new String(byte[])<br/>At GcmProtocol.java:[line 110]<br/>At GcmProtocol.java:[line 110]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#DM_DEFAULT_ENCODING">Reliance on default encoding</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Found reliance on default encoding in de.tudarmstadt.informatik.bp.bonfirechat.network.TracerouteHandler.handleTraceroute(Context, IProtocol, String, Envelope): String.getBytes()<br/>
+<br/>
+<br/>In file TracerouteHandler.java,
+					
+						line 24<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.TracerouteHandler<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.TracerouteHandler.handleTraceroute(Context, IProtocol, String, Envelope)<br/>Called method String.getBytes()<br/>At TracerouteHandler.java:[line 24]<br/>At TracerouteHandler.java:[line 24]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#DM_DEFAULT_ENCODING">Reliance on default encoding</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Found reliance on default encoding in de.tudarmstadt.informatik.bp.bonfirechat.ui.SearchUserActivity$ContactSearch.doInBackground(String[]): new java.util.Scanner(InputStream)<br/>
+<br/>
+<br/>In file SearchUserActivity.java,
+					
+						line 113<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.SearchUserActivity$ContactSearch<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.SearchUserActivity$ContactSearch.doInBackground(String[])<br/>Called method new java.util.Scanner(InputStream)<br/>At SearchUserActivity.java:[line 113]<br/>At SearchUserActivity.java:[line 113]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#DM_DEFAULT_ENCODING">Reliance on default encoding</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Found reliance on default encoding in de.tudarmstadt.informatik.bp.bonfirechat.ui.ShareMyIdentityActivity.createNdefMessage(NfcEvent): String.getBytes()<br/>
+<br/>
+<br/>In file ShareMyIdentityActivity.java,
+					
+						line 86<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ShareMyIdentityActivity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.ShareMyIdentityActivity.createNdefMessage(NfcEvent)<br/>Called method String.getBytes()<br/>At ShareMyIdentityActivity.java:[line 86]<br/>At ShareMyIdentityActivity.java:[line 86]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#DM_DEFAULT_ENCODING">Reliance on default encoding</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Found reliance on default encoding in de.tudarmstadt.informatik.bp.bonfirechat.ui.ShareMyIdentityActivity.processIntent(Intent): new String(byte[])<br/>
+<br/>
+<br/>In file ShareMyIdentityActivity.java,
+					
+						line 116<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ShareMyIdentityActivity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.ShareMyIdentityActivity.processIntent(Intent)<br/>Called method new String(byte[])<br/>At ShareMyIdentityActivity.java:[line 116]<br/>At ShareMyIdentityActivity.java:[line 116]</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="Warnings_MALICIOUS_CODE">Malicious code vulnerability Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#MS_MUTABLE_COLLECTION">Field is a mutable collection</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.peers is a mutable collection<br/>
+<br/>
+<br/>In file ConnectionManager.java,
+					
+						line 106<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.peers<br/>At ConnectionManager.java:[line 106]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#MS_SHOULD_BE_FINAL">Field isn't final but should be</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.connections isn't final but should be<br/>
+<br/>
+<br/>In file ConnectionManager.java,
+					
+						line 129<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.connections<br/>At ConnectionManager.java:[line 129]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP">May expose internal representation by returning reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult.getRawBytes() may expose internal representation by returning IntentResult.rawBytes<br/>
+<br/>
+<br/>In file IntentResult.java,
+					
+						line 66<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult.getRawBytes()<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult.rawBytes<br/>At IntentResult.java:[line 66]<br/>At IntentResult.java:[line 66]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP">May expose internal representation by returning reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.Peer.getAddress() may expose internal representation by returning Peer.address<br/>
+<br/>
+<br/>In file Peer.java,
+					
+						line 32<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.Peer<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.Peer.getAddress()<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.network.Peer.address<br/>At Peer.java:[line 32]<br/>At Peer.java:[line 32]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP">May expose internal representation by returning reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.getLastHopTimeSent() may expose internal representation by returning Packet.lastHopTimeSent<br/>
+<br/>
+<br/>In file Packet.java,
+					
+						line 85<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.getLastHopTimeSent()<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.lastHopTimeSent<br/>At Packet.java:[line 85]<br/>At Packet.java:[line 85]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.models.Message(String, IPublicIdentity, Date, int, UUID, Contact, List) may expose internal representation by storing an externally mutable object into Message.sentTime<br/>
+<br/>
+<br/>In file Message.java,
+					
+						line 64<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.models.Message<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.models.Message(String, IPublicIdentity, Date, int, UUID, Contact, List)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.models.Message.sentTime<br/>Local variable named sentTime<br/>At Message.java:[line 64]<br/>At Message.java:[line 64]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.network.Peer(Class, byte[], String) may expose internal representation by storing an externally mutable object into Peer.address<br/>
+<br/>
+<br/>In file Peer.java,
+					
+						line 25<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.Peer<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.network.Peer(Class, byte[], String)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.network.Peer.address<br/>Local variable named address<br/>At Peer.java:[line 25]<br/>At Peer.java:[line 25]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope(UUID, Date, byte[], byte[], byte[]) may expose internal representation by storing an externally mutable object into Envelope.encryptedBody<br/>
+<br/>
+<br/>In file Envelope.java,
+					
+						line 49<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope(UUID, Date, byte[], byte[], byte[])<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope.encryptedBody<br/>Local variable named encryptedBody<br/>At Envelope.java:[line 49]<br/>At Envelope.java:[line 49]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope(UUID, Date, byte[], byte[], byte[]) may expose internal representation by storing an externally mutable object into Envelope.senderPublicKey<br/>
+<br/>
+<br/>In file Envelope.java,
+					
+						line 48<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope(UUID, Date, byte[], byte[], byte[])<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope.senderPublicKey<br/>Local variable named senderPublicKey<br/>At Envelope.java:[line 48]<br/>At Envelope.java:[line 48]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope(UUID, Date, byte[], byte[], byte[]) may expose internal representation by storing an externally mutable object into Envelope.sentTime<br/>
+<br/>
+<br/>In file Envelope.java,
+					
+						line 47<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope(UUID, Date, byte[], byte[], byte[])<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope.sentTime<br/>Local variable named sentTime<br/>At Envelope.java:[line 47]<br/>At Envelope.java:[line 47]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet(byte[], byte[], UUID) may expose internal representation by storing an externally mutable object into Packet.recipientPublicKey<br/>
+<br/>
+<br/>In file Packet.java,
+					
+						line 62<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet(byte[], byte[], UUID)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.recipientPublicKey<br/>Local variable named recipientPublicKey<br/>At Packet.java:[line 62]<br/>At Packet.java:[line 62]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet(byte[], byte[], UUID) may expose internal representation by storing an externally mutable object into Packet.senderPublicKey<br/>
+<br/>
+<br/>In file Packet.java,
+					
+						line 61<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet(byte[], byte[], UUID)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.senderPublicKey<br/>Local variable named senderPublicKey<br/>At Packet.java:[line 61]<br/>At Packet.java:[line 61]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.setLastHopTimeSent(Date) may expose internal representation by storing an externally mutable object into Packet.lastHopTimeSent<br/>
+<br/>
+<br/>In file Packet.java,
+					
+						line 88<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.setLastHopTimeSent(Date)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Packet.lastHopTimeSent<br/>Local variable named lastHopTimeSent<br/>At Packet.java:[line 88]<br/>At Packet.java:[line 88]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment(TracerouteHopSegment$ProtocolType, Date, Date) may expose internal representation by storing an externally mutable object into TracerouteHopSegment.receivedTime<br/>
+<br/>
+<br/>In file TracerouteHopSegment.java,
+					
+						line 24<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment(TracerouteHopSegment$ProtocolType, Date, Date)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment.receivedTime<br/>Local variable named receivedTime<br/>At TracerouteHopSegment.java:[line 24]<br/>At TracerouteHopSegment.java:[line 24]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment(TracerouteHopSegment$ProtocolType, Date, Date) may expose internal representation by storing an externally mutable object into TracerouteHopSegment.sentTime<br/>
+<br/>
+<br/>In file TracerouteHopSegment.java,
+					
+						line 23<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment(TracerouteHopSegment$ProtocolType, Date, Date)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment.sentTime<br/>Local variable named sentTime<br/>At TracerouteHopSegment.java:[line 23]<br/>At TracerouteHopSegment.java:[line 23]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry(Date, int, float, int, int, float, float, long) may expose internal representation by storing an externally mutable object into StatsEntry.timestamp<br/>
+<br/>
+<br/>In file StatsEntry.java,
+					
+						line 28<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry(Date, int, float, int, int, float, float, long)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry.timestamp<br/>Local variable named timestamp<br/>At StatsEntry.java:[line 28]<br/>At StatsEntry.java:[line 28]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#MS_PKGPROTECT">Field should be package protected</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.Contents.EMAIL_KEYS should be package protected<br/>
+<br/>
+<br/>In file Contents.java,
+					
+						line 64<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.Contents<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.Contents.EMAIL_KEYS<br/>At Contents.java:[line 64]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#MS_PKGPROTECT">Field should be package protected</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.Contents.PHONE_KEYS should be package protected<br/>
+<br/>
+<br/>In file Contents.java,
+					
+						line 53<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.Contents<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.Contents.PHONE_KEYS<br/>At Contents.java:[line 53]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#MS_PKGPROTECT">Field should be package protected</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.registeredProtocols should be package protected<br/>
+<br/>
+<br/>In file ConnectionManager.java,
+					
+						line 109<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.registeredProtocols<br/>At ConnectionManager.java:[line 109]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#MS_CANNOT_BE_FINAL">Field isn't final and can't be protected from malicious code</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver.regid isn't final and can't be protected from malicious code <br/>
+<br/>
+<br/>In file GcmBroadcastReceiver.java,
+					
+						line 30<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver.regid<br/>At GcmBroadcastReceiver.java:[line 30]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#MS_PKGPROTECT">Field should be package protected</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector.reporterIdentity should be package protected<br/>
+<br/>
+<br/>In file StatsCollector.java,
+					
+						lines 
+						    to <br/>In class de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector.reporterIdentity<br/>In StatsCollector.java</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#MS_CANNOT_BE_FINAL">Field isn't final and can't be protected from malicious code</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.currentConversation isn't final and can't be protected from malicious code <br/>
+<br/>
+<br/>In file MessagesActivity.java,
+					
+						line 65<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.currentConversation<br/>At MessagesActivity.java:[line 65]</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="Warnings_MT_CORRECTNESS">Multithreaded correctness Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#SC_START_IN_CTOR">Constructor invokes Thread.start()</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>new de.tudarmstadt.informatik.bp.bonfirechat.network.WifiProtocol(Context) invokes Thread.start()<br/>
+<br/>
+<br/>In file WifiProtocol.java,
+					
+						line 76<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.WifiProtocol<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.network.WifiProtocol(Context)<br/>Called method Thread.start()<br/>At WifiProtocol.java:[line 76]<br/>At WifiProtocol.java:[line 76]</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="Warnings_PERFORMANCE">Performance Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#DM_BOXED_PRIMITIVE_FOR_PARSING">Boxing/unboxing to parse a primitive</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Boxing/unboxing to parse a primitive de.tudarmstadt.informatik.bp.bonfirechat.models.Identity.registerWithServer()<br/>
+<br/>
+<br/>In file Identity.java,
+					
+						line 118<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.models.Identity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.models.Identity.registerWithServer()<br/>Called method Integer.intValue()<br/>Should call Integer.parseInt(String) instead<br/>At Identity.java:[line 118]<br/>At Identity.java:[line 118]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#SBSC_USE_STRINGBUFFER_CONCATENATION">Method concatenates strings using + in a loop</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager.registerPath(Packet) concatenates strings using + in a loop<br/>
+<br/>
+<br/>In file RoutingManager.java,
+					
+						line 25<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.routing.RoutingManager.registerPath(Packet)<br/>At RoutingManager.java:[line 25]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#SIC_INNER_SHOULD_BE_STATIC">Should be a static inner class</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Should de.tudarmstadt.informatik.bp.bonfirechat.ui.ConversationsAdapter$ViewHolder be a _static_ inner class?<br/>
+<br/>
+<br/>In file ConversationsAdapter.java,
+					
+						line 48<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ConversationsAdapter$ViewHolder<br/>At ConversationsAdapter.java:[line 48]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#SIC_INNER_SHOULD_BE_STATIC">Should be a static inner class</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Should de.tudarmstadt.informatik.bp.bonfirechat.ui.IdentityActivity$myAsyncTask be a _static_ inner class?<br/>
+<br/>
+<br/>In file IdentityActivity.java,
+					
+						lines 193
+						    to 204<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.IdentityActivity$myAsyncTask<br/>At IdentityActivity.java:[lines 193-204]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#SIC_INNER_SHOULD_BE_STATIC">Should be a static inner class</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Should de.tudarmstadt.informatik.bp.bonfirechat.ui.MessageDetailsActivity$ViewHolder be a _static_ inner class?<br/>
+<br/>
+<br/>In file MessageDetailsActivity.java,
+					
+						line 166<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessageDetailsActivity$ViewHolder<br/>At MessageDetailsActivity.java:[line 166]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#SIC_INNER_SHOULD_BE_STATIC">Should be a static inner class</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Should de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter$ViewHolder be a _static_ inner class?<br/>
+<br/>
+<br/>In file MessagesAdapter.java,
+					
+						line 35<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter$ViewHolder<br/>At MessagesAdapter.java:[line 35]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#URF_UNREAD_FIELD">Unread field</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Unread field: de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.showcaseListener<br/>
+<br/>
+<br/>In file ContactsFragment.java,
+					
+						line 102<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.showcaseListener<br/>At ContactsFragment.java:[line 102]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#URF_UNREAD_FIELD">Unread field</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Unread field: de.tudarmstadt.informatik.bp.bonfirechat.ui.MessageDetailsActivity$ViewHolder.contactPhoto<br/>
+<br/>
+<br/>In file MessageDetailsActivity.java,
+					
+						line 196<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessageDetailsActivity$ViewHolder<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.ui.MessageDetailsActivity$ViewHolder.contactPhoto<br/>At MessageDetailsActivity.java:[line 196]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#URF_UNREAD_FIELD">Unread field</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Unread field: de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter.context<br/>
+<br/>
+<br/>In file MessagesAdapter.java,
+					
+						line 43<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter.context<br/>At MessagesAdapter.java:[line 43]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#UUF_UNUSED_FIELD">Unused field</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Unused field: de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission.timeout<br/>
+<br/>
+<br/>In file Retransmission.java,
+					
+						lines 
+						    to <br/>In class de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.routing.Retransmission.timeout<br/>In Retransmission.java</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="Warnings_STYLE">Dodgy code Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="2" cellpadding="5">
+<tr class="tableheader">
+<th align="left">Warning</th>
+<th align="left">Priority</th>
+<th align="left">Details</th>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Write to static field from instance method</a>
+</td>
+<td width="10%" valign="top">High</td>
+<td width="70%">
+<p>Write to static field de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.instance from instance method new de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol(Context)<br/>
+<br/>
+<br/>In file GcmProtocol.java,
+					
+						line 38<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol(Context)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.network.GcmProtocol.instance<br/>At GcmProtocol.java:[line 38]<br/>At GcmProtocol.java:[line 38]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#DLS_DEAD_LOCAL_STORE">Dead store to local variable</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Dead store to result in de.tudarmstadt.informatik.bp.bonfirechat.models.Identity.updateImage(Context)<br/>
+<br/>
+<br/>In file Identity.java,
+					
+						line 142<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.models.Identity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.models.Identity.updateImage(Context)<br/>Local variable named result<br/>At Identity.java:[line 142]<br/>At Identity.java:[line 142]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#DLS_DEAD_LOCAL_STORE">Dead store to local variable</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Dead store to bonfireData in de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.onOptionsItemSelected(MenuItem)<br/>
+<br/>
+<br/>In file ContactsFragment.java,
+					
+						line 146<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.onOptionsItemSelected(MenuItem)<br/>Local variable named bonfireData<br/>At ContactsFragment.java:[line 146]<br/>At ContactsFragment.java:[line 146]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#DLS_DEAD_LOCAL_STORE">Dead store to local variable</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Dead store to id in de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.onOptionsItemSelected(MenuItem)<br/>
+<br/>
+<br/>In file ContactsFragment.java,
+					
+						line 145<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment.onOptionsItemSelected(MenuItem)<br/>Local variable named id<br/>At ContactsFragment.java:[line 145]<br/>At ContactsFragment.java:[line 145]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#DLS_DEAD_LOCAL_STORE">Dead store to local variable</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Dead store to id in de.tudarmstadt.informatik.bp.bonfirechat.ui.ConversationsFragment.onOptionsItemSelected(MenuItem)<br/>
+<br/>
+<br/>In file ConversationsFragment.java,
+					
+						line 117<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ConversationsFragment<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.ConversationsFragment.onOptionsItemSelected(MenuItem)<br/>Local variable named id<br/>At ConversationsFragment.java:[line 117]<br/>At ConversationsFragment.java:[line 117]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#DLS_DEAD_LOCAL_STORE">Dead store to local variable</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Dead store to actionBar in de.tudarmstadt.informatik.bp.bonfirechat.ui.NavigationDrawerFragment.showGlobalContextActionBar()<br/>
+<br/>
+<br/>In file NavigationDrawerFragment.java,
+					
+						line 277<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.NavigationDrawerFragment<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.NavigationDrawerFragment.showGlobalContextActionBar()<br/>Local variable named actionBar<br/>At NavigationDrawerFragment.java:[line 277]<br/>At NavigationDrawerFragment.java:[line 277]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#ICAST_IDIV_CAST_TO_DOUBLE">Integral division result cast to double or float</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Integral division result cast to double or float in de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper.writeImageToStream(ContentResolver, Uri, OutputStream)<br/>
+<br/>
+<br/>In file StreamHelper.java,
+					
+						line 93<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper.writeImageToStream(ContentResolver, Uri, OutputStream)<br/>At StreamHelper.java:[line 93]<br/>At StreamHelper.java:[line 93]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#ICAST_INTEGER_MULTIPLY_CAST_TO_LONG">Result of integer multiplication cast to long</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Result of integer multiplication cast to long in de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.onHandleIntent(Intent)<br/>
+<br/>
+<br/>In file ConnectionManager.java,
+					
+						line 460<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager.onHandleIntent(Intent)<br/>At ConnectionManager.java:[line 460]<br/>At ConnectionManager.java:[line 460]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#NP_LOAD_OF_KNOWN_NULL_VALUE">Load of known null value</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Load of known null value in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGet(String)<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 67<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpGet(String)<br/>Value loaded from urlConnection<br/>At BonfireAPI.java:[line 67]<br/>At BonfireAPI.java:[line 67]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#NP_LOAD_OF_KNOWN_NULL_VALUE">Load of known null value</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Load of known null value in de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable)<br/>
+<br/>
+<br/>In file BonfireAPI.java,
+					
+						line 143<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI.httpPost(String, Hashtable)<br/>Value loaded from urlConnection<br/>At BonfireAPI.java:[line 143]<br/>At BonfireAPI.java:[line 143]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#SF_SWITCH_NO_DEFAULT">Switch statement found where default case is missing</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Switch statement found in de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment$2.onClick(View) where default case is missing<br/>
+<br/>
+<br/>In file ContactsFragment.java,
+					
+						lines 105
+						    to 126<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment$2<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.ContactsFragment$2.onClick(View)<br/>At ContactsFragment.java:[lines 105-126]<br/>At ContactsFragment.java:[lines 105-126]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#SF_SWITCH_NO_DEFAULT">Switch statement found where default case is missing</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Switch statement found in de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity.onClick(View) where default case is missing<br/>
+<br/>
+<br/>In file MainActivity.java,
+					
+						lines 117
+						    to 135<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity.onClick(View)<br/>At MainActivity.java:[lines 117-135]<br/>At MainActivity.java:[lines 117-135]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#SF_SWITCH_NO_DEFAULT">Switch statement found where default case is missing</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Switch statement found in de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity.onNavigationDrawerItemSelected(int) where default case is missing<br/>
+<br/>
+<br/>In file MainActivity.java,
+					
+						lines 192
+						    to 200<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MainActivity.onNavigationDrawerItemSelected(int)<br/>At MainActivity.java:[lines 192-200]<br/>At MainActivity.java:[lines 192-200]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#SF_SWITCH_FALLTHROUGH">Switch statement found where one case falls through to the next case</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Switch statement found in de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity$5.onClick(View) where one case falls through to the next case<br/>
+<br/>
+<br/>In file MessagesActivity.java,
+					
+						lines 240
+						    to 242<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity$5<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity$5.onClick(View)<br/>At MessagesActivity.java:[lines 240-242]<br/>At MessagesActivity.java:[lines 240-242]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#SF_SWITCH_NO_DEFAULT">Switch statement found where default case is missing</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Switch statement found in de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity$5.onClick(View) where default case is missing<br/>
+<br/>
+<br/>In file MessagesActivity.java,
+					
+						lines 229
+						    to 252<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity$5<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity$5.onClick(View)<br/>At MessagesActivity.java:[lines 229-252]<br/>At MessagesActivity.java:[lines 229-252]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#SF_SWITCH_NO_DEFAULT">Switch statement found where default case is missing</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Switch statement found in de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter.getView(int, View, ViewGroup) where default case is missing<br/>
+<br/>
+<br/>In file MessagesAdapter.java,
+					
+						lines 76
+						    to 83<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesAdapter.getView(int, View, ViewGroup)<br/>At MessagesAdapter.java:[lines 76-83]<br/>At MessagesAdapter.java:[lines 76-83]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Write to static field from instance method</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Write to static field de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector.reporterIdentity from instance method new de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector(Context)<br/>
+<br/>
+<br/>In file StatsCollector.java,
+					
+						line 56<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector<br/>In method new de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector(Context)<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector.reporterIdentity<br/>At StatsCollector.java:[line 56]<br/>At StatsCollector.java:[line 56]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Write to static field from instance method</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Write to static field de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.currentConversation from instance method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.onPause()<br/>
+<br/>
+<br/>In file MessagesActivity.java,
+					
+						line 217<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.onPause()<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.currentConversation<br/>At MessagesActivity.java:[line 217]<br/>At MessagesActivity.java:[line 217]</p>
+</td>
+</tr>
+<tr class="tablerow1">
+<td width="20%" valign="top">
+<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Write to static field from instance method</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Write to static field de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.currentConversation from instance method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.onResume()<br/>
+<br/>
+<br/>In file MessagesActivity.java,
+					
+						line 211<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity<br/>In method de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.onResume()<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.ui.MessagesActivity.currentConversation<br/>At MessagesActivity.java:[line 211]<br/>At MessagesActivity.java:[line 211]</p>
+</td>
+</tr>
+<tr class="tablerow0">
+<td width="20%" valign="top">
+<a href="#URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD">Unread public/protected field</a>
+</td>
+<td width="10%" valign="top">Medium</td>
+<td width="70%">
+<p>Unread public/protected field: de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry.rowid<br/>
+<br/>
+<br/>In file StatsEntry.java,
+					
+						line 35<br/>In class de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry<br/>Field de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsEntry.rowid<br/>At StatsEntry.java:[line 35]</p>
+</td>
+</tr>
+</table>
+<p>
+<br/>
+<br/>
+</p>
+<p>
+<br/>
+<br/>
+</p>
+<h1>
+<a name="Details">Warning Types</a>
+</h1>
+<h2>
+<a name="DM_BOXED_PRIMITIVE_FOR_PARSING">Boxing/unboxing to parse a primitive</a>
+</h2>
+
+  <p>A boxed primitive is created from a String, just to extract the unboxed primitive value.
+  It is more efficient to just call the static parseXXX method.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="DE_MIGHT_IGNORE">Method might ignore exception</a>
+</h2>
+
+  <p> This method might ignore an exception.&nbsp; In general, exceptions
+  should be handled or reported in some way, or they should be thrown
+  out of the method.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="DLS_DEAD_LOCAL_STORE">Dead store to local variable</a>
+</h2>
+
+<p>
+This instruction assigns a value to a local variable,
+but the value is not read or used in any subsequent instruction.
+Often, this indicates an error, because the value computed is never
+used.
+</p>
+<p>
+Note that Sun's javac compiler often generates dead stores for
+final local variables.  Because FindBugs is a bytecode-based tool,
+there is no easy way to eliminate these false positives.
+</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="DM_DEFAULT_ENCODING">Reliance on default encoding</a>
+</h2>
+
+<p> Found a call to a method which will perform a byte to String (or String to byte) conversion, and will assume that the default platform encoding is suitable. This will cause the application behaviour to vary between platforms. Use an alternative API and specify a charset name or Charset object explicitly.  </p>
+
+      
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="EI_EXPOSE_REP">May expose internal representation by returning reference to mutable object</a>
+</h2>
+
+  <p> Returning a reference to a mutable object value stored in one of the object's fields
+  exposes the internal representation of the object.&nbsp;
+   If instances
+   are accessed by untrusted code, and unchecked changes to
+   the mutable object would compromise security or other
+   important properties, you will need to do something different.
+  Returning a new copy of the object is better approach in many situations.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="EI_EXPOSE_REP2">May expose internal representation by incorporating reference to mutable object</a>
+</h2>
+
+  <p> This code stores a reference to an externally mutable object into the
+  internal representation of the object.&nbsp;
+   If instances
+   are accessed by untrusted code, and unchecked changes to
+   the mutable object would compromise security or other
+   important properties, you will need to do something different.
+  Storing a copy of the object is better approach in many situations.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS">Equals checks for incompatible operand</a>
+</h2>
+
+  <p> This equals method is checking to see if the argument is some incompatible type
+(i.e., a class that is neither a supertype nor subtype of the class that defines
+the equals method). For example, the Foo class might have an equals method
+that looks like:
+</p>
+<pre>
+public boolean equals(Object o) {
+  if (o instanceof Foo)
+    return name.equals(((Foo)o).name);
+  else if (o instanceof String)
+    return name.equals(o);
+  else return false;
+</pre>
+
+<p>This is considered bad practice, as it makes it very hard to implement an equals method that
+is symmetric and transitive. Without those properties, very unexpected behavoirs are possible.
+</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="HE_EQUALS_USE_HASHCODE">Class defines equals() and uses Object.hashCode()</a>
+</h2>
+
+  <p> This class overrides <code>equals(Object)</code>, but does not
+  override <code>hashCode()</code>, and inherits the implementation of
+  <code>hashCode()</code> from <code>java.lang.Object</code> (which returns
+  the identity hash code, an arbitrary value assigned to the object
+  by the VM).&nbsp; Therefore, the class is very likely to violate the
+  invariant that equal objects must have equal hashcodes.</p>
+
+<p>If you don't think instances of this class will ever be inserted into a HashMap/HashTable,
+the recommended <code>hashCode</code> implementation to use is:</p>
+<pre>public int hashCode() {
+  assert false : "hashCode not designed";
+  return 42; // any arbitrary constant will do
+  }</pre>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="HE_INHERITS_EQUALS_USE_HASHCODE">Class inherits equals() and uses Object.hashCode()</a>
+</h2>
+
+  <p> This class inherits <code>equals(Object)</code> from an abstract
+  superclass, and <code>hashCode()</code> from
+<code>java.lang.Object</code> (which returns
+  the identity hash code, an arbitrary value assigned to the object
+  by the VM).&nbsp; Therefore, the class is very likely to violate the
+  invariant that equal objects must have equal hashcodes.</p>
+
+  <p>If you don't want to define a hashCode method, and/or don't
+   believe the object will ever be put into a HashMap/Hashtable,
+   define the <code>hashCode()</code> method
+   to throw <code>UnsupportedOperationException</code>.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="ICAST_IDIV_CAST_TO_DOUBLE">Integral division result cast to double or float</a>
+</h2>
+
+<p>
+This code casts the result of an integral division (e.g., int or long division)
+operation to double or
+float.
+Doing division on integers truncates the result
+to the integer value closest to zero.  The fact that the result
+was cast to double suggests that this precision should have been retained.
+What was probably meant was to cast one or both of the operands to
+double <em>before</em> performing the division.  Here is an example:
+</p>
+<blockquote>
+<pre>
+int x = 2;
+int y = 5;
+// Wrong: yields result 0.0
+double value1 =  x / y;
+
+// Right: yields result 0.4
+double value2 =  x / (double) y;
+</pre>
+</blockquote>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="ICAST_INTEGER_MULTIPLY_CAST_TO_LONG">Result of integer multiplication cast to long</a>
+</h2>
+
+<p>
+This code performs integer multiply and then converts the result to a long,
+as in:</p>
+<pre>
+    long convertDaysToMilliseconds(int days) { return 1000*3600*24*days; }
+</pre>
+<p>
+If the multiplication is done using long arithmetic, you can avoid
+the possibility that the result will overflow. For example, you
+could fix the above code to:</p>
+<pre>
+    long convertDaysToMilliseconds(int days) { return 1000L*3600*24*days; }
+</pre>
+or
+<pre>
+    static final long MILLISECONDS_PER_DAY = 24L*3600*1000;
+    long convertDaysToMilliseconds(int days) { return days * MILLISECONDS_PER_DAY; }
+</pre>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="MS_MUTABLE_COLLECTION">Field is a mutable collection</a>
+</h2>
+
+ <p>A mutable collection instance is assigned to a final static field, 
+   thus can be changed by malicious code or by accident from another package.
+   Consider wrapping this field into Collections.unmodifiableSet/List/Map/etc.
+   to avoid this vulnerability.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="MS_CANNOT_BE_FINAL">Field isn't final and can't be protected from malicious code</a>
+</h2>
+
+  <p>
+ A mutable static field could be changed by malicious code or
+        by accident from another package.
+   Unfortunately, the way the field is used doesn't allow
+   any easy fix to this problem.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="MS_SHOULD_BE_FINAL">Field isn't final but should be</a>
+</h2>
+
+   <p>
+This static field public but not final, and
+could be changed by malicious code or
+        by accident from another package.
+        The field could be made final to avoid
+        this vulnerability.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="MS_PKGPROTECT">Field should be package protected</a>
+</h2>
+
+  <p> A mutable static field could be changed by malicious code or
+   by accident.
+   The field could be made package protected to avoid
+   this vulnerability.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="NM_CLASS_NAMING_CONVENTION">Class names should start with an upper case letter</a>
+</h2>
+
+  <p> Class names should be nouns, in mixed case with the first letter of each internal word capitalized. Try to keep your class names simple and descriptive. Use whole words-avoid acronyms and abbreviations (unless the abbreviation is much more widely used than the long form, such as URL or HTML).
+</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="NM_METHOD_NAMING_CONVENTION">Method names should start with a lower case letter</a>
+</h2>
+
+  <p>
+Methods should be verbs, in mixed case with the first letter lowercase, with the first letter of each internal word capitalized.
+</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="NP_LOAD_OF_KNOWN_NULL_VALUE">Load of known null value</a>
+</h2>
+
+  <p> The variable referenced at this point is known to be null due to an earlier
+   check against null. Although this is valid, it might be a mistake (perhaps you
+intended to refer to a different variable, or perhaps the earlier check to see if the
+variable is null should have been a check to see if it was non-null).
+</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="NP_ALWAYS_NULL">Null pointer dereference</a>
+</h2>
+
+<p> A null pointer is dereferenced here.&nbsp; This will lead to a
+<code>NullPointerException</code> when the code is executed.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="NP_NULL_ON_SOME_PATH_EXCEPTION">Possible null pointer dereference in method on exception path</a>
+</h2>
+
+<p> A reference value which is null on some exception control path is
+dereferenced here.&nbsp; This may lead to a <code>NullPointerException</code>
+when the code is executed.&nbsp;
+Note that because FindBugs currently does not prune infeasible exception paths,
+this may be a false warning.</p>
+
+<p> Also note that FindBugs considers the default case of a switch statement to
+be an exception path, since the default case is often infeasible.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">Method may fail to clean up stream or resource on checked exception</a>
+</h2>
+          
+          <p>
+          This method may fail to clean up (close, dispose of) a stream,
+          database object, or other
+          resource requiring an explicit cleanup operation.
+          </p>
+
+          <p>
+          In general, if a method opens a stream or other resource,
+          the method should use a try/finally block to ensure that
+          the stream or resource is cleaned up before the method
+          returns.
+          </p>
+
+          <p>
+          This bug pattern is essentially the same as the
+          OS_OPEN_STREAM and ODR_OPEN_DATABASE_RESOURCE
+          bug patterns, but is based on a different
+          (and hopefully better) static analysis technique.
+          We are interested is getting feedback about the
+          usefulness of this bug pattern.
+          To send feedback, either:
+          </p>
+          <ul>
+            <li>send email to findbugs@cs.umd.edu</li>
+            <li>file a bug report: <a href="http://findbugs.sourceforge.net/reportingBugs.html">http://findbugs.sourceforge.net/reportingBugs.html</a></li>
+          </ul>
+
+          <p>
+          In particular,
+          the false-positive suppression heuristics for this
+          bug pattern have not been extensively tuned, so
+          reports about false positives are helpful to us.
+          </p>
+
+          <p>
+          See Weimer and Necula, <i>Finding and Preventing Run-Time Error Handling Mistakes</i>, for
+          a description of the analysis technique.
+          </p>
+          
+      
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="OS_OPEN_STREAM">Method may fail to close stream</a>
+</h2>
+
+<p> The method creates an IO stream object, does not assign it to any
+fields, pass it to other methods that might close it,
+or return it, and does not appear to close
+the stream on all paths out of the method.&nbsp; This may result in
+a file descriptor leak.&nbsp; It is generally a good
+idea to use a <code>finally</code> block to ensure that streams are
+closed.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="SBSC_USE_STRINGBUFFER_CONCATENATION">Method concatenates strings using + in a loop</a>
+</h2>
+
+<p> The method seems to be building a String using concatenation in a loop.
+In each iteration, the String is converted to a StringBuffer/StringBuilder,
+   appended to, and converted back to a String.
+   This can lead to a cost quadratic in the number of iterations,
+   as the growing string is recopied in each iteration. </p>
+
+<p>Better performance can be obtained by using
+a StringBuffer (or StringBuilder in Java 1.5) explicitly.</p>
+
+<p> For example:</p>
+<pre>
+  // This is bad
+  String s = "";
+  for (int i = 0; i &lt; field.length; ++i) {
+    s = s + field[i];
+  }
+
+  // This is better
+  StringBuffer buf = new StringBuffer();
+  for (int i = 0; i &lt; field.length; ++i) {
+    buf.append(field[i]);
+  }
+  String s = buf.toString();
+</pre>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="SC_START_IN_CTOR">Constructor invokes Thread.start()</a>
+</h2>
+
+  <p> The constructor starts a thread. This is likely to be wrong if
+   the class is ever extended/subclassed, since the thread will be started
+   before the subclass constructor is started.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="SE_BAD_FIELD">Non-transient non-serializable instance field in serializable class</a>
+</h2>
+
+<p> This Serializable class defines a non-primitive instance field which is neither transient,
+Serializable, or <code>java.lang.Object</code>, and does not appear to implement
+the <code>Externalizable</code> interface or the
+<code>readObject()</code> and <code>writeObject()</code> methods.&nbsp;
+Objects of this class will not be deserialized correctly if a non-Serializable
+object is stored in this field.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="SF_SWITCH_NO_DEFAULT">Switch statement found where default case is missing</a>
+</h2>
+
+  <p> This method contains a switch statement where default case is missing.
+  Usually you need to provide a default case.</p>
+  <p>Because the analysis only looks at the generated bytecode, this warning can be incorrect triggered if
+the default case is at the end of the switch statement and the switch statement doesn't contain break statements for other
+cases.
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="SF_SWITCH_FALLTHROUGH">Switch statement found where one case falls through to the next case</a>
+</h2>
+
+  <p> This method contains a switch statement where one case branch will fall through to the next case.
+  Usually you need to end this case with a break or return.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="SIC_INNER_SHOULD_BE_STATIC">Should be a static inner class</a>
+</h2>
+
+  <p> This class is an inner class, but does not use its embedded reference
+  to the object which created it.&nbsp; This reference makes the instances
+  of the class larger, and may keep the reference to the creator object
+  alive longer than necessary.&nbsp; If possible, the class should be
+   made static.
+</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Write to static field from instance method</a>
+</h2>
+
+  <p> This instance method writes to a static field. This is tricky to get
+correct if multiple instances are being manipulated,
+and generally bad practice.
+</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="URF_UNREAD_FIELD">Unread field</a>
+</h2>
+
+  <p> This field is never read.&nbsp; Consider removing it from the class.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD">Unread public/protected field</a>
+</h2>
+
+  <p> This field is never read.&nbsp;
+The field is public or protected, so perhaps
+    it is intended to be used with classes not seen as part of the analysis. If not,
+consider removing it from the class.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="UUF_UNUSED_FIELD">Unused field</a>
+</h2>
+
+  <p> This field is never used.&nbsp; Consider removing it from the class.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+<h2>
+<a name="UWF_UNWRITTEN_FIELD">Unwritten field</a>
+</h2>
+
+  <p> This field is never written.&nbsp; All reads of it will return the default
+value. Check for errors (should it have been initialized?), or remove it if it is useless.</p>
+
+    
+<p>
+<br/>
+<br/>
+</p>
+</body>
+</html>
