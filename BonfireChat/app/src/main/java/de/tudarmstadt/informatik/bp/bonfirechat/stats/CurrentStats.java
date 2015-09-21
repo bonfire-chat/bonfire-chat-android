@@ -5,8 +5,10 @@ package de.tudarmstadt.informatik.bp.bonfirechat.stats;
  *
  * singleton instance containing latest statistics
  */
-public class CurrentStats {
+public final class CurrentStats {
     private static StatsEntry instance;
+
+    private CurrentStats() { }
 
     public static void setInstance(StatsEntry stats) {
         instance = stats;

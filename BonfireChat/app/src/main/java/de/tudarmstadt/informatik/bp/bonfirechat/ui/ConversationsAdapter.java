@@ -27,9 +27,6 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
     private List<Conversation> objects;
 
     boolean[] itemSelected;
-    public List<Conversation> getObjects(){
-        return objects;
-    }
 
     public ConversationsAdapter(Context context, List<Conversation> objects) {
         super(context, R.layout.conversations_layout, objects);
@@ -41,8 +38,9 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        if (itemSelected.length != this.getCount())
+        if (itemSelected.length != this.getCount()) {
             itemSelected = new boolean[this.getCount()];
+        }
     }
 
     class ViewHolder {
@@ -78,7 +76,7 @@ public class ConversationsAdapter extends ArrayAdapter<Conversation> {
             v.lastMessage.setText("");
         } else {
             v.lastMessage.setText(lastMessage.getDisplayBody(context));
-            v.lastMessage.setTypeface (null,
+            v.lastMessage.setTypeface(null,
                     (lastMessage.hasFlag(Message.FLAG_IS_FILE) || lastMessage.hasFlag(Message.FLAG_IS_LOCATION))
                         ? Typeface.ITALIC : Typeface.NORMAL);
         }

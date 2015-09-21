@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,7 +24,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,13 +32,13 @@ import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
+import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
+import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteNodeSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteProgressSegment;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteSegment;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
  * Created by johannes on 16.08.15.
@@ -50,7 +48,7 @@ public class MessageDetailsActivity extends Activity {
     private static final String TAG = "MessageDetailsActivity";
     private final BonfireData db = BonfireData.getInstance(this);
     private Message message;
-    final ViewHolder v = new ViewHolder();
+    private final ViewHolder v = new ViewHolder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +80,12 @@ public class MessageDetailsActivity extends Activity {
                 ConnectionManager.retrySendMessage(MessageDetailsActivity.this, message);
                 db.updateMessage(message);
                 // update views
-                if (v.ackIcon != null) v.ackIcon.setVisibility(View.GONE);
-                if (v.onItsWay != null) v.onItsWay.setVisibility(View.VISIBLE);
+                if (v.ackIcon != null) {
+                    v.ackIcon.setVisibility(View.GONE);
+                }
+                if (v.onItsWay != null) {
+                    v.onItsWay.setVisibility(View.VISIBLE);
+                }
                 v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
                 v.encryptedIcon.setColorFilter(Color.GRAY);
                 v.errorIcon.setVisibility(View.GONE);
@@ -106,11 +108,17 @@ public class MessageDetailsActivity extends Activity {
                                 message.flags |= Message.FLAG_FAILED;
                             }
                             // set retransmission count for UI
-                            message.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT, message.retransmissionCount);
+                            message.retransmissionCount = intent.getIntExtra(ConnectionManager.EXTENDED_DATA_RETRANSMISSION_COUNT,
+                                    message.retransmissionCount);
                             db.updateMessage(message);
                             // update views
-                            if (v.ackIcon != null) v.ackIcon.setVisibility(message.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
-                            if (v.onItsWay != null) v.onItsWay.setVisibility((message.hasFlag(Message.FLAG_ACKNOWLEDGED) || message.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);
+                            if (v.ackIcon != null) {
+                                v.ackIcon.setVisibility(message.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
+                            }
+                            if (v.onItsWay != null) {
+                                v.onItsWay.setVisibility((message.hasFlag(Message.FLAG_ACKNOWLEDGED) || message.hasFlag(Message.FLAG_FAILED))
+                                        ? View.GONE : View.VISIBLE);
+                            }
                             if (message.hasFlag(Message.FLAG_ENCRYPTED)) {
                                 v.encryptedIcon.setImageResource(R.drawable.ic_lock_black_24dp);
                                 v.encryptedIcon.setColorFilter(Color.GRAY);
@@ -214,13 +222,23 @@ public class MessageDetailsActivity extends Activity {
         } else {
             v.errorIcon.setVisibility(View.GONE);
         }
-        if (v.ackIcon != null) v.ackIcon.setVisibility(message.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
-        if (v.onItsWay != null) v.onItsWay.setVisibility((message.hasFlag(Message.FLAG_ACKNOWLEDGED) || message.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);
+        if (v.ackIcon != null) {
+            v.ackIcon.setVisibility(message.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
+        }
+        if (v.onItsWay != null) {
+            v.onItsWay.setVisibility((message.hasFlag(Message.FLAG_ACKNOWLEDGED)
+                || message.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);
+        }
         v.protocolIcon.setVisibility(View.VISIBLE);
-        if (message.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
-        else if (message.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
-        else if (message.hasFlag(Message.FLAG_PROTO_CLOUD)) v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
-        else v.protocolIcon.setVisibility(View.GONE);
+        if (message.hasFlag(Message.FLAG_PROTO_BT)) {
+            v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
+        } else if (message.hasFlag(Message.FLAG_PROTO_WIFI)) {
+            v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
+        } else if (message.hasFlag(Message.FLAG_PROTO_CLOUD)) {
+            v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
+        } else {
+            v.protocolIcon.setVisibility(View.GONE);
+        }
 
         if (message.hasFlag(Message.FLAG_IS_FILE)) {
             // Handle message type "FILE" (image)
@@ -229,7 +247,7 @@ public class MessageDetailsActivity extends Activity {
             v.messageImage.setImageURI(Uri.parse("file://" + message.body));
             v.thumbLoading.setVisibility(View.GONE);
 
-        } else if(message.hasFlag(Message.FLAG_IS_LOCATION)) {
+        } else if (message.hasFlag(Message.FLAG_IS_LOCATION)) {
             // Handle message type "LOCATION"
             v.messageBody.setVisibility(View.GONE);
 
@@ -283,7 +301,8 @@ public class MessageDetailsActivity extends Activity {
             case Received:
                 ((TextView) findViewById(R.id.label_senders)).setText(R.string.details_from);
                 contacts = new ArrayList<>();
-                contacts.add(new Contact(message.sender.getNickname(), "", "", message.sender.getPhoneNumber(), message.sender.getPublicKey(), "", "", 0));
+                contacts.add(new Contact(message.sender.getNickname(), "", "", message.sender.getPhoneNumber(),
+                        message.sender.getPublicKey(), "", "", 0));
                 break;
             case Sent:
             default:
@@ -310,8 +329,7 @@ public class MessageDetailsActivity extends Activity {
         if (message.hasFlag(Message.FLAG_FAILED)) {
             findViewById(R.id.group_infos).setVisibility(View.GONE);
             findViewById(R.id.label_message_proto).setVisibility(View.GONE);
-        }
-        else {
+        } else {
             findViewById(R.id.group_infos).setVisibility(View.VISIBLE);
             findViewById(R.id.label_message_proto).setVisibility(View.VISIBLE);
 
@@ -352,27 +370,22 @@ public class MessageDetailsActivity extends Activity {
                 ContactImageHelper.displayCompoundContactImage(this, node.getImage(), (TextView) view.findViewById(R.id.name));
                 Log.d(TAG, "setting text to contact: " + node.getNickname() + " for view " + view);
                 ((TextView) view.findViewById(R.id.name)).setText(node.getNickname());
-            }
-            else if (segment instanceof TracerouteProgressSegment) {
+            } else if (segment instanceof TracerouteProgressSegment) {
                 inflater.inflate(R.layout.traceroute_rowlayout_progress, tracerouteList, false);
-            }
-            else {
+            } else {
                 view = inflater.inflate(R.layout.traceroute_rowlayout_hop, tracerouteList, false);
                 TracerouteHopSegment hop = (TracerouteHopSegment) segment;
 
                 if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.BLUETOOTH) {
                     ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_bluetooth_black_24dp);
                     ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_bluetooth));
-                }
-                else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.WIFI) {
+                } else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.WIFI) {
                     ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_network_wifi_black_24dp);
                     ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_wifi_direct));
-                }
-                else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.GCM) {
+                } else if (hop.getProtocol() == TracerouteHopSegment.ProtocolType.GCM) {
                     ((ImageView) view.findViewById(R.id.protocol_icon)).setImageResource(R.drawable.ic_cloud_black_24dp);
                     ((TextView) view.findViewById(R.id.protocol)).setText(getString(R.string.protocol_cloud));
-                }
-                else {
+                } else {
                     findViewById(R.id.protocol_icon).setVisibility(View.GONE);
                     findViewById(R.id.protocol).setVisibility(View.GONE);
                 }
@@ -384,7 +397,7 @@ public class MessageDetailsActivity extends Activity {
     }
 
     private void inflateDebugInfo() {
-        ((TextView) findViewById(R.id.retries)).setText(""+message.retransmissionCount);
+        ((TextView) findViewById(R.id.retries)).setText("" + message.retransmissionCount);
         ((TextView) findViewById(R.id.uuid)).setText(message.uuid.toString().substring(0, 8));
         if (message.hasFlag(Message.FLAG_ROUTING_DSR)) {
             ((TextView) findViewById(R.id.routing)).setText(R.string.routing_dsr);

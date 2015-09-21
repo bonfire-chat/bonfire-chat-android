@@ -44,11 +44,11 @@ public class SendLocationBroadcastsService implements Runnable {
             for (Contact contact: contacts) {
                 // send location broadcast
                 Log.i(TAG, "periodically sending location broadcast to " + contact.getNickname());
-                LocationUdpPacket p = new LocationUdpPacket(db.getDefaultIdentity(), contact.getPublicKey().asByteArray(), gps.getLatitude(), gps.getLongitude());
+                LocationUdpPacket p = new LocationUdpPacket(db.getDefaultIdentity(),
+                        contact.getPublicKey().asByteArray(), gps.getLatitude(), gps.getLongitude());
                 ConnectionManager.sendLocationUdpPacket(context, p);
             }
-        }
-        else {
+        } else {
             Log.i(TAG, "can't send location broadcast despite it's time to do so: no location available");
         }
 

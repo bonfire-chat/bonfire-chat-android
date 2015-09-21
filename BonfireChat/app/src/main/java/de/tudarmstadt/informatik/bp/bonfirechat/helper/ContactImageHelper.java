@@ -16,32 +16,32 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 /**
  * Created by jonas on 03.09.15.
  */
-public class ContactImageHelper {
+public final class ContactImageHelper {
+
+    private ContactImageHelper() { }
 
     private static final String TAG = "ContactImageHelper";
 
-    public static void displayContactImage(IPublicIdentity contact, ImageView icon){
+    public static void displayContactImage(IPublicIdentity contact, ImageView icon) {
         displayContactImage(contact.getImage(), icon);
     }
 
-    public static void displayContactImage(String image, ImageView icon){
-        if(image.equals("")) {
+    public static void displayContactImage(String image, ImageView icon) {
+        if (image.equals("")) {
             icon.setImageResource(R.mipmap.ic_launcher);
-        }
-        else {
+        } else {
             icon.setImageURI(Uri.parse(image));
         }
     }
 
-    public static void displayCompoundContactImage(Context context, IPublicIdentity contact, TextView name){
+    public static void displayCompoundContactImage(Context context, IPublicIdentity contact, TextView name) {
         displayCompoundContactImage(context, contact.getImage(), name);
     }
 
-    public static void displayCompoundContactImage(Context context, String image, TextView name){
-        if(image.equals("")) {
+    public static void displayCompoundContactImage(Context context, String image, TextView name) {
+        if (image.equals("")) {
             name.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_launcher, 0, 0, 0);
-        }
-        else {
+        } else {
             try {
                 InputStream inputStream = context.getContentResolver().openInputStream(Uri.parse(image));
                 Drawable drawable = Drawable.createFromStream(inputStream, Uri.parse(image).toString());

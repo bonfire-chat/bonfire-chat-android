@@ -65,7 +65,8 @@ Severity: HARD
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sourceforge.net/config_naming.html -->
-        <module name="ConstantName" />
+        <!-- skip ConstantNameCheck, as it is common practice to have mutable static variables in Android -->
+        <!-- <module name="ConstantName" /> -->
         <module name="LocalFinalVariableName" />
         <module name="LocalVariableName" />
         <module name="MemberName" />
@@ -94,7 +95,6 @@ Severity: HARD
             <property name="severity" value="info" />
         </module>
         <module name="MethodLength" />
-        <module name="ParameterNumber" />
 
 
         <!-- Checks for whitespace                               -->
@@ -154,20 +154,14 @@ Severity: HARD
         <module name="FinalClass" />
         <module name="HideUtilityClassConstructor" />
         <module name="InterfaceIsType" />
-        <module name="VisibilityModifier" />
+        <!-- no visibility modifier checks, as it is common practice in Android to have certain
+             publicly accesible fields for performace reasons -->
+        <!-- <module name="VisibilityModifier" /> -->
 
 
         <!-- Miscellaneous other checks.                   -->
         <!-- See http://checkstyle.sourceforge.net/config_misc.html -->
         <module name="ArrayTypeStyle" />
-        <module name="TodoComment">
-            <property name="format" value="(?i)\s+TODO\s+" />
-            <property name="severity" value="info" />
-        </module>
-        <module name="TodoComment">
-            <property name="format" value="(?i)\s+CR\s+" />
-            <property name="severity" value="info" />
-        </module>
         <module name="UpperEll" />
 
     </module>

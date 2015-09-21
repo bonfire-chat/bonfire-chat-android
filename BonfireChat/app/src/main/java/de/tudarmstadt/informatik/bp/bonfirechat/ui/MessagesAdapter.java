@@ -115,13 +115,23 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
         } else {
             v.errorIcon.setVisibility(View.GONE);
         }
-        if (v.ackIcon != null) v.ackIcon.setVisibility(msg.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
-        if (v.onItsWay != null) v.onItsWay.setVisibility((msg.hasFlag(Message.FLAG_ACKNOWLEDGED) || msg.hasFlag(Message.FLAG_FAILED)) ? View.GONE : View.VISIBLE);
+        if (v.ackIcon != null) {
+            v.ackIcon.setVisibility(msg.hasFlag(Message.FLAG_ACKNOWLEDGED) ? View.VISIBLE : View.GONE);
+        }
+        if (v.onItsWay != null) {
+            v.onItsWay.setVisibility((msg.hasFlag(Message.FLAG_ACKNOWLEDGED) || msg.hasFlag(Message.FLAG_FAILED))
+                ? View.GONE : View.VISIBLE);
+        }
         v.protocolIcon.setVisibility(View.VISIBLE);
-        if (msg.hasFlag(Message.FLAG_PROTO_BT)) v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
-        else if (msg.hasFlag(Message.FLAG_PROTO_WIFI)) v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
-        else if (msg.hasFlag(Message.FLAG_PROTO_CLOUD)) v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
-        else v.protocolIcon.setVisibility(View.GONE);
+        if (msg.hasFlag(Message.FLAG_PROTO_BT)) {
+            v.protocolIcon.setImageResource(R.drawable.ic_bluetooth_black_24dp);
+        } else if (msg.hasFlag(Message.FLAG_PROTO_WIFI)) {
+            v.protocolIcon.setImageResource(R.drawable.ic_network_wifi_black_24dp);
+        } else if (msg.hasFlag(Message.FLAG_PROTO_CLOUD)) {
+            v.protocolIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
+        } else {
+            v.protocolIcon.setVisibility(View.GONE);
+        }
 
         if (msg.hasFlag(Message.FLAG_IS_FILE)) {
             // Handle message type "FILE" (image)
@@ -130,7 +140,7 @@ public class MessagesAdapter extends ArrayAdapter<Message> {
             v.messageImage.setImageURI(Uri.parse("file://" + msg.body));
             v.thumbLoading.setVisibility(View.GONE);
 
-        } else if(msg.hasFlag(Message.FLAG_IS_LOCATION)) {
+        } else if (msg.hasFlag(Message.FLAG_IS_LOCATION)) {
             // Handle message type "LOCATION"
             v.messageBody.setVisibility(View.GONE);
 

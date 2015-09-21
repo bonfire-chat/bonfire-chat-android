@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-import android.util.Log;
 
 import org.abstractj.kalium.crypto.Box;
 import org.abstractj.kalium.keys.KeyPair;
@@ -31,8 +30,8 @@ public class Identity implements IPublicIdentity {
     private static final String TAG = "Identity";
 
     // the publickey is the globally unique identifier for a person/device
-    final public MyPublicKey publicKey;
-    final public PrivateKey privateKey;
+    public final MyPublicKey publicKey;
+    public final PrivateKey privateKey;
     public String nickname;
     public String phone;
     public int serverUid;
@@ -53,7 +52,7 @@ public class Identity implements IPublicIdentity {
         String pubkey = Base64.encodeToString(keyPair.getPublicKey().toBytes(), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
         String privkey = keyPair.getPrivateKey().toString();
 
-        Identity i= new Identity("", 0, privkey, pubkey, getMyPhoneNumber(ctx));
+        Identity i = new Identity("", 0, privkey, pubkey, getMyPhoneNumber(ctx));
         return i;
     }
 
@@ -77,7 +76,7 @@ public class Identity implements IPublicIdentity {
     }
 
 
-    public ContentValues getContentValues(){
+    public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put("nickname", nickname);
         values.put("username", serverUid);
@@ -88,7 +87,7 @@ public class Identity implements IPublicIdentity {
         return values;
     }
 
-    public static Identity fromCursor(Cursor cursor){
+    public static Identity fromCursor(Cursor cursor) {
         Identity id = new Identity(cursor.getString(cursor.getColumnIndex("nickname")),
                 cursor.getInt(cursor.getColumnIndex("username")),
                 cursor.getString(cursor.getColumnIndex("privatekey")),
@@ -126,7 +125,7 @@ public class Identity implements IPublicIdentity {
         }
     }
 
-    public String updateImage(Context ctx){
+    public String updateImage(Context ctx) {
             Hashtable<String, byte[]> body = new Hashtable<>();
             body.put("publickey", BonfireAPI.encode(getPublicKey().asBase64()));
 
@@ -153,7 +152,7 @@ public class Identity implements IPublicIdentity {
         return "";
     }
 
-    private static String getMyPhoneNumber(Context ctx){
+    private static String getMyPhoneNumber(Context ctx) {
         TelephonyManager mTelephonyMgr;
         mTelephonyMgr = (TelephonyManager)
                 ctx.getSystemService(Context.TELEPHONY_SERVICE);

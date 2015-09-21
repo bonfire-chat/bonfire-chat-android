@@ -83,8 +83,7 @@ public class ContactLocationActivity extends FragmentActivity implements OnMapRe
                 if (marker != null && contact.getLastKnownLocation() != null) {
                     marker.setPosition(contact.getLastKnownLocation());
                 }
-            }
-            else {
+            } else {
                 // display map
                 MapFragment mapFragment = (MapFragment) getFragmentManager()
                         .findFragmentById(R.id.map);
@@ -93,8 +92,7 @@ public class ContactLocationActivity extends FragmentActivity implements OnMapRe
                 }
                 mapInflated = true;
             }
-        }
-        else {
+        } else {
             // show notice
             findViewById(R.id.map).setVisibility(View.GONE);
             findViewById(R.id.notice).setVisibility(View.VISIBLE);

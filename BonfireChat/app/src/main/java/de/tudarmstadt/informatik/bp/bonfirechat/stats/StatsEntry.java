@@ -60,8 +60,7 @@ public class StatsEntry {
                     cursor.getLong(cursor.getColumnIndex("rowid"))
             );
             return stats;
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             Log.e("StatsEntry", "error parsing stats entry from database");
             return new StatsEntry();
         }

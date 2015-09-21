@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
@@ -36,9 +35,13 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.Envelope;
 /**
  * Created by mw on 29.07.15.
  */
-public class BonfireAPI {
+public final class BonfireAPI {
 
     private static final String TAG = "BonfireAPI";
+
+    private static final int BUFFER_SIZE = 1024;
+
+    private BonfireAPI() { }
 
     /**
      * URL of the rendezvous server API endpoint
@@ -57,14 +60,16 @@ public class BonfireAPI {
         try {
             urlConnection = (HttpURLConnection) new URL(API_ENDPOINT + "/" + apiMethod).openConnection();
             final String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
-            Log.i(TAG, "successful HTTP Get request to "+apiMethod);
+            Log.i(TAG, "successful HTTP Get request to " + apiMethod);
             Log.i(TAG, theString);
             return theString;
         } catch (IOException e) {
             String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
-            throw new IOException("HTTP Get request failed, Exception: "+e.toString()+", Body: "+theErrMes);
+            throw new IOException("HTTP Get request failed, Exception: " + e.toString() + ", Body: " + theErrMes);
         } finally {
-            if(urlConnection == null) urlConnection.disconnect();
+            if (urlConnection == null) {
+                urlConnection.disconnect();
+            }
         }
     }
     public static JSONObject httpGetJsonObject(String apiMethod) throws IOException {
@@ -72,7 +77,12 @@ public class BonfireAPI {
             return new JSONObject(httpGet(apiMethod));
         } catch (JSONException e) {
             Log.e(TAG, "unable to parse JSON object");
-            try { JSONObject o = new JSONObject("{}"); return o; } catch (Throwable t) { return null; }
+            try {
+                JSONObject o = new JSONObject("{}");
+                return o;
+            } catch (Throwable t) {
+                return null;
+            }
         }
     }
     public static JSONArray httpGetJsonArray(String apiMethod) throws IOException {
@@ -80,7 +90,12 @@ public class BonfireAPI {
             return new JSONArray(httpGet(apiMethod));
         } catch (JSONException e) {
             Log.e(TAG, "unable to parse JSON object");
-            try { JSONArray o = new JSONArray("[]"); return o; } catch (Throwable t) { return null; }
+            try {
+                JSONArray o = new JSONArray("[]");
+                return o;
+            } catch (Throwable t) {
+                return null;
+            }
         }
     }
 
@@ -91,21 +106,23 @@ public class BonfireAPI {
             InputStream is = urlConnection.getInputStream();
 
             FileOutputStream os = new FileOutputStream(target);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int bytesRead;
             while ((bytesRead = is.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
             os.close();
 
-            Log.i(TAG, "successful HTTP Get file request to "+url);
+            Log.i(TAG, "successful HTTP Get file request to " + url);
             Log.i(TAG, target.getAbsolutePath());
 
         } catch (IOException e) {
             String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
-            throw new IOException("HTTP Get request failed, Exception: "+e.toString()+", Body: "+theErrMes);
+            throw new IOException("HTTP Get request failed, Exception: " + e.toString() + ", Body: " + theErrMes);
         } finally {
-            if(urlConnection == null) urlConnection.disconnect();
+            if (urlConnection == null) {
+                urlConnection.disconnect();
+            }
         }
     }
 
@@ -119,12 +136,13 @@ public class BonfireAPI {
 
             final BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
             for (Map.Entry<String, byte[]> part : body.entrySet()) {
-                if(part.getKey().equals("image")){
-                    out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"; filename=\"doesntmatter.jpg\"\r\nContent-Type: application/octet-stream" + "\r\n\r\n").getBytes("UTF-8"));
+                if (part.getKey().equals("image")) {
+                    out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey()
+                            + "\"; filename=\"doesntmatter.jpg\"\r\nContent-Type: application/octet-stream" + "\r\n\r\n").getBytes("UTF-8"));
                     out.write(part.getValue());
                     out.write(("\r\n").getBytes("UTF-8"));
                     Log.d("FileTransfer: ", "I did this");
-                }else {
+                } else {
                     out.write(("--Je8PPsja_x\r\nContent-Disposition: form-data; name=\"" + part.getKey() + "\"\r\n\r\n").getBytes("UTF-8"));
                     out.write(part.getValue());
                     out.write(("\r\n").getBytes("UTF-8"));
@@ -133,14 +151,16 @@ public class BonfireAPI {
             out.flush();
 
             final String theString = StreamHelper.convertStreamToString(urlConnection.getInputStream());
-            Log.i(TAG, "successful HTTP Post request to "+apiMethod);
+            Log.i(TAG, "successful HTTP Post request to " + apiMethod);
             Log.i(TAG, theString);
             return theString;
         } catch (IOException e) {
             String theErrMes = StreamHelper.convertStreamToString(urlConnection.getErrorStream());
-            throw new IOException("HTTP Post request failed, Exception: "+e.toString()+", Body: "+theErrMes);
+            throw new IOException("HTTP Post request failed, Exception: " + e.toString() + ", Body: " + theErrMes);
         } finally {
-            if(urlConnection == null) urlConnection.disconnect();
+            if (urlConnection == null) {
+                urlConnection.disconnect();
+            }
         }
     }
     public static byte[] encode(String str) {
@@ -154,7 +174,9 @@ public class BonfireAPI {
 
     public static void publishTraceroute(Envelope envelope) {
         try {
-            if (!envelope.hasFlag(Envelope.FLAG_TRACEROUTE)) return;
+            if (!envelope.hasFlag(Envelope.FLAG_TRACEROUTE)) {
+                return;
+            }
 
             Hashtable<String, byte[]> body = new Hashtable<>();
             body.put("uuid", encode(envelope.uuid.toString()));
@@ -165,11 +187,9 @@ public class BonfireAPI {
             e.printStackTrace();
         }
     }
-    public static void publishFailure(UUID uuid, String errmes) {
 
-    }
-
-    public static void sendGcmMessage(Identity identity, byte[] targetPubkey, String nextHop, String uuid, byte[] serializedEnvelope) throws IOException {
+    public static void sendGcmMessage(Identity identity, byte[] targetPubkey, String nextHop,
+                                      String uuid, byte[] serializedEnvelope) throws IOException {
         String key = CryptoHelper.toBase64(targetPubkey);
 
         Hashtable<String, byte[]> body = new Hashtable<>();
@@ -188,11 +208,11 @@ public class BonfireAPI {
         } else {
             Log.d(TAG, "getMapPreviewAsFilename: cache miss");
             // build Google static map API URL
-            String url = "http://maps.google.com/maps/api/staticmap?center=" +
-                    location.latitude + "," + location.longitude +
-                    "&markers=color:red%7C" +
-                    location.latitude + "," + location.longitude +
-                    "&zoom=15&size=150x150&sensor=false";
+            String url = "http://maps.google.com/maps/api/staticmap?center="
+                    + location.latitude + "," + location.longitude
+                    + "&markers=color:red%7C"
+                    + location.latitude + "," + location.longitude
+                    + "&zoom=15&size=150x150&sensor=false";
 
             // download map preview
             try {
@@ -209,10 +229,9 @@ public class BonfireAPI {
     public static int updateContacts(Context context) {
         List<String> numbers = new ArrayList<>();
         List<String> names = new ArrayList<>();
-        Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
-        while (phones.moveToNext())
-        {
-            String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+        Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        while (phones.moveToNext()) {
+            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             names.add(name);
             String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             numbers.add(phoneNumber);
@@ -228,11 +247,16 @@ public class BonfireAPI {
         try {
             String result = httpPost(METHOD_CHECK_CONTACTS, body);
             String[] pubkeys = result.split("\\n");
-            for(int i=0; i<pubkeys.length && i<names.size(); i++) {
-                if ("".equals(pubkeys[i]))continue;
-                if (self.equals(pubkeys[i]))continue;
-                if (onNewPhoneContact(db, numbers.get(i), pubkeys[i], names.get(i)))
+            for (int i = 0; i < pubkeys.length && i < names.size(); i++) {
+                if ("".equals(pubkeys[i]))  {
+                    continue;
+                }
+                if (self.equals(pubkeys[i])) {
+                    continue;
+                }
+                if (onNewPhoneContact(db, numbers.get(i), pubkeys[i], names.get(i))) {
                     newContacts++;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

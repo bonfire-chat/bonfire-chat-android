@@ -1,6 +1,5 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
-import java.util.List;
 import java.util.UUID;
 
 /**

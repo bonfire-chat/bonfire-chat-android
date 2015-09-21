@@ -18,7 +18,6 @@ import java.io.IOException;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
  * Created by mw on 23.05.15.
@@ -27,11 +26,12 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     private static final String TAG = "GcmBroadcastReceiver";
 
     private static final String SENDER_ID = "1083776418239";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static String regid = "";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "received Gcm Broadcast : "+intent.getAction());
+        Log.i(TAG, "received Gcm Broadcast : " + intent.getAction());
         Log.i(TAG, intent.getExtras().toString());
 
         // The intent containing the data received from GCM is sent to
@@ -72,7 +72,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
      * shared preferences.
      */
     private static void registerInBackground(final Context context) {
-        new AsyncTask() {
+        (new AsyncTask() {
             @Override
             protected String doInBackground(Object... params) {
                 String msg = "";
@@ -104,10 +104,8 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
             protected void onPostExecute(Object msg) {
                 //mDisplay.append(msg + "\n");
             }
-        }.execute(null, null, null);
+        }).execute(null, null, null);
     }
-
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If

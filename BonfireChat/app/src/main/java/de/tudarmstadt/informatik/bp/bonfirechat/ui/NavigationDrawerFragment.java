@@ -1,16 +1,16 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
-import android.app.Fragment;
-import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 
@@ -142,8 +141,9 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         Identity identity = BonfireData.getInstance(getActivity()).getDefaultIdentity();
-        if (identity != null)
+        if (identity != null) {
             ((TextView) rootView.findViewById(R.id.txt_nickname)).setText(identity.getNickname());
+        }
 
         // set up the drawer's list view with items and click listener
         ActionBar actionBar = getActionBar();
@@ -289,7 +289,7 @@ public class NavigationDrawerFragment extends Fragment {
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
+    public interface NavigationDrawerCallbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */

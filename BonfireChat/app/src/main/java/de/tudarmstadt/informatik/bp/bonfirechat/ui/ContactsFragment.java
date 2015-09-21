@@ -29,7 +29,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
@@ -37,7 +36,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
  */
 public class ContactsFragment extends Fragment {
 
-    private static String TAG = "ContactsFragment";
+    private static final String TAG = "ContactsFragment";
 
     private ContactsAdapter adapter;
 
@@ -45,13 +44,12 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-/*
-        if (UIHelper.shouldShowContactsTutorial(getActivity())) {
+        /* if (UIHelper.shouldShowContactsTutorial(getActivity())) {
             showcaseView = new ShowcaseView.Builder(getActivity())
                     .setStyle(R.style.CustomShowcaseTheme2)
                     .setOnClickListener(showcaseListener)
                     .build();
-            tutorial_counter = 0;
+            tutorialCounter = 0;
             showcaseListener.onClick(null);
         }*/
     }
@@ -71,7 +69,8 @@ public class ContactsFragment extends Fragment {
     }
 
 
-    ListView contactsList;
+    private ListView contactsList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,14 +94,14 @@ public class ContactsFragment extends Fragment {
 
     // ####### First-Start Tutorial #####################################################
     private ShowcaseView showcaseView;
-    private int tutorial_counter = 0;
+    private int tutorialCounter = 0;
     /**
      * Handles clicks on Close button of first-start tutorial view
      */
     private View.OnClickListener showcaseListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch(tutorial_counter++) {
+            switch (tutorialCounter++) {
                 case 0:
                     showcaseView.setContentTitle(getString(R.string.tutorial_contacts_your_contact));
                     showcaseView.setContentText(getString(R.string.tutorial_contacts_your_contact_desc));
@@ -125,6 +124,8 @@ public class ContactsFragment extends Fragment {
                     UIHelper.flagShownContactsTutorial(getActivity());
                     showcaseView.hide();
                     break;
+                default:
+                    break;
             }
         }
     };
@@ -142,9 +143,6 @@ public class ContactsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
-
         if (item.getItemId() == R.id.action_search) {
             startActivity(new Intent(getActivity(), SearchUserActivity.class));
             return true;
@@ -155,7 +153,7 @@ public class ContactsFragment extends Fragment {
             startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
             return true;
         } else if (item.getItemId() == R.id.action_update_contacts) {
-            new AsyncTask<String, Integer, Integer>() {
+            (new AsyncTask<String, Integer, Integer>() {
                 @Override
                 protected Integer doInBackground(String... params) {
                     return BonfireAPI.updateContacts(getActivity());
@@ -166,18 +164,15 @@ public class ContactsFragment extends Fragment {
                     if (s > 0) {
                         loadContacts();
                         Toast.makeText(getActivity(), "" + s.toString() + " new contacts found", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         Toast.makeText(getActivity(), "No updates", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }.execute();
+            }).execute();
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
 
     private void deleteSelectedItems() {
         BonfireData db = BonfireData.getInstance(getActivity());
@@ -275,6 +270,4 @@ public class ContactsFragment extends Fragment {
             return false;
         }
     };
-
-
 }

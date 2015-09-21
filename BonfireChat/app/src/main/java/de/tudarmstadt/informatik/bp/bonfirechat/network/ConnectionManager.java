@@ -19,7 +19,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.jivesoftware.smack.SmackAndroid;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -98,14 +97,18 @@ public class ConnectionManager extends NonStopIntentService {
 
     // buffer for storing which messages have already been handled
     // Those were either already sent in the first place, or received
+    @SuppressWarnings("CheckStyle")
     private static final RingBuffer<Packet> processedPackets = new RingBuffer<>(250);
 
+    @SuppressWarnings("CheckStyle")
     public static final RoutingManager routingManager = new RoutingManager();
 
     // currently visible peers
+    @SuppressWarnings("CheckStyle")
     public static final List<Peer> peers = new ArrayList<>();
     private static Handler handler = new Handler();
 
+    @SuppressWarnings("CheckStyle")
     public static final Class[] registeredProtocols = new Class[]{
             BluetoothProtocol.class,
             WifiProtocol.class,
@@ -126,7 +129,8 @@ public class ConnectionManager extends NonStopIntentService {
         removeOutdatedPeersThread.run();
     }
 
-    public static List<IProtocol> connections = new ArrayList<IProtocol>();
+    @SuppressWarnings("CheckStyle")
+    public static final List<IProtocol> connections = new ArrayList<>();
 
     public IProtocol getOrCreateConnection(Class typ) {
         IProtocol p = getConnection(typ);
@@ -136,13 +140,7 @@ public class ConnectionManager extends NonStopIntentService {
                 p.setIdentity(BonfireData.getInstance(this).getDefaultIdentity());
                 p.setOnPacketReceivedListener(packetListener);
                 p.setOnPeerDiscoveredListener(peerListener);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             connections.add(p);
@@ -152,8 +150,10 @@ public class ConnectionManager extends NonStopIntentService {
     }
 
     private IProtocol getConnection(Class typ) {
-        for(IProtocol p : connections) {
-            if (typ.isInstance(p)) return p;
+        for (IProtocol p : connections) {
+            if (typ.isInstance(p)) {
+                return p;
+            }
         }
         return null;
     }
@@ -172,8 +172,9 @@ public class ConnectionManager extends NonStopIntentService {
         synchronized (peers) {
             Iterator<Peer> iter = peers.iterator();
             while (iter.hasNext()) {
-                if (iter.next().getProtocolClass().equals(typ))
+                if (iter.next().getProtocolClass().equals(typ)) {
                     iter.remove();
+                }
             }
         }
     }
@@ -182,15 +183,14 @@ public class ConnectionManager extends NonStopIntentService {
         @Override
         public void discoveredPeer(IProtocol sender, byte[] address, String debugInfo) {
             Peer found = new Peer(sender.getClass(), address, debugInfo);
-            Log.d(TAG, "Peer was discovered by "+sender.toString()+" : "+Peer.formatMacAddress(address) + "   " + debugInfo);
+            Log.d(TAG, "Peer was discovered by " + sender.toString() + " : " + Peer.formatMacAddress(address) + "   " + debugInfo);
             synchronized (peers) {
                 int index = peers.indexOf(found);
                 // is this peer already known to us?
                 if (index != -1) {
                     peers.get(index).updateLastSeen(sender.getClass());
-                }
-                // otherwise add it
-                else {
+                } else {
+                    // otherwise add it
                     peers.add(found);
                 }
             }
@@ -221,7 +221,8 @@ public class ConnectionManager extends NonStopIntentService {
             // Traceroute...
             // TODO ~mw  : should be conditional, only if we have the users consent
             String thisHopName = thisIdentity.getNickname();
-            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet) ? "RIGN" : "RECV", null, packet, packet.nextHopNickname, thisHopName);
+            StatsCollector.publishMessageHop(sender.getClass(), processedPackets.contains(packet)
+                    ? "RIGN" : "RECV", null, packet, packet.nextHopNickname, thisHopName);
 
             Log.d(TAG, "onPacketReceived: " + sender.getClass().getSimpleName() + ", " + packet.toString());
             // has this packet not yet been processed?
@@ -232,7 +233,8 @@ public class ConnectionManager extends NonStopIntentService {
                 routingManager.registerPath(packet);
                 // if it is a payload packet, add traceroute segment for this node, segment for hop was already added by the receiving protocol
                 if (packet.getType() == PacketType.Payload) {
-                    packet.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity().getNickname()));
+                    packet.addTracerouteSegment(new TracerouteNodeSegment(
+                            BonfireData.getInstance(ConnectionManager.this).getDefaultIdentity().getNickname()));
                 }
                 // is this packet sent to us?
                 if (packet.hasRecipient(thisIdentity)) {
@@ -240,17 +242,14 @@ public class ConnectionManager extends NonStopIntentService {
                     // is it  a payload packet?
                     if (packet.getType() == PacketType.Payload) {
                         handlePayloadPacket((PayloadPacket) packet, sender);
-                    }
-                    // is it an ACK packet?
-                    else if (packet.getType() == PacketType.Ack) {
+                    } else if (packet.getType() == PacketType.Ack) {
+                        // is it an ACK packet?
                         handleAckPacket((AckPacket) packet, sender);
-                    }
-                    // is it a UDP location broadcast?
-                    else if (packet.getType() == PacketType.LocationUdp) {
+                    } else if (packet.getType() == PacketType.LocationUdp) {
+                        // is it a UDP location broadcast?
                         handleLocationUdpPacket((LocationUdpPacket) packet, sender);
-                    }
-                    // otherwise it's an unknown packet type
-                    else {
+                    } else {
+                        // otherwise it's an unknown packet type
                         // TODO: team: evaluate: throw Exception instead?
                         Log.e(TAG, "received packet of unknown type");
                     }
@@ -278,7 +277,7 @@ public class ConnectionManager extends NonStopIntentService {
             CurrentStats.getInstance().messageReceived += 1;
         }
 
-        private void handleAckPacket (AckPacket packet, IProtocol sender) {
+        private void handleAckPacket(AckPacket packet, IProtocol sender) {
             // cancel the pending retransmission for this packet
             Retransmission.cancel(packet.acknowledgesUUID);
 
@@ -322,7 +321,7 @@ public class ConnectionManager extends NonStopIntentService {
 
         private void forwardPacket(Packet packet) {
             // if the packet packets TTL is not exceeded, forward it
-            if (packet.ttl -- > 0) {
+            if (packet.ttl-- > 0) {
                 sendPacket(ConnectionManager.this, packet);
             }
         }
@@ -333,7 +332,7 @@ public class ConnectionManager extends NonStopIntentService {
             BonfireData data = BonfireData.getInstance(ConnectionManager.this);
             Conversation conversation = data.getConversationByPeer((Contact) message.sender);
             if (conversation == null) {
-                Log.d(TAG, "creating new conversation for peer "+message.sender.getNickname());
+                Log.d(TAG, "creating new conversation for peer " + message.sender.getNickname());
                 conversation = new Conversation((Contact) message.sender, message.sender.getNickname(), 0);
                 data.createConversation(conversation);
 
@@ -360,7 +359,7 @@ public class ConnectionManager extends NonStopIntentService {
             broadcastManager.sendBroadcast(localIntent);
 
 
-            if(MessagesActivity.currentConversation == -1) {
+            if (MessagesActivity.currentConversation == -1) {
                 final Intent intent = new Intent(ConnectionManager.this, MessagesActivity.class);
                 intent.putExtra("ConversationId", conversation.rowid);
                 final TaskStackBuilder stackBuilder = TaskStackBuilder.create(ConnectionManager.this);
@@ -388,12 +387,12 @@ public class ConnectionManager extends NonStopIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "ConnectionManager called with intent : "+intent.getAction());
+        Log.d(TAG, "ConnectionManager called with intent : " + intent.getAction());
         final Bundle extras = intent.getExtras();
         final BonfireData db = BonfireData.getInstance(this);
         if (intent.getAction() == GO_ONLINE_ACTION) {
 
-            for(Class protocol : registeredProtocols) {
+            for (Class protocol : registeredProtocols) {
                 if (isProtocolEnabled(protocol)) {
                     getOrCreateConnection(protocol);
                 } else {
@@ -414,7 +413,7 @@ public class ConnectionManager extends NonStopIntentService {
                 // start location broadcast service
                 new SendLocationBroadcastsService(this);
             }
-        } else if (intent.getAction() == SENDMESSAGE_ACTION) {
+        } else if (intent.getAction().equals(SENDMESSAGE_ACTION)) {
             final Packet packet = (Packet) intent.getSerializableExtra("packet");
             Log.d(TAG, "Loading packet " + packet.toString());
 
@@ -425,7 +424,7 @@ public class ConnectionManager extends NonStopIntentService {
 
             List<Peer> chosenPeers;
             synchronized (peers) {
-                // let RoutingManager decide where to send the packet to
+                // let routingManager decide where to send the packet to
                 chosenPeers = routingManager.chooseRecipients(packet, peers);
             }
             if (chosenPeers == null) {
@@ -444,8 +443,9 @@ public class ConnectionManager extends NonStopIntentService {
                                 StatsCollector.publishMessageHop(protocolClass, "SEND", peer, packet, packet.nextHopNickname, null);
                                 Log.i(TAG, "Sending via " + peer.toString());
                                 protocol.sendPacket(packet, peer);
-                            } else
+                            } else {
                                 throw new IllegalAccessException("Protocol " + protocolClass.getSimpleName() + " not ready");
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             Log.e(TAG, "Unable to send packet via peer:" + peer.toString());
@@ -473,9 +473,11 @@ public class ConnectionManager extends NonStopIntentService {
             // update statistics
             CurrentStats.getInstance().messagesSent += 1;
 
-        } else if (intent.getAction() == CONTINUE_BLUETOOTH_STARTUP_ACTION) {
+        } else if (intent.getAction().equals(CONTINUE_BLUETOOTH_STARTUP_ACTION)) {
             BluetoothProtocol bt = (BluetoothProtocol) getConnection(BluetoothProtocol.class);
-            if (bt != null) bt.continueStartup();
+            if (bt != null) {
+                bt.continueStartup();
+            }
 
         } else if (!extras.isEmpty()) {
             final GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
@@ -493,9 +495,11 @@ public class ConnectionManager extends NonStopIntentService {
                             intent.getStringExtra("publickey"), intent.getStringExtra("nickname"));
                     return;
                 }
-                final GcmProtocol gcmProto = (GcmProtocol)getConnection(GcmProtocol.class);
+                final GcmProtocol gcmProto = (GcmProtocol) getConnection(GcmProtocol.class);
                 Log.i(TAG, "gcmProto=" + gcmProto);
-                if (gcmProto == null) return;
+                if (gcmProto == null) {
+                    return;
+                }
                 gcmProto.onHandleGcmIntent(intent);
             }
         }
@@ -530,16 +534,19 @@ public class ConnectionManager extends NonStopIntentService {
 
     /**
      * this should not be called on a retransmission as it adds the current node as path node
-     * @param ctx
-     * @param envelope
      */
     public static void sendEnvelope(Context ctx, Envelope envelope) {
-        if (envelope.getHopCount() > 0) throw new IllegalArgumentException(ctx.getString(R.string.exception_only_fresh_envelopes));
+        if (envelope.getHopCount() > 0) {
+            throw new IllegalArgumentException(ctx.getString(R.string.exception_only_fresh_envelopes));
+        }
 
-        // retrieve best path to target from RoutingManager, if known. otherwise use flooding
+        // retrieve best path to target from routingManager, if known. otherwise use flooding
         List<byte[]> hopsToTarget = routingManager.getPath(envelope);
-        if (hopsToTarget == null) envelope.setFlooding();
-        else envelope.setDSR(hopsToTarget);
+        if (hopsToTarget == null) {
+            envelope.setFlooding();
+        } else {
+            envelope.setDSR(hopsToTarget);
+        }
 
         // add first traceroute segment, all following will be added on receiving
         envelope.addTracerouteSegment(new TracerouteNodeSegment(BonfireData.getInstance(ctx).getDefaultIdentity().getNickname()));
@@ -574,10 +581,13 @@ public class ConnectionManager extends NonStopIntentService {
     }
 
     public static void sendLocationUdpPacket(Context ctx, LocationUdpPacket packet) {
-        // retrieve best path to target from RoutingManager, if known. otherwise use flooding
+        // retrieve best path to target from routingManager, if known. otherwise use flooding
         List<byte[]> hopsToTarget = routingManager.getPath(packet);
-        if (hopsToTarget == null) packet.setFlooding();
-        else packet.setDSR(hopsToTarget);
+        if (hopsToTarget == null) {
+            packet.setFlooding();
+        } else  {
+            packet.setDSR(hopsToTarget);
+        }
         // send it
         sendPacket(ctx, packet);
     }

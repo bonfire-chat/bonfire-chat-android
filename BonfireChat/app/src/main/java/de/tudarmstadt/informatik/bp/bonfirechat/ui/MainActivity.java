@@ -1,5 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
@@ -7,15 +8,12 @@ import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.app.ActionBar;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -35,7 +33,6 @@ import de.tudarmstadt.informatik.bp.bonfirechat.location.GpsTracker;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Identity;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.GcmBroadcastReceiver;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.ResendOldMessagesTask;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.CurrentStats;
 import de.tudarmstadt.informatik.bp.bonfirechat.stats.StatsCollector;
 
@@ -79,11 +76,15 @@ public class MainActivity extends Activity
         try {
             new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                     BonfireAPI.DOWNLOADS_DIRECTORY).mkdir();
-        }catch(Exception ex){}
+        } catch (Exception e) {
+            Log.e(TAG, "error opening image file");
+        }
 
         GcmBroadcastReceiver.registerForGcm(this);
 
-        if (!initializeIdentiy()) return;
+        if (!initializeIdentiy()) {
+            return;
+        }
 
         if (UIHelper.shouldShowOobe(this)) {
             // only show showcase when drawer is really open, in case
@@ -108,17 +109,18 @@ public class MainActivity extends Activity
 
     // ####### First-Start Tutorial #####################################################
     private ShowcaseView showcaseView;
-    private int tutorial_counter = 0;
+    private int tutorialCounter = 0;
     /**
      * Handles clicks on Close button of first-start tutorial view
      */
     @Override
     public void onClick(View v) {
-        switch(tutorial_counter++) {
+        switch (tutorialCounter++) {
             case 0:
                 showcaseView.setContentTitle(getString(R.string.tutorial_main_welcome));
                 showcaseView.setContentText(getString(R.string.tutorial_main_welcome_desc));
-                showcaseView.setTarget(new PointTarget(100, 420));
+                final int welcomeX = 100, welcomeY = 420;
+                showcaseView.setTarget(new PointTarget(welcomeX, welcomeY));
                 showcaseView.setButtonText(getString(R.string.next));
                 break;
             case 1:
@@ -172,7 +174,7 @@ public class MainActivity extends Activity
         Intent statsPublishIntent = new Intent(StatsCollector.PUBLISH_STATS_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, statsPublishIntent, 0);
 
-        AlarmManager manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         long interval = StatsCollector.PUBLISH_INTERVAL;
 
         manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);

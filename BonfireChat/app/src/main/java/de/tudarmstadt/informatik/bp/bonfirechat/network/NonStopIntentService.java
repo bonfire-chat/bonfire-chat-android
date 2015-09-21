@@ -21,7 +21,7 @@ public abstract class NonStopIntentService extends Service {
     }
 
     private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
+        ServiceHandler(Looper looper) {
             super(looper);
         }
 
@@ -31,7 +31,7 @@ public abstract class NonStopIntentService extends Service {
                 Log.w("NonStopIntentService", "received message with null intent!");
                 return;
             }
-            onHandleIntent((Intent)msg.obj);
+            onHandleIntent((Intent) msg.obj);
         }
     }
 
@@ -66,7 +66,6 @@ public abstract class NonStopIntentService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO Auto-generated method stub
         return null;
     }
 
