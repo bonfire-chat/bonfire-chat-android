@@ -58,9 +58,18 @@ dependencies {
 
 apply plugin: 'findbugs'
 
-
 findbugs {
     excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
+}
+
+apply plugin: 'checkstyle'
+
+task checkstyle(type: Checkstyle) {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**','**/*Test.java'
+    style '/home/johannes/Downloads/checkstyle-noframes-sorted.xsl'
+    classpath = files()
 }
 
 // change this to whatever your app's name is...
