@@ -13,7 +13,7 @@ android {
     buildToolsVersion '21.1.2'
     defaultConfig {
         applicationId "de.tudarmstadt.informatik.bp.bonfirechat"
-        minSdkVersion 17
+        minSdkVersion 19
         //noinspection OldTargetApi
         targetSdkVersion 22
         versionCode 1
