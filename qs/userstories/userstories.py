@@ -3,6 +3,12 @@
 
 import MySQLdb as mdb
 
+def myFormat(s):
+    if s is not None:
+        print '\parbox[t]{10cm}{', s.replace('\n', '\\\\').replace('%', '\\%').replace('"', '').replace('„', '').replace('“', '') , '}'
+    else:
+        print " "
+
 con = mdb.connect('37.59.184.73', 'qsmakefile', '2C6rJdvkgS', 'openproject_ce')
 
 with con:
@@ -14,6 +20,7 @@ with con:
     rows = cur.fetchall()
 
     print '\\documentclass{article}'
+    print '\\usepackage[utf8]{inputenc}'
     print '\\begin{document}'
     print '\\begin{center}'
 
@@ -36,10 +43,10 @@ with con:
         print 'Name & ', row['subject']
         print '\\tabularnewline'
         print '\\hline'
-        print 'Beschreibung & ', '\parbox[t]{10cm}{', row['description'].replace('\n', '\\\\').replace('%', '\\%'), '}'
+        print 'Beschreibung & ', myFormat(row['description'])
         print '\\tabularnewline'
         print '\\hline'
-        print 'Akzeptanzkriterium & ', row['acceptance_criteria']
+        print 'Akzeptanzkriterium & ', myFormat(row['acceptance_criteria'])
         print '\\tabularnewline'
         print '\\hline'
         print 'Story Points & ', "{:.2f}".format(sp)
