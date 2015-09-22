@@ -31,6 +31,8 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
 
     public static final String EXTRA_CONTACT_ID = "ContactId";
 
+    private static final int LINEBREAK_LENGTH = 22;
+
     private Contact contact;
 
     @Override
@@ -63,7 +65,7 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
         ((TextView) findViewById(R.id.stats)).setText("coming soon");
 
         String pubkey = contact.getPublicKey().asBase64();
-        pubkey = pubkey.substring(0,21) + "\n" + pubkey.substring(22);
+        pubkey = pubkey.substring(0, LINEBREAK_LENGTH - 1) + "\n" + pubkey.substring(LINEBREAK_LENGTH);
         ((TextView) findViewById(R.id.publickey)).setText(pubkey);
 
         if (contact.getLastKnownLocation() != null) {
@@ -76,8 +78,7 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
             mapFragment.getMapAsync(this);
             // fix scroll issue
             fixMapScrolling();
-        }
-        else {
+        } else {
             // show notice
             findViewById(R.id.group_map).setVisibility(View.GONE);
             findViewById(R.id.no_location_for_contact).setVisibility(View.VISIBLE);
@@ -107,8 +108,7 @@ public class ContactDetailsActivity extends FragmentActivity implements OnMapRea
             saveContact();
             finish();
             return true;
-        }
-        else if (id == R.id.action_create_conversation) {
+        } else if (id == R.id.action_create_conversation) {
             // save contact before starting conversation, to prevent data loss on wrong button click
             saveContact();
             MessagesActivity.startConversationWithPeer(this, contact);

@@ -1,13 +1,11 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.ArrayList;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
 
 /**
@@ -18,7 +16,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
  */
 public class ResendOldMessagesTask extends Thread {
 
-    private static String TAG = "ResendOldMessagesTask";
+    private static final String TAG = "ResendOldMessagesTask";
 
     private Context ctx;
 

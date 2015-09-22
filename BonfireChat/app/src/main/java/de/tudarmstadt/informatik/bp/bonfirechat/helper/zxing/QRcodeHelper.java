@@ -12,7 +12,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 /**
  * Created by mw on 15.06.15.
  */
-public class QRcodeHelper {
+public final class QRcodeHelper {
+
+    private QRcodeHelper() { }
 
     public static void shareQRcode(Activity ctx, IPublicIdentity pubident) {
         String url = getIdentityURL(pubident);

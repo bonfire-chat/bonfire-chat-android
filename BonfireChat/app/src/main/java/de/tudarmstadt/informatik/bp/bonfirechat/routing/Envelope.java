@@ -1,7 +1,6 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import org.abstractj.kalium.crypto.Box;
@@ -12,8 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -57,11 +54,11 @@ public class Envelope extends PayloadPacket {
             try {
                 File file = new File(message.body);
                 FileInputStream inputStream = new FileInputStream(file);
-                bodyBytes = new byte[(int)file.length()];
+                bodyBytes = new byte[(int) file.length()];
                 inputStream.read(bodyBytes);
                 inputStream.close();
             } catch (IOException e) {
-                throw new IllegalArgumentException("Unable to convert IS_FILE message: "+e.getMessage());
+                throw new IllegalArgumentException("Unable to convert IS_FILE message: " + e.getMessage());
             }
         } else {
             // Concatenate Sender Nickname and Message Text to be stored in Encrypted Body
@@ -75,17 +72,19 @@ public class Envelope extends PayloadPacket {
                 message.sender.getPublicKey().asByteArray(),
                 bodyBytes);
         if (message.hasFlag(Message.FLAG_ENCRYPTED)) {
-            Identity sender = (Identity)message.sender;
+            Identity sender = (Identity) message.sender;
             Box crypto = new Box(new PublicKey(publicKey), sender.privateKey);
             envelope.nonce = CryptoHelper.generateNonce();
             envelope.encryptedBody = crypto.encrypt(envelope.nonce, envelope.encryptedBody);
             envelope.flags |= FLAG_ENCRYPTED;
         }
-        if (message.hasFlag(Message.FLAG_IS_FILE))
+        if (message.hasFlag(Message.FLAG_IS_FILE)) {
             envelope.flags |= FLAG_BINARY;
+        }
 
-        if (message.hasFlag(Message.FLAG_IS_LOCATION))
+        if (message.hasFlag(Message.FLAG_IS_LOCATION)) {
             envelope.flags |= FLAG_LOCATION;
+        }
         return envelope;
     }
 
@@ -112,13 +111,12 @@ public class Envelope extends PayloadPacket {
         if (hasFlag(FLAG_BINARY)) {
             theContact = BonfireData.getInstance(ctx).getContactByPublicKey(senderPublicKey);
             File target = Message.getImageFile(this.uuid);
-            try {
-                FileOutputStream os = new FileOutputStream(target);
+            try (FileOutputStream os = new FileOutputStream(target)) {
                 os.write(body);
                 os.close();
                 messageBody = target.getAbsolutePath();
                 msgFlags |= Message.FLAG_IS_FILE;
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 messageBody = "ERROR:" + ex.getMessage();
             }
         } else {

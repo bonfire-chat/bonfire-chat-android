@@ -21,9 +21,12 @@ public class RoutingManager {
 
     public void registerPath(Packet packet) {
         String key = CryptoHelper.toBase64(packet.senderPublicKey);
-        String pathDebug = "";
-        for(byte[] a : packet.getPath()) pathDebug += " -> " + Peer.formatMacAddress(a);
-        Log.i("RoutingManager", "registerPath to " + key + " " + pathDebug);
+        StringBuilder pathDebugBuilder = new StringBuilder();
+        for (byte[] a : packet.getPath()) {
+            pathDebugBuilder.append(" -> ").append(Peer.formatMacAddress(a));
+        }
+        String pathDebug = pathDebugBuilder.toString();
+        Log.i("routingManager", "registerPath to " + key + " " + pathDebug);
         shortestPaths.put(key, packet.getPath());
     }
 
@@ -45,10 +48,12 @@ public class RoutingManager {
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append("RoutingManager:\n");
-        for(Map.Entry<String, List<byte[]>> e : shortestPaths.entrySet()) {
+        s.append("routingManager:\n");
+        for (Map.Entry<String, List<byte[]>> e : shortestPaths.entrySet()) {
             s.append("- Path to " + e.getKey() + " ");
-            for(byte[] a : e.getValue()) s.append(" -> " + Peer.formatMacAddress(a));
+            for (byte[] a : e.getValue()) {
+                s.append(" -> " + Peer.formatMacAddress(a));
+            }
             s.append("\n");
         }
         return s.toString();
@@ -79,8 +84,9 @@ public class RoutingManager {
                 }
             }
             // if no matching peer was discovered, just be lazy and try to send it via bluetooth
-            if (r.size() == 0)
+            if (r.size() == 0) {
                 r.add(new Peer(BluetoothProtocol.class, packet.getNextHop(), "(dynamic)"));
+            }
             packet.removeNextHop();
             return r;
         } else {

@@ -13,7 +13,7 @@ android {
     buildToolsVersion '21.1.2'
     defaultConfig {
         applicationId "de.tudarmstadt.informatik.bp.bonfirechat"
-        minSdkVersion 17
+        minSdkVersion 19
         //noinspection OldTargetApi
         targetSdkVersion 22
         versionCode 1
@@ -58,9 +58,17 @@ dependencies {
 
 apply plugin: 'findbugs'
 
-
 findbugs {
     excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
+}
+
+apply plugin: 'checkstyle'
+
+task checkstyle(type: Checkstyle) {
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**','**/*Test.java'
+    classpath = files()
 }
 
 // change this to whatever your app's name is...

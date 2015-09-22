@@ -10,7 +10,9 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 /**
  * Created by mw on 03.08.15.
  */
-public class ConstOptions {
+public final class ConstOptions {
+
+    private ConstOptions() { }
 
     public static final boolean ALWAYS_SHOW_OOBE = false;
     public static final String APP_HOMEPAGE = "https://bonfire.projects.teamwiki.net";
@@ -28,20 +30,20 @@ public class ConstOptions {
 
     public static String getDebugInfo() {
         StringBuilder debug = new StringBuilder();
-        for(IProtocol c : ConnectionManager.connections) {
-            debug.append("\nProtocol: "+c.toString());
+        for (IProtocol c : ConnectionManager.getConnections()) {
+            debug.append("\nProtocol: " + c.toString());
             if (c instanceof BluetoothProtocol) {
-                BluetoothProtocol proto = (BluetoothProtocol)c;
-                for(Map.Entry<String,BluetoothProtocol.ConnectionHandler> h : proto.getConnections()) {
-                    debug.append("\n- Conn: "+h.getKey()+" = "+h.getValue().toString());
+                BluetoothProtocol proto = (BluetoothProtocol) c;
+                for (Map.Entry<String, BluetoothProtocol.ConnectionHandler> h : proto.getConnections()) {
+                    debug.append("\n- Conn: " + h.getKey() + " = " + h.getValue().toString());
                 }
             }
         }
         debug.append("\n");
         debug.append(ConnectionManager.routingManager.toString());
         debug.append("\n");
-        for(Peer p : ConnectionManager.peers) {
-            debug.append("\n"+p.toString());
+        for (Peer p : ConnectionManager.getPeers()) {
+            debug.append("\n" + p.toString());
         }
         return debug.toString();
     }

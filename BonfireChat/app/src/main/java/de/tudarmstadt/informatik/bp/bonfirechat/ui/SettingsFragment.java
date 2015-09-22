@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment {
         PackageInfo pInfo = null;
         try {
             pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-            findPreference("version_number").setTitle("Version "+pInfo.versionName);
+            findPreference("version_number").setTitle("Version " + pInfo.versionName);
             findPreference("version_number").setSummary(pInfo.packageName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -61,29 +61,30 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
-		findPreference("update_dev").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				String url = "https://ci.projects.teamwiki.net/job/BonfireChat/lastSuccessfulBuild/artifact/BonfireChat/app/build/outputs/apk/app-debug.apk";
-				DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-				request.setDescription("Update wird geladen...");
-				request.setTitle("BonfireChat");
+        findPreference("update_dev").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+      @Override
+      public boolean onPreferenceClick(Preference preference) {
+        String url = "https://ci.projects.teamwiki.net/job/BonfireChat/lastSuccessfulBuild/"
+                        + "artifact/BonfireChat/app/build/outputs/apk/app-debug.apk";
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setDescription("Update wird geladen...");
+        request.setTitle("BonfireChat");
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-				request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Bonfirechat-dev.apk");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Bonfirechat-dev.apk");
 
-				// get download service and enqueue file
-				DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-				manager.enqueue(request);
-				return true;
-			}
-		});
+        // get download service and enqueue file
+        DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
+        return true;
+      }
+    });
 
         findPreference("debugShow").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 String debug = ConstOptions.getDebugInfo();
                 Log.d("DEBUG", debug);
-                UIHelper.Info(getActivity(), "Debug", debug);
+                UIHelper.info(getActivity(), "Debug", debug);
                 return true;
             }
         });

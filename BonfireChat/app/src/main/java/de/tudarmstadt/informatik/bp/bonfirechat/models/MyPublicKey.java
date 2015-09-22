@@ -2,14 +2,18 @@ package de.tudarmstadt.informatik.bp.bonfirechat.models;
 
 import org.abstractj.kalium.keys.PublicKey;
 
+import java.io.Serializable;
+
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 
 /**
  * Created by mw on 15.06.15.
  */
-public class MyPublicKey {
+public class MyPublicKey implements Serializable {
 
-    private final PublicKey thisKey;
+    private static final long serialVersionUID = 42L;
+
+    private final transient PublicKey thisKey;
 
     public MyPublicKey(PublicKey key) {
         thisKey = key;

@@ -30,48 +30,55 @@ public class Conversation {
         this.rowid = rowid;
     }
 
-    public Conversation(Contact peer, String title, int rowid){
+    public Conversation(Contact peer, String title, int rowid) {
         this.peer = peer;
         this.title = title;
         this.messages = new ArrayList<>();
         this.rowid = rowid;
     }
 
-    public void addMessages(ArrayList<Message> messages){
-        this.messages.addAll(messages);
+    public void addMessages(ArrayList<Message> newMessages) {
+        this.messages.addAll(newMessages);
     }
 
     public Message getLastMessage() {
-        if(messages.size() > 0) {
+        if (messages.size() > 0) {
             return messages.get(messages.size() - 1);
         } else {
             return null;
         }
     }
     public String getLastMessageDate() {
-        if(messages.size() > 0)
+        if (messages.size() > 0) {
             return DateHelper.formatTimeOrDate(messages.get(messages.size() - 1).sentTime);
-        else
+        } else {
             return "";
+        }
     }
     public String getName() {
-        if (title != null && !title.equals("")) return title;
-        if (peer != null) return peer.getNickname();
+        if (title != null && !title.equals("")) {
+            return title;
+        }
+        if (peer != null)  {
+            return peer.getNickname();
+        }
         return "(unnamed)";
     }
     public Contact getPeer() {
         return peer;
     }
 
-    public ContentValues getContentValues(){
+    public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        if (peer != null) values.put("peer", peer.rowid);
+        if (peer != null) {
+            values.put("peer", peer.rowid);
+        }
         values.put("conversationType", conversationType.ordinal());
         values.put("title", title);
         return values;
     }
 
-    public static Conversation fromCursor(Contact contact, Cursor cursor){
+    public static Conversation fromCursor(Contact contact, Cursor cursor) {
         Conversation conversation = new Conversation(contact,
                cursor.getString(cursor.getColumnIndex("title")),
                cursor.getInt(cursor.getColumnIndex("rowid")));

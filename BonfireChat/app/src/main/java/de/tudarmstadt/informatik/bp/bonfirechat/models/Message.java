@@ -97,15 +97,19 @@ public class Message implements Serializable {
         return Message.getImageFile(this.uuid);
     }
     public static File getImageFile(UUID uuid) {
-        Log.d("xxx", "storage dir:"+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
+        Log.d("xxx", "storage dir:" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
         return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 BonfireAPI.DOWNLOADS_DIRECTORY + uuid.toString() + ".jpg");
     }
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        if (this.sender != null && this.sender instanceof Contact) values.put("sender", ((Contact)this.sender).rowid);
-        if (this.sender != null && this.sender instanceof Identity) values.put("sender", -1);
+        if (this.sender != null && this.sender instanceof Contact) {
+            values.put("sender", ((Contact) this.sender).rowid);
+        }
+        if (this.sender != null && this.sender instanceof Identity) {
+            values.put("sender", -1);
+        }
         values.put("body", body);
         values.put("sentDate", DateHelper.formatDateTime(this.sentTime));
         values.put("uuid", uuid.toString());
@@ -118,9 +122,15 @@ public class Message implements Serializable {
 
     public void setTransferProtocol(Class theClass) {
         flags &= ~(FLAG_PROTO_BT | FLAG_PROTO_WIFI | FLAG_PROTO_CLOUD);
-        if (theClass.equals(GcmProtocol.class)) flags |= FLAG_PROTO_CLOUD;
-        if (theClass.equals(BluetoothProtocol.class)) flags |= FLAG_PROTO_BT;
-        if (theClass.equals(WifiProtocol.class)) flags |= FLAG_PROTO_WIFI;
+        if (theClass.equals(GcmProtocol.class)) {
+            flags |= FLAG_PROTO_CLOUD;
+        }
+        if (theClass.equals(BluetoothProtocol.class)) {
+            flags |= FLAG_PROTO_BT;
+        }
+        if (theClass.equals(WifiProtocol.class)) {
+            flags |= FLAG_PROTO_WIFI;
+        }
     }
 
     public static Message fromCursor(Cursor cursor, BonfireData db) {

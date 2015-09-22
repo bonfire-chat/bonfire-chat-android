@@ -1,10 +1,10 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -18,18 +18,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
-
 import java.util.List;
 
+import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireAPI;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.UIHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
-import de.tudarmstadt.informatik.bp.bonfirechat.R;
-import de.tudarmstadt.informatik.bp.bonfirechat.models.Conversation;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
 
 /**
@@ -37,7 +32,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
  */
 public class ContactsFragment extends Fragment {
 
-    private static String TAG = "ContactsFragment";
+    private static final String TAG = "ContactsFragment";
 
     private ContactsAdapter adapter;
 
@@ -45,15 +40,6 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-/*
-        if (UIHelper.shouldShowContactsTutorial(getActivity())) {
-            showcaseView = new ShowcaseView.Builder(getActivity())
-                    .setStyle(R.style.CustomShowcaseTheme2)
-                    .setOnClickListener(showcaseListener)
-                    .build();
-            tutorial_counter = 0;
-            showcaseListener.onClick(null);
-        }*/
     }
 
     @Override
@@ -71,7 +57,8 @@ public class ContactsFragment extends Fragment {
     }
 
 
-    ListView contactsList;
+    private ListView contactsList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,43 +80,6 @@ public class ContactsFragment extends Fragment {
         return rootView;
     }
 
-    // ####### First-Start Tutorial #####################################################
-    private ShowcaseView showcaseView;
-    private int tutorial_counter = 0;
-    /**
-     * Handles clicks on Close button of first-start tutorial view
-     */
-    private View.OnClickListener showcaseListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch(tutorial_counter++) {
-                case 0:
-                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_your_contact));
-                    showcaseView.setContentText(getString(R.string.tutorial_contacts_your_contact_desc));
-                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_nfc));
-                    showcaseView.setButtonText(getString(R.string.next));
-                    break;
-                case 1:
-                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_scan_qr));
-                    showcaseView.setContentText(getString(R.string.tutorial_contacts_scan_qr_desc));
-                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_scan_qr));
-                    showcaseView.setButtonText(getString(R.string.next));
-                    break;
-                case 2:
-                    showcaseView.setContentTitle(getString(R.string.tutorial_contacts_search));
-                    showcaseView.setContentText(getString(R.string.tutorial_contacts_search_desc));
-                    showcaseView.setTarget(new ActionItemTarget(ContactsFragment.this.getActivity(), R.id.action_search));
-                    showcaseView.setButtonText(getString(R.string.got_it));
-                    break;
-                case 3:
-                    UIHelper.flagShownContactsTutorial(getActivity());
-                    showcaseView.hide();
-                    break;
-            }
-        }
-    };
-    // ####### End First-Start Tutorial #####################################################
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -142,9 +92,6 @@ public class ContactsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        final BonfireData bonfireData = BonfireData.getInstance(adapter.getContext());
-
         if (item.getItemId() == R.id.action_search) {
             startActivity(new Intent(getActivity(), SearchUserActivity.class));
             return true;
@@ -155,7 +102,7 @@ public class ContactsFragment extends Fragment {
             startActivity(new Intent(getActivity(), ShareMyIdentityActivity.class));
             return true;
         } else if (item.getItemId() == R.id.action_update_contacts) {
-            new AsyncTask<String, Integer, Integer>() {
+            (new AsyncTask<String, Integer, Integer>() {
                 @Override
                 protected Integer doInBackground(String... params) {
                     return BonfireAPI.updateContacts(getActivity());
@@ -166,18 +113,15 @@ public class ContactsFragment extends Fragment {
                     if (s > 0) {
                         loadContacts();
                         Toast.makeText(getActivity(), "" + s.toString() + " new contacts found", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         Toast.makeText(getActivity(), "No updates", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }.execute();
+            }).execute();
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
 
     private void deleteSelectedItems() {
         BonfireData db = BonfireData.getInstance(getActivity());
@@ -275,6 +219,4 @@ public class ContactsFragment extends Fragment {
             return false;
         }
     };
-
-
 }
