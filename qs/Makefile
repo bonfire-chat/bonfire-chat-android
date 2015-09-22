@@ -2,6 +2,7 @@
 
 ASSETS = anhang/assets
 PARTIALS = anhang/partials
+USERSTORIES = userstories
 
 all: dirs qs-dokument.pdf
 
@@ -45,11 +46,14 @@ belege/lint/lint-results%.tmp.html: belege/lint/lint-results%.html
 $(PARTIALS)/findbugs%.pdf: belege/findbugs/findbugs%.html
 	wkhtmltopdf --lowquality $< $@
 
+$(USERSTORIES)/userstories.tex: toolchain/userstories.py
+	toolchain/userstories.py > $@
+
 qs-dokument.pdf: qs-dokument.tex anhang/*.tex spezifikation/*.tex \
 		$(PARTIALS)/codereviews.tex $(PARTIALS)/manuelle-tests-ui-reports.tex $(PARTIALS)/dokumentation.tex \
 		$(PARTIALS)/coverage.pdf $(PARTIALS)/javadoc.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/checkstyle-1.pdf \
 		$(PARTIALS)/checkstyle-2.pdf $(PARTIALS)/lint-results-1.pdf $(PARTIALS)/lint-results-2.pdf \
-		$(PARTIALS)/findbugs-1.pdf $(PARTIALS)/findbugs-2.pdf
+		$(PARTIALS)/findbugs-1.pdf $(PARTIALS)/findbugs-2.pdf $(USERSTORIES)/userstories.tex
 	pdflatex qs-dokument.tex
 	pdflatex qs-dokument.tex
 

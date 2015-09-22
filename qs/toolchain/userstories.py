@@ -5,7 +5,7 @@ import MySQLdb as mdb
 
 def myFormat(s):
     if s is not None:
-        return '\parbox[t]{10cm}{'+ s.replace('\n', '\\\\').replace('%', '\\%').replace('"', '').replace('„', '').replace('“', '') + '}'
+        return '\parbox[t]{10cm}{'+ s.replace('\n', '\\\\').replace('%', '\\%').replace('"', '').replace('\"', '').replace('„', '').replace('“', '') + '}'
     else:
         return " "
 
@@ -19,9 +19,6 @@ with con:
 
     rows = cur.fetchall()
 
-    print '\\documentclass{article}'
-    print '\\usepackage[utf8]{inputenc}'
-    print '\\begin{document}'
     print '\\begin{center}'
 
     for row in rows:
@@ -40,7 +37,7 @@ with con:
         print 'ID & ', row["id"] 
         print '\\tabularnewline'
         print '\\hline'
-        print 'Name & ', row['subject']
+        print 'Name & ', myFormat(row['subject'])
         print '\\tabularnewline'
         print '\\hline'
         print 'Beschreibung & ', myFormat(row['description'])
@@ -65,8 +62,8 @@ with con:
         print '\\tabularnewline'
         print '\\hline'
         print '\\end{tabular}'
+        print '\\vspace{1cm}'
 
     print '\\end{center}'
-    print '\\end{document}'
 
 con.close()
