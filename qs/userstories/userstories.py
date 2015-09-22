@@ -13,6 +13,8 @@ with con:
 
     rows = cur.fetchall()
 
+    print '\\documentclass{article}'
+    print '\\begin{document}'
     print '\\begin{center}'
 
     for row in rows:
@@ -28,26 +30,36 @@ with con:
             velocity = 0
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
         print '\\hline'
-        print 'ID & ', row["id"], '\\\\'
+        print 'ID & ', row["id"] 
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Name & ', row['subject'], '\\\\'
+        print 'Name & ', row['subject']
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Beschreibung & ', row['description'], '\\\\'
+        print 'Beschreibung & ', '\parbox[t]{10cm}{', row['description'].replace('\n', '\\\\').replace('%', '\\%'), '}'
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Akzeptanzkriterium & ', row['acceptance_criteria'], '\\\\'
+        print 'Akzeptanzkriterium & ', row['acceptance_criteria']
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Story Points & ', "{:.2f}".format(sp), '\\\\'
+        print 'Story Points & ', "{:.2f}".format(sp)
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Entwickler & ', row['firstname'], ' ', row['lastname'], '\\\\'
+        print 'Entwickler & ', row['firstname'], ' ', row['lastname']
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Umgesetzt Iteration & ', row['sprint'], '\\\\'
+        print 'Umgesetzt Iteration & ', row['sprint']
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Tatsächlicher Aufwand (Std.) & ', "{:.2f}".format(hours), '\\\\'
+        print 'Tatsächlicher Aufwand (Std.) & ', "{:.2f}".format(hours)
+        print '\\tabularnewline'
         print '\\hline'
-        print '\\Velocity (Std./Story Point) & ', "{:.2f}".format(velocity), '\\\\'
+        print 'Velocity (Std./Story Point) & ', "{:.2f}".format(velocity)
+        print '\\tabularnewline'
         print '\\hline'
         print '\\end{tabular}'
 
     print '\\end{center}'
+    print '\\end{document}'
 
 con.close()
