@@ -19,8 +19,10 @@ public class RingBuffer<T extends Object> {
         insertPosition = insertPosition % length;
     }
     public boolean contains(T element) {
-        for(int i = 0; i < length; i++) {
-            if (content[i] != null && content[i].equals(element)) return true;
+        for (int i = 0; i < length; i++) {
+            if (content[i] != null && content[i].equals(element)) {
+                return true;
+            }
         }
         return false;
     }

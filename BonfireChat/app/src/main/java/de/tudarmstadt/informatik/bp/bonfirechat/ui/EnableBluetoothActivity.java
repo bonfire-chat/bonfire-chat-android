@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
@@ -19,12 +17,15 @@ public class EnableBluetoothActivity extends Activity {
 
     private static final String TAG = "EnableBluetoothActivity";
 
+    private static final int REQUEST_CODE = 42;
+    private static final int RESULT_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enablebluetooth);
 
-        ((Button)findViewById(R.id.enable_bluetooth)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.enable_bluetooth).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showEnableBluetoothUI();
@@ -38,16 +39,16 @@ public class EnableBluetoothActivity extends Activity {
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
         //discoverableIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(discoverableIntent, 42);
+        startActivityForResult(discoverableIntent, REQUEST_CODE);
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 42) {
+        if (requestCode == REQUEST_CODE) {
             Log.i(TAG, "Bluetooth request returned resultCode=" + resultCode);
 
-            if (resultCode == 1 ) {
+            if (resultCode == RESULT_CODE) {
                 final Intent intent = new Intent(this, ConnectionManager.class);
                 intent.setAction(ConnectionManager.CONTINUE_BLUETOOTH_STARTUP_ACTION);
                 startService(intent);

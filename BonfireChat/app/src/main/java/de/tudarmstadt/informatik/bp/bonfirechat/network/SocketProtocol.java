@@ -24,13 +24,13 @@ public abstract class SocketProtocol implements IProtocol {
         stream.flush();
     }
 
-    protected Packet receive (InputStream input) throws IOException {
+    protected Packet receive(InputStream input) throws IOException {
         try {
             final ObjectInputStream stream = new ObjectInputStream(input);
             final Packet packet = (Packet) stream.readObject();
             return packet;
-        } catch(ClassNotFoundException ex) {
-            throw new IOException("Unable to deserialize packet, class not found ("+ex.getMessage() + ")");
+        } catch (ClassNotFoundException ex) {
+            throw new IOException("Unable to deserialize packet, class not found (" + ex.getMessage() + ")");
         }
     }
 

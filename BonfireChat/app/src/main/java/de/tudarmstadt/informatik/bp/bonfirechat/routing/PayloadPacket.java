@@ -1,7 +1,5 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
-import android.util.Log;
-
 import java.util.UUID;
 
 /**
@@ -17,19 +15,18 @@ public abstract class PayloadPacket extends Packet {
         this.transmissionCount = 1;
     }
 
-    public int getTransmissionCount(){
+    public int getTransmissionCount() {
         return transmissionCount;
     }
 
     @Override
-    public boolean equals(Object otherObject){
-        if (otherObject == null) return false;
+    public boolean equals(Object otherObject) {
+        if (otherObject == null) {
+            return false;
+        }
         if (otherObject instanceof PayloadPacket) {
             PayloadPacket packet = (PayloadPacket) otherObject;
-            if(super.equals(packet) && transmissionCount == packet.getTransmissionCount())
-                return true;
-            else
-                return false;
+            return super.equals(packet) && transmissionCount == packet.getTransmissionCount();
         } else if (otherObject instanceof Packet) {
             return super.equals(otherObject);
         } else {
@@ -37,9 +34,11 @@ public abstract class PayloadPacket extends Packet {
         }
     }
 
-    public boolean isRetransmission() {
-        return transmissionCount > 1;
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
+
     public void incrementTransmissionCount() {
         transmissionCount += 1;
     }

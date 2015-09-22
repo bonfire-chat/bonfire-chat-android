@@ -1,14 +1,12 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +37,8 @@ import de.tudarmstadt.informatik.bp.bonfirechat.models.Message;
  */
 public class IdentityActivity extends Activity  {
 
-    private static final String TAG = "IdentityActivity";
+    private static final int ACTIVITY_CODE_IMAGE = 42;
+    private static final int PUBLICKEY_LINEBREAK_LENGTH = 22;
 
     Identity identity;
 
@@ -70,9 +69,9 @@ public class IdentityActivity extends Activity  {
         getEdit(R.id.nickname).setText(identity.nickname);
         getEdit(R.id.phone).setText(identity.phone);
         ImageView contactImage = ((ImageView) findViewById(R.id.contact_image));
-        if(contactImage != null) {
+        if (contactImage != null) {
             contactImage.setOnClickListener(onImageClicked);
-            if(!identity.getImage().equals("")) {
+            if (!identity.getImage().equals("")) {
                 contactImage.setImageURI(Uri.parse("file://" + identity.getImage()));
             }
             findViewById(R.id.change_contact_image).setOnClickListener(onImageClicked);
@@ -80,12 +79,14 @@ public class IdentityActivity extends Activity  {
 
         if (!isWelcomeScreen) {
             String pubkey = identity.getPublicKey().asBase64();
-            pubkey = pubkey.substring(0, 21) + "\n" + pubkey.substring(22);
+            pubkey = pubkey.substring(0, PUBLICKEY_LINEBREAK_LENGTH - 1) + "\n" + pubkey.substring(PUBLICKEY_LINEBREAK_LENGTH);
             ((TextView) findViewById(R.id.publickey)).setText(pubkey);
         }
 
         Button saveButton = (Button) findViewById(R.id.save);
-        if (saveButton != null ) saveButton.setOnClickListener(onSaveButtonClicked);
+        if (saveButton != null) {
+            saveButton.setOnClickListener(onSaveButtonClicked);
+        }
     }
 
     private EditText getEdit(int id) {
@@ -110,8 +111,8 @@ public class IdentityActivity extends Activity  {
             final View button = findViewById(R.id.save);
 
             // validate user input
-            if (!(StringHelper.regexMatch("\\w+", nickname.getText().toString()) &&
-                    (phone.getText().toString().isEmpty() || StringHelper.regexMatch("\\+?\\d+", phone.getText().toString())))) {
+            if (!(StringHelper.regexMatch("\\w+", nickname.getText().toString())
+                    && (phone.getText().toString().isEmpty() || StringHelper.regexMatch("\\+?\\d+", phone.getText().toString())))) {
 
                 if (!phone.getText().toString().isEmpty() && !StringHelper.regexMatch("\\+?\\d+", phone.getText().toString())) {
                     phone.setError(getString(R.string.phone_error));
@@ -139,7 +140,7 @@ public class IdentityActivity extends Activity  {
                 boxError.setVisibility(View.GONE);
                 button.setEnabled(false);
             }
-            new AsyncTask<Identity, Object, String>() {
+            (new AsyncTask<Identity, Object, String>() {
                 @Override
                 protected String doInBackground(Identity... params) {
                     String ok = params[0].registerWithServer();
@@ -151,15 +152,14 @@ public class IdentityActivity extends Activity  {
                         boxRegistering.setVisibility(View.GONE);
                         button.setEnabled(true);
                     }
-                    if (s != null ) {
+                    if (s != null) {
                         // nickname already taken?
                         if (s.contains("Duplicate entry")) {
                             nickname.setError(getString(R.string.nickname_already_taken));
                             nickname.requestFocus();
-                        }
-                        // other error
-                        else {
-                            if (isWelcomeScreen) boxError.setVisibility(View.VISIBLE);
+                        } else if (isWelcomeScreen) {
+                            // other error
+                            boxError.setVisibility(View.VISIBLE);
                         }
                     } else {
                         // save identity
@@ -172,7 +172,7 @@ public class IdentityActivity extends Activity  {
                         }
                     }
                 }
-            }.execute(identity);
+            }).execute(identity);
 
             SharedPreferences.Editor preferences = PreferenceManager.getDefaultSharedPreferences(IdentityActivity.this).edit();
             preferences.putString("my_nickname", identity.nickname);
@@ -186,28 +186,13 @@ public class IdentityActivity extends Activity  {
         public void onClick(View v) {
             Intent i = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, 42);
+            startActivityForResult(i, ACTIVITY_CODE_IMAGE);
         }
     };
 
-    public class myAsyncTask extends AsyncTask<Identity, Object, String> {
-
-        private Context ctx;
-
-        public myAsyncTask(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @Override
-        protected String doInBackground(Identity... params) {
-            String ok = params[0].updateImage(ctx);
-            return ok;
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 42 && data != null) {
+        if (requestCode == ACTIVITY_CODE_IMAGE && data != null) {
 
             File file = Message.getImageFile(UUID.randomUUID());
 
@@ -225,7 +210,13 @@ public class IdentityActivity extends Activity  {
             final BonfireData db = BonfireData.getInstance(IdentityActivity.this);
             db.updateIdentity(identity);
 
-            new myAsyncTask(this).execute(identity);
+            (new AsyncTask<Identity, Object, String>() {
+                @Override
+                protected String doInBackground(Identity... params) {
+                    String ok = params[0].updateImage(IdentityActivity.this);
+                    return ok;
+                }
+            }).execute(identity);
 
             ((ImageView) findViewById(R.id.contact_image)).setImageURI(Uri.parse("file://" + identity.getImage()));
         }

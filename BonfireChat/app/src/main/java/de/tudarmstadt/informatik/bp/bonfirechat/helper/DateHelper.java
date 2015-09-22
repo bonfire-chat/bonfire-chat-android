@@ -9,11 +9,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by mw on 22.05.15.
  */
-public class DateHelper {
+public final class DateHelper {
 
-    public static String getNowString() {
-        return formatTime(new Date());
-    }
+    private DateHelper() { }
 
     /**
      * Formats the passed date as a HH:mm time if on the current day, as dd.MM. otherwise
@@ -23,8 +21,11 @@ public class DateHelper {
     public static String formatTimeOrDate(Date date) {
         Date now = new Date();
         String formattedDate = formatDate(date);
-        if (formatDate(now).equals(formattedDate)) return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(date);
-        else return formattedDate;
+        if (formatDate(now).equals(formattedDate)) {
+            return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(date);
+        } else {
+            return formattedDate;
+        }
     }
     public static String formatTime(Date date) {
         return new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date);

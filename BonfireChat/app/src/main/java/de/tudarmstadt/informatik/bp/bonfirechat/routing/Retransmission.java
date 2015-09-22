@@ -17,14 +17,14 @@ import de.tudarmstadt.informatik.bp.bonfirechat.network.ConnectionManager;
  * The purpose of this class is to be given the sentButNotAckedPackages Queue of ConnectionManager
  * and initiating necessary retransmits
  */
-public class Retransmission implements Runnable{
+public final class Retransmission implements Runnable {
 
-    private static final String TAG="Retransmission";
+    private static final String TAG = "Retransmission";
+
+    @SuppressWarnings("CheckStyle")
     private static final Hashtable<UUID, Retransmission> pendingRetransmissions = new Hashtable<>();
 
     private PayloadPacket packet;
-    //timeout in milliseconds
-    private int timeout;
     private Handler handler;
     private Context context;
 
@@ -33,23 +33,23 @@ public class Retransmission implements Runnable{
      * @param packet packet to retransmit
      * @param timeout timeout in milliseconds before packet is retransmit
      */
-    private Retransmission(Context ctx, PayloadPacket packet, long timeout){
+    private Retransmission(Context ctx, PayloadPacket packet, long timeout) {
         this.packet = packet;
         this.context = ctx;
         handler = new Handler();
-        Log.d(TAG, "Scheduling retransmission in "+timeout+" ms : "+packet.toString());
+        Log.d(TAG, "Scheduling retransmission in " + timeout + " ms : " + packet.toString());
         handler.postDelayed(this, timeout);
     }
 
-    public static void add(Context ctx, PayloadPacket packet, long timeout){
+    public static void add(Context ctx, PayloadPacket packet, long timeout) {
         if (pendingRetransmissions.containsKey(packet.uuid)) {
-            Log.e(TAG, "RETR-TEST Packet "+packet.uuid+" already has one pending Retransmission, refused to schedule a second one!");
+            Log.e(TAG, "RETR-TEST Packet " + packet.uuid + " already has one pending Retransmission, refused to schedule a second one!");
             return;
         }
         pendingRetransmissions.put(packet.uuid, new Retransmission(ctx, packet, timeout));
     }
     public static void cancel(UUID uuid) {
-        Log.i(TAG, "Packet "+ uuid+" was acked, cancelling retransmission...");
+        Log.i(TAG, "Packet " + uuid + " was acked, cancelling retransmission...");
         if (pendingRetransmissions.containsKey(uuid)) {
             pendingRetransmissions.get(uuid).cancel();
             pendingRetransmissions.remove(uuid);
@@ -62,7 +62,7 @@ public class Retransmission implements Runnable{
         handler.removeCallbacks(this);
     }
 
-    public void run(){
+    public void run() {
         pendingRetransmissions.remove(this.packet.uuid);
         packet.incrementTransmissionCount();
         if (packet.getTransmissionCount() > ConstOptions.MAX_RETRANSMISSIONS) {
@@ -83,8 +83,7 @@ public class Retransmission implements Runnable{
             // increment ttl by two but do not exceed MAX_TTL
             packet.ttl = Math.min(ConstOptions.MAX_TTL, Math.max(packet.ttl, ConstOptions.DEFAULT_TTL) + 2);
         }
-        Log.i(TAG, "timed out, retransmitting "+packet.toString());
+        Log.i(TAG, "timed out, retransmitting " + packet.toString());
         ConnectionManager.sendPacket(context, packet);
     }
-
 }

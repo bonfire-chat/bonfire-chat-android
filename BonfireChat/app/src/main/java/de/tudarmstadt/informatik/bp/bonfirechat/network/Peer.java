@@ -1,7 +1,5 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
-import java.util.Arrays;
-
 /**
  * Created by johannes on 30.07.15.
  *
@@ -10,7 +8,9 @@ import java.util.Arrays;
 public class Peer {
 
     // time delta to pass before flagging this peer as outdated
-    private static long OUTDATED_TTL = 1000 * 60 * 10; // 10 minutes
+    private static final long OUTDATED_TTL = 1000 * 60 * 10; // 10 minutes
+
+    private static final int MAC_ADDRESS_BYTES = 6;
 
     // Bluetooth MAC address
     private byte[] address;
@@ -29,46 +29,51 @@ public class Peer {
     }
 
     public byte[] getAddress() {
-        return address;
+        return address.clone();
     }
 
     public Class getProtocolClass() {
         return protocol;
     }
 
-    public void updateLastSeen(Class protocol) {
+    public void updateLastSeen(Class newProtocol) {
         lastSeen = System.currentTimeMillis();
-        this.protocol = protocol;
+        this.protocol = newProtocol;
     }
 
     public boolean isOutdated() {
         //TODO implement some flag for peers that will never be outdated....
-        if (protocol.getSimpleName().equals("GcmProtocol")) return false;
+        if (protocol.getSimpleName().equals("GcmProtocol")) {
+            return false;
+        }
 
         return lastSeen + OUTDATED_TTL < System.currentTimeMillis();
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof byte[]) {
-            return Arrays.equals(address, (byte[]) other);
-        }
-        else if (other instanceof Peer) {
-            return Arrays.equals(address, ((Peer) other).address);
-        }
-        else {
-            return false;
-        }
+        return address.equals(other instanceof byte[] ? (byte[]) other
+            : other instanceof Peer ? ((Peer) other).address
+            : other);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Peer(" + protocol.getSimpleName() + ", " + formatMacAddress(address) + ", "+debugInfo+")";
+        return "Peer(" + protocol.getSimpleName() + ", " + formatMacAddress(address) + ", " + debugInfo + ")";
     }
 
     public static String formatMacAddress(byte[] macAddress) {
-        if (macAddress == null) return null;
-        if (macAddress.length < 6) return "<invalid>";
+        if (macAddress == null) {
+            return null;
+        }
+        if (macAddress.length < MAC_ADDRESS_BYTES) {
+            return "<invalid>";
+        }
         return String.format("%02X:%02X:%02X:%02X:%02X:%02X",
                 macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
     }

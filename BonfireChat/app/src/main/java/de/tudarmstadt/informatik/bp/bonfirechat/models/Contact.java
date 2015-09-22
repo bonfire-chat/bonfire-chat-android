@@ -33,10 +33,13 @@ public class Contact implements Serializable, IPublicIdentity {
     public long rowid;
 
 
-    public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
-        this(nickname, firstName, lastName, phoneNumber, MyPublicKey.deserialize(publicKey), wifiMacAddress, bluetoothMacAddress, rowid);
+    public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey,
+                   String wifiMacAddress, String bluetoothMacAddress, int rowid) {
+        this(nickname, firstName, lastName, phoneNumber, MyPublicKey.deserialize(publicKey),
+                wifiMacAddress, bluetoothMacAddress, rowid);
     }
-    public Contact(String nickname, String firstName, String lastName, String phoneNumber, MyPublicKey publicKey, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
+    public Contact(String nickname, String firstName, String lastName, String phoneNumber, MyPublicKey publicKey,
+                   String wifiMacAddress, String bluetoothMacAddress, int rowid) {
         this.nickname = nickname;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -95,8 +98,7 @@ public class Contact implements Serializable, IPublicIdentity {
         if (!lastKnownLocation.isEmpty()) {
             String[] coords = lastKnownLocation.split(":");
             return new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -117,7 +119,7 @@ public class Contact implements Serializable, IPublicIdentity {
         return nickname;
     }
 
-    public ContentValues getContentValues(){
+    public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put("nickname", nickname);
         values.put("firstName", firstName);
@@ -132,7 +134,7 @@ public class Contact implements Serializable, IPublicIdentity {
         return values;
     }
 
-    public static Contact fromCursor(Cursor cursor){
+    public static Contact fromCursor(Cursor cursor) {
         Contact contact = new Contact(cursor.getString(cursor.getColumnIndex("nickname")),
                     cursor.getString(cursor.getColumnIndex("firstName")),
                 cursor.getString(cursor.getColumnIndex("lastName")),

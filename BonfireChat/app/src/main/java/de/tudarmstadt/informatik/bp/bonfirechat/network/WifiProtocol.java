@@ -6,27 +6,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WpsInfo;
-import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -37,12 +30,17 @@ import de.tudarmstadt.informatik.bp.bonfirechat.routing.PacketType;
 import de.tudarmstadt.informatik.bp.bonfirechat.routing.TracerouteHopSegment;
 
 /**
+ * Note: class is final
+ *
  * Created by mw on 16.08.15.
  */
-public class WifiProtocol extends SocketProtocol {
+public final class WifiProtocol extends SocketProtocol {
 
     public static final String TAG = "WifiProtocol";
     private Context context;
+
+    private static final int DATAGRAM_SOCKET_PORT = 9876;
+    private static final int DATAGRAM_BUFFER_SIZE = 2048;
 
     private final WifiP2pManager manager;
     private final WifiP2pManager.Channel channel;
@@ -72,7 +70,7 @@ public class WifiProtocol extends SocketProtocol {
         context.registerReceiver(this.wifiBroadcastReceiver, intentFilter);
 
         try {
-            socket = new DatagramSocket(9876);
+            socket = new DatagramSocket(DATAGRAM_SOCKET_PORT);
             new Thread(listeningThread).start();
         } catch (SocketException e) {
             Log.e(TAG, "Unable to create DatagramSocket: " + e.getMessage());
@@ -114,7 +112,7 @@ public class WifiProtocol extends SocketProtocol {
         @Override
         public void run() {
             try {
-                DatagramPacket pack = new DatagramPacket(new byte[2048], 2048);
+                DatagramPacket pack = new DatagramPacket(new byte[DATAGRAM_BUFFER_SIZE], DATAGRAM_BUFFER_SIZE);
 
                 while (!socket.isClosed()) {
                     socket.receive(pack);
@@ -127,7 +125,8 @@ public class WifiProtocol extends SocketProtocol {
                         packet.addPathNode(macAddress);
                         // add traceroute segment to payload packets
                         if (packet.getType() == PacketType.Payload) {
-                            packet.addTracerouteSegment(new TracerouteHopSegment(TracerouteHopSegment.ProtocolType.WIFI, packet.getLastHopTimeSent(), new Date()));
+                            packet.addTracerouteSegment(new TracerouteHopSegment(
+                                    TracerouteHopSegment.ProtocolType.WIFI, packet.getLastHopTimeSent(), new Date()));
                         }
                         obj.close();
                         packetListener.onPacketReceived(WifiProtocol.this, packet);
@@ -148,15 +147,15 @@ public class WifiProtocol extends SocketProtocol {
             @Override
             public void run() {
 
-                Log.i(TAG, "Broadcasting via UDP: "+packet.toString());
+                Log.i(TAG, "Broadcasting via UDP: " + packet.toString());
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 try {
                     ObjectOutputStream obj = new ObjectOutputStream(stream);
                     obj.writeObject(myMacAddress);
                     obj.writeObject(packet);
-                    byte[] buffer=stream.toByteArray();
+                    byte[] buffer = stream.toByteArray();
                     DatagramPacket udpPacket = new DatagramPacket(buffer, buffer.length,
-                            InetAddress.getByName("192.168.49.255"), 9876);
+                            InetAddress.getByName("192.168.49.255"), DATAGRAM_SOCKET_PORT);
                     socket.send(udpPacket);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -168,7 +167,7 @@ public class WifiProtocol extends SocketProtocol {
     private final BroadcastReceiver wifiBroadcastReceiver = new BroadcastReceiver() {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context ctx, Intent intent) {
             String action = intent.getAction();
             if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
                 // Determine if Wifi P2P mode is enabled or not, alert
@@ -188,7 +187,7 @@ public class WifiProtocol extends SocketProtocol {
 
                 WifiP2pDeviceList list = intent.getParcelableExtra(WifiP2pManager.EXTRA_P2P_DEVICE_LIST);
                 for (WifiP2pDevice device : list.getDeviceList()) {
-                    Log.d(TAG, "Wifi found device: " + device.status + "|" +device.deviceName+"|"+ device.deviceAddress);
+                    Log.d(TAG, "Wifi found device: " + device.status + "|"  + device.deviceName + "|" + device.deviceAddress);
                     if (device.status == WifiP2pDevice.AVAILABLE) {
                         //connectToDevice(device);
                     }
@@ -204,10 +203,10 @@ public class WifiProtocol extends SocketProtocol {
                 NetworkInfo networkInfo = (NetworkInfo) intent
                         .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
-
                 synchronized (packetsToSend) {
-                    for(Packet p : packetsToSend)
+                    for (Packet p : packetsToSend) {
                         sendPacketViaUDP(p);
+                    }
                     packetsToSend.clear();
                 }
 
@@ -215,13 +214,12 @@ public class WifiProtocol extends SocketProtocol {
                     Log.i(TAG, "network is connected: ");
                     // We are connected with the other device, request connection
                     // info to find group owner IP
-
                     manager.requestConnectionInfo(channel, connectionInfoListener);
                 }
 
 
             } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-                WifiP2pDevice thisDevice = (WifiP2pDevice) intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
+                WifiP2pDevice thisDevice = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
                 Log.i(TAG, "My wifi device info: " + thisDevice.deviceAddress + " | " + thisDevice.deviceName);
                 myMacAddress = Peer.addressFromString(thisDevice.deviceAddress);
 
@@ -229,35 +227,15 @@ public class WifiProtocol extends SocketProtocol {
         }
     };
 
-    private void connectToDevice(WifiP2pDevice device) {
-        WifiP2pConfig config = new WifiP2pConfig();
-        config.deviceAddress = device.deviceAddress;
-        config.wps.setup = WpsInfo.PBC;
-        Log.i(TAG, "Connecting to " + config.deviceAddress);
-
-        manager.connect(channel, config, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                // WiFiDirectBroadcastReceiver will notify us. Ignore for now.
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.w(TAG, "peer connect failed: " + reason);
-                Toast.makeText(context, "Connect failed. Retry." + reason, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     WifiP2pManager.ConnectionInfoListener connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
         @Override
         public void onConnectionInfoAvailable(final WifiP2pInfo info) {
             Log.i(TAG, "connection info available");
             // InetAddress from WifiP2pInfo struct.
             String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
-            Log.i(TAG, "groupFormed="+info.groupFormed);
-            Log.i(TAG, "group owner="+groupOwnerAddress);
-            Log.i(TAG, "isGroupOwner="+ info.isGroupOwner);
+            Log.i(TAG, "groupFormed=" + info.groupFormed);
+            Log.i(TAG, "group owner=" + groupOwnerAddress);
+            Log.i(TAG, "isGroupOwner=" + info.isGroupOwner);
 
             // After the group negotiation, we can determine the group owner.
             if (info.groupFormed && info.isGroupOwner) {
@@ -286,10 +264,7 @@ public class WifiProtocol extends SocketProtocol {
     }
 
     @Override
-    public void shutdown() {
-
-    }
-
+    public void shutdown() { }
 
     @Override
     public String toString() {

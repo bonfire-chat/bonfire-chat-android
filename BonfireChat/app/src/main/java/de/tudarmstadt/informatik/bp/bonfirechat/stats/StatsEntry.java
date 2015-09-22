@@ -19,12 +19,11 @@ public class StatsEntry {
     public int messagesSent;
     public int messageReceived;
     public float lat, lng;
-    public long rowid;
 
     public StatsEntry() {
-        this(new Date(), 0, 0, 0, 0, 0, 0, 0);
+        this(new Date(), 0, 0, 0, 0, 0, 0);
     }
-    public StatsEntry(Date timestamp, int batteryLevel, float powerUsage, int messagesSent, int messageReceived, float lat, float lng, long rowid) {
+    public StatsEntry(Date timestamp, int batteryLevel, float powerUsage, int messagesSent, int messageReceived, float lat, float lng) {
         this.timestamp = timestamp;
         this.batteryLevel = batteryLevel;
         this.powerUsage = powerUsage;
@@ -32,7 +31,6 @@ public class StatsEntry {
         this.messageReceived = messageReceived;
         this.lat = lat;
         this.lng = lng;
-        this.rowid = rowid;
     }
 
     public ContentValues getContentValues() {
@@ -56,12 +54,10 @@ public class StatsEntry {
                     cursor.getInt(cursor.getColumnIndex("messages_sent")),
                     cursor.getInt(cursor.getColumnIndex("messages_received")),
                     cursor.getFloat(cursor.getColumnIndex("lat")),
-                    cursor.getFloat(cursor.getColumnIndex("lng")),
-                    cursor.getLong(cursor.getColumnIndex("rowid"))
+                    cursor.getFloat(cursor.getColumnIndex("lng"))
             );
             return stats;
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             Log.e("StatsEntry", "error parsing stats entry from database");
             return new StatsEntry();
         }

@@ -1,7 +1,5 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.routing;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,10 +47,6 @@ public abstract class Packet implements Serializable {
     public static final int ROUTING_MODE_FLOODING = 1;
     public static final int ROUTING_MODE_DSR = 2;
 
-    public long getTimeSent() {
-        return timeSent;
-    }
-
     public void setTimeSent(long timeSent) {
         this.timeSent = timeSent;
     }
@@ -82,7 +76,7 @@ public abstract class Packet implements Serializable {
     }
 
     public Date getLastHopTimeSent() {
-        return lastHopTimeSent;
+        return (Date) lastHopTimeSent.clone();
     }
     public void setLastHopTimeSent(Date lastHopTimeSent) {
         this.lastHopTimeSent = lastHopTimeSent;
@@ -93,14 +87,17 @@ public abstract class Packet implements Serializable {
     }
 
     public byte[] getNextHop() {
-        if (routingMode == ROUTING_MODE_DSR)
+        if (routingMode == ROUTING_MODE_DSR) {
             return nextHops.get(nextHops.size() - 1);
-        else
+        } else {
             return null;
+        }
     }
 
     public void removeNextHop() {
-        if (routingMode != ROUTING_MODE_DSR) throw new IllegalStateException("Not a DSR packet");
+        if (routingMode != ROUTING_MODE_DSR) {
+            throw new IllegalStateException("Not a DSR packet");
+        }
         nextHops.remove(nextHops.size() - 1);
     }
 
@@ -124,9 +121,9 @@ public abstract class Packet implements Serializable {
         this.routingMode = ROUTING_MODE_FLOODING;
         this.nextHops = new ArrayList<>();
     }
-    public void setDSR(List<byte[]> nextHops) {
+    public void setDSR(List<byte[]> newNextHops) {
         this.routingMode = ROUTING_MODE_DSR;
-        this.nextHops = nextHops;
+        this.nextHops = newNextHops;
     }
 
     public int getHopCount() {
@@ -138,16 +135,25 @@ public abstract class Packet implements Serializable {
     }
 
     @Override
-    public boolean equals(Object otherObject){
-        if (otherObject == null || !(otherObject instanceof Packet)) return false;
+    public boolean equals(Object otherObject) {
+        if (otherObject == null || !(otherObject instanceof Packet)) {
+            return false;
+        }
         Packet packet = (Packet) otherObject;
-        if(uuid.equals(packet.uuid) && type == packet.type )
+        if (uuid.equals(packet.uuid) && type == packet.type) {
             return true;
+        }
         return false;
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public String toString() {
-        return "Packet(" + getType().toString() + ", " + uuid.toString() + ", routing=" + String.valueOf(routingMode) + ", hopCount=" + String.valueOf(path.size()) + ")";
+        return "Packet(" + getType().toString() + ", " + uuid.toString() + ", routing="
+                + String.valueOf(routingMode) + ", hopCount=" + String.valueOf(path.size()) + ")";
     }
 }

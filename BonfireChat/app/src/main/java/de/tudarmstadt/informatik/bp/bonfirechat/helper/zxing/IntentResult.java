@@ -63,7 +63,7 @@ public final class IntentResult {
      * @return raw bytes of the barcode content, if applicable, or null otherwise
      */
     public byte[] getRawBytes() {
-        return rawBytes;
+        return rawBytes.clone();
     }
 
     /**
