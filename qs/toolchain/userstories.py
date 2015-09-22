@@ -15,7 +15,7 @@ with con:
 
     cur = con.cursor(mdb.cursors.DictCursor)
 
-    cur.execute("select w.id, subject, description, created_at, story_points, c.value as acceptance_criteria, w.fixed_version_id as sprint, u.firstname, u.lastname, (select sum(t.hours) from time_entries t where t.work_package_id=w.id) as hours from work_packages w left outer join custom_values c on w.id=c.customized_id and c.custom_field_id=3  left outer join users u on u.id=w.assigned_to_id where w.type_id=2 order by sprint, created_at asc")
+    cur.execute("select w.id, subject, description, created_at, story_points, c.value as acceptance_criteria, w.fixed_version_id as sprint, u.firstname, u.lastname, (select sum(t.hours) from time_entries t where t.work_package_id=w.id) as hours from work_packages w left outer join custom_values c on w.id=c.customized_id and c.custom_field_id=3  left outer join users u on u.id=w.assigned_to_id where w.type_id=2 and project_id=1 order by sprint, created_at asc")
 
     rows = cur.fetchall()
 
