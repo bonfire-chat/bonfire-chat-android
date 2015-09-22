@@ -5,9 +5,9 @@ import MySQLdb as mdb
 
 def myFormat(s):
     if s is not None:
-        print '\parbox[t]{10cm}{', s.replace('\n', '\\\\').replace('%', '\\%').replace('"', '').replace('„', '').replace('“', '') , '}'
+        return '\parbox[t]{10cm}{'+ s.replace('\n', '\\\\').replace('%', '\\%').replace('"', '').replace('„', '').replace('“', '') + '}'
     else:
-        print " "
+        return " "
 
 con = mdb.connect('37.59.184.73', 'qsmakefile', '2C6rJdvkgS', 'openproject_ce')
 
