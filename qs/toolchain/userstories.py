@@ -15,7 +15,7 @@ with con:
 
     cur = con.cursor(mdb.cursors.DictCursor)
 
-    cur.execute("select w.id, subject, description, created_at, story_points, c.value as acceptance_criteria, w.fixed_version_id as sprint, u.firstname, u.lastname, (select sum(t.hours) from time_entries t where t.work_package_id=w.id) as hours from work_packages w left outer join custom_values c on w.id=c.customized_id and c.custom_field_id=3  left outer join users u on u.id=w.assigned_to_id where w.type_id=2 and project_id=1 order by sprint, created_at asc")
+    cur.execute("select w.id, subject, description, created_at, story_points, c.value as acceptance_criteria, w.fixed_version_id as sprint, u.firstname, u.lastname, (select sum(t.hours) from time_entries t where t.work_package_id=w.id and t.project_id=1) as hours from work_packages w left outer join custom_values c on w.id=c.customized_id and c.custom_field_id=3  left outer join users u on u.id=w.assigned_to_id where w.type_id=2 and w.project_id=1 order by sprint, created_at asc")
 
     rows = cur.fetchall()
 
@@ -24,12 +24,16 @@ with con:
     for row in rows:
         if row['story_points'] is not None:
             sp = row['story_points']
-            if row['hours'] is not None and sp != 0:
-                velocity = row['hours']/sp
-                hours = row['hours']*1
-            else: 
-                velocity = 0
-                hours = 0
+        else:
+            sp = 0;
+
+        if row['hours'] is not None:
+            hours = row['hours']
+        else: 
+            hours = 0
+
+        if sp != 0:
+            velocity = hours/sp
         else:
             velocity = 0
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
@@ -46,7 +50,7 @@ with con:
         print 'Akzeptanzkriterium & ', myFormat(row['acceptance_criteria'])
         print '\\tabularnewline'
         print '\\hline'
-        print 'Story Points & ', "{:.2f}".format(sp)
+        print 'Story Points & ', sp
         print '\\tabularnewline'
         print '\\hline'
         print 'Entwickler & ', row['firstname'], ' ', row['lastname']
