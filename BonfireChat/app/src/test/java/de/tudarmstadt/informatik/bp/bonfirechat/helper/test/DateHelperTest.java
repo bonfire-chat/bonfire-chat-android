@@ -13,6 +13,12 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
  */
 public class DateHelperTest {
 
+    /**
+     * tests if formatTime and formatDateTime format correctly
+     * <br><br>
+     * formatTime should format in the form hh:mm:ss
+     * formatDateTime should format in the form yyyy-MM-dd hh:mm:ss
+     */
     @Test
     public void testFormat() {
         Date date1 = new Date(114,11,24,23,42,01);
@@ -20,6 +26,12 @@ public class DateHelperTest {
         assertEquals(DateHelper.formatDateTime(date1), "2014-12-24 23:42:01");
     }
 
+    /**
+     * tests if parseDateTime parses Dates correctly
+     * <br><br>
+     * Dates in the form yyyy-MM-dd hh:mm:ss should be parsed correctly
+     * Invalid Dates schould be recognized and not be parsed
+     */
     @Test
     public void testParse() {
         try {
