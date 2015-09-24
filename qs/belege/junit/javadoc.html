@@ -11,11 +11,11 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="initTests()">
+<a name="initTests--">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -24,67 +24,76 @@
 <pre>public&nbsp;void&nbsp;initTests()</pre>
 </li>
 </ul>
-<a name="testToString()">
+<a name="testToString--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testToString</h4>
 <pre>public&nbsp;void&nbsp;testToString()</pre>
+<div class="block">Tests correct behaviour of toString
+ <br><br>
+ The toString()-method should return the nickname of the contact</div>
 </li>
 </ul>
-<a name="testGetNickname()">
+<a name="testGetNickname--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testGetNickname</h4>
 <pre>public&nbsp;void&nbsp;testGetNickname()</pre>
+<div class="block">Tests getter of nickname</div>
 </li>
 </ul>
-<a name="testSetNickname()">
+<a name="testSetNickname--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testSetNickname</h4>
 <pre>public&nbsp;void&nbsp;testSetNickname()</pre>
+<div class="block">tests setter of nickname</div>
 </li>
 </ul>
-<a name="testGetFirstName()">
+<a name="testGetFirstName--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testGetFirstName</h4>
 <pre>public&nbsp;void&nbsp;testGetFirstName()</pre>
+<div class="block">Tests getter of firstName</div>
 </li>
 </ul>
-<a name="testSetFirstName()">
+<a name="testSetFirstName--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testSetFirstName</h4>
 <pre>public&nbsp;void&nbsp;testSetFirstName()</pre>
+<div class="block">Tests setter of firstName</div>
 </li>
 </ul>
-<a name="testGetLastName()">
+<a name="testGetLastName--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testGetLastName</h4>
 <pre>public&nbsp;void&nbsp;testGetLastName()</pre>
+<div class="block">Tests getter of lastName</div>
 </li>
 </ul>
-<a name="testSetLastName()">
+<a name="testSetLastName--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testSetLastName</h4>
 <pre>public&nbsp;void&nbsp;testSetLastName()</pre>
+<div class="block">Tests setter of lastName</div>
 </li>
 </ul>
 </li>
@@ -99,11 +108,11 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="initTests()">
+<a name="initTests--">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -112,31 +121,39 @@
 <pre>public&nbsp;void&nbsp;initTests()</pre>
 </li>
 </ul>
-<a name="testGetLastMessage()">
+<a name="testGetLastMessage--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testGetLastMessage</h4>
 <pre>public&nbsp;void&nbsp;testGetLastMessage()</pre>
+<div class="block">Tests if getLastMessage really returns the last message
+ <br><br>
+ For a conversation without messages, null should be returned
+ Otherwise the most recent message (the message which was added last) should be returned</div>
 </li>
 </ul>
-<a name="testAddMessages()">
+<a name="testAddMessages--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testAddMessages</h4>
 <pre>public&nbsp;void&nbsp;testAddMessages()</pre>
+<div class="block">Tests correct behaviour of addMessages
+ <br><br>
+ New messages should be added at the end of the list</div>
 </li>
 </ul>
-<a name="testFromCursor()">
+<a name="testFromCursor--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testFromCursor</h4>
 <pre>public&nbsp;void&nbsp;testFromCursor()</pre>
+<div class="block">Tests correct creation of a conversation from a database cursor</div>
 </li>
 </ul>
 </li>
@@ -151,11 +168,11 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="initTests()">
+<a name="initTests--">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -164,22 +181,27 @@
 <pre>public&nbsp;void&nbsp;initTests()</pre>
 </li>
 </ul>
-<a name="testFromMessage()">
+<a name="testFromMessage--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testFromMessage</h4>
 <pre>public&nbsp;void&nbsp;testFromMessage()</pre>
+<div class="block">Tests correct creation of envelope from message
+ <br><br>
+ uuid, the recipients's public key and sender's public key should match
+ Flags should be initialized with zero</div>
 </li>
 </ul>
-<a name="testHasFlag()">
+<a name="testHasFlag--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testHasFlag</h4>
 <pre>public&nbsp;void&nbsp;testHasFlag()</pre>
+<div class="block">Tests correct behaviour of hasFlag</div>
 </li>
 </ul>
 </li>
@@ -194,11 +216,11 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="initTests()">
+<a name="initTests--">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -207,40 +229,53 @@
 <pre>public&nbsp;void&nbsp;initTests()</pre>
 </li>
 </ul>
-<a name="testDirection()">
+<a name="testDirection--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testDirection</h4>
 <pre>public&nbsp;void&nbsp;testDirection()</pre>
+<div class="block">Tests correct behaviour of direction()
+ <br><br>
+ direction() should return the sending direction of the message</div>
 </li>
 </ul>
-<a name="testToString()">
+<a name="testToString--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testToString</h4>
 <pre>public&nbsp;void&nbsp;testToString()</pre>
+<div class="block">Tests correct behaviour of toString()
+ <br><br>
+ The toString-method should return the body of the message</div>
 </li>
 </ul>
-<a name="testSetTransferProtocol()">
+<a name="testSetTransferProtocol--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testSetTransferProtocol</h4>
 <pre>public&nbsp;void&nbsp;testSetTransferProtocol()</pre>
+<div class="block">Tests the correct setting of the transfer protocol
+ <br><br>
+ setTransferProtocol() should only set the flag for the specified protocol
+ All other protocol flags should be zero afterwards</div>
 </li>
 </ul>
-<a name="testHasFlag()">
+<a name="testHasFlag--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testHasFlag</h4>
 <pre>public&nbsp;void&nbsp;testHasFlag()</pre>
+<div class="block">Tests correct behaviour of hasFlag
+ <br><br>
+ If specified flag is set, hasFlag() should return true, false otherwise</div>
 </li>
 </ul>
 </li>
@@ -255,11 +290,11 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="initTests()">
+<a name="initTests--">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -268,22 +303,26 @@
 <pre>public&nbsp;void&nbsp;initTests()</pre>
 </li>
 </ul>
-<a name="testGet()">
+<a name="testGet--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testGet</h4>
 <pre>public&nbsp;void&nbsp;testGet()</pre>
+<div class="block">Tests correct behaviour of get()
+ <br><br>
+ get() should return the public key myPublicKey was initialized with</div>
 </li>
 </ul>
-<a name="testAsByteArray()">
+<a name="testAsByteArray--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testAsByteArray</h4>
 <pre>public&nbsp;void&nbsp;testAsByteArray()</pre>
+<div class="block">Tests the correct conversion of the public key to a byte array</div>
 </li>
 </ul>
 </li>
@@ -298,11 +337,11 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="testEncode()">
+<a name="testEncode--">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -327,26 +366,34 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="testFormat()">
+<a name="testFormat--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testFormat</h4>
 <pre>public&nbsp;void&nbsp;testFormat()</pre>
+<div class="block">tests if formatTime and formatDateTime format correctly
+ <br><br>
+ formatTime should format in the form hh:mm:ss
+ formatDateTime should format in the form yyyy-MM-dd hh:mm:ss</div>
 </li>
 </ul>
-<a name="testParse()">
+<a name="testParse--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testParse</h4>
 <pre>public&nbsp;void&nbsp;testParse()</pre>
+<div class="block">tests if parseDateTime parses Dates correctly
+ <br><br>
+ Dates in the form yyyy-MM-dd hh:mm:ss should be parsed correctly
+ Invalid Dates schould be recognized and not be parsed</div>
 </li>
 </ul>
 </li>
@@ -361,35 +408,43 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="testEmpty()">
+<a name="testEmpty--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testEmpty</h4>
 <pre>public&nbsp;void&nbsp;testEmpty()</pre>
+<div class="block">Tests, that contains() does not crash, when Ringbuffer is empty</div>
 </li>
 </ul>
-<a name="testContains()">
+<a name="testContains--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testContains</h4>
 <pre>public&nbsp;void&nbsp;testContains()</pre>
+<div class="block">Tests correct behaviour of contains() method
+ <br><br>
+ If Object o is in the Ringbuffer, contains(o) should return true
+ Otherwise it should return false</div>
 </li>
 </ul>
-<a name="testOverflow()">
+<a name="testOverflow--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testOverflow</h4>
 <pre>public&nbsp;void&nbsp;testOverflow()</pre>
+<div class="block">Tests correct behaviour of Ringbuffer after it exceeds its size for the first time
+ <br><br>
+ The first object that overflows the buffer should be written to the first position</div>
 </li>
 </ul>
 </li>
@@ -404,26 +459,30 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="testStreamToString()">
+<a name="testStreamToString--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>testStreamToString</h4>
 <pre>public&nbsp;void&nbsp;testStreamToString()</pre>
+<div class="block">Tests correct conversion of streams to strings
+ <br><br>
+ Empty streams and null should result in an empty string</div>
 </li>
 </ul>
-<a name="testByteArrayToHexString()">
+<a name="testByteArrayToHexString--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testByteArrayToHexString</h4>
 <pre>public&nbsp;void&nbsp;testByteArrayToHexString()</pre>
+<div class="block">Tests correct conversion of byte array to hex strings</div>
 </li>
 </ul>
 </li>
@@ -438,11 +497,11 @@
 </div>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="initTests()">
+<a name="initTests--">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -451,13 +510,16 @@
 <pre>public&nbsp;void&nbsp;initTests()</pre>
 </li>
 </ul>
-<a name="testRegexMatch()">
+<a name="testRegexMatch--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>testRegexMatch</h4>
 <pre>public&nbsp;void&nbsp;testRegexMatch()</pre>
+<div class="block">Tests correct matching of multiple regular expressions
+ <br><br>
+ One non-matching string should result in returning false</div>
 </li>
 </ul>
 </li>
