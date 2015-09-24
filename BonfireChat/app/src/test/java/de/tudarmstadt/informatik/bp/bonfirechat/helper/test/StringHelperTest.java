@@ -18,6 +18,11 @@ public class StringHelperTest {
         pattern = "BonfireChat ist cool.*";
     }
 
+    /**
+     * Tests correct matching of multiple regular expressions
+     * <br><br>
+     * One non-matching string should result in returning false
+     */
     @Test
     public void testRegexMatch(){
         assertTrue(StringHelper.regexMatch(pattern, "BonfireChat ist cool", "BonfireChat ist cool!!!!!"));
