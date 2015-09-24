@@ -28,9 +28,6 @@ public class MyPublicKey implements Serializable {
     public String asBase64() {
         return CryptoHelper.toBase64(thisKey.toBytes());
     }
-    public String asHash() {
-        return asBase64();
-    }
 
     public static MyPublicKey deserialize(byte[] publicKey) {
         try {
