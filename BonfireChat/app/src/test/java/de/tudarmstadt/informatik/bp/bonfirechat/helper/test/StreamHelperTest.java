@@ -13,6 +13,11 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
  */
 public class StreamHelperTest {
 
+    /**
+     * Tests correct conversion of streams to strings
+     * <br><br>
+     * Empty streams and null should result in an empty string
+     */
     @Test
     public void testStreamToString() {
         assertEquals(StreamHelper.convertStreamToString(null), "");
@@ -22,6 +27,9 @@ public class StreamHelperTest {
         assertEquals(StreamHelper.convertStreamToString(testStream), "Test");
     }
 
+    /**
+     * Tests correct conversion of byte array to hex strings
+     */
     @Test
     public void testByteArrayToHexString() {
         assertEquals("", StreamHelper.byteArrayToHexString(new byte[]{}));
