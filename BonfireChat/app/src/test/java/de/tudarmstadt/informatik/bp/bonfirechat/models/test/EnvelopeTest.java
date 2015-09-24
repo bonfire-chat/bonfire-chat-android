@@ -48,16 +48,25 @@ public class EnvelopeTest {
         contact = new Contact("nickname", "Nick", "Name", "", myPublicKey, "", "", 0);
     }
 
+    /**
+     * Tests correct creation of envelope from message
+     * <br><br>
+     * uuid, the recipients's public key and sender's public key should match
+     * Flags should be initialized with zero
+     */
     @Test
     public void testFromMessage(){
         message = new Message("body", contact, date, Message.FLAG_PROTO_BT, contact);
         Envelope newEnvelope = Envelope.fromMessage(message);
         assertEquals(message.uuid, newEnvelope.uuid);
         assertEquals(recipient, newEnvelope.recipientPublicKey);
-        assertEquals(recipient, newEnvelope.senderPublicKey);
+        assertEquals(senderPublicKey, newEnvelope.senderPublicKey);
         assertEquals(0, newEnvelope.flags);
     }
 
+    /**
+     * Tests correct behaviour of hasFlag
+     */
     @Test
     public void testHasFlag(){
         assertFalse(envelope.hasFlag(Message.FLAG_ENCRYPTED));
