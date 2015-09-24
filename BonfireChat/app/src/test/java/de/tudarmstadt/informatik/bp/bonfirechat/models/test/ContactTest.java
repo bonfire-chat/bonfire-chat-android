@@ -29,38 +29,61 @@ public class ContactTest {
         contact = new Contact("nickname", "Nick", "Name", "", new MyPublicKey(publicKeyMock), "", "", 0);
     }
 
+    /**
+     * Tests correct behaviour of toString
+     * <br><br>
+     * The toString()-method should return the nickname of the contact
+     */
     @Test
     public void testToString(){
         assertEquals("nickname", contact.toString());
     }
 
+    /**
+     * Tests getter of nickname
+     */
     @Test
     public void testGetNickname(){
         assertEquals("nickname", contact.getNickname());
     }
 
+    /**
+     * tests setter of nickname
+     */
     @Test
     public void testSetNickname(){
         contact.setNickname("nickname2");
         assertEquals("nickname2", contact.getNickname());
     }
 
+    /**
+     * Tests getter of firstName
+     */
     @Test
     public void testGetFirstName(){
         assertEquals("Nick", contact.getFirstName());
     }
 
+    /**
+     * Tests setter of firstName
+     */
     @Test
     public void testSetFirstName(){
         contact.setFirstName("Nick2");
         assertEquals("Nick2", contact.getFirstName());
     }
 
+    /**
+     * Tests getter of lastName
+     */
     @Test
     public void testGetLastName(){
         assertEquals("Name", contact.getLastName());
     }
 
+    /**
+     * Tests setter of lastName
+     */
     @Test
     public void testSetLastName(){
         contact.setLastName("Name2");
