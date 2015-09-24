@@ -10,7 +10,7 @@ clean:
 	rm -rf $(ASSETS) $(PARTIALS)
 
 dirs:
-	mkdir -p $(ASSETS) $(PARTIALS)
+	mkdir -p $(ASSETS) $(PARTIALS) $(USERSTORIES)
 
 
 $(PARTIALS)/codereviews.tex: belege/code-reviews/*.md
