@@ -32,11 +32,19 @@ public class MyPublicKeyTest {
         myPublicKey = new MyPublicKey(publicKeyMock);
     }
 
+    /**
+     * Tests correct behaviour of get()
+     * <br><br>
+     * get() should return the public key myPublicKey was initialized with
+     */
     @Test
     public void testGet(){
         assertEquals(publicKeyMock, myPublicKey.get());
     }
 
+    /**
+     * Tests the correct conversion of the public key to a byte array
+     */
     @Test
     public void testAsByteArray(){
         assertEquals(publicKeyMock.toBytes(), myPublicKey.asByteArray());
