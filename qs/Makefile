@@ -46,7 +46,7 @@ belege/lint/lint-results%.tmp.html: belege/lint/lint-results%.html
 $(PARTIALS)/findbugs%.pdf: belege/findbugs/findbugs%.html
 	wkhtmltopdf --lowquality $< $@
 
-$(USERSTORIES)/userstories.tex: toolchain/userstories.py
+$(USERSTORIES)/userstories.tex:
 	toolchain/userstories.py > $@
 
 qs-dokument.pdf: qs-dokument.tex anhang/*.tex spezifikation/*.tex \
@@ -62,4 +62,4 @@ open:
 
 rebuild: clean all
 
-.PHONY: dirs clean
+.PHONY: dirs clean $(USERSTORIES)/userstories.tex
