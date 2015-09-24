@@ -38,22 +38,43 @@ public class MessageTest {
         message = new Message("body", contact, new Date(42), Message.FLAG_ENCRYPTED | Message.FLAG_PROTO_BT | Message.FLAG_PROTO_CLOUD | Message.FLAG_PROTO_WIFI, contact);
     }
 
+    /**
+     * Tests correct behaviour of direction()
+     * <br><br>
+     * direction() should return the sending direction of the message
+     */
     @Test
     public void testDirection(){
         assertEquals(Message.MessageDirection.Received, message.direction());
     }
 
+    /**
+     * Tests correct behaviour of toString()
+     * <br><br>
+     * The toString-method should return the body of the message
+     */
     @Test
     public void testToString(){
         assertEquals("body", message.toString());
     }
 
+    /**
+     * Tests the correct setting of the transfer protocol
+     * <br><br>
+     * setTransferProtocol() should only set the flag for the specified protocol
+     * All other protocol flags should be zero afterwards
+     */
     @Test
     public void testSetTransferProtocol(){
         message.setTransferProtocol(BluetoothProtocol.class);
         assertEquals(Message.FLAG_ENCRYPTED | Message.FLAG_PROTO_BT & ~(Message.FLAG_PROTO_CLOUD | Message.FLAG_PROTO_WIFI), message.flags);
     }
 
+    /**
+     * Tests correct behaviour of hasFlag
+     * <br><br>
+     * If specified flag is set, hasFlag() should return true, false otherwise
+     */
     @Test
     public void testHasFlag(){
         message.setTransferProtocol(BluetoothProtocol.class);
