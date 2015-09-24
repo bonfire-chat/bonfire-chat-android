@@ -42,12 +42,23 @@ public class ConversationTest {
         conversation2 = new Conversation(contact, "Title2", 23, messages);
     }
 
+    /**
+     * Tests if getLastMessage really returns the last message
+     * <br><br>
+     * For a conversation without messages, null should be returned
+     * Otherwise the most recent message (the message which was added last) should be returned
+     */
     @Test
     public void testGetLastMessage() {
         assertEquals(conversation.getLastMessage(), null);
         assertEquals(conversation2.getLastMessage(), message);
     }
 
+    /**
+     * Tests correct behaviour of addMessages
+     * <br><br>
+     * New messages should be added at the end of the list
+     */
     @Test
     public void testAddMessages() {
         ArrayList<Message> newmessages = new ArrayList<>();
@@ -57,21 +68,10 @@ public class ConversationTest {
         assertEquals(conversation2.getLastMessage(), message);
     }
 
-    /*
-    @Test
-    public void testGetContentValues() {
-        ContentValues cv = conversation.getContentValues();
-        assertFalse(cv.containsKey("peer"));
-        assertEquals(cv.get("title"), "Title");
-    }
-    @Test
-    public void testGetContentValuesWithPeer() {
-        ContentValues cv = conversation.getContentValues();
-        assertEquals(cv.get("peer"), 9876);
-        assertEquals(cv.get("title"), "Title2");
-    }
-    */
 
+    /**
+     * Tests correct creation of a conversation from a database cursor
+     */
     @Test
     public void testFromCursor() {
         Cursor cursor = Mockito.mock(Cursor.class);
