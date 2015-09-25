@@ -5,7 +5,7 @@ import MySQLdb as mdb
 import sys
 from array import *
 
-times = array('f', [1738/60, 2768/60, 990/60, 4825/60, 4650.2/60, 4062/60, 3834.2/60, 5289/60, 1316/60, 0])
+times = array('f', [1738.0/60, 2768.0/60, 990.0/60, 4825.0/60, 4650.2/60, 4062.0/60, 3834.2/60, 5289.0/60, 1316.0/60, 0])
 
 def myFormat(s):
     if s is not None:
@@ -53,10 +53,11 @@ with con:
         if sprint > lastSprint:
             lastSprint = sprint
             print '\\section*{Sprint ' + str(sprint) + '}'
+            sprintHours -= hours
             if sprint > 1:
                 missingHours = times[sprint - 2] - sprintHours
-                sys.stderr.write('In Sprint ' + str(sprint-1) + ' fehlen noch ' + str(missingHours) + ' Stunden\n')
-            sprintHours = 0
+                sys.stderr.write('In Sprint ' + str(sprint-1) + ' fehlen noch ' + str("{:.2f}".format(missingHours)) + ' Stunden\n')
+            sprintHours = hours
 
 
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
