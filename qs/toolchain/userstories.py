@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import MySQLdb as mdb
+import sys
+from array import *
+
+times = array('f', [1738.0/60, 2768.0/60, 990.0/60, 4825.0/60, 4650.2/60, 4062.0/60, 3834.2/60, 5289.0/60, 1316.0/60, 0])
 
 def myFormat(s):
     if s is not None:
@@ -19,15 +23,11 @@ with con:
 
     rows = cur.fetchall()
 
-    print '\\begin{center}'
+    print '\\centering'
 
-    last_sprint = "-1"
-
+    lastSprint = 0
+    sprintHours = 0
     for row in rows:
-        sprint = row['sprint']
-        if sprint != last_sprint:
-            print '\section{Sprint ', sprint, '}'
-            last_sprint = sprint
 
         if row['story_points'] is not None:
             sp = row['story_points']
@@ -43,6 +43,23 @@ with con:
             velocity = hours/sp
         else:
             velocity = 0
+
+        if sp == 0 or hours == 0 or velocity == 0:
+            sys.stderr.write('Userstory ' + str(row["id"]) + ' muss noch bearbeitet werden\n')
+
+        sprint = row["sprint"]
+        sprintHours += hours
+
+        if sprint > lastSprint:
+            lastSprint = sprint
+            print '\\section*{Sprint ' + str(sprint) + '}'
+            sprintHours -= hours
+            if sprint > 1:
+                missingHours = times[sprint - 2] - sprintHours
+                sys.stderr.write('In Sprint ' + str(sprint-1) + ' fehlen noch ' + str("{:.2f}".format(missingHours)) + ' Stunden\n')
+            sprintHours = hours
+
+
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
         print '\\hline'
         print 'ID & ', row["id"]
@@ -75,7 +92,5 @@ with con:
         print '\\end{tabular}'
         print '\\\\'
         #print '\\vspace{1cm}'
-
-    print '\\end{center}'
 
 con.close()
