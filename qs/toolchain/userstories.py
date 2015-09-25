@@ -21,7 +21,14 @@ with con:
 
     print '\\begin{center}'
 
+    last_sprint = "-1"
+
     for row in rows:
+        sprint = row['sprint']
+        if sprint != last_sprint:
+            print '\section{Sprint ', sprint, '}'
+            last_sprint = sprint
+
         if row['story_points'] is not None:
             sp = row['story_points']
         else:
@@ -29,7 +36,7 @@ with con:
 
         if row['hours'] is not None:
             hours = row['hours']
-        else: 
+        else:
             hours = 0
 
         if sp != 0:
@@ -38,7 +45,7 @@ with con:
             velocity = 0
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
         print '\\hline'
-        print 'ID & ', row["id"] 
+        print 'ID & ', row["id"]
         print '\\tabularnewline'
         print '\\hline'
         print 'Name & ', myFormat(row['subject'])
@@ -56,7 +63,7 @@ with con:
         print 'Entwickler & ', row['firstname'], ' ', row['lastname']
         print '\\tabularnewline'
         print '\\hline'
-        print 'Umgesetzt Iteration & ', row['sprint']
+        print 'Umgesetzt Iteration & ', sprint
         print '\\tabularnewline'
         print '\\hline'
         print 'Tatsächlicher Aufwand (Std.) & ', "{:.2f}".format(hours)
@@ -66,7 +73,8 @@ with con:
         print '\\tabularnewline'
         print '\\hline'
         print '\\end{tabular}'
-        print '\\vspace{1cm}'
+        print '\\\\'
+        #print '\\vspace{1cm}'
 
     print '\\end{center}'
 
