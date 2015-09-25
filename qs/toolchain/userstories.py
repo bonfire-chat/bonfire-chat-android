@@ -90,6 +90,6 @@ with con:
         print '\\hline'
         print '\\end{tabular}'
         print '\\\\'
-        #print '\\vspace{1cm}'
+        print '\\vspace{1cm}'
 
 con.close()
