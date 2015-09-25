@@ -9,7 +9,7 @@ times = array('f', [1738.0/60, 2768.0/60, 990.0/60, 4825.0/60, 4650.2/60, 4062.0
 
 def myFormat(s):
     if s is not None:
-        return '\parbox[t]{10cm}{'+ s.replace('\n', '\\\\').replace('%', '\\%').replace('"', '').replace('\"', '').replace('„', '').replace('“', '') + '}'
+        return '\parbox[t]{10cm}{'+ s.replace('\n', '\\\\').replace('%', '\\%').replace(' \"', ' ``').replace('\" ', '\'\' ').replace('\".', '\'\'.').replace('\"-', '\'\'-').replace('"', '').replace('\"', '').replace('„', '').replace('“', '\'\'') + '}'
     else:
         return " "
 
@@ -22,8 +22,6 @@ with con:
     cur.execute("select w.id, subject, description, created_at, story_points, c.value as acceptance_criteria, w.fixed_version_id as sprint, u.firstname, u.lastname, (select sum(t.hours) from time_entries t where t.work_package_id=w.id and t.project_id=1) as hours from work_packages w left outer join custom_values c on w.id=c.customized_id and c.custom_field_id=3  left outer join users u on u.id=w.assigned_to_id where w.type_id=2 and w.project_id=1 order by sprint, created_at asc")
 
     rows = cur.fetchall()
-
-    print '\\centering'
 
     lastSprint = 0
     sprintHours = 0
@@ -60,6 +58,7 @@ with con:
             sprintHours = hours
 
 
+        print '\\centering'
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
         print '\\hline'
         print 'ID & ', row["id"] 
