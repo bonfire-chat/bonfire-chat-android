@@ -55,6 +55,12 @@ In diesen Tests werden folgende Teile des Routing getestet:
 | ------------------- | ---------------------------- |
 | Knoten A, B und C werden wie in Testfall III.1 vorbereitet. Auf Knoten C wird zusätzlich die Übertragung per Cloud aktiviert. Auf einem weiteren Knoten D wird nur die Übertragung per Cloud aktiviert. Es wird sichergestellt, dass C und D mit dem Internet verbunden sind. Die Kontaktdetails von D werden an A gesendet. A beginnt eine Unterhaltung mit D und sendet die Nachricht "alpha" an D. Nach Erhalt der Nachricht "alpha" sendet A eine weitere Nachricht "beta". | Die Nachricht "alpha" kommt per Flooding über B, C und Server bei D an, ACK "für alpha" geht auf direktem Pfad (D-Server-C-B-A) per DSR zurück an A. Die Nachricht "beta" wird auf direktem Pfad (A-B-C-Server-D) per DSR  an D gesendet, ACK "für beta" wie ACK "für alpha". Die empfangenen und weitergeleiteten Nachrichten und ihre Pfade sind entsprechend im Dashboard ersichtlich. |
 
+(mein Vorschlag)
+
+| Benutzerinteraktion | erwartetes Verhalten der App |
+| ------------------- | ---------------------------- |
+| Auf den Knoten A und B werden alle Übertragungsverfahren außer Bluetooth deaktiviert. Auf B wird GCM zusätzlich aktiviert. Auf Knoten C wird nur GCM aktiviert. Die Kontaktdetails von C werden an A gesendet. Die Knoten werden räumlich so angeordnet, dass eine Bluetoothverbindung zwischen A und B möglich ist. Auf A wird eine Unterhaltung mit C begonnen und eine Nachricht an C gesendet. | A sendet die Nachricht per Bluetooth an B. B sendet die Nachricht per GCM an C. Die ACK kommt auf umgekehrtem Weg zu A zurück.|
+
 3.
 ----------------------------
 
@@ -70,7 +76,7 @@ In diesen Tests wird überprüft, ob der Routingalgorithmus bei ausfallenden Pfa
 
 | Benutzerinteraktion | erwartetes Verhalten der App |
 | ------------------- | ---------------------------- |
-| Auf drei Knoten A wird nur Bluetooth aktiviert, auf B wird GCM und Bluetooth aktiviert. Von A wird eine Nachricht "alpha" an B gesendet. Nachdem diese zugestellt und acknowledged wurde, wird eine weitere Nachricht "beta" von A and B gesendet. Danach wird A räumlich so weit vom B entfernt, dass keine Bluetooth-Übertragung mehr möglich ist. Weiterhin wird auf A die Übertragung per GCM aktiviert. Anschließend wird eine weitere Nachricht "gamma" von A and B gesendet. | Die Nachricht "alpha" wird per Flooding gesendet, B sendet per DSR ein ACK "für alpha" zurück. Danach hat A den Pfad zu B gespeichert und die Nachricht "beta" wird direkt per DSR an B gesendet. Die Nachricht "gamma" wird auch versucht per DSR direkt via Bluetooth an B zu senden. Da dies fehlschlägt, wird beim Retry nach 20 Sekunden versucht, "gamma" per Flooding zuzustellen. Dies erfolgt dann über GCM. Das ACK "für gamma" von B an A erfolgt dann wiederum per DSR. |
+| Auf Knoten A wird nur Bluetooth aktiviert, auf B wird GCM und Bluetooth aktiviert. Von A wird eine Nachricht "alpha" an B gesendet. Nachdem diese zugestellt und acknowledged wurde, wird eine weitere Nachricht "beta" von A and B gesendet. Danach wird A räumlich so weit vom B entfernt, dass keine Bluetooth-Übertragung mehr möglich ist. Weiterhin wird auf A die Übertragung per GCM aktiviert. Anschließend wird eine weitere Nachricht "gamma" von A and B gesendet. | Die Nachricht "alpha" wird per Flooding gesendet, B sendet per DSR ein ACK "für alpha" zurück. Danach hat A den Pfad zu B gespeichert und die Nachricht "beta" wird direkt per DSR an B gesendet. Die Nachricht "gamma" wird auch versucht per DSR direkt via Bluetooth an B zu senden. Da dies fehlschlägt, wird beim Retry nach 20 Sekunden versucht, "gamma" per Flooding zuzustellen. Dies erfolgt dann über GCM. Das ACK für "gamma" von B an A erfolgt dann wiederum per DSR. |
 
 
 
