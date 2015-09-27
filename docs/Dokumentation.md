@@ -355,9 +355,9 @@ Zusätzlich dazu können die Kontaktdaten auch über NFC übertragen werden. Daf
 In beiden Fällen wird ebenfalls ein `Contact` Objekt erstellt und in die Datenbank geschrieben.
 
 
-## lokale Datenhaltung: SQlite
+## lokale Datenhaltung: SQLite
 
-BonfireChat speichert einige Dinge lokal auf dem Gerät. Dazu gehören die eigene Identität, Kontakte, Unterhaltungen und Nachrichten. Diese Daten werden in einer `SQlite` Datenbank verwaltet. Diese verwendet das folgende Schema:
+BonfireChat speichert einige Dinge lokal auf dem Gerät. Dazu gehören die eigene Identität, Kontakte, Unterhaltungen und Nachrichten. Diese Daten werden in einer `SQLite` Datenbank verwaltet. Diese verwendet das folgende Schema:
 
 ```sql
 CREATE TABLE if not exists contacts (
