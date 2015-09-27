@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui.zxing;
 
 /**
  * <p>Encapsulates the result of a barcode scan invoked through {@link IntentIntegrator}.</p>

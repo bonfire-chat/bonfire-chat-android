@@ -32,10 +32,10 @@ import java.nio.charset.Charset;
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.ContactImageHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentIntegrator;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.IntentResult;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRCodeEncoder;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.zxing.IntentIntegrator;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.zxing.IntentResult;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.zxing.QRCodeEncoder;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.IPublicIdentity;
 

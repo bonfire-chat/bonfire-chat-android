@@ -1,4 +1,4 @@
-package de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing;
+package de.tudarmstadt.informatik.bp.bonfirechat.ui.zxing;
 
 import android.app.Activity;
 import android.net.Uri;

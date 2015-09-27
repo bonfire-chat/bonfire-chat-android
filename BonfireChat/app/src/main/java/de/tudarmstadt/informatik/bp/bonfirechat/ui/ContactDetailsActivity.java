@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.R;
 import de.tudarmstadt.informatik.bp.bonfirechat.data.BonfireData;
-import de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing.QRcodeHelper;
+import de.tudarmstadt.informatik.bp.bonfirechat.ui.zxing.QRcodeHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.models.Contact;
 
 public class ContactDetailsActivity extends FragmentActivity implements OnMapReadyCallback {
