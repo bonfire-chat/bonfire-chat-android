@@ -80,29 +80,31 @@
 <i>6</i>&nbsp;/**
 <i>7</i>&nbsp; * Created by johannes on 28.08.15.
 <i>8</i>&nbsp; */
-<b class="nc"><i>9</i>&nbsp;public class StringHelper {</b>
+<i>9</i>&nbsp;public final class StringHelper {
 <i>10</i>&nbsp;
-<i>11</i>&nbsp;    public static boolean regexMatch(String pattern, String... strings) {
-<b class="fc"><i>12</i>&nbsp;        Pattern regex = Pattern.compile(pattern);</b>
-<i>13</i>&nbsp;        Matcher matcher;
-<i>14</i>&nbsp;
-<b class="fc"><i>15</i>&nbsp;        for (String string: strings) {</b>
-<b class="fc"><i>16</i>&nbsp;            matcher = regex.matcher(string);</b>
-<b class="fc"><i>17</i>&nbsp;            if (!matcher.matches()) {</b>
-<b class="fc"><i>18</i>&nbsp;                return false;</b>
-<i>19</i>&nbsp;            }
-<i>20</i>&nbsp;        }
-<i>21</i>&nbsp;
-<b class="fc"><i>22</i>&nbsp;        return true;</b>
-<i>23</i>&nbsp;    }
-<i>24</i>&nbsp;
-<i>25</i>&nbsp;}
+<b class="nc"><i>11</i>&nbsp;    private StringHelper() { }</b>
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    public static boolean regexMatch(String pattern, String... strings) {
+<b class="fc"><i>14</i>&nbsp;        Pattern regex = Pattern.compile(pattern);</b>
+<i>15</i>&nbsp;        Matcher matcher;
+<i>16</i>&nbsp;
+<b class="fc"><i>17</i>&nbsp;        for (String string: strings) {</b>
+<b class="fc"><i>18</i>&nbsp;            matcher = regex.matcher(string);</b>
+<b class="fc"><i>19</i>&nbsp;            if (!matcher.matches()) {</b>
+<b class="fc"><i>20</i>&nbsp;                return false;</b>
+<i>21</i>&nbsp;            }
+<i>22</i>&nbsp;        }
+<i>23</i>&nbsp;
+<b class="fc"><i>24</i>&nbsp;        return true;</b>
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>

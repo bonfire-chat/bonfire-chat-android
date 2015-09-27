@@ -42,26 +42,26 @@
   <td class="name">ContactImageHelper</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/ 1)
+    (1/ 1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    20%
   </span>
   <span class="absValue">
-    (0/ 5)
+    (1/ 5)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    15,8%
   </span>
   <span class="absValue">
-    (0/ 15)
+    (3/ 19)
   </span>
 </td>
 </tr>
@@ -90,32 +90,32 @@
 <i>16</i>&nbsp;/**
 <i>17</i>&nbsp; * Created by jonas on 03.09.15.
 <i>18</i>&nbsp; */
-<b class="nc"><i>19</i>&nbsp;public class ContactImageHelper {</b>
+<i>19</i>&nbsp;public final class ContactImageHelper {
 <i>20</i>&nbsp;
-<i>21</i>&nbsp;    private static final String TAG = &quot;ContactImageHelper&quot;;
+<b class="nc"><i>21</i>&nbsp;    private ContactImageHelper() { }</b>
 <i>22</i>&nbsp;
-<i>23</i>&nbsp;    public static void displayContactImage(IPublicIdentity contact, ImageView icon){
-<b class="nc"><i>24</i>&nbsp;        displayContactImage(contact.getImage(), icon);</b>
-<i>25</i>&nbsp;    }
-<i>26</i>&nbsp;
-<i>27</i>&nbsp;    public static void displayContactImage(String image, ImageView icon){
-<b class="nc"><i>28</i>&nbsp;        if(image.equals(&quot;&quot;)) {</b>
-<b class="nc"><i>29</i>&nbsp;            icon.setImageResource(R.mipmap.ic_launcher);</b>
-<i>30</i>&nbsp;        }
-<i>31</i>&nbsp;        else {
-<b class="nc"><i>32</i>&nbsp;            icon.setImageURI(Uri.parse(image));</b>
-<i>33</i>&nbsp;        }
-<i>34</i>&nbsp;    }
-<i>35</i>&nbsp;
-<i>36</i>&nbsp;    public static void displayCompoundContactImage(Context context, IPublicIdentity contact, TextView name){
-<b class="nc"><i>37</i>&nbsp;        displayCompoundContactImage(context, contact.getImage(), name);</b>
-<i>38</i>&nbsp;    }
-<i>39</i>&nbsp;
-<i>40</i>&nbsp;    public static void displayCompoundContactImage(Context context, String image, TextView name){
-<b class="nc"><i>41</i>&nbsp;        if(image.equals(&quot;&quot;)) {</b>
-<b class="nc"><i>42</i>&nbsp;            name.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_launcher, 0, 0, 0);</b>
-<i>43</i>&nbsp;        }
-<i>44</i>&nbsp;        else {
+<i>23</i>&nbsp;    private static final String TAG = &quot;ContactImageHelper&quot;;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    public static void displayContactImage(IPublicIdentity contact, ImageView icon) {
+<b class="nc"><i>26</i>&nbsp;        displayContactImage(contact.getImage(), icon);</b>
+<b class="nc"><i>27</i>&nbsp;    }</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    public static void displayContactImage(String image, ImageView icon) {
+<b class="fc"><i>30</i>&nbsp;        if (image.equals(&quot;&quot;)) {</b>
+<b class="fc"><i>31</i>&nbsp;            icon.setImageResource(R.mipmap.ic_launcher);</b>
+<i>32</i>&nbsp;        } else {
+<b class="nc"><i>33</i>&nbsp;            icon.setImageURI(Uri.parse(image));</b>
+<i>34</i>&nbsp;        }
+<b class="fc"><i>35</i>&nbsp;    }</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public static void displayCompoundContactImage(Context context, IPublicIdentity contact, TextView name) {
+<b class="nc"><i>38</i>&nbsp;        displayCompoundContactImage(context, contact.getImage(), name);</b>
+<b class="nc"><i>39</i>&nbsp;    }</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public static void displayCompoundContactImage(Context context, String image, TextView name) {
+<b class="nc"><i>42</i>&nbsp;        if (image.equals(&quot;&quot;)) {</b>
+<b class="nc"><i>43</i>&nbsp;            name.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_launcher, 0, 0, 0);</b>
+<i>44</i>&nbsp;        } else {
 <i>45</i>&nbsp;            try {
 <b class="nc"><i>46</i>&nbsp;                InputStream inputStream = context.getContentResolver().openInputStream(Uri.parse(image));</b>
 <b class="nc"><i>47</i>&nbsp;                Drawable drawable = Drawable.createFromStream(inputStream, Uri.parse(image).toString());</b>
@@ -125,14 +125,14 @@
 <b class="nc"><i>51</i>&nbsp;                name.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);</b>
 <b class="nc"><i>52</i>&nbsp;            }</b>
 <i>53</i>&nbsp;        }
-<i>54</i>&nbsp;    }
+<b class="nc"><i>54</i>&nbsp;    }</b>
 <i>55</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>

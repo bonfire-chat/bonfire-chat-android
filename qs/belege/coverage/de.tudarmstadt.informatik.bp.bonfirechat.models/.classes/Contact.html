@@ -107,137 +107,139 @@
 <i>33</i>&nbsp;    public long rowid;
 <i>34</i>&nbsp;
 <i>35</i>&nbsp;
-<i>36</i>&nbsp;    public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey, String wifiMacAddress, String bluetoothMacAddress, int rowid) {
-<b class="nc"><i>37</i>&nbsp;        this(nickname, firstName, lastName, phoneNumber, MyPublicKey.deserialize(publicKey), wifiMacAddress, bluetoothMacAddress, rowid);</b>
-<b class="nc"><i>38</i>&nbsp;    }</b>
-<b class="fc"><i>39</i>&nbsp;    public Contact(String nickname, String firstName, String lastName, String phoneNumber, MyPublicKey publicKey, String wifiMacAddress, String bluetoothMacAddress, int rowid) {</b>
-<b class="fc"><i>40</i>&nbsp;        this.nickname = nickname;</b>
-<b class="fc"><i>41</i>&nbsp;        this.firstName = firstName;</b>
-<b class="fc"><i>42</i>&nbsp;        this.lastName = lastName;</b>
-<b class="fc"><i>43</i>&nbsp;        this.phoneNumber = phoneNumber;</b>
-<b class="fc"><i>44</i>&nbsp;        this.publicKey = publicKey;</b>
-<b class="fc"><i>45</i>&nbsp;        this.wifiMacAddress = wifiMacAddress;</b>
-<b class="fc"><i>46</i>&nbsp;        this.bluetoothMacAddress = bluetoothMacAddress;</b>
-<b class="fc"><i>47</i>&nbsp;        this.rowid = rowid;</b>
-<b class="fc"><i>48</i>&nbsp;        this.lastKnownLocation = &quot;&quot;;</b>
-<b class="fc"><i>49</i>&nbsp;        this.shareLocation = false;</b>
-<b class="fc"><i>50</i>&nbsp;        this.image = &quot;&quot;;</b>
-<b class="fc"><i>51</i>&nbsp;    }</b>
-<i>52</i>&nbsp;
-<i>53</i>&nbsp;    public String getNickname() {
-<b class="fc"><i>54</i>&nbsp;        return nickname;</b>
-<i>55</i>&nbsp;    }
-<i>56</i>&nbsp;
-<i>57</i>&nbsp;    public void setNickname(String nickname) {
-<b class="fc"><i>58</i>&nbsp;        this.nickname = nickname;</b>
-<b class="fc"><i>59</i>&nbsp;    }</b>
-<i>60</i>&nbsp;
-<i>61</i>&nbsp;    public String getFirstName() {
-<b class="fc"><i>62</i>&nbsp;        return firstName;</b>
-<i>63</i>&nbsp;    }
-<i>64</i>&nbsp;
-<i>65</i>&nbsp;    public void setFirstName(String firstName) {
-<b class="fc"><i>66</i>&nbsp;        this.firstName = firstName;</b>
-<b class="fc"><i>67</i>&nbsp;    }</b>
-<i>68</i>&nbsp;
-<i>69</i>&nbsp;    public String getLastName() {
-<b class="fc"><i>70</i>&nbsp;        return lastName;</b>
-<i>71</i>&nbsp;    }
-<i>72</i>&nbsp;
-<i>73</i>&nbsp;    public void setLastName(String lastName) {
-<b class="fc"><i>74</i>&nbsp;        this.lastName = lastName;</b>
-<b class="fc"><i>75</i>&nbsp;    }</b>
-<i>76</i>&nbsp;
-<i>77</i>&nbsp;    @Override
-<i>78</i>&nbsp;    public String getPhoneNumber() {
-<b class="nc"><i>79</i>&nbsp;        return phoneNumber;</b>
-<i>80</i>&nbsp;    }
-<i>81</i>&nbsp;
-<i>82</i>&nbsp;    public String getImage() {
-<b class="nc"><i>83</i>&nbsp;        return image;</b>
-<i>84</i>&nbsp;    }
-<i>85</i>&nbsp;
-<i>86</i>&nbsp;    public void setImage(String image) {
-<b class="nc"><i>87</i>&nbsp;        this.image = image;</b>
-<b class="nc"><i>88</i>&nbsp;    }</b>
-<i>89</i>&nbsp;
-<i>90</i>&nbsp;    public MyPublicKey getPublicKey() {
-<b class="fc"><i>91</i>&nbsp;        return publicKey;</b>
-<i>92</i>&nbsp;    }
-<i>93</i>&nbsp;
-<i>94</i>&nbsp;    public LatLng getLastKnownLocation() {
-<b class="nc"><i>95</i>&nbsp;        if (!lastKnownLocation.isEmpty()) {</b>
-<b class="nc"><i>96</i>&nbsp;            String[] coords = lastKnownLocation.split(&quot;:&quot;);</b>
-<b class="nc"><i>97</i>&nbsp;            return new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));</b>
-<i>98</i>&nbsp;        }
-<i>99</i>&nbsp;        else {
-<b class="nc"><i>100</i>&nbsp;            return null;</b>
-<i>101</i>&nbsp;        }
-<i>102</i>&nbsp;    }
-<i>103</i>&nbsp;    public void setLastKnownLocation(String location) {
-<b class="nc"><i>104</i>&nbsp;        this.lastKnownLocation = location;</b>
-<b class="nc"><i>105</i>&nbsp;    }</b>
-<i>106</i>&nbsp;
-<i>107</i>&nbsp;    public boolean isShareLocation() {
-<b class="nc"><i>108</i>&nbsp;        return shareLocation;</b>
-<i>109</i>&nbsp;    }
-<i>110</i>&nbsp;
-<i>111</i>&nbsp;    public void setShareLocation(boolean shareLocation) {
-<b class="nc"><i>112</i>&nbsp;        this.shareLocation = shareLocation;</b>
-<b class="nc"><i>113</i>&nbsp;    }</b>
-<i>114</i>&nbsp;
-<i>115</i>&nbsp;    @Override
-<i>116</i>&nbsp;    public String toString() {
-<b class="fc"><i>117</i>&nbsp;        return nickname;</b>
-<i>118</i>&nbsp;    }
-<i>119</i>&nbsp;
-<i>120</i>&nbsp;    public ContentValues getContentValues(){
-<b class="nc"><i>121</i>&nbsp;        ContentValues values = new ContentValues();</b>
-<b class="nc"><i>122</i>&nbsp;        values.put(&quot;nickname&quot;, nickname);</b>
-<b class="nc"><i>123</i>&nbsp;        values.put(&quot;firstName&quot;, firstName);</b>
-<b class="nc"><i>124</i>&nbsp;        values.put(&quot;lastName&quot;, lastName);</b>
-<b class="nc"><i>125</i>&nbsp;        values.put(&quot;phoneNumber&quot;, phoneNumber);</b>
-<b class="nc"><i>126</i>&nbsp;        values.put(&quot;publicKey&quot;, publicKey == null ? null : publicKey.asBase64());</b>
-<b class="nc"><i>127</i>&nbsp;        values.put(&quot;wifiMacAddress&quot;, wifiMacAddress);</b>
-<b class="nc"><i>128</i>&nbsp;        values.put(&quot;bluetoothMacAddress&quot;, bluetoothMacAddress);</b>
-<b class="nc"><i>129</i>&nbsp;        values.put(&quot;lastKnownLocation&quot;, lastKnownLocation);</b>
-<b class="nc"><i>130</i>&nbsp;        values.put(&quot;shareLocation&quot;, shareLocation ? 1 : 0);</b>
-<b class="nc"><i>131</i>&nbsp;        values.put(&quot;image&quot;, image);</b>
-<b class="nc"><i>132</i>&nbsp;        return values;</b>
-<i>133</i>&nbsp;    }
-<i>134</i>&nbsp;
-<i>135</i>&nbsp;    public static Contact fromCursor(Cursor cursor){
-<b class="nc"><i>136</i>&nbsp;        Contact contact = new Contact(cursor.getString(cursor.getColumnIndex(&quot;nickname&quot;)),</b>
-<i>137</i>&nbsp;                    cursor.getString(cursor.getColumnIndex(&quot;firstName&quot;)),
-<i>138</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;lastName&quot;)),
-<i>139</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;phoneNumber&quot;)),
-<i>140</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;publicKey&quot;)),
-<i>141</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;wifiMacAddress&quot;)),
-<i>142</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;bluetoothMacAddress&quot;)),
-<i>143</i>&nbsp;                cursor.getInt(cursor.getColumnIndex(&quot;rowid&quot;)));
-<b class="nc"><i>144</i>&nbsp;        contact.setLastKnownLocation(cursor.getString(cursor.getColumnIndex(&quot;lastKnownLocation&quot;)));</b>
-<b class="nc"><i>145</i>&nbsp;        contact.setShareLocation(cursor.getInt(cursor.getColumnIndex(&quot;shareLocation&quot;)) == 1);</b>
-<b class="nc"><i>146</i>&nbsp;        contact.setImage(cursor.getString(cursor.getColumnIndex(&quot;image&quot;)));</b>
-<b class="nc"><i>147</i>&nbsp;        return contact;</b>
-<i>148</i>&nbsp;    }
-<i>149</i>&nbsp;
-<i>150</i>&nbsp;    public static Contact findOrCreate(Context ctx, byte[] publicKey, String untrustedNickname) {
-<b class="nc"><i>151</i>&nbsp;        BonfireData db = BonfireData.getInstance(ctx);</b>
-<b class="nc"><i>152</i>&nbsp;        Contact theContact = db.getContactByPublicKey(publicKey);</b>
-<b class="nc"><i>153</i>&nbsp;        if (theContact == null) {</b>
-<i>154</i>&nbsp;            // TODO: better contact creation.... e.g. search in online directory
-<b class="nc"><i>155</i>&nbsp;            theContact = new Contact(untrustedNickname, &quot;&quot;, &quot;&quot;, &quot;&quot;, MyPublicKey.deserialize(publicKey), &quot;&quot;, &quot;&quot;, 0);</b>
-<b class="nc"><i>156</i>&nbsp;            db.createContact(theContact);</b>
-<i>157</i>&nbsp;        }
-<b class="nc"><i>158</i>&nbsp;        return theContact;</b>
-<i>159</i>&nbsp;    }
-<i>160</i>&nbsp;}
+<i>36</i>&nbsp;    public Contact(String nickname, String firstName, String lastName, String phoneNumber, String publicKey,
+<i>37</i>&nbsp;                   String wifiMacAddress, String bluetoothMacAddress, int rowid) {
+<b class="nc"><i>38</i>&nbsp;        this(nickname, firstName, lastName, phoneNumber, MyPublicKey.deserialize(publicKey),</b>
+<i>39</i>&nbsp;                wifiMacAddress, bluetoothMacAddress, rowid);
+<b class="nc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;    public Contact(String nickname, String firstName, String lastName, String phoneNumber, MyPublicKey publicKey,
+<b class="fc"><i>42</i>&nbsp;                   String wifiMacAddress, String bluetoothMacAddress, int rowid) {</b>
+<b class="fc"><i>43</i>&nbsp;        this.nickname = nickname;</b>
+<b class="fc"><i>44</i>&nbsp;        this.firstName = firstName;</b>
+<b class="fc"><i>45</i>&nbsp;        this.lastName = lastName;</b>
+<b class="fc"><i>46</i>&nbsp;        this.phoneNumber = phoneNumber;</b>
+<b class="fc"><i>47</i>&nbsp;        this.publicKey = publicKey;</b>
+<b class="fc"><i>48</i>&nbsp;        this.wifiMacAddress = wifiMacAddress;</b>
+<b class="fc"><i>49</i>&nbsp;        this.bluetoothMacAddress = bluetoothMacAddress;</b>
+<b class="fc"><i>50</i>&nbsp;        this.rowid = rowid;</b>
+<b class="fc"><i>51</i>&nbsp;        this.lastKnownLocation = &quot;&quot;;</b>
+<b class="fc"><i>52</i>&nbsp;        this.shareLocation = false;</b>
+<b class="fc"><i>53</i>&nbsp;        this.image = &quot;&quot;;</b>
+<b class="fc"><i>54</i>&nbsp;    }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public String getNickname() {
+<b class="fc"><i>57</i>&nbsp;        return nickname;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public void setNickname(String nickname) {
+<b class="fc"><i>61</i>&nbsp;        this.nickname = nickname;</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public String getFirstName() {
+<b class="fc"><i>65</i>&nbsp;        return firstName;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public void setFirstName(String firstName) {
+<b class="fc"><i>69</i>&nbsp;        this.firstName = firstName;</b>
+<b class="fc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public String getLastName() {
+<b class="fc"><i>73</i>&nbsp;        return lastName;</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public void setLastName(String lastName) {
+<b class="fc"><i>77</i>&nbsp;        this.lastName = lastName;</b>
+<b class="fc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    @Override
+<i>81</i>&nbsp;    public String getPhoneNumber() {
+<b class="nc"><i>82</i>&nbsp;        return phoneNumber;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public String getImage() {
+<b class="nc"><i>86</i>&nbsp;        return image;</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public void setImage(String image) {
+<b class="nc"><i>90</i>&nbsp;        this.image = image;</b>
+<b class="nc"><i>91</i>&nbsp;    }</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public MyPublicKey getPublicKey() {
+<b class="fc"><i>94</i>&nbsp;        return publicKey;</b>
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public LatLng getLastKnownLocation() {
+<b class="nc"><i>98</i>&nbsp;        if (!lastKnownLocation.isEmpty()) {</b>
+<b class="nc"><i>99</i>&nbsp;            String[] coords = lastKnownLocation.split(&quot;:&quot;);</b>
+<b class="nc"><i>100</i>&nbsp;            return new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));</b>
+<i>101</i>&nbsp;        } else {
+<b class="nc"><i>102</i>&nbsp;            return null;</b>
+<i>103</i>&nbsp;        }
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;    public void setLastKnownLocation(String location) {
+<b class="nc"><i>106</i>&nbsp;        this.lastKnownLocation = location;</b>
+<b class="nc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    public boolean isShareLocation() {
+<b class="nc"><i>110</i>&nbsp;        return shareLocation;</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    public void setShareLocation(boolean shareLocation) {
+<b class="nc"><i>114</i>&nbsp;        this.shareLocation = shareLocation;</b>
+<b class="nc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    @Override
+<i>118</i>&nbsp;    public String toString() {
+<b class="fc"><i>119</i>&nbsp;        return nickname;</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public ContentValues getContentValues() {
+<b class="nc"><i>123</i>&nbsp;        ContentValues values = new ContentValues();</b>
+<b class="nc"><i>124</i>&nbsp;        values.put(&quot;nickname&quot;, nickname);</b>
+<b class="nc"><i>125</i>&nbsp;        values.put(&quot;firstName&quot;, firstName);</b>
+<b class="nc"><i>126</i>&nbsp;        values.put(&quot;lastName&quot;, lastName);</b>
+<b class="nc"><i>127</i>&nbsp;        values.put(&quot;phoneNumber&quot;, phoneNumber);</b>
+<b class="nc"><i>128</i>&nbsp;        values.put(&quot;publicKey&quot;, publicKey == null ? null : publicKey.asBase64());</b>
+<b class="nc"><i>129</i>&nbsp;        values.put(&quot;wifiMacAddress&quot;, wifiMacAddress);</b>
+<b class="nc"><i>130</i>&nbsp;        values.put(&quot;bluetoothMacAddress&quot;, bluetoothMacAddress);</b>
+<b class="nc"><i>131</i>&nbsp;        values.put(&quot;lastKnownLocation&quot;, lastKnownLocation);</b>
+<b class="nc"><i>132</i>&nbsp;        values.put(&quot;shareLocation&quot;, shareLocation ? 1 : 0);</b>
+<b class="nc"><i>133</i>&nbsp;        values.put(&quot;image&quot;, image);</b>
+<b class="nc"><i>134</i>&nbsp;        return values;</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    public static Contact fromCursor(Cursor cursor) {
+<b class="nc"><i>138</i>&nbsp;        Contact contact = new Contact(cursor.getString(cursor.getColumnIndex(&quot;nickname&quot;)),</b>
+<i>139</i>&nbsp;                    cursor.getString(cursor.getColumnIndex(&quot;firstName&quot;)),
+<i>140</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;lastName&quot;)),
+<i>141</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;phoneNumber&quot;)),
+<i>142</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;publicKey&quot;)),
+<i>143</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;wifiMacAddress&quot;)),
+<i>144</i>&nbsp;                cursor.getString(cursor.getColumnIndex(&quot;bluetoothMacAddress&quot;)),
+<i>145</i>&nbsp;                cursor.getInt(cursor.getColumnIndex(&quot;rowid&quot;)));
+<b class="nc"><i>146</i>&nbsp;        contact.setLastKnownLocation(cursor.getString(cursor.getColumnIndex(&quot;lastKnownLocation&quot;)));</b>
+<b class="nc"><i>147</i>&nbsp;        contact.setShareLocation(cursor.getInt(cursor.getColumnIndex(&quot;shareLocation&quot;)) == 1);</b>
+<b class="nc"><i>148</i>&nbsp;        contact.setImage(cursor.getString(cursor.getColumnIndex(&quot;image&quot;)));</b>
+<b class="nc"><i>149</i>&nbsp;        return contact;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public static Contact findOrCreate(Context ctx, byte[] publicKey, String untrustedNickname) {
+<b class="nc"><i>153</i>&nbsp;        BonfireData db = BonfireData.getInstance(ctx);</b>
+<b class="nc"><i>154</i>&nbsp;        Contact theContact = db.getContactByPublicKey(publicKey);</b>
+<b class="nc"><i>155</i>&nbsp;        if (theContact == null) {</b>
+<i>156</i>&nbsp;            // TODO: better contact creation.... e.g. search in online directory
+<b class="nc"><i>157</i>&nbsp;            theContact = new Contact(untrustedNickname, &quot;&quot;, &quot;&quot;, &quot;&quot;, MyPublicKey.deserialize(publicKey), &quot;&quot;, &quot;&quot;, 0);</b>
+<b class="nc"><i>158</i>&nbsp;            db.createContact(theContact);</b>
+<i>159</i>&nbsp;        }
+<b class="nc"><i>160</i>&nbsp;        return theContact;</b>
+<i>161</i>&nbsp;    }
+<i>162</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>

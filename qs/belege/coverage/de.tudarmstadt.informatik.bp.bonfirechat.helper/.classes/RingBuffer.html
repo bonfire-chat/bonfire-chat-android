@@ -61,7 +61,7 @@
     100%
   </span>
   <span class="absValue">
-    (11/ 11)
+    (12/ 12)
   </span>
 </td>
 </tr>
@@ -93,19 +93,21 @@
 <b class="fc"><i>19</i>&nbsp;        insertPosition = insertPosition % length;</b>
 <b class="fc"><i>20</i>&nbsp;    }</b>
 <i>21</i>&nbsp;    public boolean contains(T element) {
-<b class="fc"><i>22</i>&nbsp;        for(int i = 0; i &lt; length; i++) {</b>
-<b class="fc"><i>23</i>&nbsp;            if (content[i] != null &amp;&amp; content[i].equals(element)) return true;</b>
-<i>24</i>&nbsp;        }
-<b class="fc"><i>25</i>&nbsp;        return false;</b>
-<i>26</i>&nbsp;    }
-<i>27</i>&nbsp;
-<i>28</i>&nbsp;}
+<b class="fc"><i>22</i>&nbsp;        for (int i = 0; i &lt; length; i++) {</b>
+<b class="fc"><i>23</i>&nbsp;            if (content[i] != null &amp;&amp; content[i].equals(element)) {</b>
+<b class="fc"><i>24</i>&nbsp;                return true;</b>
+<i>25</i>&nbsp;            }
+<i>26</i>&nbsp;        }
+<b class="fc"><i>27</i>&nbsp;        return false;</b>
+<i>28</i>&nbsp;    }
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>

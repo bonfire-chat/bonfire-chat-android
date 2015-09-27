@@ -47,10 +47,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    63,6%
+    58,3%
   </span>
   <span class="absValue">
-    (21/ 33)
+    (21/ 36)
   </span>
 </td>
 </tr>
@@ -85,10 +85,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    66,7%
+    61,5%
   </span>
   <span class="absValue">
-    (24/ 36)
+    (24/ 39)
   </span>
 </td>
 </tr>
@@ -130,62 +130,69 @@
 <b class="fc"><i>30</i>&nbsp;        this.rowid = rowid;</b>
 <b class="fc"><i>31</i>&nbsp;    }</b>
 <i>32</i>&nbsp;
-<b class="fc"><i>33</i>&nbsp;    public Conversation(Contact peer, String title, int rowid){</b>
+<b class="fc"><i>33</i>&nbsp;    public Conversation(Contact peer, String title, int rowid) {</b>
 <b class="fc"><i>34</i>&nbsp;        this.peer = peer;</b>
 <b class="fc"><i>35</i>&nbsp;        this.title = title;</b>
 <b class="fc"><i>36</i>&nbsp;        this.messages = new ArrayList&lt;&gt;();</b>
 <b class="fc"><i>37</i>&nbsp;        this.rowid = rowid;</b>
 <b class="fc"><i>38</i>&nbsp;    }</b>
 <i>39</i>&nbsp;
-<i>40</i>&nbsp;    public void addMessages(ArrayList&lt;Message&gt; messages){
-<b class="fc"><i>41</i>&nbsp;        this.messages.addAll(messages);</b>
+<i>40</i>&nbsp;    public void addMessages(ArrayList&lt;Message&gt; newMessages) {
+<b class="fc"><i>41</i>&nbsp;        this.messages.addAll(newMessages);</b>
 <b class="fc"><i>42</i>&nbsp;    }</b>
 <i>43</i>&nbsp;
 <i>44</i>&nbsp;    public Message getLastMessage() {
-<b class="fc"><i>45</i>&nbsp;        if(messages.size() &gt; 0) {</b>
+<b class="fc"><i>45</i>&nbsp;        if (messages.size() &gt; 0) {</b>
 <b class="fc"><i>46</i>&nbsp;            return messages.get(messages.size() - 1);</b>
 <i>47</i>&nbsp;        } else {
 <b class="fc"><i>48</i>&nbsp;            return null;</b>
 <i>49</i>&nbsp;        }
 <i>50</i>&nbsp;    }
 <i>51</i>&nbsp;    public String getLastMessageDate() {
-<b class="nc"><i>52</i>&nbsp;        if(messages.size() &gt; 0)</b>
+<b class="nc"><i>52</i>&nbsp;        if (messages.size() &gt; 0) {</b>
 <b class="nc"><i>53</i>&nbsp;            return DateHelper.formatTimeOrDate(messages.get(messages.size() - 1).sentTime);</b>
-<i>54</i>&nbsp;        else
+<i>54</i>&nbsp;        } else {
 <b class="nc"><i>55</i>&nbsp;            return &quot;&quot;;</b>
-<i>56</i>&nbsp;    }
-<i>57</i>&nbsp;    public String getName() {
-<b class="nc"><i>58</i>&nbsp;        if (title != null &amp;&amp; !title.equals(&quot;&quot;)) return title;</b>
-<b class="nc"><i>59</i>&nbsp;        if (peer != null) return peer.getNickname();</b>
-<b class="nc"><i>60</i>&nbsp;        return &quot;(unnamed)&quot;;</b>
-<i>61</i>&nbsp;    }
-<i>62</i>&nbsp;    public Contact getPeer() {
-<b class="nc"><i>63</i>&nbsp;        return peer;</b>
-<i>64</i>&nbsp;    }
-<i>65</i>&nbsp;
-<i>66</i>&nbsp;    public ContentValues getContentValues(){
-<b class="nc"><i>67</i>&nbsp;        ContentValues values = new ContentValues();</b>
-<b class="nc"><i>68</i>&nbsp;        if (peer != null) values.put(&quot;peer&quot;, peer.rowid);</b>
-<b class="nc"><i>69</i>&nbsp;        values.put(&quot;conversationType&quot;, conversationType.ordinal());</b>
-<b class="nc"><i>70</i>&nbsp;        values.put(&quot;title&quot;, title);</b>
-<b class="nc"><i>71</i>&nbsp;        return values;</b>
-<i>72</i>&nbsp;    }
-<i>73</i>&nbsp;
-<i>74</i>&nbsp;    public static Conversation fromCursor(Contact contact, Cursor cursor){
-<b class="fc"><i>75</i>&nbsp;        Conversation conversation = new Conversation(contact,</b>
-<i>76</i>&nbsp;               cursor.getString(cursor.getColumnIndex(&quot;title&quot;)),
-<i>77</i>&nbsp;               cursor.getInt(cursor.getColumnIndex(&quot;rowid&quot;)));
-<b class="fc"><i>78</i>&nbsp;        conversation.conversationType = ConversationType.values()[cursor.getInt(cursor.getColumnIndex(&quot;conversationType&quot;))];</b>
-<b class="fc"><i>79</i>&nbsp;        return conversation;</b>
-<i>80</i>&nbsp;    }
-<i>81</i>&nbsp;
-<i>82</i>&nbsp;}
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;    public String getName() {
+<b class="nc"><i>59</i>&nbsp;        if (title != null &amp;&amp; !title.equals(&quot;&quot;)) {</b>
+<b class="nc"><i>60</i>&nbsp;            return title;</b>
+<i>61</i>&nbsp;        }
+<b class="nc"><i>62</i>&nbsp;        if (peer != null)  {</b>
+<b class="nc"><i>63</i>&nbsp;            return peer.getNickname();</b>
+<i>64</i>&nbsp;        }
+<b class="nc"><i>65</i>&nbsp;        return &quot;(unnamed)&quot;;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;    public Contact getPeer() {
+<b class="nc"><i>68</i>&nbsp;        return peer;</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public ContentValues getContentValues() {
+<b class="nc"><i>72</i>&nbsp;        ContentValues values = new ContentValues();</b>
+<b class="nc"><i>73</i>&nbsp;        if (peer != null) {</b>
+<b class="nc"><i>74</i>&nbsp;            values.put(&quot;peer&quot;, peer.rowid);</b>
+<i>75</i>&nbsp;        }
+<b class="nc"><i>76</i>&nbsp;        values.put(&quot;conversationType&quot;, conversationType.ordinal());</b>
+<b class="nc"><i>77</i>&nbsp;        values.put(&quot;title&quot;, title);</b>
+<b class="nc"><i>78</i>&nbsp;        return values;</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public static Conversation fromCursor(Contact contact, Cursor cursor) {
+<b class="fc"><i>82</i>&nbsp;        Conversation conversation = new Conversation(contact,</b>
+<i>83</i>&nbsp;               cursor.getString(cursor.getColumnIndex(&quot;title&quot;)),
+<i>84</i>&nbsp;               cursor.getInt(cursor.getColumnIndex(&quot;rowid&quot;)));
+<b class="fc"><i>85</i>&nbsp;        conversation.conversationType = ConversationType.values()[cursor.getInt(cursor.getColumnIndex(&quot;conversationType&quot;))];</b>
+<b class="fc"><i>86</i>&nbsp;        return conversation;</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>

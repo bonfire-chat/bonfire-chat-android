@@ -148,18 +148,18 @@
 <i>10</i>&nbsp;import android.widget.EditText;
 <i>11</i>&nbsp;import android.widget.FrameLayout;
 <i>12</i>&nbsp;
-<i>13</i>&nbsp;import de.tudarmstadt.informatik.bp.bonfirechat.data.ConstOptions;
-<i>14</i>&nbsp;
-<i>15</i>&nbsp;/**
-<i>16</i>&nbsp; * Created by mw on 21.05.15.
-<i>17</i>&nbsp; */
-<b class="nc"><i>18</i>&nbsp;public class UIHelper {</b>
+<i>13</i>&nbsp;/**
+<i>14</i>&nbsp; * Created by mw on 21.05.15.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;public final class UIHelper {
+<i>17</i>&nbsp;
+<b class="nc"><i>18</i>&nbsp;    private UIHelper() { }</b>
 <i>19</i>&nbsp;
 <i>20</i>&nbsp;    public interface OnOkClickListener {
 <i>21</i>&nbsp;        void onOkClicked(String input);
 <i>22</i>&nbsp;    }
 <i>23</i>&nbsp;
-<i>24</i>&nbsp;    public static void InputBox(Context ctx, String title, String message, String defaultValue, final OnOkClickListener okListener) {
+<i>24</i>&nbsp;    public static void inputBox(Context ctx, String title, String message, String defaultValue, final OnOkClickListener okListener) {
 <b class="nc"><i>25</i>&nbsp;        final EditText input = new EditText(ctx);</b>
 <b class="nc"><i>26</i>&nbsp;        input.setSingleLine();</b>
 <b class="nc"><i>27</i>&nbsp;        FrameLayout container = new FrameLayout(ctx);</b>
@@ -190,7 +190,7 @@
 <b class="nc"><i>52</i>&nbsp;        d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);</b>
 <b class="nc"><i>53</i>&nbsp;        d.show();</b>
 <i>54</i>&nbsp;    }
-<i>55</i>&nbsp;    public static void Info(Context ctx, String title, String message) {
+<i>55</i>&nbsp;    public static void info(Context ctx, String title, String message) {
 <b class="nc"><i>56</i>&nbsp;        AlertDialog.Builder b = new AlertDialog.Builder(ctx)</b>
 <i>57</i>&nbsp;                .setTitle(title)
 <i>58</i>&nbsp;                .setMessage(message)
@@ -247,7 +247,7 @@
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>

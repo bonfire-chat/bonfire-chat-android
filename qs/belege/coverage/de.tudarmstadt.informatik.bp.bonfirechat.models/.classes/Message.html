@@ -47,10 +47,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    37,7%
+    36,2%
   </span>
   <span class="absValue">
-    (20/ 53)
+    (21/ 58)
   </span>
 </td>
 </tr>
@@ -85,10 +85,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    42,1%
+    40,3%
   </span>
   <span class="absValue">
-    (24/ 57)
+    (25/ 62)
   </span>
 </td>
 </tr>
@@ -197,76 +197,86 @@
 <b class="nc"><i>97</i>&nbsp;        return Message.getImageFile(this.uuid);</b>
 <i>98</i>&nbsp;    }
 <i>99</i>&nbsp;    public static File getImageFile(UUID uuid) {
-<b class="nc"><i>100</i>&nbsp;        Log.d(&quot;xxx&quot;, &quot;storage dir:&quot;+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));</b>
+<b class="nc"><i>100</i>&nbsp;        Log.d(&quot;xxx&quot;, &quot;storage dir:&quot; + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));</b>
 <b class="nc"><i>101</i>&nbsp;        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),</b>
 <i>102</i>&nbsp;                BonfireAPI.DOWNLOADS_DIRECTORY + uuid.toString() + &quot;.jpg&quot;);
 <i>103</i>&nbsp;    }
 <i>104</i>&nbsp;
 <i>105</i>&nbsp;    public ContentValues getContentValues() {
 <b class="nc"><i>106</i>&nbsp;        ContentValues values = new ContentValues();</b>
-<b class="nc"><i>107</i>&nbsp;        if (this.sender != null &amp;&amp; this.sender instanceof Contact) values.put(&quot;sender&quot;, ((Contact)this.sender).rowid);</b>
-<b class="nc"><i>108</i>&nbsp;        if (this.sender != null &amp;&amp; this.sender instanceof Identity) values.put(&quot;sender&quot;, -1);</b>
-<b class="nc"><i>109</i>&nbsp;        values.put(&quot;body&quot;, body);</b>
-<b class="nc"><i>110</i>&nbsp;        values.put(&quot;sentDate&quot;, DateHelper.formatDateTime(this.sentTime));</b>
-<b class="nc"><i>111</i>&nbsp;        values.put(&quot;uuid&quot;, uuid.toString());</b>
-<b class="nc"><i>112</i>&nbsp;        values.put(&quot;flags&quot;, flags);</b>
-<b class="nc"><i>113</i>&nbsp;        values.put(&quot;traceroute&quot;, StreamHelper.serialize(((ArrayList&lt;TracerouteSegment&gt;) traceroute)));</b>
-<b class="nc"><i>114</i>&nbsp;        values.put(&quot;retries&quot;, retransmissionCount);</b>
-<b class="nc"><i>115</i>&nbsp;        values.put(&quot;error&quot;, error);</b>
-<b class="nc"><i>116</i>&nbsp;        return values;</b>
-<i>117</i>&nbsp;    }
-<i>118</i>&nbsp;
-<i>119</i>&nbsp;    public void setTransferProtocol(Class theClass) {
-<b class="fc"><i>120</i>&nbsp;        flags &amp;= ~(FLAG_PROTO_BT | FLAG_PROTO_WIFI | FLAG_PROTO_CLOUD);</b>
-<b class="fc"><i>121</i>&nbsp;        if (theClass.equals(GcmProtocol.class)) flags |= FLAG_PROTO_CLOUD;</b>
-<b class="fc"><i>122</i>&nbsp;        if (theClass.equals(BluetoothProtocol.class)) flags |= FLAG_PROTO_BT;</b>
-<b class="fc"><i>123</i>&nbsp;        if (theClass.equals(WifiProtocol.class)) flags |= FLAG_PROTO_WIFI;</b>
-<b class="fc"><i>124</i>&nbsp;    }</b>
-<i>125</i>&nbsp;
-<i>126</i>&nbsp;    public static Message fromCursor(Cursor cursor, BonfireData db) {
-<b class="nc"><i>127</i>&nbsp;        Long contactId = cursor.getLong(cursor.getColumnIndex(&quot;sender&quot;));</b>
-<b class="nc"><i>128</i>&nbsp;        IPublicIdentity peer = (contactId == -1) ? db.getDefaultIdentity() : db.getContactById(contactId);</b>
-<i>129</i>&nbsp;        Date date;
-<i>130</i>&nbsp;        try {
-<b class="nc"><i>131</i>&nbsp;            date = DateHelper.parseDateTime(cursor.getString(cursor.getColumnIndex(&quot;sentDate&quot;)));</b>
-<b class="nc"><i>132</i>&nbsp;        } catch (ParseException e) {</b>
-<b class="nc"><i>133</i>&nbsp;            date = new Date();</b>
-<b class="nc"><i>134</i>&nbsp;        }</b>
-<b class="nc"><i>135</i>&nbsp;        Conversation conversation = db.getConversationById(cursor.getInt(cursor.getColumnIndex(&quot;conversation&quot;)));</b>
-<b class="nc"><i>136</i>&nbsp;        ArrayList&lt;TracerouteSegment&gt; traceroute = StreamHelper.deserialize(cursor.getBlob(cursor.getColumnIndex(&quot;traceroute&quot;)));</b>
-<b class="nc"><i>137</i>&nbsp;        Message message = new Message(cursor.getString(cursor.getColumnIndex(&quot;body&quot;)),</b>
-<i>138</i>&nbsp;                peer,
-<i>139</i>&nbsp;                date,
-<i>140</i>&nbsp;                cursor.getInt(cursor.getColumnIndex(&quot;flags&quot;)),
-<i>141</i>&nbsp;                UUID.fromString(cursor.getString(cursor.getColumnIndex(&quot;uuid&quot;))),
-<i>142</i>&nbsp;                conversation.getPeer(),
-<i>143</i>&nbsp;                traceroute);
-<b class="nc"><i>144</i>&nbsp;        message.retransmissionCount = cursor.getInt(cursor.getColumnIndex(&quot;retries&quot;));</b>
-<b class="nc"><i>145</i>&nbsp;        message.error = cursor.getString(cursor.getColumnIndex(&quot;error&quot;));</b>
-<b class="nc"><i>146</i>&nbsp;        return message;</b>
-<i>147</i>&nbsp;    }
-<i>148</i>&nbsp;
-<i>149</i>&nbsp;    public boolean hasFlag(int flag) {
-<b class="fc"><i>150</i>&nbsp;        return (flags &amp; flag) != 0;</b>
-<i>151</i>&nbsp;    }
-<i>152</i>&nbsp;
-<i>153</i>&nbsp;    public void addTracerouteSegment(TracerouteSegment segment) {
-<b class="nc"><i>154</i>&nbsp;        traceroute.add(segment);</b>
-<b class="nc"><i>155</i>&nbsp;    }</b>
-<i>156</i>&nbsp;
-<b class="fc"><i>157</i>&nbsp;    public enum MessageDirection {</b>
-<b class="fc"><i>158</i>&nbsp;        Unknown,</b>
-<b class="fc"><i>159</i>&nbsp;        Sent,</b>
-<b class="fc"><i>160</i>&nbsp;        MessageDirection, Received</b>
+<b class="nc"><i>107</i>&nbsp;        if (this.sender != null &amp;&amp; this.sender instanceof Contact) {</b>
+<b class="nc"><i>108</i>&nbsp;            values.put(&quot;sender&quot;, ((Contact) this.sender).rowid);</b>
+<i>109</i>&nbsp;        }
+<b class="nc"><i>110</i>&nbsp;        if (this.sender != null &amp;&amp; this.sender instanceof Identity) {</b>
+<b class="nc"><i>111</i>&nbsp;            values.put(&quot;sender&quot;, -1);</b>
+<i>112</i>&nbsp;        }
+<b class="nc"><i>113</i>&nbsp;        values.put(&quot;body&quot;, body);</b>
+<b class="nc"><i>114</i>&nbsp;        values.put(&quot;sentDate&quot;, DateHelper.formatDateTime(this.sentTime));</b>
+<b class="nc"><i>115</i>&nbsp;        values.put(&quot;uuid&quot;, uuid.toString());</b>
+<b class="nc"><i>116</i>&nbsp;        values.put(&quot;flags&quot;, flags);</b>
+<b class="nc"><i>117</i>&nbsp;        values.put(&quot;traceroute&quot;, StreamHelper.serialize(((ArrayList&lt;TracerouteSegment&gt;) traceroute)));</b>
+<b class="nc"><i>118</i>&nbsp;        values.put(&quot;retries&quot;, retransmissionCount);</b>
+<b class="nc"><i>119</i>&nbsp;        values.put(&quot;error&quot;, error);</b>
+<b class="nc"><i>120</i>&nbsp;        return values;</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public void setTransferProtocol(Class theClass) {
+<b class="fc"><i>124</i>&nbsp;        flags &amp;= ~(FLAG_PROTO_BT | FLAG_PROTO_WIFI | FLAG_PROTO_CLOUD);</b>
+<b class="fc"><i>125</i>&nbsp;        if (theClass.equals(GcmProtocol.class)) {</b>
+<b class="nc"><i>126</i>&nbsp;            flags |= FLAG_PROTO_CLOUD;</b>
+<i>127</i>&nbsp;        }
+<b class="fc"><i>128</i>&nbsp;        if (theClass.equals(BluetoothProtocol.class)) {</b>
+<b class="fc"><i>129</i>&nbsp;            flags |= FLAG_PROTO_BT;</b>
+<i>130</i>&nbsp;        }
+<b class="fc"><i>131</i>&nbsp;        if (theClass.equals(WifiProtocol.class)) {</b>
+<b class="nc"><i>132</i>&nbsp;            flags |= FLAG_PROTO_WIFI;</b>
+<i>133</i>&nbsp;        }
+<b class="fc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public static Message fromCursor(Cursor cursor, BonfireData db) {
+<b class="nc"><i>137</i>&nbsp;        Long contactId = cursor.getLong(cursor.getColumnIndex(&quot;sender&quot;));</b>
+<b class="nc"><i>138</i>&nbsp;        IPublicIdentity peer = (contactId == -1) ? db.getDefaultIdentity() : db.getContactById(contactId);</b>
+<i>139</i>&nbsp;        Date date;
+<i>140</i>&nbsp;        try {
+<b class="nc"><i>141</i>&nbsp;            date = DateHelper.parseDateTime(cursor.getString(cursor.getColumnIndex(&quot;sentDate&quot;)));</b>
+<b class="nc"><i>142</i>&nbsp;        } catch (ParseException e) {</b>
+<b class="nc"><i>143</i>&nbsp;            date = new Date();</b>
+<b class="nc"><i>144</i>&nbsp;        }</b>
+<b class="nc"><i>145</i>&nbsp;        Conversation conversation = db.getConversationById(cursor.getInt(cursor.getColumnIndex(&quot;conversation&quot;)));</b>
+<b class="nc"><i>146</i>&nbsp;        ArrayList&lt;TracerouteSegment&gt; traceroute = StreamHelper.deserialize(cursor.getBlob(cursor.getColumnIndex(&quot;traceroute&quot;)));</b>
+<b class="nc"><i>147</i>&nbsp;        Message message = new Message(cursor.getString(cursor.getColumnIndex(&quot;body&quot;)),</b>
+<i>148</i>&nbsp;                peer,
+<i>149</i>&nbsp;                date,
+<i>150</i>&nbsp;                cursor.getInt(cursor.getColumnIndex(&quot;flags&quot;)),
+<i>151</i>&nbsp;                UUID.fromString(cursor.getString(cursor.getColumnIndex(&quot;uuid&quot;))),
+<i>152</i>&nbsp;                conversation.getPeer(),
+<i>153</i>&nbsp;                traceroute);
+<b class="nc"><i>154</i>&nbsp;        message.retransmissionCount = cursor.getInt(cursor.getColumnIndex(&quot;retries&quot;));</b>
+<b class="nc"><i>155</i>&nbsp;        message.error = cursor.getString(cursor.getColumnIndex(&quot;error&quot;));</b>
+<b class="nc"><i>156</i>&nbsp;        return message;</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    public boolean hasFlag(int flag) {
+<b class="fc"><i>160</i>&nbsp;        return (flags &amp; flag) != 0;</b>
 <i>161</i>&nbsp;    }
 <i>162</i>&nbsp;
-<i>163</i>&nbsp;}
+<i>163</i>&nbsp;    public void addTracerouteSegment(TracerouteSegment segment) {
+<b class="nc"><i>164</i>&nbsp;        traceroute.add(segment);</b>
+<b class="nc"><i>165</i>&nbsp;    }</b>
+<i>166</i>&nbsp;
+<b class="fc"><i>167</i>&nbsp;    public enum MessageDirection {</b>
+<b class="fc"><i>168</i>&nbsp;        Unknown,</b>
+<b class="fc"><i>169</i>&nbsp;        Sent,</b>
+<b class="fc"><i>170</i>&nbsp;        MessageDirection, Received</b>
+<i>171</i>&nbsp;    }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>

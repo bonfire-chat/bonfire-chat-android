@@ -58,10 +58,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    9,9%
+    10%
   </span>
   <span class="absValue">
-    (7/ 71)
+    (8/ 80)
   </span>
 </td>
 </tr>
@@ -75,176 +75,182 @@
 <div class="sourceCode"><i>1</i>&nbsp;package de.tudarmstadt.informatik.bp.bonfirechat.helper;
 <i>2</i>&nbsp;
 <i>3</i>&nbsp;import android.content.ContentResolver;
-<i>4</i>&nbsp;import android.content.Context;
-<i>5</i>&nbsp;import android.database.Cursor;
-<i>6</i>&nbsp;import android.graphics.Bitmap;
-<i>7</i>&nbsp;import android.graphics.BitmapFactory;
-<i>8</i>&nbsp;import android.graphics.Canvas;
-<i>9</i>&nbsp;import android.graphics.Matrix;
-<i>10</i>&nbsp;import android.graphics.Paint;
-<i>11</i>&nbsp;import android.media.ExifInterface;
-<i>12</i>&nbsp;import android.net.Uri;
-<i>13</i>&nbsp;import android.provider.MediaStore;
-<i>14</i>&nbsp;import android.util.Log;
-<i>15</i>&nbsp;
-<i>16</i>&nbsp;import java.io.ByteArrayInputStream;
-<i>17</i>&nbsp;import java.io.ByteArrayOutputStream;
-<i>18</i>&nbsp;import java.io.FileNotFoundException;
-<i>19</i>&nbsp;import java.io.FileOutputStream;
-<i>20</i>&nbsp;import java.io.IOException;
-<i>21</i>&nbsp;import java.io.InputStream;
-<i>22</i>&nbsp;import java.io.ObjectInput;
-<i>23</i>&nbsp;import java.io.ObjectInputStream;
-<i>24</i>&nbsp;import java.io.ObjectOutput;
-<i>25</i>&nbsp;import java.io.ObjectOutputStream;
-<i>26</i>&nbsp;import java.io.OutputStream;
-<i>27</i>&nbsp;import java.io.Serializable;
-<i>28</i>&nbsp;import java.util.Formatter;
+<i>4</i>&nbsp;import android.graphics.Bitmap;
+<i>5</i>&nbsp;import android.graphics.BitmapFactory;
+<i>6</i>&nbsp;import android.graphics.Canvas;
+<i>7</i>&nbsp;import android.graphics.Matrix;
+<i>8</i>&nbsp;import android.graphics.Paint;
+<i>9</i>&nbsp;import android.net.Uri;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>12</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>13</i>&nbsp;import java.io.FileNotFoundException;
+<i>14</i>&nbsp;import java.io.InputStream;
+<i>15</i>&nbsp;import java.io.ObjectInput;
+<i>16</i>&nbsp;import java.io.ObjectInputStream;
+<i>17</i>&nbsp;import java.io.ObjectOutput;
+<i>18</i>&nbsp;import java.io.ObjectOutputStream;
+<i>19</i>&nbsp;import java.io.OutputStream;
+<i>20</i>&nbsp;import java.io.Serializable;
+<i>21</i>&nbsp;import java.util.Formatter;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;/**
+<i>24</i>&nbsp; * Created by mw on 16.06.15.
+<i>25</i>&nbsp; */
+<i>26</i>&nbsp;public final class StreamHelper {
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    private static final int BUFFER_SIZE = 16384;
 <i>29</i>&nbsp;
-<i>30</i>&nbsp;/**
-<i>31</i>&nbsp; * Created by mw on 16.06.15.
-<i>32</i>&nbsp; */
-<b class="nc"><i>33</i>&nbsp;public class StreamHelper {</b>
-<i>34</i>&nbsp;
-<i>35</i>&nbsp;    public static String convertStreamToString(java.io.InputStream is) {
-<b class="fc"><i>36</i>&nbsp;        if (is == null) return &quot;&quot;;</b>
-<b class="fc"><i>37</i>&nbsp;        java.util.Scanner s = new java.util.Scanner(is, &quot;UTF-8&quot;).useDelimiter(&quot;\\A&quot;);</b>
-<b class="fc"><i>38</i>&nbsp;        return s.hasNext() ? s.next() : &quot;&quot;;</b>
-<i>39</i>&nbsp;    }
-<i>40</i>&nbsp;
-<i>41</i>&nbsp;    public static String byteArrayToHexString(byte[] byteArray) {
-<b class="fc"><i>42</i>&nbsp;        Formatter formatter = new Formatter();</b>
-<b class="fc"><i>43</i>&nbsp;        for (byte b : byteArray) {</b>
-<b class="fc"><i>44</i>&nbsp;            formatter.format(&quot;%02x&quot;, b);</b>
-<i>45</i>&nbsp;        }
-<b class="fc"><i>46</i>&nbsp;        return formatter.toString();</b>
-<i>47</i>&nbsp;    }
-<i>48</i>&nbsp;
-<i>49</i>&nbsp;    public static byte[] serialize(Serializable object) {
-<i>50</i>&nbsp;        try {
-<b class="nc"><i>51</i>&nbsp;            ByteArrayOutputStream bos = new ByteArrayOutputStream();</b>
-<b class="nc"><i>52</i>&nbsp;            ObjectOutput out = new ObjectOutputStream(bos);</b>
-<b class="nc"><i>53</i>&nbsp;            out.writeObject(object);</b>
-<b class="nc"><i>54</i>&nbsp;            return bos.toByteArray();</b>
-<i>55</i>&nbsp;        }
-<b class="nc"><i>56</i>&nbsp;        catch (Exception e) {</b>
-<b class="nc"><i>57</i>&nbsp;            return new byte[]{};</b>
-<i>58</i>&nbsp;        }
-<i>59</i>&nbsp;    }
-<i>60</i>&nbsp;
-<i>61</i>&nbsp;    public static &lt;T extends Serializable&gt; T deserialize (byte[] bytes) {
-<i>62</i>&nbsp;        try {
-<b class="nc"><i>63</i>&nbsp;            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);</b>
-<b class="nc"><i>64</i>&nbsp;            ObjectInput in = new ObjectInputStream(bis);</b>
-<b class="nc"><i>65</i>&nbsp;            return (T) in.readObject();</b>
+<b class="nc"><i>30</i>&nbsp;    private StreamHelper() { }</b>
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public static String convertStreamToString(java.io.InputStream is) {
+<b class="fc"><i>33</i>&nbsp;        if (is == null) {</b>
+<b class="fc"><i>34</i>&nbsp;            return &quot;&quot;;</b>
+<i>35</i>&nbsp;        }
+<b class="fc"><i>36</i>&nbsp;        java.util.Scanner s = new java.util.Scanner(is, &quot;UTF-8&quot;).useDelimiter(&quot;\\A&quot;);</b>
+<b class="fc"><i>37</i>&nbsp;        return s.hasNext() ? s.next() : &quot;&quot;;</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    public static String byteArrayToHexString(byte[] byteArray) {
+<b class="fc"><i>41</i>&nbsp;        Formatter formatter = new Formatter();</b>
+<b class="fc"><i>42</i>&nbsp;        for (byte b : byteArray) {</b>
+<b class="fc"><i>43</i>&nbsp;            formatter.format(&quot;%02x&quot;, b);</b>
+<i>44</i>&nbsp;        }
+<b class="fc"><i>45</i>&nbsp;        return formatter.toString();</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public static byte[] serialize(Serializable object) {
+<i>49</i>&nbsp;        try {
+<b class="nc"><i>50</i>&nbsp;            ByteArrayOutputStream bos = new ByteArrayOutputStream();</b>
+<b class="nc"><i>51</i>&nbsp;            ObjectOutput out = new ObjectOutputStream(bos);</b>
+<b class="nc"><i>52</i>&nbsp;            out.writeObject(object);</b>
+<b class="nc"><i>53</i>&nbsp;            return bos.toByteArray();</b>
+<b class="nc"><i>54</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>55</i>&nbsp;            return new byte[]{};</b>
+<i>56</i>&nbsp;        }
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public static &lt;T extends Serializable&gt; T deserialize(byte[] bytes) {
+<i>60</i>&nbsp;        try {
+<b class="nc"><i>61</i>&nbsp;            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);</b>
+<b class="nc"><i>62</i>&nbsp;            ObjectInput in = new ObjectInputStream(bis);</b>
+<b class="nc"><i>63</i>&nbsp;            return (T) in.readObject();</b>
+<b class="nc"><i>64</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>65</i>&nbsp;            return null;</b>
 <i>66</i>&nbsp;        }
-<b class="nc"><i>67</i>&nbsp;        catch (Exception e) {</b>
-<b class="nc"><i>68</i>&nbsp;            return null;</b>
-<i>69</i>&nbsp;        }
-<i>70</i>&nbsp;    }
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public static void writeImageToStream(ContentResolver resolver, Uri imageUri, OutputStream toStream) throws FileNotFoundException {
 <i>71</i>&nbsp;
-<i>72</i>&nbsp;
-<i>73</i>&nbsp;    public static void writeImageToStream(ContentResolver resolver, Uri imageUri, OutputStream toStream) throws FileNotFoundException {
-<i>74</i>&nbsp;
-<b class="nc"><i>75</i>&nbsp;        Bitmap scaledBitmap = null;</b>
-<i>76</i>&nbsp;
-<b class="nc"><i>77</i>&nbsp;        BitmapFactory.Options options = new BitmapFactory.Options();</b>
-<i>78</i>&nbsp;
-<i>79</i>&nbsp;//      by setting this field as true, the actual bitmap pixels are not loaded in the memory. Just the bounds are loaded. If
-<i>80</i>&nbsp;//      you try the use the bitmap here, you will get null.
-<b class="nc"><i>81</i>&nbsp;        options.inJustDecodeBounds = true;</b>
-<i>82</i>&nbsp;
-<b class="nc"><i>83</i>&nbsp;        InputStream inputStream = resolver.openInputStream(imageUri);</b>
-<i>84</i>&nbsp;
-<b class="nc"><i>85</i>&nbsp;        Bitmap bmp = BitmapFactory.decodeStream(inputStream, null, options);</b>
+<b class="nc"><i>72</i>&nbsp;        Bitmap scaledBitmap = null;</b>
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;        BitmapFactory.Options options = new BitmapFactory.Options();</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;//      by setting this field as true, the actual bitmap pixels are not loaded in the memory. Just the bounds are loaded. If
+<i>77</i>&nbsp;//      you try the use the bitmap here, you will get null.
+<b class="nc"><i>78</i>&nbsp;        options.inJustDecodeBounds = true;</b>
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;        InputStream inputStream = resolver.openInputStream(imageUri);</b>
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;        Bitmap bmp = BitmapFactory.decodeStream(inputStream, null, options);</b>
+<i>83</i>&nbsp;
+<b class="nc"><i>84</i>&nbsp;        int actualHeight = options.outHeight;</b>
+<b class="nc"><i>85</i>&nbsp;        int actualWidth = options.outWidth;</b>
 <i>86</i>&nbsp;
-<b class="nc"><i>87</i>&nbsp;        int actualHeight = options.outHeight;</b>
-<b class="nc"><i>88</i>&nbsp;        int actualWidth = options.outWidth;</b>
-<i>89</i>&nbsp;
-<i>90</i>&nbsp;
-<b class="nc"><i>91</i>&nbsp;        float maxWidth = 800.0f;</b>
-<b class="nc"><i>92</i>&nbsp;        float maxHeight = 600.0f;</b>
-<b class="nc"><i>93</i>&nbsp;        float imgRatio = actualWidth / actualHeight;</b>
-<b class="nc"><i>94</i>&nbsp;        float maxRatio = maxWidth / maxHeight;</b>
-<i>95</i>&nbsp;
-<i>96</i>&nbsp;//      width and height values are set maintaining the aspect ratio of the image
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;        final float maxWidth = 800.0f;</b>
+<b class="nc"><i>89</i>&nbsp;        final float maxHeight = 600.0f;</b>
+<i>90</i>&nbsp;        float imgRatio;
+<b class="nc"><i>91</i>&nbsp;        if (actualHeight != 0) {</b>
+<b class="nc"><i>92</i>&nbsp;            imgRatio = (float) actualWidth / actualHeight;</b>
+<i>93</i>&nbsp;        } else {
+<b class="nc"><i>94</i>&nbsp;            imgRatio = 1;</b>
+<i>95</i>&nbsp;        }
+<b class="nc"><i>96</i>&nbsp;        float maxRatio = maxWidth / maxHeight;</b>
 <i>97</i>&nbsp;
-<b class="nc"><i>98</i>&nbsp;        if (actualHeight &gt; maxHeight || actualWidth &gt; maxWidth) {</b>
-<b class="nc"><i>99</i>&nbsp;            if (imgRatio &lt; maxRatio) {               imgRatio = maxHeight / actualHeight;                actualWidth = (int) (imgRatio * actualWidth);               actualHeight = (int) maxHeight;             } else if (imgRatio &gt; maxRatio) {</b>
-<b class="nc"><i>100</i>&nbsp;                imgRatio = maxWidth / actualWidth;</b>
-<b class="nc"><i>101</i>&nbsp;                actualHeight = (int) (imgRatio * actualHeight);</b>
-<b class="nc"><i>102</i>&nbsp;                actualWidth = (int) maxWidth;</b>
-<i>103</i>&nbsp;            } else {
-<b class="nc"><i>104</i>&nbsp;                actualHeight = (int) maxHeight;</b>
+<i>98</i>&nbsp;        // width and height values are set maintaining the aspect ratio of the image
+<b class="nc"><i>99</i>&nbsp;        if (actualHeight &gt; maxHeight || actualWidth &gt; maxWidth) {</b>
+<b class="nc"><i>100</i>&nbsp;            if (imgRatio &lt; maxRatio) {</b>
+<b class="nc"><i>101</i>&nbsp;                actualHeight = (int) maxHeight;</b>
+<b class="nc"><i>102</i>&nbsp;            } else if (imgRatio &gt; maxRatio) {</b>
+<b class="nc"><i>103</i>&nbsp;                imgRatio = maxWidth / actualWidth;</b>
+<b class="nc"><i>104</i>&nbsp;                actualHeight = (int) (imgRatio * actualHeight);</b>
 <b class="nc"><i>105</i>&nbsp;                actualWidth = (int) maxWidth;</b>
-<i>106</i>&nbsp;
-<i>107</i>&nbsp;            }
-<i>108</i>&nbsp;        }
-<i>109</i>&nbsp;
-<i>110</i>&nbsp;//      setting inSampleSize value allows to load a scaled down version of the original image
+<i>106</i>&nbsp;            } else {
+<b class="nc"><i>107</i>&nbsp;                actualHeight = (int) maxHeight;</b>
+<b class="nc"><i>108</i>&nbsp;                actualWidth = (int) maxWidth;</b>
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;        }
 <i>111</i>&nbsp;
-<b class="nc"><i>112</i>&nbsp;        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);</b>
-<i>113</i>&nbsp;
-<i>114</i>&nbsp;//      inJustDecodeBounds set to false to load the actual bitmap
-<b class="nc"><i>115</i>&nbsp;        options.inJustDecodeBounds = false;</b>
-<i>116</i>&nbsp;
-<i>117</i>&nbsp;//      this options allow android to claim the bitmap memory if it runs low on memory
-<b class="nc"><i>118</i>&nbsp;        options.inPurgeable = true;</b>
-<b class="nc"><i>119</i>&nbsp;        options.inInputShareable = true;</b>
-<b class="nc"><i>120</i>&nbsp;        options.inTempStorage = new byte[16 * 1024];</b>
-<i>121</i>&nbsp;
-<b class="nc"><i>122</i>&nbsp;        inputStream = resolver.openInputStream(imageUri);</b>
-<i>123</i>&nbsp;        try {
-<i>124</i>&nbsp;//          load the bitmap from its path
-<b class="nc"><i>125</i>&nbsp;            bmp = BitmapFactory.decodeStream(inputStream, null, options);</b>
-<b class="nc"><i>126</i>&nbsp;        } catch (OutOfMemoryError exception) {</b>
-<b class="nc"><i>127</i>&nbsp;            exception.printStackTrace();</b>
-<i>128</i>&nbsp;
-<b class="nc"><i>129</i>&nbsp;        }</b>
-<i>130</i>&nbsp;        try {
-<b class="nc"><i>131</i>&nbsp;            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight,Bitmap.Config.ARGB_8888);</b>
-<b class="nc"><i>132</i>&nbsp;        } catch (OutOfMemoryError exception) {</b>
-<b class="nc"><i>133</i>&nbsp;            exception.printStackTrace();</b>
-<b class="nc"><i>134</i>&nbsp;        }</b>
-<i>135</i>&nbsp;
-<b class="nc"><i>136</i>&nbsp;        float ratioX = actualWidth / (float) options.outWidth;</b>
-<b class="nc"><i>137</i>&nbsp;        float ratioY = actualHeight / (float) options.outHeight;</b>
-<b class="nc"><i>138</i>&nbsp;        float middleX = actualWidth / 2.0f;</b>
-<b class="nc"><i>139</i>&nbsp;        float middleY = actualHeight / 2.0f;</b>
-<i>140</i>&nbsp;
-<b class="nc"><i>141</i>&nbsp;        Matrix scaleMatrix = new Matrix();</b>
-<b class="nc"><i>142</i>&nbsp;        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);</b>
-<i>143</i>&nbsp;
-<b class="nc"><i>144</i>&nbsp;        Canvas canvas = new Canvas(scaledBitmap);</b>
-<b class="nc"><i>145</i>&nbsp;        canvas.setMatrix(scaleMatrix);</b>
-<b class="nc"><i>146</i>&nbsp;        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));</b>
-<i>147</i>&nbsp;
-<b class="nc"><i>148</i>&nbsp;        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 60, toStream);</b>
-<i>149</i>&nbsp;
-<b class="nc"><i>150</i>&nbsp;    }</b>
-<i>151</i>&nbsp;
+<i>112</i>&nbsp;        // setting inSampleSize value allows to load a scaled down version of the original image
+<b class="nc"><i>113</i>&nbsp;        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;        // inJustDecodeBounds set to false to load the actual bitmap
+<b class="nc"><i>116</i>&nbsp;        options.inJustDecodeBounds = false;</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;        // this options allow android to claim the bitmap memory if it runs low on memory
+<b class="nc"><i>119</i>&nbsp;        options.inPurgeable = true;</b>
+<b class="nc"><i>120</i>&nbsp;        options.inInputShareable = true;</b>
+<b class="nc"><i>121</i>&nbsp;        options.inTempStorage = new byte[BUFFER_SIZE];</b>
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;        inputStream = resolver.openInputStream(imageUri);</b>
+<i>124</i>&nbsp;        try {
+<i>125</i>&nbsp;        // load the bitmap from its path
+<b class="nc"><i>126</i>&nbsp;            bmp = BitmapFactory.decodeStream(inputStream, null, options);</b>
+<b class="nc"><i>127</i>&nbsp;        } catch (OutOfMemoryError exception) {</b>
+<b class="nc"><i>128</i>&nbsp;            exception.printStackTrace();</b>
+<i>129</i>&nbsp;
+<b class="nc"><i>130</i>&nbsp;        }</b>
+<i>131</i>&nbsp;        try {
+<b class="nc"><i>132</i>&nbsp;            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);</b>
+<b class="nc"><i>133</i>&nbsp;        } catch (OutOfMemoryError exception) {</b>
+<b class="nc"><i>134</i>&nbsp;            exception.printStackTrace();</b>
+<b class="nc"><i>135</i>&nbsp;        }</b>
+<i>136</i>&nbsp;
+<b class="nc"><i>137</i>&nbsp;        float ratioX = actualWidth / (float) options.outWidth;</b>
+<b class="nc"><i>138</i>&nbsp;        float ratioY = actualHeight / (float) options.outHeight;</b>
+<b class="nc"><i>139</i>&nbsp;        float middleX = actualWidth / 2.0f;</b>
+<b class="nc"><i>140</i>&nbsp;        float middleY = actualHeight / 2.0f;</b>
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;        Matrix scaleMatrix = new Matrix();</b>
+<b class="nc"><i>143</i>&nbsp;        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);</b>
+<i>144</i>&nbsp;
+<b class="nc"><i>145</i>&nbsp;        if (scaledBitmap != null) {</b>
+<b class="nc"><i>146</i>&nbsp;            Canvas canvas = new Canvas(scaledBitmap);</b>
+<b class="nc"><i>147</i>&nbsp;            canvas.setMatrix(scaleMatrix);</b>
+<b class="nc"><i>148</i>&nbsp;            canvas.drawBitmap(bmp, middleX - (float) bmp.getWidth() / 2, middleY - (float) bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));</b>
+<b class="nc"><i>149</i>&nbsp;            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 60, toStream);</b>
+<i>150</i>&nbsp;        }
+<b class="nc"><i>151</i>&nbsp;    }</b>
 <i>152</i>&nbsp;
-<i>153</i>&nbsp;    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-<b class="nc"><i>154</i>&nbsp;        final int height = options.outHeight;</b>
-<b class="nc"><i>155</i>&nbsp;        final int width = options.outWidth;</b>
-<b class="nc"><i>156</i>&nbsp;        int inSampleSize = 1;</b>
-<i>157</i>&nbsp;
-<b class="nc"><i>158</i>&nbsp;        if (height &gt; reqHeight || width &gt; reqWidth) {</b>
-<b class="nc"><i>159</i>&nbsp;            final int heightRatio = Math.round((float) height/ (float) reqHeight);</b>
-<b class="nc"><i>160</i>&nbsp;            final int widthRatio = Math.round((float) width / (float) reqWidth);</b>
-<b class="nc"><i>161</i>&nbsp;            inSampleSize = heightRatio &lt; widthRatio ? heightRatio : widthRatio;      }       final float totalPixels = width * height;       final float totalReqPixelsCap = reqWidth * reqHeight * 2;       while (totalPixels / (inSampleSize * inSampleSize) &gt; totalReqPixelsCap) {</b>
-<b class="nc"><i>162</i>&nbsp;            inSampleSize++;</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+<b class="nc"><i>155</i>&nbsp;        final int height = options.outHeight;</b>
+<b class="nc"><i>156</i>&nbsp;        final int width = options.outWidth;</b>
+<b class="nc"><i>157</i>&nbsp;        int inSampleSize = 1;</b>
+<i>158</i>&nbsp;
+<b class="nc"><i>159</i>&nbsp;        if (height &gt; reqHeight || width &gt; reqWidth) {</b>
+<b class="nc"><i>160</i>&nbsp;            final int heightRatio = Math.round((float) height / (float) reqHeight);</b>
+<b class="nc"><i>161</i>&nbsp;            final int widthRatio = Math.round((float) width / (float) reqWidth);</b>
+<b class="nc"><i>162</i>&nbsp;            inSampleSize = heightRatio &lt; widthRatio ? heightRatio : widthRatio;</b>
 <i>163</i>&nbsp;        }
 <i>164</i>&nbsp;
-<b class="nc"><i>165</i>&nbsp;        return inSampleSize;</b>
-<i>166</i>&nbsp;    }
-<i>167</i>&nbsp;}
+<b class="nc"><i>165</i>&nbsp;        final float totalPixels = width * height;</b>
+<b class="nc"><i>166</i>&nbsp;        final float totalReqPixelsCap = reqWidth * reqHeight * 2;</b>
+<b class="nc"><i>167</i>&nbsp;        while (totalPixels / (inSampleSize * inSampleSize) &gt; totalReqPixelsCap) {</b>
+<b class="nc"><i>168</i>&nbsp;            inSampleSize++;</b>
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;        return inSampleSize;</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2015-09-21 17:48</div>
+    <div style="float:right;">generated on 2015-09-28 00:38</div>
 </div>
 </body>
 </html>
