@@ -1,5 +1,7 @@
 package de.tudarmstadt.informatik.bp.bonfirechat.network;
 
+import java.util.Arrays;
+
 /**
  * Created by johannes on 30.07.15.
  *
@@ -50,11 +52,16 @@ public class Peer {
         return lastSeen + OUTDATED_TTL < System.currentTimeMillis();
     }
 
+    public boolean hasAddress(byte[] checkForAddress) {
+        return Arrays.equals(this.address, checkForAddress);
+    }
+
     @Override
     public boolean equals(Object other) {
-        return address.equals(other instanceof byte[] ? (byte[]) other
-            : other instanceof Peer ? ((Peer) other).address
-            : other);
+        if (other instanceof Peer)
+            return hasAddress(((Peer)other).getAddress());
+        else
+            return false;
     }
 
     @Override
