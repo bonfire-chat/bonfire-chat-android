@@ -4,7 +4,7 @@ ASSETS = anhang/assets
 PARTIALS = anhang/partials
 USERSTORIES = userstories
 
-all: dirs qs-dokument.pdf
+all: dirs qs-dokument.pdf userstories.pdf projekttagebuch.pdf
 
 clean:
 	rm -rf $(ASSETS) $(PARTIALS)
@@ -53,9 +53,17 @@ qs-dokument.pdf: qs-dokument.tex anhang/*.tex spezifikation/*.tex \
 		$(PARTIALS)/codereviews.tex $(PARTIALS)/manuelle-tests-ui-reports.tex $(PARTIALS)/dokumentation.tex \
 		$(PARTIALS)/coverage.pdf $(PARTIALS)/javadoc.pdf $(PARTIALS)/junit.pdf $(PARTIALS)/checkstyle-1.pdf \
 		$(PARTIALS)/checkstyle-2.pdf $(PARTIALS)/lint-results-1.pdf $(PARTIALS)/lint-results-2.pdf \
-		$(PARTIALS)/findbugs-1.pdf $(PARTIALS)/findbugs-2.pdf $(USERSTORIES)/userstories.tex
+		$(PARTIALS)/findbugs-1.pdf $(PARTIALS)/findbugs-2.pdf
 	pdflatex qs-dokument.tex
 	pdflatex qs-dokument.tex
+
+userstories.pdf: userstories.tex $(USERSTORIES)/userstories.tex
+	pdflatex userstories.tex
+	pdflatex userstories.tex
+
+projekttagebuch.pdf: projekttagebuch.tex
+	pdflatex projekttagebuch.tex
+	pdflatex projekttagebuch.tex
 
 open:
 	xdg-open qs-dokument.pdf

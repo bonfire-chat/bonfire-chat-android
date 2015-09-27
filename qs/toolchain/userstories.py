@@ -9,12 +9,13 @@ times = array('f', [1738.0/60, 2768.0/60, 990.0/60, 4825.0/60, 4650.2/60, 4062.0
 
 def myFormat(s):
     if s is not None:
-        return '\parbox[t]{10cm}{'+ s.replace('\n', '\\\\').replace('%', '\\%').replace(' \"', ' ``').replace('\" ', '\'\' ').replace('\".', '\'\'.').replace('\"-', '\'\'-').replace('"', '').replace('\"', '').replace(u'„', '').replace(u'“', '\'\'') + '}'
+        prepared = s.replace('\n', '\\\\').replace('%', '\\%').replace(' \"', ' ``').replace('\" ', '\'\' ').replace('\".', '\'\'.').replace('\"-', '\'\'-').replace('"', '').replace('\"', '')
+        prepared = prepared.replace('„', '').replace('“', '\'\'')
+        return '\parbox[t]{10cm}{'+ prepared + '}'
     else:
         return " "
 
-con = mdb.connect('37.59.184.73', 'qsmakefile', '2C6rJdvkgS', 'openproject_ce',
-                  charset='utf8', init_command='SET NAMES UTF8')
+con = mdb.connect('37.59.184.73', 'qsmakefile', '2C6rJdvkgS', 'openproject_ce')
 
 with con:
 
