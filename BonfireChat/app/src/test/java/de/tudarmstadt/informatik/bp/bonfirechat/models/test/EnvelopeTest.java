@@ -10,6 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class EnvelopeTest {
         Envelope newEnvelope = Envelope.fromMessage(message);
         assertEquals(message.uuid, newEnvelope.uuid);
         assertEquals(recipient, newEnvelope.recipientPublicKey);
-        assertEquals(senderPublicKey, newEnvelope.senderPublicKey);
+        assertTrue (Arrays.equals(senderPublicKey, newEnvelope.senderPublicKey));
         assertEquals(0, newEnvelope.flags);
     }
 
