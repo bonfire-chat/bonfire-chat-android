@@ -72,9 +72,9 @@ public class RoutingManager {
             Random r = new Random();
             // send to all available peers
             ArrayList<Peer> selectedPeers = (ArrayList) ((ArrayList) peers).clone();
-            while (selectedPeers.size() > 4) {
-                selectedPeers.remove(r.nextInt(selectedPeers.size()));
-            }
+//            while (selectedPeers.size() > 4) {
+//                selectedPeers.remove(r.nextInt(selectedPeers.size()));
+//            }
             return selectedPeers;
         } else if (packet.getNextHop() != null) {
             List<Peer> r = new ArrayList<>(1);
