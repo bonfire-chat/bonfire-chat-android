@@ -130,19 +130,14 @@ Internetverbindung}\label{bluetooth-wegfindung-zum-nuxe4chsten-knoten-mit-intern
 Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
 \midrule
 \endhead
-Knoten A, B und C werden wie in Testfall III.1 vorbereitet. Auf Knoten C
-wird zusätzlich die Übertragung per Cloud aktiviert. Auf einem weiteren
-Knoten D wird nur die Übertragung per Cloud aktiviert. Es wird
-sichergestellt, dass C und D mit dem Internet verbunden sind. Die
-Kontaktdetails von D werden an A gesendet. A beginnt eine Unterhaltung
-mit D und sendet die Nachricht ``alpha'' an D. Nach Erhalt der Nachricht
-``alpha'' sendet A eine weitere Nachricht ``beta''. & Die Nachricht
-``alpha'' kommt per Flooding über B, C und Server bei D an, ACK ``für
-alpha'' geht auf direktem Pfad (D-Server-C-B-A) per DSR zurück an A. Die
-Nachricht ``beta'' wird auf direktem Pfad (A-B-C-Server-D) per DSR an D
-gesendet, ACK ``für beta'' wie ACK ``für alpha''. Die empfangenen und
-weitergeleiteten Nachrichten und ihre Pfade sind entsprechend im
-Dashboard ersichtlich.\tabularnewline
+Auf den Knoten A und B werden alle Übertragungsverfahren außer Bluetooth deaktiviert. 
+Auf B wird GCM zusätzlich aktiviert. Auf Knoten C wird nur GCM aktiviert. 
+Die Kontaktdetails von C werden an A gesendet. 
+Die Knoten werden räumlich so angeordnet, dass eine Bluetoothverbindung zwischen A und B möglich ist. 
+Auf A wird eine Unterhaltung mit C begonnen und eine Nachricht an C gesendet.
+& A sendet die Nachricht per Bluetooth an B.
+B sendet die Nachricht per GCM an C. 
+Die ACK kommt auf umgekehrtem Weg zu A zurück.\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -171,10 +166,10 @@ Bluetooth-Verbindung}{N-iv-1. Abreißende Bluetooth-Verbindung}}\label{abreiuxdf
 Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
 \midrule
 \endhead
-Auf drei Knoten A wird nur Bluetooth aktiviert, auf B wird GCM und
+Auf Knoten A wird nur Bluetooth aktiviert, auf B wird GCM und
 Bluetooth aktiviert. Von A wird eine Nachricht ``alpha'' an B gesendet.
-Nachdem diese zugestellt und acknowledged wurde, wird eine weitere
-Nachricht ``beta'' von A and B gesendet. Danach wird A räumlich so weit
+Nachdem diese zugestellt und durch Ack bestätigt wurde, wird eine weitere
+Nachricht ``beta'' von A an B gesendet. Danach wird A räumlich so weit
 vom B entfernt, dass keine Bluetooth-Übertragung mehr möglich ist.
 Weiterhin wird auf A die Übertragung per GCM aktiviert. Anschließend
 wird eine weitere Nachricht ``gamma'' von A and B gesendet. & Die
