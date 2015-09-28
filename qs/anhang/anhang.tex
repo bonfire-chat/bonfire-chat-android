@@ -4,9 +4,6 @@
     die Durchführung nicht möglich oder nicht erfolgt ist. \\
 
 
-
-\clearpage
-
 % ---------------------------------------------------------------------------
 % statische Analysetools
 
@@ -15,12 +12,11 @@
 Um eine hohe Code-Qualität sicherzustellen und damit die Wartbarkeit der
 Anwendung zu verbessern, wurden statische Analysetools eingesetzt.
 
-\clearpage
 \subsection{Checkstyle}
 
-Um hohe Qualität des geschriebenen Quellcodes sicherzustellen, haben wir das beliebte Tool ``Checkstyle'' genutzt.
+Wir haben das bekannte und beliebte Tool \glqq Checkstyle\grqq~ verwendet, um die Einhaltung von üblichen Richtlinien zum Programmierstil zu überprüfen und durchzusetzen. Diese tragen zu guter Lesbarkeit und geringer Komplexität des Quellcodes bei.
 
-Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als begonnen haben, ``Checkstyle'' einzusetzen. Anschließend haben wir alle bereits vorhandenen Warnungen in Commit XXXXXXXX TODO abgearbeitet. Da mit dem Plugin ``Checkstyle-IDEA'' alle Warnungen direkt in unserer Entwicklungsumgebung angezeigt werden, konnten diese ab dann direkt bei der Programmierung behoben werden, sodass der zweite, zum Abschluss des Projektes erstellte, Report leer ist.
+Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als begonnen haben, \glqq Checkstyle\grqq~ einzusetzen. Anschließend haben wir alle bereits vorhandenen Warnungen in Commit 5cd67e0aff2b1edd2b42c48fd6b0a36af83a243e \glqq fixes Checkstyle warnings\grqq~ abgearbeitet. Da mit dem Plugin \glqq Checkstyle-IDEA\grqq~ alle Warnungen direkt in unserer Entwicklungsumgebung angezeigt werden, konnten diese ab dann direkt bei der Programmierung behoben werden, sodass der zweite, zum Abschluss des Projektes erstellte, Report leer ist. Ein Screenshot des Plugins mit markierten Fehlern findet sich im Abschnitt nach den Berichten.
 
 Wir haben bei der Checkstyle-Überprüfung auf die Überprüfung verzichtet, ob Felder als private deklariert werden können, da es bei Android eine empfohlene Vorgehensweise ist, einige Felder öffentlich zu deklarieren. Dies sorgt auf mobilen Geräten für mehr Effizienz, da zum Zugreifen auf ein solches Feld keine Methode über einen Call-Stack aufgerufen werden müssen.
 
@@ -30,6 +26,14 @@ Wir haben bei der Checkstyle-Überprüfung auf die Überprüfung verzichtet, ob 
 
 \includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler ``Checkstyle''-Report}]{anhang/partials/checkstyle-2.pdf}
 \includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/checkstyle-2.pdf}
+
+\subsubsection{Screenshot von Checkstyle-IDEA}
+
+In diesem Screenshot ist sichtbar, wie Checkstyle direkt und insbesondere vor einem Commit Fehler markiert. Hier wird angemerkt, dass zwischen der Typumwandlung \glqq (Peer)\grqq~ und dem Feld \glqq other\grqq~ ein Leerzeichen fehlt, sowie dass die if-else-Konstruktion keine geschweiften Klammern verwendet.
+
+Durch die auffällige rote Markierung kann die Checkstyle-Warnung nicht übersehen werden.
+
+\includegraphics[width=17.5cm]{belege/checkstyle/checkstyle-idea-screenshot.png}
 
 
 \clearpage
