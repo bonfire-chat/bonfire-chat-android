@@ -58,10 +58,11 @@ public class Peer {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof Peer)
-            return hasAddress(((Peer)other).getAddress());
-        else
+        if (other instanceof Peer) {
+            return hasAddress(((Peer) other).getAddress());
+        } else {
             return false;
+        }
     }
 
     @Override

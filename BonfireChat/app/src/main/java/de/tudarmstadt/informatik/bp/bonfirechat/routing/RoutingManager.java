@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.CryptoHelper;
 import de.tudarmstadt.informatik.bp.bonfirechat.helper.StreamHelper;
-import de.tudarmstadt.informatik.bp.bonfirechat.network.BluetoothProtocol;
 import de.tudarmstadt.informatik.bp.bonfirechat.network.Peer;
 
 /**
@@ -71,13 +69,8 @@ public class RoutingManager {
 
     public List<Peer> chooseRecipients(Packet packet, List<Peer> peers) {
         if (packet.isFlooding()) {
-            Random r = new Random();
             // send to all available peers
-            ArrayList<Peer> selectedPeers = (ArrayList) ((ArrayList) peers).clone();
-//            while (selectedPeers.size() > 4) {
-//                selectedPeers.remove(r.nextInt(selectedPeers.size()));
-//            }
-            return selectedPeers;
+            return peers;
         } else if (packet.getNextHop() != null) {
             List<Peer> r = new ArrayList<>(1);
             for (Peer peer : peers) {
@@ -89,7 +82,7 @@ public class RoutingManager {
             if (r.size() == 0) {
                 ///r.add(new Peer(BluetoothProtocol.class, packet.getNextHop(), "(dynamic)"));
                 //throw new IllegalStateException("Next hop not found in neighbour list: "+ StreamHelper.byteArrayToHexString(packet.getNextHop()));
-                Log.w(TAG, "Next hop not found in neighbour list: "+ StreamHelper.byteArrayToHexString(packet.getNextHop()));
+                Log.w(TAG, "Next hop not found in neighbour list: " + StreamHelper.byteArrayToHexString(packet.getNextHop()));
                 return null;
             }
             packet.removeNextHop();
