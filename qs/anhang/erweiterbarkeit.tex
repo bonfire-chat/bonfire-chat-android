@@ -8,10 +8,13 @@ Die Erweiterung der Anwendung um einen weiteren Übertragungsweg wird im folgend
 Der Entwickler muss zunächst eine neue Klasse EchoProtocol implementieren. Die neue Klasse muss das Interface `IProtocol` implementieren.
 
 \begin{lstlisting}[language=Java]
-app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/IProcol.java
+app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/IProtocol.java
 
 public interface IProtocol {
     void sendPacket(Packet packet, Peer peer);
+    void setIdentity(Identity identity);
+    void setOnPacketReceivedListener(OnPacketReceivedListener listener);
+    void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener);
     boolean canSend();
     void shutdown();
 }
