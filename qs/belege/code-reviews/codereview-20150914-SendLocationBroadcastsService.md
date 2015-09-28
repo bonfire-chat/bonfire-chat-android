@@ -5,7 +5,7 @@
 
 **Geprüfte Codeteile:** SendLocationBroadcastsService
 
-**Änderungen vorgenommen in Commit:** 
+**Änderungen vorgenommen in Commit:** Im Zuge dieses Code-Reviews wurden keine Änderungen vorgenommen.
 
 #### 1. Ist die Funktionalität korrekt?
 

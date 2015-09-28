@@ -17,7 +17,7 @@ Ja
 
 #### 3. Wurde die Klassenstruktur gut entworfen und erfüllt sie alle Anforderungen, oder sind Verbesserungen nötig?
 
-Einige Konstanten und einige Funkionen für die HTTP-API sind nicht an einer sinnvollen Stelle definiert, sonder immer in der Klasse, in der sie gerade benutzt wurden. Als Konsequenz wurde eine eigene Klasse für die API angelegt (BonfireAPI.java), in die diese Konstanten und Funktionen  verlagert wurden.
+Einige Konstanten und einige Funkionen für die HTTP-API sind nicht an einer sinnvollen Stelle definiert, sondern immer in der Klasse, in der sie gerade benutzt wurden. Als Konsequenz wurde eine eigene Klasse für die API angelegt (BonfireAPI), in die diese Konstanten und Funktionen verlagert wurden.
 
 #### 4. Gibt es Klassen, die aufgrund neuer Implementierungen überflüssig geworden sind?
 
