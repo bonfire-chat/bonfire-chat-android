@@ -222,10 +222,10 @@ Severity: HARD
 \end{lstlisting}
 
 
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer ``Checkstyle''-Report}]{anhang/partials/checkstyle-1.pdf}
+\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer Checkstyle-Report}]{anhang/partials/checkstyle-1.pdf}
 \includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/checkstyle-1.pdf}
 
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler ``Checkstyle''-Report}]{anhang/partials/checkstyle-2.pdf}
+\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler Checkstyle-Report}]{anhang/partials/checkstyle-2.pdf}
 \includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/checkstyle-2.pdf}
 
 \subsubsection{Screenshot von Checkstyle-IDEA}
@@ -354,7 +354,7 @@ sowie alle wichtigen Designentscheidungen in einem Dokument festgehalten.
 \section{Automatisierte Tests}
 
 Es wurden JUnit-Tests für die automatisiert testbaren Codeteile durchgeführt.
-Im folgenden findet sich zunächst eine Liste aller Tests sowie der Testergebnisse,
+Im Folgenden findet sich zunächst eine Liste aller Tests sowie der Testergebnisse,
 außerdem das Ergebnis der Test-Coverage-Analyse, aufgeschlüsselt nach Packages.
 \\\\
 Wie bereits im QS-Dokument beschrieben, war ein Testen des UI- und Netzwerkcodes
@@ -389,9 +389,12 @@ sodass wir stattdessen mit Mockito erstellte Mock-Objekte übergeben können, od
 % ---------------------------------------------------------------------------
 % Automatisierte Tests: Test Coverage
 
-\includepdf[pages=-,offset=-0.8cm 0,scale=.8,pagecommand=\subsection{Test Coverage}]{anhang/partials/coverage.pdf}
+\subsection{Test Coverage}
 
+Aufgrund der in der Einleitung zu \glqq Automatisierte Tests\grqq~ beschriebenen Probleme mit JUnit und Android können große Teile unseres Quellcodes nicht automatisiert getestet werden. Daher scheint auch die Testabdeckung relativ gering zu sein, es ist jedoch nicht möglich mehr Abdeckung zu erhalten.
 
+\hspace{-1cm}
+\includegraphics[width=19.3cm,clip=true,trim=0cm 15cm 0cm 0cm]{anhang/partials/coverage.pdf}
 
 \clearpage
 
