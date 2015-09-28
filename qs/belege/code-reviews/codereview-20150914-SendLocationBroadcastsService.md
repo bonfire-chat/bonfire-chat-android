@@ -1,5 +1,5 @@
 
-## Code-Review vom 14.09.2015
+## Code-Review vom 14 September 2015
 
 **Durchgeführt von:** Johannes Lauinger, Jens Heuschkel 
 
