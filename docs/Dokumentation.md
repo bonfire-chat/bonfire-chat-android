@@ -40,7 +40,7 @@ Um abzubilden, dass der Benutzer über seine eigene Identität mehr Informatione
 Folgende Felder sind vorhanden:
 
 ```java
-public String nickname, server, username, password, phone;
+public String nickname, phone;
 public MyPublicKey publicKey;
 public PrivateKey privateKey;
 public long rowid; // Zeilen-ID in der Datenbank
@@ -101,7 +101,7 @@ public enum MessageDirection {
 }
 ```
 
-Im Feld `transferProtocol` wird das verwendete Protokoll in Textform gespeichert, um den Benutzer zu informieren, wie seine Nachricht angekommen ist. Tritt beim Versenden eine Exception auf, wird die Fehlermeldung im Feld `error` abgelegt und als Nachrichtentext angezeigt. Das ist vor Allem während der Entwicklung zur Fehlersuche sehr hilfreich, wenn keine Zugriff auf die ADB-Logs vorhanden ist.
+Im Feld `transferProtocol` wird das verwendete Protokoll in Textform gespeichert, um den Benutzer zu informieren, wie seine Nachricht angekommen ist. Tritt beim Versenden eine Exception auf, wird die Fehlermeldung im Feld `error` abgelegt und als Nachrichtentext angezeigt. Das ist vor allem während der Entwicklung zur Fehlersuche sehr hilfreich, wenn keine Zugriff auf die ADB-Logs vorhanden ist.
 
 Im Integer `flags` werden verschiedene Informationen zur Nachricht als Flags kodiert. Folgende Flags können dabei gesetzt werden:
 
@@ -389,7 +389,6 @@ CREATE TABLE if not exists contacts (
   lastName TEXT,
   phoneNumber TEXT,
   publicKey TEXT,
-  xmppId TEXT,
   wifiMacAddress TEXT,
   bluetoothMacAddress TEXT
   );
@@ -434,7 +433,6 @@ Auf dem Server werden die Kontakte in der `MySQL` Datenbank gespeichert. Diese h
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `nickname` varchar(100) DEFAULT NULL,
-  `xmppid` varchar(100) DEFAULT NULL,
   `publickey` varchar(200) DEFAULT NULL,
   `phone` varchar(200) DEFAULT NULL,
   `gcmid` varchar(200) DEFAULT NULL,
@@ -454,7 +452,7 @@ CREATE TABLE `traceroutes` (
 
 ### API
 
-Der Server bietet mehrere API-Endpunkte, die Antworten im `JSON` Format zurückgeben:
+Der Server bietet mehrere API-Endpunkte, die Antworten im `JSON`-Format zurückgeben:
 
 #### POST /api/v1/register
 
