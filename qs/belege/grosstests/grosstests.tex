@@ -1,9 +1,9 @@
-\subsection{Großtest}\label{großtest-1}
-
+\subsection{Großtest}\label{grosstest-1}
+\\
 Die Handys wurden mit Buchstaben benannt und im Raum C205 verteilt.
-
+\\
 \subsubsection{Ergebnisse Test 1:}\label{ergebnisse-test-1}
-
+\\
 Wir haben auf 117 Nachrichten 11 erfolgreiche Fälle und 106 Errors.
 \\\\
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die beim
@@ -50,7 +50,7 @@ hier die Nachricht an seine 3 Nachbarn. Da jedoch J, A und B (nur) C als
 Nachbarn finden, kommt die Nachricht nicht an.\\\\
 
 subsubsection{Schlussfolgerung aus dem
-Test:}\label{schlussfolgerung-aus-dem-test}
+Test:}\label{schlussfolgerung-aus-dem-test}\\
 
 Es kamen extrem wenige Nachrichten an. Dies lag daran, dass die Handys
 Probleme hatten, sich zu verbinden. Es liegt nahe, dass der
@@ -58,7 +58,7 @@ Bluetoothadapter nicht genügend Ports hat um sich mit allen in der Nähe
 befindlichen Geräten zu verbinden. Eine Möglichkeit dies zu lösen, wäre
 es, sich nicht dauerhaft mit allen Geräten in der Umgebung zu verbinden,
 sondern eine Verbindung nach einer Übertragung wieder zu schließen.
-
+\\\\
 Des Weiteren gab es Handys, die Nachrichten überhaupt nicht
 weitergeleitet haben. Vermutlich war an diesen der Stromsparmodus von
 Android aktiv. Ein Beispiel hierfür wäre C.
@@ -76,15 +76,15 @@ Android aktiv. Ein Beispiel hierfür wäre C.
 \end{itemize}
 
 subsubsection{Ergebnisse Test 2:}\label{ergebnisse-test-2}
-
+\\
 Bevor wir Test 2 gestartet haben, haben wir auf allen Handys den
 Bluetooth Adapter deaktiviert und erneut aktiviert. Das sollte
 eingefrorene Bluetooth Adapter wieder aktivieren. Dieses Vorgehen
 basierte auf Erfahrungen von früheren kleinen Tests beim Programmieren.
-
+\\\\
 Im Test 2 haben wir auf 166 Nachrichten 2 erfolgreiche Fälle und 164
 Errors.
-
+\\
 \textbf{Folgende Beispiele veranschaulichen die Nachrichten, die beim
 Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Test2Erfolg1.jpg}\\
@@ -112,7 +112,7 @@ Nachricht mehr als einen Hop zu übertragen. Dies passierte bei diesem
 Test bereits sehr selten.\\
 
 \subsubsection{Schlussfolgerung aus dem
-Test:}\label{schlussfolgerung-aus-dem-test-1}
+Test:}\label{schlussfolgerung-aus-dem-test-1}\\
 
 Dieser Test zeigte, dass bereits Abstände von circa 5 Metern einen stark
 beeinflussenden Faktor haben und extrem viel weniger Verbindungen
@@ -121,20 +121,20 @@ aufgebaut wurden als in Test 1.\\\\
 Auch hier gab es wieder Handys, die vermutlich von Android in den
 Energiesparmodus versetzt wurden, da diese von niemandem bedient wurden
 und nur als Relaisstadion gedient haben.
-
+\\
 \textbf{Verbesserungen bis zum nächsten Test:}
-
+\\
 siehe Test 1, keine weiteren Erkenntnisse gewonnen.
-
+\\
 \subsubsection{Test 3:}\label{test-3}
-
+\\
 Da die Ergebnisse nicht unseren Erwartungen entsprachen, beschlossen wir
 den Test hier abzubrechen. Der letzte Test unterliegt schwereren
 Bedingungen und bringt dadurch nur bei Erfolg von Test 1 oder 2 bessere
 Ergebnisse.
-
+\\
 \subsubsection{Testbericht}\label{testbericht-1}
-
+\\
 Nach dem letzten Test wurde der Code so erweitert, dass Bluetooth nur
 noch 4 Verbindungen gleichzeitig aufbaut und in regelmäßigen Abständen
 alte Verbindungen fallen lässt. Das hindert den Bluetooth Adapter zu
@@ -147,11 +147,11 @@ Die Benennung der Handys wurde den einzelnen Personen überlassen. Es
 wurde dafür gesorgt, dass alle Handys den Kontakt der anderen Handys
 kennt.\\\\
 
-\subsection{Großtest2}\label{großtest-2}
+\subsection{Großtest2}\label{grosstest-2}
 \subsubsection{Ergebnisse Test 1:}\label{ergebnisse-test-1-1}
-
+\\
 Wir haben auf 167 Nachrichten 8 erfolgreiche Fälle und 159 Errors.
-
+\\\\
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die beim
 Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Grosstest2/Test1Erfolg2.jpg}\\
@@ -183,7 +183,7 @@ Auch hier sendet a2 eine Nachricht, die über die Hops F2, Nightfire und
 2 läuft, dort jedoch verloren geht.\\
 
 \subsubsection{Schlussfolgerung aus dem
-Test:}\label{schlussfolgerung-aus-dem-test-2}
+Test:}\label{schlussfolgerung-aus-dem-test-2}\\
 
 Die Einschränkung auf 4 Verbindungen pro Bluetooth-Gerät scheint nicht
 erfolgreich gewesen zu sein. Der Bluetoothadapter scheint immer noch
@@ -194,9 +194,9 @@ Verbindungen bestehen, oder versucht aufgebaut zu werden.\\\\
 Es bestand kein Grund zur Annahme, dass Verbindungen bei diesem Test
 nicht zustande gekommen sind, weil ein Handy in den Standby Modus
 gegangen ist.
-
+\\
 \subsubsection{Ergebnisse Test 2:}\label{ergebnisse-test-2-1}
-
+\\
 Wir haben auf 227 Nachrichten 20 erfolgreiche Fälle und 7 Errors.\\\\
 
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die beim
@@ -224,7 +224,7 @@ Nightfire baut eine Verbindung zu mehreren Nachbargeräten auf, die sich
 jedoch nur gegenseitig finden.\\
 
 \subsubsection{Schlussfolgerung aus dem
-Test:}\label{schlussfolgerung-aus-dem-test-3}
+Test:}\label{schlussfolgerung-aus-dem-test-3}\\
 
 Die Anzahl der erfolgreichen Verbindungen ist sehr stark von der
 funktionierenden Verbindung zwischen mnex und Sven beeinflusst.\\\\
@@ -232,9 +232,9 @@ funktionierenden Verbindung zwischen mnex und Sven beeinflusst.\\\\
 Die Tatsache, dass extrem viele Geräte überhaupt keine Verbindung mehr
 aufbauen konnten, unterstützt die Aussage, die bereits nach Test 1
 getroffen wurde, dass die Limitierung der Slots nicht zielführend war.
-
+\\
 \subsubsection{Ergebnisse Test 3:}\label{ergebnisse-test-3}
-
+\\
 Da wir gemerkt haben, dass die Limitierung der Slots auf 3 nicht
 zielführend war, haben wir diese für Test 3 wieder rückgängig gemacht.\\\\
 
@@ -263,18 +263,18 @@ jedoch dann nicht, die Nachricht weiterzuleiten.\\
 
 
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Grosstest2/Test3Misserfolg3.jpg}\\
-Auch hier gab es Fälle, in denen ein Handy keine Verbindung mit einem anderen Gerät aufbauen konnte. Dies passiert jedoch deutlich seltener als bei Test 1 und 2. 
+Auch hier gab es Fälle, in denen ein Handy keine Verbindung mit einem anderen Gerät aufbauen konnte. Dies passiert jedoch deutlich seltener als bei Test 1 und 2. \\
 \subsubsection{Schlussfolgerung aus dem
 Test:}\label{schlussfolgerung-aus-dem-test-4}
-
+\\
 Der dritte Test ist besser gelaufen als der 2. Da die Entfernung einen
 erschwerenden Faktor darstellt, kann davon ausgegangen werden, dass die
 Verbesserung dadurch zustande kam, dass wir die Slots nicht mehr
 limitieren.
-
+\\
 \subsubsection{Ausblick und zukünftige
 Tests:}\label{ausblick-und-zukuxfcnftige-tests}
-
+\\
 Im Auftragsgebertreffen wurde entschieden, dass keine weiteren
 Verbesserungen am Code durchgeführt werden sollen. Die Begründung
 hierfür ist, dass die Implementierung des Bluetooth Stacks wohl
