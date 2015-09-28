@@ -35,6 +35,9 @@ public class EnvelopeTest {
     public byte[] encryptedBody = {44};
     public MyPublicKey myPublicKey;
 
+    /**
+     * initializes an envelope using a mocked version of KeyPair before testing
+     */
     @Before
     public void initTests(){
         uuid = new UUID(0,0);
@@ -52,7 +55,7 @@ public class EnvelopeTest {
     /**
      * Tests correct creation of envelope from message
      * <br><br>
-     * uuid, the recipients's public key and sender's public key should match
+     * uuid, the recipient's public key and sender's public key should match
      * Flags should be initialized with zero
      */
     @Test
@@ -67,6 +70,8 @@ public class EnvelopeTest {
 
     /**
      * Tests correct behaviour of hasFlag
+     * <br><br>
+     * If specified flag is set, hasFlag() should return true, false otherwise
      */
     @Test
     public void testHasFlag(){

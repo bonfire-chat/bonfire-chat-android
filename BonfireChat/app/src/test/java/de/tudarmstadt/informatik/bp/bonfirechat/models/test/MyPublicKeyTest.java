@@ -24,6 +24,9 @@ public class MyPublicKeyTest {
     MyPublicKey myPublicKey;
     PublicKey publicKeyMock;
 
+    /**
+     * initializes a keypair with mocked objects before testing
+     */
     @Before
     public void initTests(){
         keyPairMock = Mockito.mock(KeyPair.class);

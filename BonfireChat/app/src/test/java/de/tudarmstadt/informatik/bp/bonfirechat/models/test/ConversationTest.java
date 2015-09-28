@@ -31,6 +31,9 @@ public class ConversationTest {
     Contact contact;
     Message message;
 
+    /**
+     * initializes a conversation with a contact, using a mocked version of KeyPair
+     */
     @Before
     public void initTests(){
         conversation = new Conversation(null, "Title", 42);

@@ -27,7 +27,7 @@ public class BonfireAPITest {
     /**
      * tests valid encoding of a String
      * <br><br>
-     * String will be encoded and the resulting byte array matches the pre-computed
+     * String will be encoded and the resulting byte array should match the pre-computed
      * correct byte array.
      */
     @Test

@@ -18,6 +18,13 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class ContactImageHelperTest {
 
+    /**
+     * Tests that the generic Bonfire icon is displayed as contact image for a contact which
+     * has no contact image path set.
+     * <br><br>
+     * This uses a mocked version of ImageView.
+     * @throws Exception
+     */
     @Test
     public void testDisplayContactImage() throws Exception {
         ImageView iviewMock = Mockito.mock(ImageView.class);

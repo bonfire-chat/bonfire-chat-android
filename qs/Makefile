@@ -31,8 +31,10 @@ $(PARTIALS)/dokumentation.tex: ../docs/Dokumentation.md
 $(PARTIALS)/coverage.pdf: belege/coverage/index.html
 	wkhtmltopdf $< $@
 
-$(PARTIALS)/javadoc.pdf: belege/junit/javadoc.html
+belege/junit/javadoc.html: belege/junit/javadoc/*
 	cd toolchain && ./make-javadoc-html.sh
+
+$(PARTIALS)/javadoc.pdf: belege/junit/javadoc.html
 	wkhtmltopdf $< $@
 
 $(PARTIALS)/junit.pdf: belege/junit/bonfire-junit-report.html

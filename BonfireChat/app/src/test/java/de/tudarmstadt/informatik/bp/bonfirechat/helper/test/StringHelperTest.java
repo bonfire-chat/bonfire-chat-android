@@ -13,13 +13,16 @@ public class StringHelperTest {
 
     private static String pattern;
 
+    /**
+     * initializes patters for testing
+     */
     @Before
     public void initTests(){
         pattern = "BonfireChat ist cool.*";
     }
 
     /**
-     * Tests correct matching of multiple regular expressions
+     * tests correct matching of multiple regular expressions
      * <br><br>
      * One non-matching string should result in returning false
      */
