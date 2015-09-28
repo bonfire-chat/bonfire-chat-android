@@ -5,11 +5,11 @@
 
 **Geprüfte Codeteile:** RingBuffer
 
-**Änderungen vorgenommen in Commit:** ed7607da504e27a40cf2c99841c539be1d60c29a
+**Änderungen vorgenommen in Commit:** ed7607da504e27a40cf2c99841c539be1d60c29a, e8130bb7d8aa19d9aaccd661b0eabcbb6d96874c
 
 #### 1. Ist die Funktionalität korrekt?
 
-Die contains-implementierung funktioniert nicht immer korrekt. TODO: Warum?
+Die contains-implementierung funktioniert nicht immer korrekt, da die falsche equals-Methode aufgerufen wird. Dies wurde sofort von Max Weller behoben.
 
 #### 2. Sind die Klassen, Funktionen und Variablen angemessen benannt?
 
