@@ -74,8 +74,10 @@ public class MainActivity extends Activity
 
         // Make sure image folder exists
         try {
-            new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                    BonfireAPI.DOWNLOADS_DIRECTORY).mkdir();
+            if (!new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                    BonfireAPI.DOWNLOADS_DIRECTORY).mkdir()) {
+                throw new Exception();
+            }
         } catch (Exception e) {
             Log.e(TAG, "error opening image file");
         }
@@ -207,7 +209,9 @@ public class MainActivity extends Activity
                 break;
         }
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(mTitle);
+        if (actionBar != null) {
+            actionBar.setTitle(mTitle);
+        }
     }
 
     public void navigateFragment(int position) {
