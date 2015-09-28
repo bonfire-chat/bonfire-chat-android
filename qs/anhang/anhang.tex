@@ -39,36 +39,35 @@ Durch die auffällige rote Markierung kann die Checkstyle-Warnung nicht überseh
 \clearpage
 \subsection{Android Lint}
 
-Zusätzlich haben wir das von Google entwickelte und empfohlene ``Android Lint''
-genutzt. Dieses Tool gibt Empfehlungen zur Einhaltung der Android-Programmierrichtlinien.
+Zusätzlich zu Checkstyle haben wir das von Google entwickelte und empfohlene \glqq Android Lint\grqq~ genutzt. Dieses Tool ist speziell für Android optimiert und erzeugt im Gegensatz zu Checkstyle weniger Warnungen bezüglich syntaktischer Programmierrichtlinien, sondern vielmehr Empfehlungen zur Verbesserung der Performance, Usability, Accessibility und Korrektheit.
 
-Dadurch verbessert sich einerseits die Wartbarkeit, denn durch das Befolgen der im Android-Umfeld üblichen
- Konventionen und die Verwendung von allgemein bekannten und anerkannten Entwurfsmustern, ist der Code zukünftigen
-Entwicklern leichter verständlich.
-Andererseits enthalten die Reports Empfehlungen zur Verbesserung der Performance, Usability, Accessibility und Korrektheit.
+Dadurch verbessert sich einerseits die Wartbarkeit, denn durch das Befolgen der im Android-Umfeld üblichen Konventionen und die Verwendung von allgemein bekannten und anerkannten Entwurfsmustern, ist der Code zukünftigen Entwicklern leichter verständlich.
 
-Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde,
-als wir begonnen haben, ``Android Lint'' einzusetzen. Dann wurden initial alle
-Warnungen und Empfehlungen abgearbeitet (Commit XXXXXXXXXXXXX TODO).
-Die Warnungen und Empfehlungen werden direkt in der von uns verwendeten
-Entwicklungsumgebung Android Studio angezeigt, sodass diese anschließend während
-der Programmierung direkt umgesetzt werden konnten. Daher ist der zweite Report,
-der zum Abschluss des Projekts erstellt wurde, leer.
+Im folgenden Abschnitt befindet sich wieder ein Report, der erstellt wurde, als wir begonnen haben, \glqq Android Lint\grqq~ einzusetzen. Dann wurden initial alle Warnungen und Empfehlungen abgearbeitet (Commit 1f4733747f7a98d89e7832937d94a9ddcbdc2bd5 \glqq fixes Android Lint errors and warnings\grqq). Die Warnungen und Empfehlungen werden direkt in der von uns verwendeten Entwicklungsumgebung Android Studio angezeigt, sodass diese anschließend während der Programmierung direkt umgesetzt werden konnten. Daher ist der zweite Report, der zum Abschluss des Projekts erstellt wurde, leer.
+
+Nach den Berichten findet sich ein Screenshot, der markierte Android Lint-Warnungen anzeigt.
 
 
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer ``Android Lint''-Report}]{anhang/partials/lint-results-1.pdf}
+\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer Android Lint Report}]{anhang/partials/lint-results-1.pdf}
 \includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/lint-results-1.pdf}
 
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler ``Android Lint''-Report}]{anhang/partials/lint-results-2.pdf}
-%\includepdf[pages=2-,scale=.8,pagecommand={}]{anhang/partials/lint-results-2.pdf}
+\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler Android Lint Report}]{anhang/partials/lint-results-2.pdf}
+
+\subsubsection{Screenshot von Android Lint in Android Studio}
+
+In diesem Screenshot ist ersichtlich, wie Android Lint anmerkt, statt \glqq paddingRight\grqq~ \glqq paddingEnd\grqq~ zu verwenden. Dies ist ein Beispiel für Verbesserungen der Accessibility für Android Apps. Weiterhin angemerkt wird, dass die beiden Konstruktionen aus jeweils einem \glqq LinearLayout\grqq~ und einem \glqq ImageView\grqq~ zu einem \glqq Compound Layout\grqq~ zusammengefasst werden können.
+
+Durch die gelbe Hinterlegung in Android Studio, welche bereits beim Tippen des Quellcodes angezeigt wird, können Android Lint Warnungen kaum übersehen werden.
+
+\includegraphics[width=17.5cm]{belege/lint/android-lint-screenshot.png}
 
 
 \clearpage
 \subsection{FindBugs}
 
-Um häufig auftretende Fehler zu vermeiden, haben wir FindBugs verwendet.
+Um häufig auftretende Fehler zu vermeiden, haben wir \glqq FindBugs\grqq~ eingesetzt. Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als wir mit der Verwendung von FindBugs begonnen aben. Anschließend wurden alle Fehler und Warnungen in Commit XXXXXXXX TODO behoben. Da wir das Plugin FindBugs-IDEA direkt in unsere Entwicklungsumgebung integriert haben und Fehler so direkt markiert wurden, konnten Fehler ab dann direkt bei der Entwicklung vermieden werden und der zweite, am Ende des Projektes erstellte, Report ist leer.
 
-Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als wir mit der Verwendung von ``FindBugs'' begonnen aben. Anschließend wurden alle Fehler und Warnungen in Commit XXXXXXXX TODO behoben. Da wir das Plugin FindBugs-IDEA direkt in unsere Entwicklungsumgebung integriert haben und Fehler so direkt markiert wurden, konnten Fehler ab dann direkt bei der Entwicklung vermieden werden und der zweite, am Ende des Projektes erstellte, Report ist leer.
+Nach den Berichten findet sich auch für FindBugs ein Screenshot, welcher \glqq FindBugs-IDEA\grqq~ in Aktion und insbesondere die nahtlose Integration in Android Studio zeigt.
 
 
 \includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer ``FindBugs''-Report}]{anhang/partials/findbugs-1.pdf}
@@ -76,6 +75,14 @@ Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als wir mit
 
 \includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler ``FindBugs''-Report}]{anhang/partials/findbugs-2.pdf}
 \includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/findbugs-2.pdf}
+
+\subsubsection{Screenshot von FindBugs-IDEA}
+
+Im gezeigten Screenshot ist sichtbar, dass FindBugs eine Stelle im Code markiert hat, an der möglicherweise eine NullPointerException auftreten könnte. Weitere gefundene Fehler sind in der FindBugs-Ansicht unten am Bildschirm erkennbar.
+
+Da betroffene Stellen orange unterstrichen werden und mit einer Fehlermarkierung am Rand angezeigt werden, sind sie direkt bei der Entwicklung der Anwendung ersichtlich und können umgehend behoben werden.
+
+\includegraphics[width=17.5cm]{belege/findbugs/findbugs-idea-screenshot.png}
 
 
 \clearpage
