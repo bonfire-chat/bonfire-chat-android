@@ -257,10 +257,12 @@ Die CryptoBox ist ein Konzept von `NaCl`, welche die Verschlüsselung und Signie
 BonfireChat unterstützt diverse Protokolle zur Nachrichtenübertragung. Um diese abstrakt zu verwenden, gibt es das Interface `IProtocol`. Diese wird von der abstrakten Basisklasse `SocketProtocol` implementiert und bietet die folgenden minimalen Anforderungen an ein Protokoll:
 
 ```java
-void sendMessage(Envelope envelope);
-void setIdentity(Identity identity);
-void setOnMessageReceivedListener(OnMessageReceivedListener listener);
-boolean canSend();
+    void sendPacket(Packet packet, Peer peer);
+    void setIdentity(Identity identity);
+    void setOnPacketReceivedListener(OnPacketReceivedListener listener);
+    void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener);
+    boolean canSend();
+    void shutdown();
 ```
 
 Mit `setIdentity` wird dem Protokoll die eigene Identität bekannt gemacht, falls diese für den Sendevorgang benötigt wird. `setOnMessageReceivedListener` erhält das Callback-Objekt, um eingehende Nachrichten an den `ConnectionManager` zu melden. Beide Funktionen werden bereits in `SocketProtocol` implementiert.
