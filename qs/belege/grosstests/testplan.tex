@@ -1,0 +1,27 @@
+\subsubsection{Allgemeine Ausgangskonfiguration der Knoten:}\label{Ausgangskonfiguration}
+
+Ein Knoten ist, soweit nicht näher beschrieben, ein Android-Gerät, auf dem die aktuellste Version der App eingerichtet und die initiale Einrichtung (Eingabe eines Nicknames, dadurch Registrierung des Gerätes mit Nickname, GCM-ID und PublicKey am Server) abgeschlossen ist.
+
+\subsubsection{Eigenschaften:}\label{Eigenschaften}
+
+\begin{itemize}
+\tightlist
+\item
+Geringe Distanz: Die Knoten stehen nahe zu ihren Nachbarn (1m).
+\item
+Mittlere Distanz: Die Knoten stehen etwas entfernt zu ihren Nachbarn (5m).
+\item
+Große Distanz: Die Knoten stehen weit entfernt zu ihren Nachbarn (10m).
+\end
+
+\subsubsection{Testfälle für Statistik Erhebungen}\title{Testfaelle}
+
+\paragraph{Testaufbau:}
+Wir führen einen Test mit 10 Handys durch. Es wird nur Bluetooth getestet. Alle Handys haben dauerhaft Verbindung in das Internet um ständige Nachrichtenverläufe an unser Dashboard zu senden, damit wir den Test auswerten können. Die Handys werden Kugelförmig positioniert und
+während des Tests nicht bewegt. Es werden viele Nachrichten verschickt. (Ca. eine Nachricht alle 2 Sekunden) Die Handys können jedoch keine Nachrichten über das Internet versenden. Dies wird in der App abgestellt. Die Nachrichten wurden alle per Hand verschickt. Kleine Abweichungen bei Distanz oder Sendegeschwindigkeit werden hingenommen. Jeder Test läuft 5 Minuten. 
+\paragraph{Test 1:}
+Die einzelnen Handys haben eine geringe Distanz zueinander. 
+\paragraph{Test 2:}
+Die einzelnen Handys haben eine mittlere Distanz zueinander. 
+\paragraph{Test 3:}
+Die einzelnen Handys haben eine große Distanz zueinander. 
