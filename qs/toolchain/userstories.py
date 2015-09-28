@@ -52,7 +52,7 @@ with con:
 
         if sprint > lastSprint:
             lastSprint = sprint
-            print '\\section*{Sprint ' + str(sprint) + '}'
+            print '\\addcontentsline{toc}{section}{Sprint ' + str(sprint) + '}\\section*{Sprint ' + str(sprint) + '} '
             sprintHours -= hours
             if sprint > 1:
                 missingHours = times[sprint - 2] - sprintHours
