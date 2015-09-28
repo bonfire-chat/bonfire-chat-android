@@ -2,7 +2,23 @@
 
 **Durchgeführt von: Matthias Hofmann**
 
-**Änderungen vorgenommen in Commit: keine Änderungen**
+**Änderungen vorgenommen in Commit: keine Änderungen nötig**
+
+## Teil I: Allgemeine Informationen zu den Testergebnissen
+
+### Teil I.1. Zeiten der Nachrichten im Dashboard
+Die angegebenen Zeiten der Ereignisse im Dashboard wirken auf den ersten Blick unwahrscheinlich. 
+Zum Beispeiel wird in Test II)1. ein Acknowledgement zuersst empfangen, bevor es gesendet wurde.
+Dies liegt daran, dass die Übertragungn des Ackknowledgements per Bluetooth stattgefunden hat und das Gerät, 
+dass diese Empfangen hat, eine schnellere Verbindung zum Dashboard server hatte. 
+Somit wurde das Dashboard zuerst über das Ankommen des ACK informiert und dann erst über das Versenden.
+
+### Teil I.2. Packet Attribute im Dashboard
+In der sechsten Spalte im Dashboard werden Details der Übertragung dargestellt. 
+Dabei ist die eindeutige ID das zweite Attributvom Packet.
+"routing=1" steht dabei für senden via Flooding.
+"routing=2" steht für senden via DRS-Adaption.
+
 
 ## Teil II: Testfälle für die allgemeine Übertragung
 
