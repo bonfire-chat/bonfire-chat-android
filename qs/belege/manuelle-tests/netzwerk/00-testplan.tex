@@ -13,12 +13,12 @@ Ein Knoten ist, soweit nicht näher beschrieben, ein Android-Gerät, auf
 dem die aktuellste Version der App eingerichtet und die initiale
 Einrichtung (Eingabe eines Nicknames, dadurch Registrierung des Gerätes
 mit Nickname, GCM-ID und PublicKey am Server) abgeschlossen ist.
-
+\clearpage
 
 % ----------------------------------------------------------------------
 % II
 
-\clearpage
+
 \subsubsection{N-ii: Testfälle für die allgemeine
 Übertragung}\label{ii-testfuxe4lle-fuxfcr-die-allgemeine-uxfcbertragung}
 
@@ -89,12 +89,12 @@ Flooding (0x01) versendet wurde, das ACK mit Routingmodus DSR
 (0x02).\tabularnewline
 \bottomrule
 \end{longtable}
-
+\clearpage
 
 % ----------------------------------------------------------------------
 % III
 
-\clearpage
+
 \subsubsection{N-iii: Testfälle für Wegfindung per Flooding und einfaches
 Routing}\label{iii-testfuxe4lle-fuxfcr-wegfindung-per-flooding-und-einfaches-routing}
 
@@ -141,17 +141,16 @@ Die ACK kommt auf umgekehrtem Weg zu A zurück.\tabularnewline
 \bottomrule
 \end{longtable}
 
-\paragraph{N-iii-3.}\label{section}
+%\paragraph{N-iii-3.}\label{section}
 
-TODO Test beschreiben
+%TODO Test beschreiben
 
-
+\clearpage
 
 
 % ------------------------------------------------------------------------
 % IV
 
-\clearpage
 \subsubsection{N-iv: Testfälle für sich verändernde
 Routen}\label{iv-testfuxe4lle-fuxfcr-sich-veruxe4ndernde-routen}
 
@@ -182,45 +181,45 @@ senden. Da dies fehlschlägt, wird beim Retry nach 20 Sekunden versucht,
 ``für gamma'' von B an A erfolgt dann wiederum per DSR.\tabularnewline
 \bottomrule
 \end{longtable}
-
+\clearpage
 
 
 % ------------------------------------------------------------------------
 % V
 
-\clearpage
-\subsubsection{N-v: Testfälle für Störeinflüsse im
-Netzwerk}\label{v-testfuxe4lle-fuxfcr-stuxf6reinfluxfcsse-im-netzwerk}
+%\clearpage
+%\subsubsection{N-v: Testfälle für Störeinflüsse im
+%Netzwerk}\label{v-testfuxe4lle-fuxfcr-stuxf6reinfluxfcsse-im-netzwerk}
 
-Hier soll überprüft werden, wie sich die App bei äußeren Störeinflüssen
-auf Netzwerkebene, also zum Beispiel während einer während der
-Datenübertragung abreißenden Verbindung, verhält. Es soll sichergestellt
-sein, dass stets angemessen reagiert wird und sowohl die App nicht
-abstürzt als auch der Benutzer sinnvolle Fehlermeldungen erhält.
+%Hier soll überprüft werden, wie sich die App bei äußeren Störeinflüssen
+%auf Netzwerkebene, also zum Beispiel während einer während der
+%Datenübertragung abreißenden Verbindung, verhält. Es soll sichergestellt
+%sein, dass stets angemessen reagiert wird und sowohl die App nicht
+%abstürzt als auch der Benutzer sinnvolle Fehlermeldungen erhält.
 
-Da dies teilweise sporadische Fehler sind, welche sich schwer
-reproduzieren lassen, ist die Aussagekraft der folgenden Tests leider
-nur bedingt gegeben.
+%Da dies teilweise sporadische Fehler sind, welche sich schwer
+%reproduzieren lassen, ist die Aussagekraft der folgenden Tests leider
+%nur bedingt gegeben.
 
-\paragraph{\texorpdfstring{N-v-1. ``Socket wird unerwartet während der
-Verbindung
-geschlossen''}{N-v-1. Socket wird unerwartet während der Verbindung geschlossen}}\label{socket-wird-unerwartet-wuxe4hrend-der-verbindung-geschlossen}
+%\paragraph{\texorpdfstring{N-v-1. ``Socket wird unerwartet während der
+%Verbindung
+%geschlossen''}{N-v-1. Socket wird unerwartet während der Verbindung geschlossen}}\label{socket-wird-unerwartet-wuxe4hrend-der-verbindung-geschlossen}
 
-\begin{longtable}{p{8cm}p{8.5cm}}
-\toprule
-Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+%\begin{longtable}{p{8cm}p{8.5cm}}
+%\toprule
+%Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
+%\midrule
+%\endhead
+%\bottomrule
+%\end{longtable}
 
-\paragraph{N-v-2. Benutzer schaltet Bluetooth im Telefon
-aus}\label{benutzer-schaltet-bluetooth-im-telefon-aus}
+%\paragraph{N-v-2. Benutzer schaltet Bluetooth im Telefon
+%aus}\label{benutzer-schaltet-bluetooth-im-telefon-aus}
 
-\begin{longtable}{p{8cm}p{8.5cm}}
-\toprule
-Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
-\midrule
-\endhead
-\bottomrule
-\end{longtable}
+%\begin{longtable}{p{8cm}p{8.5cm}}
+%\toprule
+%Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
+%\midrule
+%\endhead
+%\bottomrule
+%\end{longtable}
