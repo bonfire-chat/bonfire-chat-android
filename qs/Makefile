@@ -14,7 +14,7 @@ dirs:
 
 
 $(PARTIALS)/codereviews.tex: belege/code-reviews/*.md
-	cat $^ | pandoc -r markdown -w latex | sed 's/\\subsection/\\clearpage\\subsection/' > $@
+	cat belege/code-reviews/*.md | pandoc -r markdown -w latex | sed 's/\\subsection/\\clearpage\\subsection/' > $@
 
 $(PARTIALS)/manuelle-tests-ui-reports.tex: belege/manuelle-tests/ui/*.md
 	cat $^ | pandoc -r markdown -w latex | sed 's/\\subsection/\\clearpage\\subsection/' > $@
