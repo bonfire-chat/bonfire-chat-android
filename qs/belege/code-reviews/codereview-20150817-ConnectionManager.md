@@ -1,11 +1,11 @@
 
 ## Code-Review vom 17. August 2015
 
-**Durchgeführt von:**
+**Durchgeführt von:** Simon Thiem, Alexander Frömmgen
 
 **Geprüfte Codeteile:** ConnectionManager
 
-**Änderungen vorgenommen in Commit:**
+**Änderungen vorgenommen in Commit:** d449431173173391974e8fdc320a9e6912dff7e7
 
 #### 1. Ist die Funktionalität korrekt?
 
@@ -17,7 +17,7 @@ Ja.
 
 #### 3. Wurde die Klassenstruktur gut entworfen und erfüllt sie alle Anforderungen, oder sind Verbesserungen nötig?
 
-Ja, sie ist sinnvoll erstellt und es sind keine Verbesserungen bekannt.
+Ja, sie ist sinnvoll erstellt und es sind keine Verbesserungen nötig.
 
 #### 4. Gibt es Klassen, die aufgrund neuer Implementierungen überflüssig geworden sind?
 
@@ -25,7 +25,7 @@ Nein.
 
 #### 5. Gibt es unnötig überladene Funktionen oder Konstruktoren?
 
-Die Methode storeAndDisplayMessage kann in eine storeMessage und in ein displayMessage aufgeteilt werden.
+Nein.
 
 #### 6. Wurde die Datenbankstruktur gut entworfen?
 
@@ -53,7 +53,9 @@ Der Großteil des Codes im ConnectionManager läuft bereits in einem Hintergrund
 
 #### 12. Werden alle möglichen Fehlschläge behandelt?
 
-Es gibt noch eine Methode in der mit TODO gekennzeichnet ist, ob hier nicht ein Fehler geworfen werden soll. Um alle anderen Fehler wird sich gekümmert.
+In der onPacketRecieved-Methode wird das Eintreffen eines Pakets unbekannten Typs nicht behandelt. Johannes Lauinger wird beauftragt, dies zu beheben.
+
+**Update 20.08.15:** Dies wurde von Johannes Lauinger behoben. Es wird in diesem Fall nun eine Exception geworfen.
 
 #### 13. Findet eine "Graceful Degradation" statt?
 
@@ -61,13 +63,7 @@ Bei dem Handlen mit der Datenbank kann ein try-catch Block eingefügt werden.
 
 #### 14. Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
 
-Nein, folgende Fehler wurden gefunden und werden behoben:
-
-- Fehler wurden nicht userfreundlich dargestellt
-- Es befinden sich TODO-Blöcke im Code, die abgearbeitet werden müssen.
-- Die CanSend-Funktionalität returned immer true und ist noch nicht implementiert -> BluetoothProtokol & WifiProtokol
-- Die sendMessage Methode ruft nur die sendEnvelope Methode auf. Überbleibsel von altem Code.
-- Ungenutzte Imports entfernen.
+Ja, werden sie.
 
 #### 15. Welche Teile können parallel ausgeführt werden?
 
@@ -79,10 +75,8 @@ Müssen sie nicht.
 
 #### 17. Ist das Layout passend für alle Bildschirmdimensionen?
 
-Es gibt kein Layout.
+Da es sich nicht um eine UI-Funktionalität handelt, gibt es auch kein Layout.
 
 #### 18. Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
 
-- routingManager und peers sollten nicht public sein, alle Zugriffe von außen sind zur Generierung von Debugausgaben bzw. zum manuellen Setzen einer Route zum Debuggen. Die Methode zur Generierung von Debugausgaben kann in den ConnectionManager verschoben werden.
-- registeredProtocols, getOrCreateConnection muss nicht public sein (wird nicht extern verwendet)
-- connections muss nicht public sein, wird von außen nur zur Generierung von Debugausgaben verwendet. Die Methode zur Generierung von Debugausgaben kann in den ConnectionManager verschoben werden.
+Ja, haben sie.
