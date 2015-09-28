@@ -183,7 +183,7 @@ Daneben sind die beiden Funktionen `sendEnvelope` und `recieveEnvelope` implemen
 
 Das eigentliche `Envelope` Objekt wird mit `writeObject` bzw. `readObject` geschrieben und gelesen. Es wird also die Standard-Java-Serialisierung verwendet.
 
-### Datenstruktur Umschlag
+### Datenstruktur Envelope
 
 Um Nachrichten auf dem Transportweg zu repräsentieren, werden sie in einen Umschlag eingepackt. Dieser wird durch ein Objekt der Klasse `Envelope` dargestellt. Damit das Envelope-Objekt im Zusammenhang mit Streams verwendet werden kann, implementiert die Klasse das Interface `Serializable`.
 
@@ -193,8 +193,7 @@ Die folgenden Felder sind vorhanden:
 public UUID uuid;
 public int hopCount;
 public Date sentTime;
-public ArrayList<byte[]> recipientsPublicKeys;
-public String senderNickname; // eventuell entfernen, für Entwicklungszwecke aber sehr praktisch
+public byte[] recipientPublicKey;
 public byte[] senderPublicKey;
 public byte[] encryptedBody; // verschlüsselt
 public byte[] nonce;
@@ -265,7 +264,7 @@ void setOnMessageReceivedListener(OnMessageReceivedListener listener);
 boolean canSend();
 ```
 
-Mit `setIdentity` wird dem Protokoll die eigene Identität bekannt gemacht, falls diese für den Sendevorgang benötigt wird. `setOnMessageRecievedListener` erhält das Callback-Objekt, um eingehende Nachrichten an den `ConnectionManager` zu melden. Beide Funktionen werden bereits in `SocketProtocol` implementiert.
+Mit `setIdentity` wird dem Protokoll die eigene Identität bekannt gemacht, falls diese für den Sendevorgang benötigt wird. `setOnMessageReceivedListener` erhält das Callback-Objekt, um eingehende Nachrichten an den `ConnectionManager` zu melden. Beide Funktionen werden bereits in `SocketProtocol` implementiert.
 
 `canSend` gibt zurück, ob mit dem Protokoll momentan Daten versendet werden können. Das kann zum Beispiel nicht der Fall sein, wenn keine Geräte in der Nähe sind, zu denen eine Verbindung aufgebaut werden kann.
 
@@ -289,16 +288,21 @@ Wenn eine Nachricht gesendet werden soll, wird in der Methode `connect` zunächs
 
 Nachdem die Verbindungen aufgebaut wurden, wird mit `sendEnvelope` der Umschlag in jeden der erzeugten OutputStreams geschrieben. Daraufhin wird noch 50 Millisekunden gewartet, damit das Socket nicht direkt nach Ende der Daten geschlossen wird und die Daten sicher ankommen können. Anschließend werden die Verbindungen wieder getrennt und der DiscoveryMode wieder gestartet.
 
-### WiFiProtocol
+### WifiProtocol
 
-TODO: nach erfolgreicher Implementierung dokumentieren
+In diesem Protokoll wurde die Peer-to-Peer-Kommunikation über Wifi mit der `WifiP2pManager`-Klasse von Android implementiert. Diese Klasse stellt eine Schnittstelle bereit, um Gruppen aus Wifi-Geräten zu bilden, die dann untereinander kommunizieren können. Dabei muss jedoch immer ein `group owner` existieren, mit dem sich alle anderen Gruppenmitglieder verbinden. Des weiteren kann jedes Gerät nur mit genau einer Gruppe verbunden sein. Das ist für unseren Anwendungsfall nicht optimal, da wir gerne ein weiter verzweigtes Netz aufbauen würden. Da der `WifiP2pManager` aber die einzige Möglichkeit ist, auf nicht modifiziertem Android derartige P2P-Verbindungen aufzubauen, haben wir dennoch daran weiter entwickelt.
+
+Bei der Initialisierung des WifiProtocol wird der `WifiP2pManager` in den Discovery-Modus versetzt. Alle gefundenen Geräte in der Umgebung werden eingeladen, einer Gruppe beizutreten. Leider hat die Android-Version auf unseren Nexus-Testgeräten diverse Bugs, sodass das Herstellen von Verbindungen meistens fehlschlägt. Daher wurde die automatische Einladung deaktiviert und für weitere Tests müssen die Gruppen manuell in den Systemeinstellungen aufgebaut werden.
+
+Die Kommunikation innerhalb dieser Gruppen läuft über IP ab, wobei dynamisch IP-Adressen vergeben werden. Wir verwenden zur Kommunikation UDP-Broadcasts auf einem wohldefinierten Port, wobei ein UDP-Paket direkt einen serialisierten Envelope enthält.
+
 
 ### GcmProcotol: Client-Server-Architektur
 
 Das `GcmProtocol` implementiert Kommunikation über ein Client-Server-Modell. Dabei wird Google Cloud Messaging verwendet, um gezielt Verbindungen zum Zielgerät über das Internet aufzubauen. Über ein solches Socket wird dann der Umschlag mit den vorgesehenen Methoden übertragen.
 
-TODO: Dokumentation erweitern.
-
+Wenn eine Nachricht versendet werden soll, sendet die App diese an das API (Endpunkt POST /notify.php). Die Nachricht wird per Google Cloud Messaging an das Zielgerät übertragen und dort wird GcmBroadcastReceiver.onReceive aufgerufen, wobei der übergebene Intent den Extra "msg" erhält. Darin ist Base64-codiert der serialisierte Envelope enthalten.
+Falls die Nachricht die GCM-Maximalgröße von 4 KB überschreitet, wird sie vom Server in einer Datei zwischengespeichert und vom Empfänger per HTTP-GET-Request heruntergeladen.
 
 ## Routing
 
@@ -306,17 +310,38 @@ Falls Nachrichten zu Empfängern verschickt werden sollen, die nicht direkt bena
 
 ### Flooding
 
-Momentan werden Nachrichten über ein Protokoll an alle verfügbaren Empfänger geschickt. Das BluetoothProtocol zum Beispiel baut also zu allen Geräten in der Nähe eine Verbindung auf und verschickt den Umschlag. Geplant ist weiterhin, nicht nur ein Protokoll zu verwenden, sondern die Nachricht über alle verfügbaren Protokolle zu schicken.
+In einer ersten Version der App wurden Nachrichten generell an alle über ein Protokoll erreichbaren Empfänger geschickt. Das BluetoothProtocol zum Beispiel baut also zu allen Geräten in der Nähe eine Verbindung auf und verschickt den Umschlag. In der aktuellen Version wird Flooding als Fallback zum Dynamic Source Routing verwendet, wenn der Pfad unbekannt ist oder nicht mehr verfügbar ist. Dabei wird nicht nur ein Protokoll, sondern alle verfügbaren und vom Benutzer freigeschalteten Protokolle verwendet.
 
-Wenn eine Nachricht ankommt, die nicht für das eigene Gerät bestimmt ist oder noch weitere Empfänger hat, wird sie erneut versendet. Dabei wird sie mit der gleichen Technik an die Wartschlange der zu sendenden Nachrichten angehängt und somit also wieder an alle verfügbaren Empfänger geschickt. Außerdem wird der `hopCount` hochgezählt, und sichergestellt, dass eine Nachricht nur 20 mal weiterversendet wird. Damit wird vermieden, dass eine Nachricht ewig im Kreis gesendet wird.
+Wenn eine Nachricht ankommt, die nicht für das eigene Gerät bestimmt ist oder noch weitere Empfänger hat, wird sie weiter gesendet. Dabei wird sie mit der gleichen Technik an die Wartschlange der zu sendenden Nachrichten angehängt und somit also wieder an alle verfügbaren Empfänger geschickt. Außerdem wird der `hopCount` hochgezählt, und sichergestellt, dass eine Nachricht nur 20 mal weiterversendet wird. Damit wird vermieden, dass eine Nachricht ewig im Kreis gesendet wird.
 
 Bei diesem Flooding ist dann zu hoffen, dass die Nachricht früher oder später mindestens einmal beim korrekten Empfänger ankommt.
 
-### geplante Mechanismen
+### Dynamic Source Routing
 
 Stumpfes Broadcasting der Nachrichten führt zu einem unnötig hohen Datenaufkommen. Insbesondere über Bluetooth dauert das Versenden einer Nachricht recht lange, und es können auch nicht mehrere Nachrichten gleichzeitig versendet werden. Daher ist es wünschenswert, ein klügeres Routingverfahren einzusetzen.
 
-Probleme bereitet dabei, dass kein Knoten Kenntnis über den momentanen Aufbau des Netzes hat und sich das Netz außerdem stetig verändert. Das liegt daran, dass die Personen sich umher bewegen und die Signalqualität der eingesetzten Funktechnologien schwankt.
+Wir haben uns in Absprache mit unseren Auftraggebern zunächst für die Verwendung einer vereinfachten Variante von Dynamic Source Routing entschieden.
+
+#### Wenn ein Knoten eine Nachricht versenden möchte:
+
+* Fall a) Der Pfad zum Zielknoten ist dem Absender bekannt, das Paket wird zum ersten Mal versendet (retransmissionCount = 0)
+** Setze packet.routingMode = ROUTING_MODE_DSR
+** Setze packet.nextHops auf den bekannten Pfad
+* Fall b) Der Pfad zum Zielknoten ist dem Absender bekannt, der retransmissionCount ist > 0.
+** Setze packet.routingMode = ROUTING_MODE_FLOODING
+* Fall c) Der Pfad zum Zielknoten ist dem Absender nicht bekannt
+** Setze packet.routingMode = ROUTING_MODE_FLOODING
+
+#### Wenn ein Knoten eine Nachricht senden / weiterleiten möchte:
+
+* Wenn packet.routingMode == ROUTING_MODE_DSR
+** Der erste Eintrag aus packet.nextHops wird als Ziel zwischengespeichert und aus packet.nextHops entfernt.
+** Das Ziel wird an packet.path angehängt.
+** Das Paket wird an das Ziel gesendet.
+* Wenn packet.routingMode == ROUTING_MODE_FLOODING
+** Für jeden bekannten Nachbar:
+*** Der Nachbar wird an packet.path angehängt.
+*** Das Paket wird an den Nachbarn gesendet.
 
 
 ## Kontaktaustausch
@@ -495,6 +520,24 @@ Anschließend wird der entsprechende Tracroute in die Datenbank eingetragen.
 #### GET /traceroute.php
 
 Mit `GET` kann eine eingetragene Route abgerufen und angezeigt werden. Der Endpunkt erwartet `uuid` als `GET`-Parameter und zeigt die Route einfach im Response Body an.
+
+
+#### POST /notify.php
+
+Über diesen Endpunkt können Nachrichten an Google Cloud Messaging zur Zustellung an ein oder mehrere Handys übergeben werden.
+
+Der Endpunkt erwartet folgende Daten als `multipart/formdata`:
+
+```javascript
+postdata: {
+  "recipientPublicKey": "",
+  "msg": ""
+}
+```
+
+Das Feld `msg` enthält als Binärdaten das serialisierte `Envelope`-Objekt. In `recipientPublicKey` wird der Base64-codierte Public Key des Empfängers übergeben.
+
+Das Backend liest die GCM-Registrierungs-ID aus der Datenbank aus und leitet die Nachricht damit an GCM weiter.
 
 
 ## User Interface Design
