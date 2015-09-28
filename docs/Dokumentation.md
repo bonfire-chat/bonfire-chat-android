@@ -57,7 +57,6 @@ Eine Contact-Instanz bietet folgende Felder:
 ```java
 private String nickname, firstName, lastName, phoneNumber;
 public MyPublicKey publicKey;
-public String xmppId; // Daten über die Erreichbarkeit des Kontakts. Diese werden momentan nicht verwendet.
 public String wifiMacAddress;
 public String bluetoothMacAddress;
 public long rowid; // Zeilen-ID in der Datenbank
@@ -96,7 +95,7 @@ Folgende Werte sind für `MessageDirection` möglich:
 
 ```java
 public enum MessageDirection {
-    Unknown, // wird momentan nicht verwendet
+    Unknown, // nicht zugewiesen
     Sent,
     Received
 }
@@ -204,7 +203,7 @@ Zusätzlich zur `uuid`, welche die Nachricht und damit den Umschlag eindeutig ke
 
 Von den Empfängern werden nur die Public Keys übertragen, da diese zur Identifikation ausreichen. Dabei wird auch nicht das vollständige `MyPublicKey` Objekt übertragen, sondern nur der Schlüssel selbst als Byte-Array.
 
-Der Absender wird ebenfalls durch seinen Public Key gekennzeichnet. Zusätzlich wird vom Absender der Nickname übertragen. Das ist zwar nicht unbedingt nötig, aber sehr praktisch, um in Logs oder beim Empfänger ohne Anfragen an einen Server anzuzeigen, von wem die Nachricht ist.
+Der Absender wird ebenfalls durch seinen Public Key gekennzeichnet.
 
 Im Integer `flags` werden, ähnlich wie bei `Message` Objekten, verschiedene Daten zum Umschlag abgelegt. Folgende Flags sind möglich:
 
@@ -231,7 +230,7 @@ Um nachvollziehen zu können, über welche Geräte und Protokolle eine Nachricht
 
 In der angehängten Zeile ist vermerkt, ob der Umschlag empfangen oder gesendet wurde, über welches Protokoll dies geschah und auf welchem Gerät die Aktion stattgefunden hat.
 
-Schließlich wird beim Empfangen einer Traceroute-Nachricht die Funktion `TracerouteHandler.publishTraceroute` aufgerufen. Diese übermittelt den Nachrichteninhalt an einen Server und ersetzt den lokalen Inhalt durch einen Link auf eine Seite, auf der man die Route anschauen kann. Auf diese Weise werden Traceroute-Nachrichten beim Empfänger sinnvoll dargestellt und auch der Absender kann sich unter dem Link die Route anschauen.
+Schließlich wird beim Empfangen einer Traceroute-Nachricht die Funktion TracerouteHandler.publishTraceroute aufgerufen. Diese übermittelt den Nachrichteninhalt an einen Server und ersetzt den lokalen Inhalt durch einen Link auf eine Seite, auf der man die Route anschauen kann. Auf diese Weise werden Traceroute-Nachrichten beim Empfänger sinnvoll dargestellt und auch der Absender kann sich unter dem Link die Route anschauen.
 
 
 ## Kryptographie: Bibliothek libkalium
@@ -325,23 +324,23 @@ Wir haben uns in Absprache mit unseren Auftraggebern zunächst für die Verwendu
 #### Wenn ein Knoten eine Nachricht versenden möchte:
 
 * Fall a) Der Pfad zum Zielknoten ist dem Absender bekannt, das Paket wird zum ersten Mal versendet (retransmissionCount = 0)
-** Setze packet.routingMode = ROUTING_MODE_DSR
-** Setze packet.nextHops auf den bekannten Pfad
+    * Setze packet.routingMode = ROUTING_MODE_DSR
+    * Setze packet.nextHops auf den bekannten Pfad
 * Fall b) Der Pfad zum Zielknoten ist dem Absender bekannt, der retransmissionCount ist > 0.
-** Setze packet.routingMode = ROUTING_MODE_FLOODING
+    * Setze packet.routingMode = ROUTING_MODE_FLOODING
 * Fall c) Der Pfad zum Zielknoten ist dem Absender nicht bekannt
-** Setze packet.routingMode = ROUTING_MODE_FLOODING
+    * Setze packet.routingMode = ROUTING_MODE_FLOODING
 
 #### Wenn ein Knoten eine Nachricht senden / weiterleiten möchte:
 
 * Wenn packet.routingMode == ROUTING_MODE_DSR
-** Der erste Eintrag aus packet.nextHops wird als Ziel zwischengespeichert und aus packet.nextHops entfernt.
-** Das Ziel wird an packet.path angehängt.
-** Das Paket wird an das Ziel gesendet.
+    * Der erste Eintrag aus packet.nextHops wird als Ziel zwischengespeichert und aus packet.nextHops entfernt.
+    * Das Ziel wird an packet.path angehängt.
+    * Das Paket wird an das Ziel gesendet.
 * Wenn packet.routingMode == ROUTING_MODE_FLOODING
-** Für jeden bekannten Nachbar:
-*** Der Nachbar wird an packet.path angehängt.
-*** Das Paket wird an den Nachbarn gesendet.
+    * Für jeden bekannten Nachbar:
+        * Der Nachbar wird an packet.path angehängt.
+        * Das Paket wird an den Nachbarn gesendet.
 
 
 ## Kontaktaustausch
@@ -365,7 +364,6 @@ Der Server antwortet daraufhin mit einem `JSON`-Array. Dieses enthält für jede
   "nickname". "",
   "phone": "",
   "publickey": "",
-  "xmppid": ""  // wird nicht mehr verwendet
 }
 ```
 
