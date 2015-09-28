@@ -9,7 +9,7 @@
 
 #### 1. Ist die Funktionalität korrekt?
 
-- Im ConnectionManager in der SENDMESSAGE\_ACTION wird eine RuntimeException nicht geworfen, sondern einfach einer Variable zugewiesen. Dies wurde geändert, sodass die Exception nun geworfen wird.
+Im ConnectionManager in der SENDMESSAGE\_ACTION wird eine RuntimeException nicht geworfen, sondern einfach einer Variable zugewiesen. Dies wurde geändert, sodass die Exception nun geworfen wird.
 
 #### 2. Sind die Klassen, Funktionen und Variablen angemessen benannt?
 
