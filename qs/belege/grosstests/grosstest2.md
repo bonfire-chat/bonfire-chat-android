@@ -14,21 +14,21 @@ Wir haben auf 167 Nachrichten 8 erfolgreiche Fälle und 159 Errors.
 
 
 **Folgende Beispiele veranschaulichen Nachrichten, die beim Empfänger angekommen sind:**
-![](/Bilder/Grosstest2/Test1Erfolg2.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test1Erfolg2.jpg)
 1. mnex2 sendet eine Nachricht an F2. Diese kommt erst nach einer Retransmission an. Das Acknowledgement kommt auch erst beim 2. Versuch an.
-![](/Bilder/Grosstest2/Test1Erfolg1.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test1Erfolg1.jpg)
 Hier sendet a2 eine Nachricht an F2. Da F2 ein Nachbar ist, kommt die Nachricht direkt an. A2 versucht gleichzeitig auch noch einen weiteren Weg, der jedoch nach einem Hop verloren geht. 
-![](/Bilder/Grosstest2/Test1Erfolg3.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test1Erfolg3.jpg)
 In dieser Nachricht sendet 3 an 2. Die Nachricht wird erfolgreich über 1 geschickt. 1 sendet die Nachricht gleichzeitig auch noch an a2.
 
 
 **Folgende Beispiele veranschaulichen Nachrichten, die nicht beim Empfänger angekommen sind:**
-![](/Bilder/Grosstest2/Test1Misserfolg2.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test1Misserfolg2.jpg)
 Bei diesem Test kam es häufig zur Situation, dass Handys überhaupt keine Verbindung mit anderen Geräten herstellen konnten. Dies kann daran liegen, dass die Geräte in der Näheren Umgebung bereits 4 Verbindungen offen hatten, oder dessen Bluetooth durch frühere Transmissions überlastet war. 
 
-![](/Bilder/Grosstest2/Test1Misserfolg1.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test1Misserfolg1.jpg)
 Hier sendet a2 eine Nachricht, die jedoch nur über einen Hop weitergeleitet wird und deshalb nicht ankommt.
-![](/Bilder/Grosstest2/Test1Misserfolg3.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test1Misserfolg3.jpg)
 Auch hier sendet a2 eine Nachricht, die über die Hops F2, Nightfire und 2 läuft, dort jedoch verloren geht. 
 
 Schlussfolgerung aus dem Test: 
@@ -42,19 +42,19 @@ Ergebnisse Test 2:
 Wir haben auf 227 Nachrichten 20 erfolgreiche Fälle und 7 Errors.
 
 **Folgende Beispiele veranschaulichen Nachrichten, die beim Empfänger angekommen sind:**
-![](/Bilder/Grosstest2/Test2Erfolg1.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test2Erfolg1.jpg)
 Die Verbindung zwischen mnex2 und Sven bestand über den ganzen Test. Über diese Verbindung gingen 13 Nachrichten.
-![](/Bilder/Grosstest2/Test2Erfolg3.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test2Erfolg3.jpg)
 G3n3siS sendet eine Nachricht an Sven. Diese wird erfolgreich an a2 übermittelt, welches diese dann an Sven weiterleitet. Das Acknowledgement kommt jedoch nicht mehr zurück. 
-![](/Bilder/Grosstest2/Test2Erfolg4.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test2Erfolg4.jpg)
 Nightfire sendet eine Nachricht an mnex2. 
 
 **Folgende Beispiele veranschaulichen Nachrichten, die nicht beim Empfänger angekommen sind:**
-![](/Bilder/Grosstest2/Test2Misserfolg1.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test2Misserfolg1.jpg)
 Im Verhältnis zu Test 1 gab es noch häufiger die Situation, dass Handys gar nicht mit anderen Geräten verbunden sind.
-![](/Bilder/Grosstest2/Test2Misserfolg2.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test2Misserfolg2.jpg)
 G3n3siS verschickt eine Nachricht, die jedoch von seinem Nachbarn Nightfire nicht weitergeleitet wird. 
-![](/Bilder/Grosstest2/Test2Misserfolg3.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test2Misserfolg3.jpg)
 Nightfire baut eine Verbindung zu mehreren Nachbargeräten auf, die sich jedoch nur gegenseitig finden. 
 
 
@@ -72,22 +72,22 @@ Da wir gemerkt haben, dass die Limitierung der Slots auf 3 nicht zielführend wa
 Wir haben auf 164 Nachrichten 11 erfolgreiche Fälle und 153 Errors.
 
 **Folgende Beispiele veranschaulichen Nachrichten, die beim Empfänger angekommen sind:**
-![](/Bilder/Grosstest2/Test3Erfolg1.jpg)
-![](/Bilder/Grosstest2/Test3Erfolg2.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test3Erfolg1.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test3Erfolg2.jpg)
 Nachrichten die zu einem benachbarten Empfänger gesendet werden.
-![](/Bilder/Grosstest2/Test3Erfolg3.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test3Erfolg3.jpg)
 
 Mnex sendet eine Nachricht an Sven diese kommt jedoch erst nach dem zweiten Versuch an. Auch das Acknowledgement benötigt 2 Versuche. 
 
 **Folgende Beispiele veranschaulichen Nachrichten, die nicht beim Empfänger angekommen sind:**
 
-![](/Bilder/Grosstest2/Test3Misserfolg1.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test3Misserfolg1.jpg)
 G3n3siS sendet eine Nachricht. Diese geht jedoch nach 2 Hops verloren.  
 
-![](/Bilder/Grosstest2/Test3Misserfolg2.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test3Misserfolg2.jpg)
 Das wohl häufigste Beispiel des dritten Tests. 2 Benachbarte Geräte schaffen es eine Verbindung aufzubauen. Das zweite Handy schafft es jedoch dann nicht, die Nachricht weiterzuleiten. 
 
-![](/Bilder/Grosstest2/Test3Misserfolg3.jpg)
+![](belege/grosstests/Bilder/Grosstest2/Test3Misserfolg3.jpg)
 
 
 Schlussfolgerung aus dem Test:
