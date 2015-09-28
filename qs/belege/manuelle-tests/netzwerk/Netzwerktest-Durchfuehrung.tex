@@ -1,0 +1,33 @@
+\subsubsection{Durchführung des manuellen Netzwerk-Testplans vom 30.08.2015}
+
+\subsubsection{Durchgeführt von: Matthias Hofmann}
+
+\subsubsection{Änderungen vorgenommen in Commit: keine Änderungen nötig}
+
+\subsubsection{N-i: Allgemeine Informationen zu den Testergebnissen}
+
+\paragraph{N-i.1. Packet Attribute im Dashboard}
+Die Spaltenfunktionalität im Dashboard ist der Reihe nach aufgelistet:
+-Gerät, das die Informations ans Dashboard sendet
+-Ereignis, das den Informationsautsch auslöst
+-Uhrzeit des Ereignis
+-Verwendetes Übertragungsprotokoll
+-Adresse des Empfängers(Falls Ereignis = "SEND")
+-Packetdetails
+
+In der sechsten Spalte im Dashboard werden Details der Übertragung dargestellt. 
+Dabei ist die eindeutige ID der Nachricht das zweite Attribut vom Packet.
+Desweiteren steht "routing=1" für senden via Flooding und "routing=2" für senden via DRS-Adaption.
+
+\paragraph{N-i.2. Zeiten der Nachrichten im Dashboard}
+Die angegebenen Zeiten der Ereignisse im Dashboard wirken auf den ersten Blick unwahrscheinlich. 
+Zum Beispeiel wird in Test II)1. ein Acknowledgement zuersst empfangen, bevor es gesendet wurde.
+Dies liegt daran, dass die Übertragungn des Ackknowledgements per Bluetooth stattgefunden hat und das Gerät, 
+dass diese Empfangen hat, eine schnellere Verbindung zum Dashboard server hatte. 
+Somit wurde das Dashboard zuerst über das Ankommen des ACK informiert und dann erst über das Versenden.
+
+
+\subsubsection{N-ii: Testfälle für die allgemeine Übertragung}
+
+\paragraph{N-i.1 Test der direkten Übertragung via Flooding / Bluetooth}
+Beschreibung des Ergebnisses in Test II)1.
