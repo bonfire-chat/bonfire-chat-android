@@ -1,21 +1,21 @@
 \subsection{Testbericht}\label{testbericht-1}
-\\
+
 Die Handys wurden mit Buchstaben benannt und im Raum C205 verteilt.
-\\
+
 \subsubsection{Ergebnisse Test 1:}\label{ergebnisse-test-1}
-\\
+
 Wir haben auf 117 Nachrichten 11 erfolgreiche Fälle und 106 Errors.
-\\\\
+
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die beim
 Empfänger angekommen sind:}
-\\\\
+
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Erfolg4.jpg}\\
 1. A sendet eine Nachricht an F. A sendet die Nachricht an G und F los, da A nur den
 Bluetooth Namen der Handys kennt, und so nicht weiß, dass F sich in
 Reichweite befindet. F sendet ein Acknowledgement zurück, während G die
 Nachricht nicht weiterleiten kann.\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Erfolg3.jpg}\\
-2. Gleiches Scenario wie in 2, nur diesmal mit C statt G.\\
+2. Gleiches Szenario wie in 2, nur diesmal mit C statt G.\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Erfolg2.jpg}\\ 3. H sendet eine
 Nachricht an D. Es befinden sich J und C in Reichweite. C leitet die
 Nachricht nicht weiter. J hat jedoch eine Verbindung zu D. D sendet ein
@@ -23,7 +23,7 @@ Acknowledgement über den Pfad, über den er die Nachricht empfangen hat
 zurück.\\ \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Erfolg1.jpg} \\4. Eine
 Erfolgreich übertragene Nachricht zwischen 2 benachbarten Handys mit
 Acknowledgement.
-\\\\
+
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die nicht beim
 Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Miserfolg6.jpg}\\ 1. J versucht
@@ -47,7 +47,7 @@ der Nachricht. \\
 anderem Pfad schafft sie zwei Hops.\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Miserfolg1.jpg}\\ 6. J versendet
 hier die Nachricht an seine 3 Nachbarn. Da jedoch J, A und B (nur) C als
-Nachbarn finden, kommt die Nachricht nicht an.\\\\
+Nachbarn finden, kommt die Nachricht nicht an.\\
 
 subsubsection{Schlussfolgerung aus dem
 Test:}\label{schlussfolgerung-aus-dem-test}\\
@@ -58,13 +58,13 @@ Bluetoothadapter nicht genügend Ports hat um sich mit allen in der Nähe
 befindlichen Geräten zu verbinden. Eine Möglichkeit dies zu lösen, wäre
 es, sich nicht dauerhaft mit allen Geräten in der Umgebung zu verbinden,
 sondern eine Verbindung nach einer Übertragung wieder zu schließen.
-\\\\
+
 Des Weiteren gab es Handys, die Nachrichten überhaupt nicht
 weitergeleitet haben. Vermutlich war an diesen der Stromsparmodus von
 Android aktiv. Ein Beispiel hierfür wäre C.
-\\\\
+
 \textbf{Verbesserungen bis zum nächsten Test:}
-\\\\
+
 \begin{itemize}
 \tightlist
 \item
@@ -76,15 +76,15 @@ Android aktiv. Ein Beispiel hierfür wäre C.
 \end{itemize}
 
 subsubsection{Ergebnisse Test 2:}\label{ergebnisse-test-2}
-\\
+
 Bevor wir Test 2 gestartet haben, haben wir auf allen Handys den
 Bluetooth Adapter deaktiviert und erneut aktiviert. Das sollte
 eingefrorene Bluetooth Adapter wieder aktivieren. Dieses Vorgehen
 basierte auf Erfahrungen von früheren kleinen Tests beim Programmieren.
-\\\\
+
 Im Test 2 haben wir auf 166 Nachrichten 2 erfolgreiche Fälle und 164
 Errors.
-\\
+
 \textbf{Folgende Beispiele veranschaulichen die Nachrichten, die beim
 Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Test2Erfolg1.jpg}\\
@@ -112,45 +112,45 @@ Nachricht mehr als einen Hop zu übertragen. Dies passierte bei diesem
 Test bereits sehr selten.\\
 
 \subsubsection{Schlussfolgerung aus dem
-Test:}\label{schlussfolgerung-aus-dem-test-1}\\
+Test:}\label{schlussfolgerung-aus-dem-test-1}
 
 Dieser Test zeigte, dass bereits Abstände von circa 5 Metern einen stark
 beeinflussenden Faktor haben und extrem viel weniger Verbindungen
-aufgebaut wurden als in Test 1.\\\\
+aufgebaut wurden als in Test 1.\\
 
 Auch hier gab es wieder Handys, die vermutlich von Android in den
 Energiesparmodus versetzt wurden, da diese von niemandem bedient wurden
 und nur als Relaisstadion gedient haben.
-\\
+
 \textbf{Verbesserungen bis zum nächsten Test:}
-\\
+
 siehe Test 1, keine weiteren Erkenntnisse gewonnen.
-\\
+
 \subsubsection{Test 3:}\label{test-3}
-\\
+
 Da die Ergebnisse nicht unseren Erwartungen entsprachen, beschlossen wir
 den Test hier abzubrechen. Der letzte Test unterliegt schwereren
 Bedingungen und bringt dadurch nur bei Erfolg von Test 1 oder 2 bessere
 Ergebnisse.
-\\
+
 \subsubsection{Testbericht 2:}\label{testbericht-2}
-\\
+
 Nach dem letzten Test wurde der Code so erweitert, dass Bluetooth nur
 noch 4 Verbindungen gleichzeitig aufbaut und in regelmäßigen Abständen
 alte Verbindungen fallen lässt. Das hindert den Bluetooth Adapter zu
-schnell zu überlasten.\\\\
+schnell zu überlasten.\\
 
 Außerdem wurden weitere Kommilitonen darum gebeten am Test teilzunehmen.
-Insgesamt wurde der Test von 9 Personen mit 14 Handys ausgeführt.\\\\
+Insgesamt wurde der Test von 9 Personen mit 14 Handys ausgeführt.\\
 
 Die Benennung der Handys wurde den einzelnen Personen überlassen. Es
 wurde dafür gesorgt, dass alle Handys den Kontakt der anderen Handys
-kennt.\\\\
+kennt.\\
 
 \subsubsection{Ergebnisse Test 1:}\label{ergebnisse-test-1-1}
-\\
+
 Wir haben auf 167 Nachrichten 8 erfolgreiche Fälle und 159 Errors.
-\\\\
+
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die beim
 Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Grosstest2/Test1Erfolg2.jpg}\\
@@ -164,7 +164,7 @@ Weg, der jedoch nach einem Hop verloren geht.\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Grosstest2/Test1Erfolg3.jpg}\\
 In dieser Nachricht sendet 3 an 2. Die Nachricht wird erfolgreich über 1
 geschickt. 1 sendet die Nachricht gleichzeitig auch noch an a2.
-\\
+
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die nicht beim
 Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Grosstest2/Test1Misserfolg2.jpg}\\
@@ -182,24 +182,24 @@ Auch hier sendet a2 eine Nachricht, die über die Hops F2, Nightfire und
 2 läuft, dort jedoch verloren geht.\\
 
 \subsubsection{Schlussfolgerung aus dem
-Test:}\label{schlussfolgerung-aus-dem-test-2}\\
+Test:}\label{schlussfolgerung-aus-dem-test-2}
 
 Die Einschränkung auf 4 Verbindungen pro Bluetooth-Gerät scheint nicht
 erfolgreich gewesen zu sein. Der Bluetoothadapter scheint immer noch
 sehr schnell zu überlasten. Die Einschränkung führt außerdem noch dazu,
 dass nicht alle Handys in der Umgebung erreicht werden, da bereits 4
-Verbindungen bestehen, oder versucht aufgebaut zu werden.\\\\
+Verbindungen bestehen, oder versucht aufgebaut zu werden.\\
 
 Es bestand kein Grund zur Annahme, dass Verbindungen bei diesem Test
 nicht zustande gekommen sind, weil ein Handy in den Standby Modus
 gegangen ist.
-\\
+
 \subsubsection{Ergebnisse Test 2:}\label{ergebnisse-test-2-1}
-\\
-Wir haben auf 227 Nachrichten 20 erfolgreiche Fälle und 7 Errors.\\\\
+
+Wir haben auf 227 Nachrichten 20 erfolgreiche Fälle und 7 Errors.\\
 
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die beim
-Empfänger angekommen sind:}\\\\
+Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Grosstest2/Test2Erfolg1.jpg}\\
 Die Verbindung zwischen mnex2 und Sven bestand über den ganzen Test.
 Über diese Verbindung gingen 13 Nachrichten.\\
@@ -223,22 +223,22 @@ Nightfire baut eine Verbindung zu mehreren Nachbargeräten auf, die sich
 jedoch nur gegenseitig finden.\\
 
 \subsubsection{Schlussfolgerung aus dem
-Test:}\label{schlussfolgerung-aus-dem-test-3}\\
+Test:}\label{schlussfolgerung-aus-dem-test-3}
 
 Die Anzahl der erfolgreichen Verbindungen ist sehr stark von der
-funktionierenden Verbindung zwischen mnex und Sven beeinflusst.\\\\
+funktionierenden Verbindung zwischen mnex und Sven beeinflusst.\\
 
 Die Tatsache, dass extrem viele Geräte überhaupt keine Verbindung mehr
 aufbauen konnten, unterstützt die Aussage, die bereits nach Test 1
 getroffen wurde, dass die Limitierung der Slots nicht zielführend war.
-\\
+
 \subsubsection{Ergebnisse Test 3:}\label{ergebnisse-test-3}
-\\
+
 Da wir gemerkt haben, dass die Limitierung der Slots auf 3 nicht
-zielführend war, haben wir diese für Test 3 wieder rückgängig gemacht.\\\\
+zielführend war, haben wir diese für Test 3 wieder rückgängig gemacht.\\
 
 Wir haben auf 164 Nachrichten 11 erfolgreiche Fälle und 153 Errors.
-\\
+
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die beim
 Empfänger angekommen sind:}\\
 \includegraphics[width=1.0\textwidth]{belege/grosstests/Bilder/Grosstest2/Test3Erfolg1.jpg}\\
@@ -248,7 +248,7 @@ Nachrichten die zu einem benachbarten Empfänger gesendet werden.\\
 
 Mnex sendet eine Nachricht an Sven diese kommt jedoch erst nach dem
 zweiten Versuch an. Auch das Acknowledgement benötigt 2 Versuche.
-\\
+
 \textbf{Folgende Beispiele veranschaulichen Nachrichten, die nicht beim
 Empfänger angekommen sind:}\\
 
@@ -265,23 +265,23 @@ jedoch dann nicht, die Nachricht weiterzuleiten.\\
 Auch hier gab es Fälle, in denen ein Handy keine Verbindung mit einem anderen Gerät aufbauen konnte. Dies passiert jedoch deutlich seltener als bei Test 1 und 2. \\
 \subsubsection{Schlussfolgerung aus dem
 Test:}\label{schlussfolgerung-aus-dem-test-4}
-\\
+
 Der dritte Test ist besser gelaufen als der 2. Da die Entfernung einen
 erschwerenden Faktor darstellt, kann davon ausgegangen werden, dass die
 Verbesserung dadurch zustande kam, dass wir die Slots nicht mehr
 limitieren.
-\\
+
 \subsubsection{Ausblick und zukünftige
 Tests:}\label{ausblick-und-zukuxfcnftige-tests}
-\\
+
 Im Auftragsgebertreffen wurde entschieden, dass keine weiteren
 Verbesserungen am Code durchgeführt werden sollen. Die Begründung
 hierfür ist, dass die Implementierung des Bluetooth Stacks wohl
 teilweise fehlerhaft ist.
-\\\\
+
 Die Lösung hierfür ist eine eigene Implementierung des Bluetooth Stacks.
 Diese soll jedoch im Rahmen einer Bachelorarbeit geschrieben werden, da
 dies nicht Bestandteil des Bachelorpraktikums ist.
-\\\\
+
 Da sich deshalb in der Funktionalität der Nachrichtenübertragung nichts
 mehr ändern wird, haben wir auf den dritten Großtest verzichtet.
