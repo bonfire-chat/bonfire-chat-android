@@ -55,7 +55,11 @@ Nach den Berichten findet sich ein Screenshot, der markierte Android Lint-Warnun
 
 \subsubsection{Screenshot von Android Lint in Android Studio}
 
-\includegraphics[width=17.5cm]{belege/checkstyle/checkstyle-idea-screenshot.png}
+In diesem Screenshot ist ersichtlich, wie Android Lint anmerkt, statt \glqq paddingRight\grqq~ \glqq paddingEnd\grqq~ zu verwenden. Dies ist ein Beispiel für Verbesserungen der Accessibility für Android Apps. Weiterhin angemerkt wird, dass die beiden Konstruktionen aus jeweils einem \glqq LinearLayout\grqq~ und einem \glqq ImageView\grqq~ zu einem \glqq Compound Layout\grqq~ zusammengefasst werden können.
+
+Durch die gelbe Hinterlegung in Android Studio, welche bereits beim Tippen des Quellcodes angezeigt wird, können Android Lint Warnungen kaum übersehen werden.
+
+\includegraphics[width=17.5cm]{belege/lint/android-lint-screenshot.png}
 
 
 \clearpage
@@ -74,7 +78,11 @@ Nach den Berichten findet sich auch für FindBugs ein Screenshot, welcher \glqq 
 
 \subsubsection{Screenshot von FindBugs-IDEA}
 
-\includegraphics[width=17.5cm]{belege/checkstyle/checkstyle-idea-screenshot.png}
+Im gezeigten Screenshot ist sichtbar, dass FindBugs eine Stelle im Code markiert hat, an der möglicherweise eine NullPointerException auftreten könnte. Weitere gefundene Fehler sind in der FindBugs-Ansicht unten am Bildschirm erkennbar.
+
+Da betroffene Stellen orange unterstrichen werden und mit einer Fehlermarkierung am Rand angezeigt werden, sind sie direkt bei der Entwicklung der Anwendung ersichtlich und können umgehend behoben werden.
+
+\includegraphics[width=17.5cm]{belege/findbugs/findbugs-idea-screenshot.png}
 
 
 \clearpage
