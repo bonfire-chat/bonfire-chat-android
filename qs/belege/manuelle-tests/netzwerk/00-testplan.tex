@@ -4,26 +4,19 @@ drahtlosen Übertragung sowie des Routing-Algorithmus.\\\\
 
 % ----------------------------------------------------------------------
 
-\subsubsection{N-i: Definitionen}\label{i-definitionen}
+\subsubsection{N-i Definitionen}
 
-\paragraph{Allgemeine Ausgangskonfiguration der
-Knoten:}\label{allgemeine-ausgangskonfiguration-der-knoten}
+\paragraph{Allgemeine Ausgangskonfiguration der Knoten}
 
-Ein Knoten ist, soweit nicht näher beschrieben, ein Android-Gerät, auf
-dem die aktuellste Version der App eingerichtet und die initiale
-Einrichtung (Eingabe eines Nicknames, dadurch Registrierung des Gerätes
-mit Nickname, GCM-ID und PublicKey am Server) abgeschlossen ist.
-\clearpage
+Ein Knoten ist, soweit nicht näher beschrieben, ein Android-Gerät, auf dem die aktuellste Version der App eingerichtet und die initiale Einrichtung (Eingabe eines Nicknames, dadurch Registrierung des Gerätes mit Nickname, GCM-ID und PublicKey am Server) abgeschlossen ist.
 
 % ----------------------------------------------------------------------
 % II
 
 
-\subsubsection{N-ii: Testfälle für die allgemeine
-Übertragung}\label{ii-testfuxe4lle-fuxfcr-die-allgemeine-uxfcbertragung}
+\subsubsection{N-ii Testfälle für die allgemeine Übertragung}
 
-\paragraph{N-ii-1. Test der direkten Übertragung via Flooding /
-Bluetooth}\label{test-der-direkten-uxfcbertragung-via-flooding-bluetooth}
+\paragraph{N-ii-1 Test der direkten Übertragung via Flooding / Bluetooth}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
@@ -46,8 +39,7 @@ versendet wurde, das ACK mit Routingmodus DSR (0x02).\tabularnewline
 \bottomrule
 \end{longtable}
 
-\paragraph{N-ii-2. Test der direkten Übertragung via DSR /
-Bluetooth}\label{test-der-direkten-uxfcbertragung-via-dsr-bluetooth}
+\paragraph{N-ii-2 Test der direkten Übertragung via DSR / Bluetooth}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
@@ -65,8 +57,7 @@ nur an Gerät A gesendet. Darüber hinaus identisch zu Test
 \bottomrule
 \end{longtable}
 
-\paragraph{N-ii-3. Test der direkten Übertragung via Server / Google Cloud
-Messaging}\label{test-der-direkten-uxfcbertragung-via-server-google-cloud-messaging}
+\paragraph{N-ii-3 Test der direkten Übertragung via Server / Google Cloud Messaging}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
@@ -75,8 +66,8 @@ Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
 \endhead
 Auf zwei Knoten A und B, die eine funktionierende Internetverbindung
 haben, wird zunächst die Ausgangskonfiguration hergestellt, anschließend
-werden in den Einstellungen alle Übertragungsverfahren außer ``mobile
-Daten / Wifi'' (Übertragung per Cloud) deaktiviert. Die Kontaktdaten von
+werden in den Einstellungen alle Übertragungsverfahren außer \glqq mobile
+Daten / Wifi\grqq~ (Übertragung per Cloud) deaktiviert. Die Kontaktdaten von
 A werden an B gesendet. Auf B wird eine neue Unterhaltung mit A
 gestartet. Auf B wird eine Nachricht an A eingegeben und abgesendet. & B
 sendet die Nachricht per HTTP an den Server, welcher sie per GCM an
@@ -89,23 +80,22 @@ Flooding (0x01) versendet wurde, das ACK mit Routingmodus DSR
 (0x02).\tabularnewline
 \bottomrule
 \end{longtable}
-\clearpage
 
 % ----------------------------------------------------------------------
 % III
 
 
-\subsubsection{N-iii: Testfälle für Wegfindung per Flooding und einfaches
-Routing}\label{iii-testfuxe4lle-fuxfcr-wegfindung-per-flooding-und-einfaches-routing}
+\subsubsection{N-iii Testfälle für Wegfindung per Flooding und einfaches Routing}
 
-In diesen Tests werden folgende Teile des Routing getestet: * Finden des
-schnellsten Pfades: Flooding an alle Knoten sowie ACK auf dem Pfad, auf
-dem die Nachricht den Empfänger zuerst erreicht (= schnellster Pfad) *
-Speichern des schnellsten Pfades zu einem Empfänger * Verwenden des
-gespeicherten schnellsten Pfades für künftige Nachrichten
+In diesen Tests werden folgende Teile des Routing getestet:
 
-\paragraph{N-iii-1. Bluetooth-Wegfindung - Flooding mit drei
-Knoten}\label{bluetooth-wegfindung---flooding-mit-drei-knoten}
+\begin{itemize}
+  \item Finden des schnellsten Pfades: Flooding an alle Knoten sowie ACK auf dem Pfad, auf dem die Nachricht den Empfänger zuerst erreicht (schnellster Pfad)
+  \item Speichern des schnellsten Pfades zu einem Empfänger
+  \item Verwenden des gespeicherten schnellsten Pfades für künftige Nachrichten
+\end{itemize}
+
+\paragraph{N-iii-1 Bluetooth-Wegfindung - Flooding mit drei Knoten}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
@@ -122,8 +112,7 @@ etc.\tabularnewline
 \bottomrule
 \end{longtable}
 
-\paragraph{N-iii-2. Bluetooth-Wegfindung zum nächsten Knoten mit
-Internetverbindung}\label{bluetooth-wegfindung-zum-nuxe4chsten-knoten-mit-internetverbindung}
+\paragraph{N-iii-2 Bluetooth-Wegfindung zum nächsten Knoten mit Internetverbindung}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
@@ -137,7 +126,7 @@ Die Knoten werden räumlich so angeordnet, dass eine Bluetoothverbindung zwische
 Auf A wird eine Unterhaltung mit C begonnen und eine Nachricht an C gesendet.
 & A sendet die Nachricht per Bluetooth an B.
 B sendet die Nachricht per GCM an C. 
-Die ACK kommt auf umgekehrtem Weg zu A zurück.\tabularnewline
+Das ACK kommt auf umgekehrtem Weg zu A zurück.\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -151,34 +140,31 @@ Die ACK kommt auf umgekehrtem Weg zu A zurück.\tabularnewline
 % ------------------------------------------------------------------------
 % IV
 
-\subsubsection{N-iv: Testfälle für sich verändernde
-Routen}\label{iv-testfuxe4lle-fuxfcr-sich-veruxe4ndernde-routen}
+\subsubsection{N-iv Testfälle für sich verändernde Routen}
 
-In diesen Tests wird überprüft, ob der Routingalgorithmus bei
-ausfallenden Pfaden korrekt reagiert.
+In diesen Tests wird überprüft, ob der Routingalgorithmus bei ausfallenden Pfaden korrekt reagiert.
 
-\paragraph{\texorpdfstring{N-iv-1. ``Abreißende''
-Bluetooth-Verbindung}{N-iv-1. Abreißende Bluetooth-Verbindung}}\label{abreiuxdfende-bluetooth-verbindung}
+\paragraph{N-iv-1 Abreißende Bluetooth-Verbindung}
 
 \begin{longtable}{p{8cm}p{8.5cm}}
 \toprule
 Benutzerinteraktion & erwartetes Verhalten der App\tabularnewline
 \midrule
 \endhead
-Auf Knoten A wird nur Bluetooth aktiviert, auf B wird GCM und
-Bluetooth aktiviert. Von A wird eine Nachricht ``alpha'' an B gesendet.
+Auf Knoten A wird nur Bluetooth aktiviert, auf B werden GCM und
+Bluetooth aktiviert. Von A wird eine Nachricht \glqq alpha\grqq~ an B gesendet.
 Nachdem diese zugestellt und durch Ack bestätigt wurde, wird eine weitere
-Nachricht ``beta'' von A an B gesendet. Danach wird A räumlich so weit
+Nachricht \glqq beta\grqq~ von A an B gesendet. Danach wird A räumlich so weit
 vom B entfernt, dass keine Bluetooth-Übertragung mehr möglich ist.
 Weiterhin wird auf A die Übertragung per GCM aktiviert. Anschließend
-wird eine weitere Nachricht ``gamma'' von A and B gesendet. & Die
-Nachricht ``alpha'' wird per Flooding gesendet, B sendet per DSR ein ACK
-``für alpha'' zurück. Danach hat A den Pfad zu B gespeichert und die
-Nachricht ``beta'' wird direkt per DSR an B gesendet. Die Nachricht
-``gamma'' wird auch versucht per DSR direkt via Bluetooth an B zu
+wird eine weitere Nachricht \glqq gamma\grqq~ von A and B gesendet. & Die
+Nachricht \glqq alpha\grqq~ wird per Flooding gesendet, B sendet per DSR ein ACK
+\glqq für alpha\grqq~ zurück. Danach hat A den Pfad zu B gespeichert und die
+Nachricht \glqq beta\grqq~ wird direkt per DSR an B gesendet. Die Nachricht
+\glqq gamma\grqq~ wird auch versucht per DSR direkt via Bluetooth an B zu
 senden. Da dies fehlschlägt, wird beim Retry nach 20 Sekunden versucht,
-``gamma'' per Flooding zuzustellen. Dies erfolgt dann über GCM. Das ACK
-``für gamma'' von B an A erfolgt dann wiederum per DSR.\tabularnewline
+\glqq gamma\grqq~ per Flooding zuzustellen. Dies erfolgt dann über GCM. Das ACK
+\glqq für gamma\grqq~ von B an A erfolgt dann wiederum per DSR.\tabularnewline
 \bottomrule
 \end{longtable}
 \clearpage
