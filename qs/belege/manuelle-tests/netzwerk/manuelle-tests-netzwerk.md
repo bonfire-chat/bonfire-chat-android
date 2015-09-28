@@ -1,20 +1,13 @@
 # Durchführung des manuellen UI-Testplans vom XXXXXXX
 
-**Durchgeführt von:**
+**Durchgeführt von: Matthias Hofmann**
 
-**Änderungen vorgenommen in Commit:**
+**Änderungen vorgenommen in Commit: keine Änderungen**
 
-## Teil I: Darstellung
+## Teil II: Testfälle für die allgemeine Übertragung
 
-### Test I.1
-
-### Test I.2
-
-### Test I.3
-
-## Teil II: Erster Start und Einstellungen
-
-### Test II.1
+### Test II.1 Test der direkten Übertragung via Flooding / Bluetooth
+Beschreibung des Ergebnisses in Test II)1.
 
 ### Test II.2
 
