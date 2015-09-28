@@ -41,7 +41,7 @@ Es wurde keine doppelte Funktionalität implementiert.
 
 #### 9. Werden alle Eingabeparameter validiert?
 
-Es  gibt keine Eingabeparameter.
+Es gibt keine Eingabeparameter.
 
 #### 10. Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
 
