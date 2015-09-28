@@ -57,7 +57,7 @@ Ja
 
 #### 13. Findet eine "Graceful Degradation" statt?
 
-Wird nicht betrachtet.
+Ist für diesen Codeteil nicht relevant.
 
 #### 14. Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
 
@@ -77,4 +77,4 @@ Ist für diesen Codeteil nicht relevant.
 
 #### 18. Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
 
-Sehr viele Variablen, die final sein sollten, sind nicht final deklariert. Dies wurde korrigert.
+Ja, haben sie.
