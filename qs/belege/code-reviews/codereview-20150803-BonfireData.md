@@ -1,7 +1,7 @@
 
 ## Code-Review vom 3. August 2015
 
-**Durchgeführt von:**
+**Durchgeführt von:** Max Weller, Alexander Frömmgen
 
 **Geprüfte Codeteile:** Die Datenbankfunktionalität (Im Wesentlichen die Klasse BonfireData)
 
@@ -61,13 +61,7 @@ Ja.
 
 #### 14. Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
 
-Nein, folgende Fehler wurden gefunden und behoben:
-
-- Methode deleteContact gab immer true zurück. Gibt nun bei Fehlschlag false zurück.
-- Das Feld helper wurde nicht benutzt und deshalb entfernt
-- Die Methode getContactByXmppId wurde nicht benutzt und deshalb entfernt
-- Der import von org.abstractj.kalium.keys.PublicKey wurde nicht benötigt und deshalb entfernt
-- Diverse ungenutzte Variablen wurden entfernt
+Ja.
 
 #### 15. Welche Teile können parallel ausgeführt werden?
 
@@ -75,12 +69,12 @@ Keine
 
 #### 16. Sind die Operationen, bei denen Threadsicherheit benötigt wird, threadsicher?
 
-Müssen sie nicht.
+Es gibt keine Operationen, bei denen Threadsicherheit benötigt wird.
 
 #### 17. Ist das Layout passend für alle Bildschirmdimensionen?
 
-Es gibt kein Layout.
+Da es sich nicht um eine UI-Funktionalität handelt, gibt es auch kein Layout.
 
 #### 18. Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
 
-- Alle Methoden müssen public sein, da sie von anderen Klassen aus verwendet werden.
+Alle Methoden müssen public sein, da sie von anderen Klassen verwendet werden.
