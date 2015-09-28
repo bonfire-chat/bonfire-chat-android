@@ -454,11 +454,9 @@ CREATE TABLE `traceroutes` (
 
 ### API
 
-TODO: Genauer dokumentieren, insbesondere erwartete Encodings.
-
 Der Server bietet mehrere API-Endpunkte, die Antworten im `JSON` Format zurückgeben:
 
-#### POST /register.php
+#### POST /api/v1/register
 
 Mit diesem Endpunkt lassen sich neue Benutzer registrieren. Folgende Daten werden als `multipart/formdata` erwartet:
 
@@ -467,7 +465,6 @@ postdata: {
   "nonce": "",
   "publickey": "",
   "data": {
-    "xmppid": "",
     "nickname": "",
     "phone": "",
     "gcmid": ""
@@ -479,7 +476,7 @@ Gibt bei Erfolg ein `200 OK` zurück, ansonsten den Fehlercode `400` mit Fehlerb
 
 Die Daten im Feld `data` müssen dabei mit dem korrekten Schlüssel signiert werden, was serverseitig mit dem übermittelten `publickey` geprüft wird.
 
-#### GET /search.php
+#### GET /api/v1/search
 
 Sucht nach passenden Kontakten und gibt gefundene als `JSON`-Array zurück.
 
@@ -491,7 +488,6 @@ Die Ausgabe sieht folgendermaßen aus:
 [
   {
     "nickname": "",
-    "xmppid": "",
     "publickey": "",
     "phone": "",
     "last_updated": ""
@@ -500,27 +496,51 @@ Die Ausgabe sieht folgendermaßen aus:
 ]
 ```
 
-#### POST /traceroute.php
+#### POST /api/v1/traceroute
 
-Dieser Endpunkt dient zum Veröffentlichen einer Route, welche mit einer Traceroute-Nachricht bestimmt wurde. Genauere Informationen hierzu stehen im Abschnitt *traceroute*.
+Dieser Endpunkt dient zum Veröffentlichen eines Ereignisses in einem Traceroute. Genauere Informationen hierzu stehen im Abschnitt *traceroute*.
 
 Der Endpunkt erwartet folgende Daten als `multipart/formdata`:
 
 ```javascript
 postdata: {
+  // Unique ID der Nachricht
   "uuid": "",
-  "traceroute": ""
+
+  // Stringrepräsentation des Pakets
+  "string": "",
+
+  // Zeitstempel dieses Traceroute-Events (Gerätezeit)
+  "datetime": "",
+
+  // Ereignis-Typ
+  "action": "",
+
+  // Peer-MAC-Adresse (optional)
+  "peer": "",
+
+  // Protokoll, über das das Paket verschickt wurde
+  "protocol": "",
+
+  // Nickname des Geräts, welches dieses Ereignis berichtet
+  "reporter": "",
+
+  // Quelle für Graphendarstellung (optional)
+  "hop1": "",
+
+  // Ziel für Graphendarstellung (optional)
+  "hop2": "",
 }
 ```
 
-Anschließend wird der entsprechende Tracroute in die Datenbank eingetragen.
+Das entsprechende Traceroute-Ereignis wird in die Datenbank eingetragen, um später im Dashboard angezeigt zu werden.
 
-#### GET /traceroute.php
+#### GET /api/v1/traceroute
 
 Mit `GET` kann eine eingetragene Route abgerufen und angezeigt werden. Der Endpunkt erwartet `uuid` als `GET`-Parameter und zeigt die Route einfach im Response Body an.
 
 
-#### POST /notify.php
+#### POST /api/v1/notify
 
 Über diesen Endpunkt können Nachrichten an Google Cloud Messaging zur Zustellung an ein oder mehrere Handys übergeben werden.
 
@@ -528,12 +548,13 @@ Der Endpunkt erwartet folgende Daten als `multipart/formdata`:
 
 ```javascript
 postdata: {
+  // In `recipientPublicKey` wird der Base64-codierte Public Key des Empfängers übergeben.
   "recipientPublicKey": "",
+
+  // Das Feld `msg` enthält als Binärdaten das serialisierte `Envelope`-Objekt.  
   "msg": ""
 }
 ```
-
-Das Feld `msg` enthält als Binärdaten das serialisierte `Envelope`-Objekt. In `recipientPublicKey` wird der Base64-codierte Public Key des Empfängers übergeben.
 
 Das Backend liest die GCM-Registrierungs-ID aus der Datenbank aus und leitet die Nachricht damit an GCM weiter.
 
