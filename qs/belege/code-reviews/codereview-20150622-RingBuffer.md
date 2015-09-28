@@ -77,7 +77,4 @@ Diese Funktionalität hat kein Layout.
 
 #### 18. Haben alle Methoden und Felder die richtigen Zugriffsmodifier?
 
-- die Attribute content, length und insertPosition sollten alle Private sein, sind sie aber nicht
-- content und length sollten beide final sein, sind sie aber nicht
-
-Diese Fehler wurden korrigiert.
+Ja.
