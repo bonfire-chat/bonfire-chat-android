@@ -1,0 +1,22 @@
+\subsection{Allgemeine Informationen zu den Testergebnissen}
+
+\paragraph{Packet Attribute im Dashboard}
+
+Die Spaltenfunktionalität im Dashboard ist der Reihe nach aufgelistet:
+
+\begin{itemize}
+  \item Gerät, das die Informations ans Dashboard sendet
+  \item Ereignis, das den Informationsautsch auslöst
+  \item Uhrzeit des Ereignis
+  \item Verwendetes Übertragungsprotokoll
+  \item Adresse des Empfängers(Falls Ereignis = ``SEND'')
+  \item Packetdetails
+\end{itemize}
+
+In der sechsten Spalte im Dashboard werden Details der Übertragung dargestellt. Dabei ist die eindeutige ID der Nachricht das zweite Attribut vom Packet. Desweiteren steht \glqq routing=1\grqq~ für Senden via Flooding und \glqq routing=2\grqq~ für Senden via DRS-Adaption.
+
+\paragraph{Zeiten der Nachrichten im Dashboard}
+
+Die angegebenen Zeiten der Ereignisse im Dashboard wirken auf den ersten Blick unwahrscheinlich. Zum Beispiel wird in Durchführung des manuellen Netzwerk-Testplans vom 30. August 2015 Test II) 1 ein Acknowledgement zuerst empfangen, bevor es gesendet wurde. Dies liegt daran, dass die Übertragung des Acknowledgements per Bluetooth stattgefunden hat und das Gerät, das diese empfangen hat, eine schnellere Verbindung zum Dashboard-Server hatte. Somit wurde das Dashboard zuerst über das Ankommen des ACK informiert und dann erst über das Versenden.
+
+Ein weiterer Störfaktor ist, dass die gelisteten Zeiten von den Geräten selbst gemessen wurden. Da diese nicht synchronisiert wurden ensteht hier eine Ungenauigkeit. Diese ist allerdings vernachlässigbar, da für die hier durchgeführten Tests keine exakte Zeitbestimmung notwendig ist und durch logisches Nachdenken die korrekte Reihenfolge der Nachrichten bestimmt werden kann.
