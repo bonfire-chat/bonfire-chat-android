@@ -9,8 +9,8 @@ times = array('f', [1738.0/60, 2768.0/60, 990.0/60, 4825.0/60, 4650.2/60, 4062.0
 
 def myFormat(s):
     if s is not None:
-        prepared = s.replace('\n', '\\\\').replace('%', '\\%').replace(' \"', ' ``').replace('\" ', '\'\' ').replace('\".', '\'\'.').replace('\"-', '\'\'-').replace('"', '').replace('\"', '')
-        prepared = prepared.replace('„', '').replace('“', '\'\'')
+        prepared = s.replace('\n', '\\\\').replace('%', '\\%').replace(' \"', ' ``').replace('-\"', '-``').replace('\" ', '\'\' ').replace('\".', '\'\'.').replace('\"-', '\'\'-').replace('"', '').replace('\"', '')
+        prepared = prepared.replace('„', '``').replace('“', '\'\'')
         return '\parbox[t]{10cm}{'+ prepared + '}'
     else:
         return " "
