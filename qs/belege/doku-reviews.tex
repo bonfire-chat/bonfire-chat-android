@@ -43,13 +43,15 @@ Jonas Mönnig wird beauftragt, die Struktur zu entwickeln und einzupflegen. \tex
 
 \textbf{Durchgeführt am:} 08.07.2015
 
-\textbf{Änderungen vorgenommen am:} keine Änderungen notwendig
+\textbf{Änderungen vorgenommen am:} 11.07.2015
 
 \paragraph{Gibt es Dokumentation, die nicht mehr relevant ist und entfernt werden sollte?}
-Nein.
+Das EchoProtocol wurde nur zum Testen eingesetzt und soll aus der Dokumentation entfernt werden.
 
 \paragraph{Gibt es zentrale Konzepte, zu denen keine Dokumentation existiert?}
-Nein.
+Es fehlt Dokumentation der Abstraktionsebene für Protokolle, insbesondere muss das Interface IProtocol und die abstrakte Basisklasse SocketProtocol, welche wiederverwendbare Aufgaben kapselt, beschrieben werden.
+
+Mit der Umsetzung der Aufgaben wird Simon Thiem beauftragt. \textbf{Update 11.07.15:} Die Änderungen wurden von Simon Thiem umgesetzt.
 
 \paragraph{Ist die Dokumentation schwer verständlich (Inhalt, Rechtschreibung)?}
 Nein.
@@ -59,45 +61,53 @@ Nein.
 
 \textbf{Durchgeführt am:} 22.07.2015
 
-\textbf{Änderungen vorgenommen am:} keine Änderungen notwendig
+\textbf{Änderungen vorgenommen am:} 23.07.2015, 26.07.2015, 27.07.2015
 
 \paragraph{Gibt es Dokumentation, die nicht mehr relevant ist und entfernt werden sollte?}
 Nein.
 
 \paragraph{Gibt es zentrale Konzepte, zu denen keine Dokumentation existiert?}
-Nein.
+Es existiert noch keine Dokumentation zum WiFi-Protokoll. Hier muss die grundlegende Funktionalität der Klasse ausführlich dargelegt werden. Mit der Erstellung der Dokumentation wird Simon Thiem beauftragt. \textbf{Update 27.07.15:} Die Dokumentation wurde von Simon Thiem erstellt.
+
+Ein großer Teil der Logik, welche für Verbindungen, Senden und Empfangen von Nachrichten und der Verwaltung von verschiedenen Protokollen zuständig ist, ist im ConnectionManager implementiert. Diese zentrale Klasse taucht momentan noch nicht in der Dokumentation auf. Mit der Nachbesserung wird Johannes Lauinger beauftragt. \textbf{Update 26.07.15:} Dies wurde von Johannes Lauinger erledigt.
 
 \paragraph{Ist die Dokumentation schwer verständlich (Inhalt, Rechtschreibung)?}
-Nein.
+Der Abschnitt, der SocketProtocol dokumentiert, enthält mehrere Rechtschreibfehler und ist schlecht formatiert. Max Weller wird mit der Verbesserung beauftragt. \textbf{Update 23.07.15:} Dies wurde von Max Weller durchgeführt.
 
 
 \subsection{Review der Dokumentation vom 5. August 2015}
 
 \textbf{Durchgeführt am:} 05.08.2015
 
-\textbf{Änderungen vorgenommen am:} keine Änderungen notwendig
+\textbf{Änderungen vorgenommen am:} 06.08.2015, 10.08.2015
 
 \paragraph{Gibt es Dokumentation, die nicht mehr relevant ist und entfernt werden sollte?}
-Nein.
+Die Dokumentation der Klasse StreamHelper ist unnötig, da sie nicht für das Verständnis der Architektur und Designentscheidungen bei der Entwicklung von BonfireChat notwendig ist. Bei einem genauen Blick in den Code ist die Funktionalität ohnehin durch Kommentare gegeben. Dies wurde direkt entfernt.
 
 \paragraph{Gibt es zentrale Konzepte, zu denen keine Dokumentation existiert?}
-Nein.
+Ja, der OnMessageReceivedListener ist noch nicht beschrieben. Dieser wird im ConnectionManager als innere Klasse definiert und jedem Protokoll als Callback-Mechanismus übergeben. Johannes Lauinger wird damit beauftragt, dies zu dokumentieren. \textbf{Update 06.08.15:} Dies wurde von Johannes Lauinger umgesetzt.
+
+Die neue Funktion, Nachrichten über Google Cloud Messaging zu versenden, ist noch nicht dokumentiert. Google Cloud Messaging ist als weiteres Protokoll implementiert und soll daher auch im Zuge der anderen Protokolle vorgestellt werden. Mit der Umsetzung wird Matthias Hofmann beauftragt. \textbf{Update 10.08.15:} Matthias Hofmann hat das Protokoll dokumentiert.
 
 \paragraph{Ist die Dokumentation schwer verständlich (Inhalt, Rechtschreibung)?}
-Nein.
+Die Beschreibung der möglichen Benutzeraktionen im Abschnitt \glqq User Interface Design\grqq~ ist schwer verständlich. Hier sollte, etwa durch einen klareren Satzbau, die Lesbarkeit erhöht werden. Damit wird Jonas Mönnig beauftragt. \textbf{Update 06.08.15:} Dies wurde von Jonas Mönnig erledigt.
 
 
 \subsection{Review der Dokumentation vom 18. August 2015}
 
 \textbf{Durchgeführt am:} 18.08.2015
 
-\textbf{Änderungen vorgenommen am:} keine Änderungen notwendig
+\textbf{Änderungen vorgenommen am:} 20.08.2015
 
 \paragraph{Gibt es Dokumentation, die nicht mehr relevant ist und entfernt werden sollte?}
-Nein.
+Die Dokumentation beschreibt die Verwendung, Erfassung und Speicherung von XMPP- oder Jabber-IDs. Da diese nicht mehr verwendet werden, seit zur Nachrichtenübertragung über das Internet Google Cloud Messaging und nicht mehr Jabber verwendet wird, ist die Dokumentation nicht mehr relevant. Simon Thiem wird damit beauftragt, die entsprechenden Stellen zu bearbeiten. \textbf{Update 20.08.15:} Dies wurde von Simon Thiem erledigt.
 
 \paragraph{Gibt es zentrale Konzepte, zu denen keine Dokumentation existiert?}
-Nein.
+Es existieren noch keine Informationen darüber, wie Nachrichten an ihr Ziel finden. Es muss ein Abschnitt ergänzt werden, der die Routing-Algorithmen beschreibt, welche in der App verwendet werden.
+
+Es gibt weiterhin keine Dokumentation der serverseitigen API, welche für Funktionen wie die Übertragung von Nachrichten an Google Cloud Messaging genutzt wird.
+
+Johannes Lauinger wird mit der Ergänzung der fehlenden Dokumentation beauftragt. \textbf{Update 20.08.15:} Dies wurde von Johannes Lauinger erledigt.
 
 \paragraph{Ist die Dokumentation schwer verständlich (Inhalt, Rechtschreibung)?}
 Nein.
@@ -107,29 +117,35 @@ Nein.
 
 \textbf{Durchgeführt am:} 02.09.2015
 
-\textbf{Änderungen vorgenommen am:} keine Änderungen notwendig
+\textbf{Änderungen vorgenommen am:} 09.09.2015
 
 \paragraph{Gibt es Dokumentation, die nicht mehr relevant ist und entfernt werden sollte?}
 Nein.
 
 \paragraph{Gibt es zentrale Konzepte, zu denen keine Dokumentation existiert?}
-Nein.
+Momentan wird in der Dokumentation die verschlüsselte Datenübertragung nicht erwähnt. Die verwendete Bibliothek libkalium und die eingesetzten kryptographischen Algorithmen müssen genannt werden. Weiterhin fehlen Informationen darüber, in welchen Klassen und an welcher Stelle beim Senden und Empfangen von Nachrichten die Ver- beziehungsweise Entschlüsselung passiert.
+
+In diesem Zug sollte auch dokumentiert werden, wann die kryptographischen Schlüssel generiert werden und wie die Sicherstellung der Authentizität funktioniert.
+
+Weiterhin ist der Kontaktaustausch noch nicht dokumentiert. Die Möglichkeiten der serverbasierten Suche und des direkten Austauschs über einen QR-Code oder NFC müssen beschrieben werden.
+
+Mit der Umsetzung der Punkte wird Max Weller beauftragt. \textbf{Update 09.09.15:} Dies wurde von Max Weller erledigt.
 
 \paragraph{Ist die Dokumentation schwer verständlich (Inhalt, Rechtschreibung)?}
-Nein.
+Es finden sich einige Rechtschreibfehler in der Beschreibung der grundlegenden Datenstrukturen wie Kontakte und Unterhaltungen. Diese wurden direkt behoben.
 
 
 \subsection{Review der Dokumentation vom 14. September 2015}
 
 \textbf{Durchgeführt am:} 14.09.2015
 
-\textbf{Änderungen vorgenommen am:} keine Änderungen notwendig
+\textbf{Änderungen vorgenommen am:} 18.09.2015
 
 \paragraph{Gibt es Dokumentation, die nicht mehr relevant ist und entfernt werden sollte?}
 Nein.
 
 \paragraph{Gibt es zentrale Konzepte, zu denen keine Dokumentation existiert?}
-Nein.
+Es fehlt die Beschreibung des Routingverfahrens Dynamic Source Routing. Momentan wird ausschließlich Flooding beschrieben, wobei es einen Hinweis gibt, in der Zukunft weitere Verfahren zu unterstützen. Da dies nun der Fall ist, wird Johannes Lauinger mit der Dokumentation beauftragt. \textbf{Update 18.09.15:} Dies wurde von Johannes Lauinger erledigt.
 
 \paragraph{Ist die Dokumentation schwer verständlich (Inhalt, Rechtschreibung)?}
 Nein.
@@ -139,13 +155,15 @@ Nein.
 
 \textbf{Durchgeführt am:} 25.09.2015
 
-\textbf{Änderungen vorgenommen am:} keine Änderungen notwendig
+\textbf{Änderungen vorgenommen am:} 27.09.2015
 
 \paragraph{Gibt es Dokumentation, die nicht mehr relevant ist und entfernt werden sollte?}
 Nein.
 
 \paragraph{Gibt es zentrale Konzepte, zu denen keine Dokumentation existiert?}
-Nein.
+Nein, alle Konzepte sind dokumentiert.
 
 \paragraph{Ist die Dokumentation schwer verständlich (Inhalt, Rechtschreibung)?}
-Nein.
+Die Dokumentation des Kontrollflusses in der Klasse ConnectionManager ist schwer verständlich. Diese sollte überdacht und aufgeräumt werden. Damit wird Jonas Mönnig beauftragt. \textbf{Update 27.09.15:} Dies wurde von Jonas Mönnig erledigt.
+
+Einige Tippfehler wurden direkt berichtigt.
