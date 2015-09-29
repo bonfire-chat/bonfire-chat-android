@@ -1,3 +1,4 @@
+% A.1.3 Findbugs
 
 Um häufig auftretende Fehler zu vermeiden, haben wir \glqq FindBugs\grqq~ eingesetzt. Im Folgenden befindet sich ein Report, der erstellt wurde, als wir mit der Verwendung von FindBugs begonnen aben. Anschließend wurden alle Fehler und Warnungen in Commit e30930731deb28b4af37f4d820a163f48dcf3ff4 \glqq fixes FindBugs errors\grqq~ behoben. Da wir das Plugin FindBugs-IDEA direkt in unsere Entwicklungsumgebung integriert haben und Fehler so direkt markiert wurden, konnten Fehler ab dann direkt bei der Entwicklung vermieden werden. Bei Projektende sind keine FindBugs-Warnungen vorhanden, es kann aber kein leerer Bericht exportiert werden, da das in FindBugs-IDEA nicht vorgesehen ist.
 
@@ -39,6 +40,8 @@ Es sind keine FindBugs-Fehler vorhanden, davon kann allerdings kein Bericht erst
 
 \includegraphics[width=17.5cm]{belege/findbugs/findbugs-no-warnings-screenshot.png}
 
+
+\clearpage
 \subsubsection{Screenshot von FindBugs-IDEA}
 
 Im gezeigten Screenshot ist sichtbar, dass FindBugs eine Stelle im Code markiert hat, an der möglicherweise eine NullPointerException auftreten könnte. Weitere gefundene Fehler sind in der FindBugs-Ansicht unten am Bildschirm erkennbar.
@@ -46,3 +49,5 @@ Im gezeigten Screenshot ist sichtbar, dass FindBugs eine Stelle im Code markiert
 Da betroffene Stellen orange unterstrichen werden und mit einer Fehlermarkierung am Rand angezeigt werden, sind sie direkt bei der Entwicklung der Anwendung ersichtlich und können umgehend behoben werden.
 
 \includegraphics[width=17.5cm]{belege/findbugs/findbugs-idea-screenshot.png}
+
+%\flushbottom

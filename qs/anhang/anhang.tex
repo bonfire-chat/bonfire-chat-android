@@ -1,8 +1,9 @@
 
-    Dieser Anhang wurde am Ende des Projekts nachgereicht. Er enthält Belege für
-    durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso
-    die Durchführung nicht möglich oder nicht erfolgt ist. \\
+Dieser Anhang wurde am Ende des Projekts nachgereicht. Er enthält Belege für
+durchgeführte Maßnahmen, bzw. falls nicht durchgeführt eine Begründung wieso
+die Durchführung nicht möglich oder nicht erfolgt ist. \\
 
+\raggedbottom
 
 % ---------------------------------------------------------------------------
 % statische Analysetools
@@ -67,14 +68,14 @@ sowie alle wichtigen Designentscheidungen in einem Dokument festgehalten.
 Es wurden JUnit-Tests für die automatisiert testbaren Codeteile durchgeführt.
 Im Folgenden findet sich zunächst eine Liste aller Tests sowie der Testergebnisse,
 außerdem das Ergebnis der Test-Coverage-Analyse, aufgeschlüsselt nach Packages.
-\\\\
+
 Wie bereits im QS-Dokument beschrieben, war ein Testen des UI- und Netzwerkcodes
 (Packages bonfirechat.network und bonfirechat.ui)
 mit dem JUnit-Framework nicht möglich, da die Android-Klassenbibliothek dort nicht
 zur Verfügung steht. Das gleiche gilt für die Datenbankklasse, da diese von einer
 Android-internen Klasse erbt. Daher konnte auch die Klasse bonfire.data.BonfireData
 nicht mit automatisierten Tests versehen werden.
-\\\\
+
 Zusammenfassend gilt, dass wir automatisierte Tests für alle Methoden geschrieben haben,
 die
 \begin{itemize}
