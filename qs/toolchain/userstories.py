@@ -7,13 +7,17 @@ from array import *
 
 times = array('f', [1738.0/60, 2768.0/60, 990.0/60, 4825.0/60, 4650.2/60, 4062.0/60, 3834.2/60, 5289.0/60, 1316.0/60, 0])
 
-def myFormat(s):
+def prepareString(s):
     if s is not None:
         prepared = s.replace('\n', '\\\\').replace('%', '\\%').replace(' \"', ' ``').replace('-\"', '-``').replace('\" ', '\'\' ').replace('\".', '\'\'.').replace('\"-', '\'\'-').replace('"', '').replace('\"', '')
         prepared = prepared.replace('„', '``').replace('“', '\'\'')
-        return '\parbox[t]{10cm}{'+ prepared + '}'
+        return prepared
     else:
         return " "
+
+
+def myFormat(s):
+    return '\parbox[t]{10cm}{' + prepareString(s) + '}'
 
 con = mdb.connect('37.59.184.73', 'qsmakefile', '2C6rJdvkgS', 'openproject_ce')
 
@@ -63,19 +67,19 @@ with con:
             sprintHours = hours
 
 
-        print '\\centering'
+        print '\\paragraph{ \\#' + str(ID), '  ', prepareString(row['subject']), '}'
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
+        #print '\\hline'
+        #print 'ID & ', ID
+        #print '\\tabularnewline'
+        #print '\\hline'
+        #print 'Name & ', myFormat(row['subject'])
+        #print '\\tabularnewline'
         print '\\hline'
-        print 'ID & ', ID
+        print 'Beschreibung & ', myFormat(row['description'].strip() + "\\\\")
         print '\\tabularnewline'
         print '\\hline'
-        print 'Name & ', myFormat(row['subject'])
-        print '\\tabularnewline'
-        print '\\hline'
-        print 'Beschreibung & ', myFormat(row['description'])
-        print '\\tabularnewline'
-        print '\\hline'
-        print 'Akzeptanzkriterium & ', myFormat(row['acceptance_criteria'])
+        print 'Akzeptanzkriterium & ', myFormat(row['acceptance_criteria'].strip() + "\\\\")
         print '\\tabularnewline'
         print '\\hline'
         print 'Story Points & ', sp
@@ -87,7 +91,7 @@ with con:
         print 'Umgesetzt Iteration & ', sprint
         print '\\tabularnewline'
         print '\\hline'
-        print 'Tatsächlicher Aufwand (Std.) & ', "{:.2f}".format(hours)
+        print 'Tatsächlicher Aufwand & ', "{:.2f} Std.".format(hours)
         print '\\tabularnewline'
         print '\\hline'
         print 'Velocity (Std./Story Point) & ', "{:.2f}".format(velocity)
@@ -95,6 +99,6 @@ with con:
         print '\\hline'
         print '\\end{tabular}'
         print '\\\\'
-        print '\\vspace{1cm}'
+        #print '\\vspace{0.5cm}'
 
 con.close()
