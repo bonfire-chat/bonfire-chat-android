@@ -27,7 +27,10 @@ with con:
 
     lastSprint = 0
     sprintHours = 0
+    ID = 0
     for row in rows:
+
+        ID += 1
 
         if row['story_points'] is not None:
             sp = row['story_points']
@@ -63,7 +66,7 @@ with con:
         print '\\centering'
         print '\\begin{tabular}{| p{5cm} | p{10cm} |}'
         print '\\hline'
-        print 'ID & ', row["id"]
+        print 'ID & ', ID
         print '\\tabularnewline'
         print '\\hline'
         print 'Name & ', myFormat(row['subject'])
