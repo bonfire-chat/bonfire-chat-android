@@ -1,17 +1,16 @@
-\subsubsection{Allgemeine Ausgangskonfiguration der Knoten:}\label{Ausgangskonfiguration}
+\subsection{Testplan}
+
+\paragraph{Allgemeine Ausgangskonfiguration der Knoten}
 
 Ein Knoten ist, soweit nicht näher beschrieben, ein Android-Gerät, auf dem die aktuellste Version der App eingerichtet und die initiale Einrichtung (Eingabe eines Nicknames, dadurch Registrierung des Gerätes mit Nickname, GCM-ID und PublicKey am Server) abgeschlossen ist.
 
-\subsubsection{Eigenschaften:}\label{Eigenschaften}
+\paragraph{Eigenschaften}
 
 \begin{itemize}
-\tightlist
-\item
-Geringe Distanz: Die Knoten stehen nahe zu ihren Nachbarn (1m).
-\item
-Mittlere Distanz: Die Knoten stehen etwas entfernt zu ihren Nachbarn (5m).
-\item
-Große Distanz: Die Knoten stehen weit entfernt zu ihren Nachbarn (10m).
+  \tightlist
+  \item Geringe Distanz: Die Knoten stehen nahe zu ihren Nachbarn (1m)
+  \item Mittlere Distanz: Die Knoten stehen etwas entfernt zu ihren Nachbarn (5m)
+  \item Große Distanz: Die Knoten stehen weit entfernt zu ihren Nachbarn (10m)
 \end{itemize}
 
 \subsubsection{Testfälle für Statistik Erhebungen}\label{Testfaelle}
@@ -25,3 +24,17 @@ Die einzelnen Handys haben eine geringe Distanz zueinander.
 Die einzelnen Handys haben eine mittlere Distanz zueinander. 
 \paragraph*{Test 3:}
 Die einzelnen Handys haben eine große Distanz zueinander. 
+=======
+\paragraph{Testfälle für Statistik Erhebungen}
+
+\textbf{Testaufbau}\\
+Wir führen einen Test mit zehn Handys durch. Es wird nur Bluetooth getestet. Alle Handys haben dauerhaft eine Verbindung zum Internet, um ständige Nachrichtenverläufe an unser Dashboard zu senden, damit wir den Test auswerten können. Die Handys werden kugelförmig positioniert und während des Tests nicht bewegt. Es werden viele Nachrichten verschickt (etwa eine Nachricht alle 2 Sekunden). Die Handys können jedoch keine Nachrichten über das Internet versenden, da dies in der App deaktiviert wird. Die Nachrichten werden alle per Hand verschickt, kleine Abweichungen bei Distanz oder Sendegeschwindigkeit werden hingenommen. Jeder Test läuft 5 Minuten.
+
+\textbf{Test 1}\\
+Die einzelnen Handys haben eine geringe Distanz zueinander.
+
+\textbf{Test 2}\\
+Die einzelnen Handys haben eine mittlere Distanz zueinander.
+
+\textbf{Test 3}\\
+Die einzelnen Handys haben eine große Distanz zueinander.

@@ -14,76 +14,17 @@ Anwendung zu verbessern, wurden statische Analysetools eingesetzt.
 
 \subsection{Checkstyle}
 
-Wir haben das bekannte und beliebte Tool \glqq Checkstyle\grqq~ verwendet, um die Einhaltung von üblichen Richtlinien zum Programmierstil zu überprüfen und durchzusetzen. Diese tragen zu guter Lesbarkeit und geringer Komplexität des Quellcodes bei.
-
-Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als begonnen haben, \glqq Checkstyle\grqq~ einzusetzen. Anschließend haben wir alle bereits vorhandenen Warnungen in Commit 5cd67e0aff2b1edd2b42c48fd6b0a36af83a243e \glqq fixes Checkstyle warnings\grqq~ abgearbeitet. Da mit dem Plugin \glqq Checkstyle-IDEA\grqq~ alle Warnungen direkt in unserer Entwicklungsumgebung angezeigt werden, konnten diese ab dann direkt bei der Programmierung behoben werden, sodass der zweite, zum Abschluss des Projektes erstellte, Report leer ist. Ein Screenshot des Plugins mit markierten Fehlern findet sich im Abschnitt nach den Berichten.
-
-Wir haben bei der Checkstyle-Überprüfung auf die Überprüfung verzichtet, ob Felder als private deklariert werden können, da es bei Android eine empfohlene Vorgehensweise ist, einige Felder öffentlich zu deklarieren. Dies sorgt auf mobilen Geräten für mehr Effizienz, da zum Zugreifen auf ein solches Feld keine Methode über einen Call-Stack aufgerufen werden müssen.
-
-
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer ``Checkstyle''-Report}]{anhang/partials/checkstyle-1.pdf}
-\includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/checkstyle-1.pdf}
-
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler ``Checkstyle''-Report}]{anhang/partials/checkstyle-2.pdf}
-\includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/checkstyle-2.pdf}
-
-\subsubsection{Screenshot von Checkstyle-IDEA}
-
-In diesem Screenshot ist sichtbar, wie Checkstyle direkt und insbesondere vor einem Commit Fehler markiert. Hier wird angemerkt, dass zwischen der Typumwandlung \glqq (Peer)\grqq~ und dem Feld \glqq other\grqq~ ein Leerzeichen fehlt, sowie dass die if-else-Konstruktion keine geschweiften Klammern verwendet.
-
-Durch die auffällige rote Markierung kann die Checkstyle-Warnung nicht übersehen werden.
-
-\includegraphics[width=17.5cm]{belege/checkstyle/checkstyle-idea-screenshot.png}
-
+\input{anhang/checkstyle}
 
 \clearpage
 \subsection{Android Lint}
 
-Zusätzlich zu Checkstyle haben wir das von Google entwickelte und empfohlene \glqq Android Lint\grqq~ genutzt. Dieses Tool ist speziell für Android optimiert und erzeugt im Gegensatz zu Checkstyle weniger Warnungen bezüglich syntaktischer Programmierrichtlinien, sondern vielmehr Empfehlungen zur Verbesserung der Performance, Usability, Accessibility und Korrektheit.
-
-Dadurch verbessert sich einerseits die Wartbarkeit, denn durch das Befolgen der im Android-Umfeld üblichen Konventionen und die Verwendung von allgemein bekannten und anerkannten Entwurfsmustern, ist der Code zukünftigen Entwicklern leichter verständlich.
-
-Im folgenden Abschnitt befindet sich wieder ein Report, der erstellt wurde, als wir begonnen haben, \glqq Android Lint\grqq~ einzusetzen. Dann wurden initial alle Warnungen und Empfehlungen abgearbeitet (Commit 1f4733747f7a98d89e7832937d94a9ddcbdc2bd5 \glqq fixes Android Lint errors and warnings\grqq). Die Warnungen und Empfehlungen werden direkt in der von uns verwendeten Entwicklungsumgebung Android Studio angezeigt, sodass diese anschließend während der Programmierung direkt umgesetzt werden konnten. Daher ist der zweite Report, der zum Abschluss des Projekts erstellt wurde, leer.
-
-Nach den Berichten findet sich ein Screenshot, der markierte Android Lint-Warnungen anzeigt.
-
-
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer Android Lint Report}]{anhang/partials/lint-results-1.pdf}
-\includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/lint-results-1.pdf}
-
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler Android Lint Report}]{anhang/partials/lint-results-2.pdf}
-
-\subsubsection{Screenshot von Android Lint in Android Studio}
-
-In diesem Screenshot ist ersichtlich, wie Android Lint anmerkt, statt \glqq paddingRight\grqq~ \glqq paddingEnd\grqq~ zu verwenden. Dies ist ein Beispiel für Verbesserungen der Accessibility für Android Apps. Weiterhin angemerkt wird, dass die beiden Konstruktionen aus jeweils einem \glqq LinearLayout\grqq~ und einem \glqq ImageView\grqq~ zu einem \glqq Compound Layout\grqq~ zusammengefasst werden können.
-
-Durch die gelbe Hinterlegung in Android Studio, welche bereits beim Tippen des Quellcodes angezeigt wird, können Android Lint Warnungen kaum übersehen werden.
-
-\includegraphics[width=17.5cm]{belege/lint/android-lint-screenshot.png}
-
+\input{anhang/androidlint}
 
 \clearpage
 \subsection{FindBugs}
 
-Um häufig auftretende Fehler zu vermeiden, haben wir \glqq FindBugs\grqq~ eingesetzt. Im folgenden Abschnitt befindet sich ein Report, der erstellt wurde, als wir mit der Verwendung von FindBugs begonnen aben. Anschließend wurden alle Fehler und Warnungen in Commit XXXXXXXX TODO behoben. Da wir das Plugin FindBugs-IDEA direkt in unsere Entwicklungsumgebung integriert haben und Fehler so direkt markiert wurden, konnten Fehler ab dann direkt bei der Entwicklung vermieden werden und der zweite, am Ende des Projektes erstellte, Report ist leer.
-
-Nach den Berichten findet sich auch für FindBugs ein Screenshot, welcher \glqq FindBugs-IDEA\grqq~ in Aktion und insbesondere die nahtlose Integration in Android Studio zeigt.
-
-
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Initialer ``FindBugs''-Report}]{anhang/partials/findbugs-1.pdf}
-\includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/findbugs-1.pdf}
-
-\includepdf[pages=1,offset=-0.8cm 0,scale=.8,pagecommand=\subsubsection{Finaler ``FindBugs''-Report}]{anhang/partials/findbugs-2.pdf}
-\includepdf[pages=2-,offset=-0.8cm 0,scale=.8,pagecommand={}]{anhang/partials/findbugs-2.pdf}
-
-\subsubsection{Screenshot von FindBugs-IDEA}
-
-Im gezeigten Screenshot ist sichtbar, dass FindBugs eine Stelle im Code markiert hat, an der möglicherweise eine NullPointerException auftreten könnte. Weitere gefundene Fehler sind in der FindBugs-Ansicht unten am Bildschirm erkennbar.
-
-Da betroffene Stellen orange unterstrichen werden und mit einer Fehlermarkierung am Rand angezeigt werden, sind sie direkt bei der Entwicklung der Anwendung ersichtlich und können umgehend behoben werden.
-
-\includegraphics[width=17.5cm]{belege/findbugs/findbugs-idea-screenshot.png}
-
+\input{anhang/findbugs}
 
 \clearpage
 
@@ -124,7 +65,7 @@ sowie alle wichtigen Designentscheidungen in einem Dokument festgehalten.
 \section{Automatisierte Tests}
 
 Es wurden JUnit-Tests für die automatisiert testbaren Codeteile durchgeführt.
-Im folgenden findet sich zunächst eine Liste aller Tests sowie der Testergebnisse,
+Im Folgenden findet sich zunächst eine Liste aller Tests sowie der Testergebnisse,
 außerdem das Ergebnis der Test-Coverage-Analyse, aufgeschlüsselt nach Packages.
 \\\\
 Wie bereits im QS-Dokument beschrieben, war ein Testen des UI- und Netzwerkcodes
@@ -159,9 +100,12 @@ sodass wir stattdessen mit Mockito erstellte Mock-Objekte übergeben können, od
 % ---------------------------------------------------------------------------
 % Automatisierte Tests: Test Coverage
 
-\includepdf[pages=-,offset=-0.8cm 0,scale=.8,pagecommand=\subsection{Test Coverage}]{anhang/partials/coverage.pdf}
+\subsection{Test Coverage}
 
+Aufgrund der in der Einleitung zu \glqq Automatisierte Tests\grqq~ beschriebenen Probleme mit JUnit und Android können große Teile unseres Quellcodes nicht automatisiert getestet werden. Daher scheint auch die Testabdeckung relativ gering zu sein, es ist jedoch nicht möglich mehr Abdeckung zu erhalten.
 
+\hspace{-1cm}
+\includegraphics[width=19.3cm,clip=true,trim=0cm 15cm 0cm 0cm]{anhang/partials/coverage.pdf}
 
 \clearpage
 
@@ -169,7 +113,7 @@ sodass wir stattdessen mit Mockito erstellte Mock-Objekte übergeben können, od
 
 Da uns der Aufwand für die Nutzung eines Instrumented-Test-Frameworks
 für das recht einfache User Interface der App unverhältnismäßig
-erscheint, werden manuelle Tests anhand der folgenden Testpläne
+erscheint, werden manuelle Tests anhand des folgenden Testplans
 vorgenommen.
 
 \subsection{Testplan}
@@ -180,14 +124,30 @@ vorgenommen.
 
 \clearpage
 \section{Manueller Test für Routing und Datenübertragungs-Protokolle}
+
+Ebenso wie bei den manuellen Tests der Benutzeroberfläche ist es kaum möglich, das Netzwerkverhalten der Anwendung automatisiert zu testen, da dafür physikalische Eigenschaften der Funkübertragung simuliert werden müssten. Wir haben daher manuelle Tests anhand des folgenden Testplans vorgenommen.
+
 \subsection{Testplan}
 \input{belege/manuelle-tests/netzwerk/00-testplan.tex}
 
-\subsection{Durchführung}
-\input{belege/manuelle-tests/netzwerk/Netzwerktest-Durchfuehrung.tex}
+\input{belege/manuelle-tests/netzwerk/netzwerktest-report-20150830.tex}
 
+
+\clearpage
 \section{Großtests}
-\subsection{Testplan}
-\input{belege/grosstests/testplan}
 
-\input{belege/grosstests/grosstests}
+Um das Verhalten der App bei einem tatsächlichen Einsatz mit vielen Benutzern und vielen Geräten zu simulieren, haben wir Großtests nach dem folgenden Testplan durchgeführt.
+
+\input{belege/grosstests/testplan}
+\clearpage
+
+\input{belege/grosstests/grosstest-report-1.tex}
+\clearpage
+
+\input{belege/grosstests/grosstest-report-2.tex}
+
+
+\clearpage
+\section{Erweiterbarkeit}
+\input{anhang/erweiterbarkeit}
+

@@ -1,11 +1,11 @@
 
-## Code-Review vom 28.09.2015
+## Code-Review vom 28. September 2015
 
 **Durchgeführt von:** Johannes Lauinger, Jens Heuschkel
 
 **Geprüfte Codeteile:** MessageDetailsActivity
 
-**Änderungen vorgenommen in Commit:** Es wurden keine Änderungen vorgenommen
+**Änderungen vorgenommen in Commit:** Es wurden keine Änderungen vorgenommen.
 
 #### 1. Ist die Funktionalität korrekt?
 
@@ -45,7 +45,7 @@ Die Klasse hat keine Eingabeparameter.
 
 #### 10. Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
 
-Die Funktionalität beeinflusst die Performance nicht wesentlich, da nur einfache Standardfunktionalitäten implementiert sind, die nicht besonders Rechenaufwändig sind.
+Die Funktionalität beeinflusst die Performance nicht wesentlich, da nur einfache Standardfunktionalitäten implementiert sind, die nicht besonders rechenaufwändig sind.
 
 #### 11. Ist es unbedingt nötig, den Code in einem UI-Thread laufen zu lassen oder würde ein Background-Thread ausreichen?
 

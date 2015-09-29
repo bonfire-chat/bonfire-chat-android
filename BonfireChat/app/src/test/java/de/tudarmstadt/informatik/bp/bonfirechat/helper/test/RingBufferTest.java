@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class RingBufferTest {
 
     /**
-     * Tests, that contains() does not crash, when Ringbuffer is empty
+     * tests, that contains() does not crash when an instance of RingBuffer is empty
      */
     @Test
     public void testEmpty() {
@@ -22,9 +22,9 @@ public class RingBufferTest {
     }
 
     /**
-     * Tests correct behaviour of contains() method
+     * tests correct behaviour of contains() method
      * <br><br>
-     * If Object o is in the Ringbuffer, contains(o) should return true
+     * If Object o is in the RingBuffer, contains(o) should return true
      * Otherwise it should return false
      */
     @Test
@@ -37,7 +37,7 @@ public class RingBufferTest {
     }
 
     /**
-     * Tests correct behaviour of Ringbuffer after it exceeds its size for the first time
+     * Tests correct behaviour of RingBuffer after it exceeds its size for the first time
      * <br><br>
      * The first object that overflows the buffer should be written to the first position
      */

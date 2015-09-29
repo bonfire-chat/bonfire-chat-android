@@ -21,6 +21,9 @@ public class ContactTest {
 
     Contact contact;
 
+    /**
+     * sets up a contact instance with a mocked version of KeyPair before testing
+     */
     @Before
     public void initTests(){
         KeyPair keyPairMock = Mockito.mock(KeyPair.class);
@@ -30,7 +33,7 @@ public class ContactTest {
     }
 
     /**
-     * Tests correct behaviour of toString
+     * tests correct behaviour of toString
      * <br><br>
      * The toString()-method should return the nickname of the contact
      */
@@ -40,7 +43,7 @@ public class ContactTest {
     }
 
     /**
-     * Tests getter of nickname
+     * tests getter of nickname
      */
     @Test
     public void testGetNickname(){
@@ -57,7 +60,7 @@ public class ContactTest {
     }
 
     /**
-     * Tests getter of firstName
+     * tests getter of firstName
      */
     @Test
     public void testGetFirstName(){
@@ -65,7 +68,7 @@ public class ContactTest {
     }
 
     /**
-     * Tests setter of firstName
+     * tests setter of firstName
      */
     @Test
     public void testSetFirstName(){
@@ -74,7 +77,7 @@ public class ContactTest {
     }
 
     /**
-     * Tests getter of lastName
+     * tests getter of lastName
      */
     @Test
     public void testGetLastName(){
@@ -82,7 +85,7 @@ public class ContactTest {
     }
 
     /**
-     * Tests setter of lastName
+     * tests setter of lastName
      */
     @Test
     public void testSetLastName(){

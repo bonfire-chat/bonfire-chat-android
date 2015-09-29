@@ -1,0 +1,114 @@
+
+Während der Entwicklung der Anwendung haben wir zusammen mit unserem Auftraggeber als weiteres Qualitätsziel erkannt, dass die App leicht um weitere Übertragungswege erweiterbar sein soll. Zu diesem Zweck existiert ein Interface `IProtocol`.
+
+Die Erweiterung der Anwendung um einen weiteren Übertragungsweg wird im folgenden anhand des beispielhaften EchoProtocol dokumentiert, welches Nachrichten direkt an den Absender zurückschickt. Dazu sind folgende Schritte notwendig:
+
+\subsection{Entwicklung einer neuen Klasse `EchoProtocol`}
+
+Der Entwickler muss zunächst eine neue Klasse EchoProtocol implementieren. Die neue Klasse muss das Interface `IProtocol` implementieren.
+
+\begin{lstlisting}[language=Java]
+app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/IProtocol.java
+
+public interface IProtocol {
+    void sendPacket(Packet packet, Peer peer);
+    void setIdentity(Identity identity);
+    void setOnPacketReceivedListener(OnPacketReceivedListener listener);
+    void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener);
+    boolean canSend();
+    void shutdown();
+}
+\end{lstlisting}
+
+Eine beispielhafte Implementierung des EchoProtocol sieht wie folgt aus:
+
+\begin{lstlisting}[language=Java]
+app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/EchoProtocol.java
+
+public class EchoProtocol extends SocketProtocol {
+
+    private static final String TAG = "EchoProtocol";
+
+    private Identity mIdentity;
+    private OnPacketReceivedListener mOnPacketReceivedListener;
+    private OnPeerDiscoveredListener mOnPeerDiscoveredListener;
+
+    public EchoProtocol(Context ctx) {
+    }
+
+    // ###########################################################################
+    // ###    Implementation of IProtocol
+    // ###########################################################################
+
+    void setIdentity(Identity identity) {
+         mIdentity = identity;
+    }
+    void setOnPacketReceivedListener(OnPacketReceivedListener listener) {
+         mOnPacketReceivedListener = listener;
+    }
+    void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener) {
+         mOnPeerDiscoveredListener = listener;
+    }
+    
+    @Override
+    public void sendPacket(Packet packet, Peer peer) {
+        Log.d(TAG, "echoing packet via EchoProtocol");
+        mOnPacketReceivedListener.onPacketReceived(this, packet);
+    }
+
+    @Override
+    public boolean canSend() {
+        // this dummy protocol is always ready to send messages
+        return true;
+    }
+
+    @Override
+    public void shutdown() {
+    }
+}
+
+\end{lstlisting}
+
+
+\subsection{Eintragen des neuen Protokolls im ConnectionManager}
+
+Damit das Protokoll beim Start der Anwendung instanziiert werden kann, muss es in der Liste der registrierten Protokolle im ConnectionManager aufgeführt werden:
+\begin{lstlisting}[language=Java]
+app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/ConnectionManager.java
+
+public class ConnectionManager extends NonStopIntentService {
+
+    // ...
+    
+    static final Class[] registeredProtocols = new Class[]{
+            BluetoothProtocol.class,
+            WifiProtocol.class,
+            GcmProtocol.class,
+            EchoProtocol.class   // new
+            };
+
+\end{lstlisting}
+
+Außerdem sollte in den App-Einstellungen ein neues Auswahlfeld eingefügt werden, sodass der Benutzer das Protokoll ein- und ausschalten kann.
+
+\begin{lstlisting}
+app/src/main/res/xml/preferences.xml
+
+        <CheckBoxPreference android:key="enable_EchoProtocol" android:defaultValue="true"
+            android:title="@string/use_echo_protocol"></CheckBoxPreference>
+\end{lstlisting}
+
+
+
+
+\subsection{Quellcode BluetoothProtocol}
+
+Als Beispiel für eine vollständige Implementierung eines Übertragungsprotokolls führen wir hier noch den Quellcode des BluetoothProtocol sowie der Elternklasse SocketProtocol, die einige Methoden enthält, die von allen bisherigen Protokoll-Implementierungen verwendet werden, und ihrerseits von IProtocol erbt, an.
+
+\subsubsection{SocketProtocol}
+\lstinputlisting[language=Java]{../BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/SocketProtocol.java}
+
+\subsubsection{BluetoothProtocol}
+\lstinputlisting[language=Java]{../BonfireChat/app/src/main/java/de/tudarmstadt/informatik/bp/bonfirechat/network/BluetoothProtocol.java}
+
+

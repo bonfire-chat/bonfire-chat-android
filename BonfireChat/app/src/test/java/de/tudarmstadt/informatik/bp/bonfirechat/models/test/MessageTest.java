@@ -28,6 +28,9 @@ public class MessageTest {
     public Message message;
     public Contact contact;
 
+    /**
+     * initializes a contact and a message using a mocked version of KeyPair before testing
+     */
     @Before
     public void initTests(){
         KeyPair keyPairMock = Mockito.mock(KeyPair.class);

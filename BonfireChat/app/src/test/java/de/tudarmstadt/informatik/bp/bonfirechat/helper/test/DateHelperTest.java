@@ -14,7 +14,7 @@ import de.tudarmstadt.informatik.bp.bonfirechat.helper.DateHelper;
 public class DateHelperTest {
 
     /**
-     * tests if formatTime and formatDateTime format correctly
+     * tests if formatTime and formatDateTime format times correctly
      * <br><br>
      * formatTime should format in the form hh:mm:ss
      * formatDateTime should format in the form yyyy-MM-dd hh:mm:ss
@@ -30,7 +30,7 @@ public class DateHelperTest {
      * tests if parseDateTime parses Dates correctly
      * <br><br>
      * Dates in the form yyyy-MM-dd hh:mm:ss should be parsed correctly
-     * Invalid Dates schould be recognized and not be parsed
+     * Invalid Dates should be recognized and not be parsed
      */
     @Test
     public void testParse() {

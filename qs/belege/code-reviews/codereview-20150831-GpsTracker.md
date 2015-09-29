@@ -33,7 +33,7 @@ Für dieses Codeteil gibt es keine Datenbankstruktur.
 
 #### 7. Enthält das Codeteil Funktionen, die wiederverwendet werden können? Sind diese in einer Helper-Klasse untergebracht?
 
-Die Klasse enthält keien wiederverwendbaren Funktionen.
+Die Klasse enthält keine wiederverwendbaren Funktionen.
 
 #### 8. Wurden existierende Helper-Funktionen benutzt? Ist keine doppelte Funktionalität implementiert?
 

@@ -33,7 +33,7 @@ Ja.
 
 #### 7. Enthält das Codeteil Funktionen, die wiederverwendet werden können? Sind diese in einer Helper-Klasse untergebracht?
 
-Die Klasse ist dafür zuständig Nachrichten zu versenden und diese weiterzuleiten. Immer wenn dies geschieht erledigt das der ConnectionManager. Insofern gibt es keine Funktionen die später wiederverwendet werden können.
+Die Klasse ist dafür zuständig, Nachrichten zu versenden und diese weiterzuleiten. Immer wenn dies geschieht, erledigt das der ConnectionManager. Insofern gibt es keine Funktionen die später wiederverwendet werden können.
 
 #### 8. Wurden existierende Helper-Funktionen benutzt? Ist keine doppelte Funktionalität implementiert?
 
@@ -45,7 +45,7 @@ Es gibt keine Eingabeparameter im klassischen Sinne. Besitzt ein Handy keine Wif
 
 #### 10. Wie beeinflusst die Funktionalität die Performance der App - Stromverbrauch, Rechenzeit und Speicherbedarf?
 
-Der ConnectionManager startet die Protokolle Wifi, Bluetooth und GCM. Die Protokolle Wifi und Bluetooth überprüfen häufig, welche Geräte sich in der unmittelbaren Nähe befinden und verbrauchen damit Strom. Da dies jedoch eine wichtige Funktionalität ist für die Funktionalität der App, kann dies nicht vermieden werden. Will ein User nur eins der Protokole benutzen so kann er dies in den Einstellungen auswählen.
+Der ConnectionManager startet die Protokolle Wifi, Bluetooth und GCM. Die Protokolle Wifi und Bluetooth überprüfen häufig, welche Geräte sich in der unmittelbaren Nähe befinden und verbrauchen damit Strom. Da dies jedoch eine wichtige Funktionalität ist für die Funktionalität der App, kann dies nicht vermieden werden. Will ein User nur eines der Protokole benutzen so kann er dies in den Einstellungen auswählen.
 
 #### 11. Ist es unbedingt nötig, den Code in einem UI-Thread laufen zu lassen oder würde ein Background-Thread ausreichen?
 
@@ -59,7 +59,7 @@ In der onPacketRecieved-Methode wird das Eintreffen eines Pakets unbekannten Typ
 
 #### 13. Findet eine "Graceful Degradation" statt?
 
-Bei dem Handlen mit der Datenbank kann ein try-catch Block eingefügt werden.
+Bei Operationen, welche Zugriff auf die Datenbank beinhalten, kann ein try-catch Block eingefügt werden.
 
 #### 14. Werden die Best Practices zur Appentwicklung, laut Android Lint, befolgt?
 
@@ -71,7 +71,7 @@ Die Parallelisierung findet in den aufgerufenen Klassen statt und ist somit bere
 
 #### 16. Sind die Operationen, bei denen Threadsicherheit benötigt wird, threadsicher?
 
-Müssen sie nicht.
+Müssen sie nicht, da ConnectionManager als Singleton realisiert ist.
 
 #### 17. Ist das Layout passend für alle Bildschirmdimensionen?
 

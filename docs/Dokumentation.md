@@ -40,7 +40,7 @@ Um abzubilden, dass der Benutzer über seine eigene Identität mehr Informatione
 Folgende Felder sind vorhanden:
 
 ```java
-public String nickname, server, username, password, phone;
+public String nickname, phone;
 public MyPublicKey publicKey;
 public PrivateKey privateKey;
 public long rowid; // Zeilen-ID in der Datenbank
@@ -57,7 +57,6 @@ Eine Contact-Instanz bietet folgende Felder:
 ```java
 private String nickname, firstName, lastName, phoneNumber;
 public MyPublicKey publicKey;
-public String xmppId; // Daten über die Erreichbarkeit des Kontakts. Diese werden momentan nicht verwendet.
 public String wifiMacAddress;
 public String bluetoothMacAddress;
 public long rowid; // Zeilen-ID in der Datenbank
@@ -96,13 +95,13 @@ Folgende Werte sind für `MessageDirection` möglich:
 
 ```java
 public enum MessageDirection {
-    Unknown, // wird momentan nicht verwendet
+    Unknown, // nicht zugewiesen
     Sent,
     Received
 }
 ```
 
-Im Feld `transferProtocol` wird das verwendete Protokoll in Textform gespeichert, um den Benutzer zu informieren, wie seine Nachricht angekommen ist. Tritt beim Versenden eine Exception auf, wird die Fehlermeldung im Feld `error` abgelegt und als Nachrichtentext angezeigt. Das ist vor Allem während der Entwicklung zur Fehlersuche sehr hilfreich, wenn keine Zugriff auf die ADB-Logs vorhanden ist.
+Im Feld `transferProtocol` wird das verwendete Protokoll in Textform gespeichert, um den Benutzer zu informieren, wie seine Nachricht angekommen ist. Tritt beim Versenden eine Exception auf, wird die Fehlermeldung im Feld `error` abgelegt und als Nachrichtentext angezeigt. Das ist vor allem während der Entwicklung zur Fehlersuche sehr hilfreich, wenn keine Zugriff auf die ADB-Logs vorhanden ist.
 
 Im Integer `flags` werden verschiedene Informationen zur Nachricht als Flags kodiert. Folgende Flags können dabei gesetzt werden:
 
@@ -183,7 +182,7 @@ Daneben sind die beiden Funktionen `sendEnvelope` und `recieveEnvelope` implemen
 
 Das eigentliche `Envelope` Objekt wird mit `writeObject` bzw. `readObject` geschrieben und gelesen. Es wird also die Standard-Java-Serialisierung verwendet.
 
-### Datenstruktur Umschlag
+### Datenstruktur Envelope
 
 Um Nachrichten auf dem Transportweg zu repräsentieren, werden sie in einen Umschlag eingepackt. Dieser wird durch ein Objekt der Klasse `Envelope` dargestellt. Damit das Envelope-Objekt im Zusammenhang mit Streams verwendet werden kann, implementiert die Klasse das Interface `Serializable`.
 
@@ -193,8 +192,7 @@ Die folgenden Felder sind vorhanden:
 public UUID uuid;
 public int hopCount;
 public Date sentTime;
-public ArrayList<byte[]> recipientsPublicKeys;
-public String senderNickname; // eventuell entfernen, für Entwicklungszwecke aber sehr praktisch
+public byte[] recipientPublicKey;
 public byte[] senderPublicKey;
 public byte[] encryptedBody; // verschlüsselt
 public byte[] nonce;
@@ -205,7 +203,7 @@ Zusätzlich zur `uuid`, welche die Nachricht und damit den Umschlag eindeutig ke
 
 Von den Empfängern werden nur die Public Keys übertragen, da diese zur Identifikation ausreichen. Dabei wird auch nicht das vollständige `MyPublicKey` Objekt übertragen, sondern nur der Schlüssel selbst als Byte-Array.
 
-Der Absender wird ebenfalls durch seinen Public Key gekennzeichnet. Zusätzlich wird vom Absender der Nickname übertragen. Das ist zwar nicht unbedingt nötig, aber sehr praktisch, um in Logs oder beim Empfänger ohne Anfragen an einen Server anzuzeigen, von wem die Nachricht ist.
+Der Absender wird ebenfalls durch seinen Public Key gekennzeichnet.
 
 Im Integer `flags` werden, ähnlich wie bei `Message` Objekten, verschiedene Daten zum Umschlag abgelegt. Folgende Flags sind möglich:
 
@@ -232,7 +230,7 @@ Um nachvollziehen zu können, über welche Geräte und Protokolle eine Nachricht
 
 In der angehängten Zeile ist vermerkt, ob der Umschlag empfangen oder gesendet wurde, über welches Protokoll dies geschah und auf welchem Gerät die Aktion stattgefunden hat.
 
-Schließlich wird beim Empfangen einer Traceroute-Nachricht die Funktion `TracerouteHandler.publishTraceroute` aufgerufen. Diese übermittelt den Nachrichteninhalt an einen Server und ersetzt den lokalen Inhalt durch einen Link auf eine Seite, auf der man die Route anschauen kann. Auf diese Weise werden Traceroute-Nachrichten beim Empfänger sinnvoll dargestellt und auch der Absender kann sich unter dem Link die Route anschauen.
+Schließlich wird beim Empfangen einer Traceroute-Nachricht die Funktion TracerouteHandler.publishTraceroute aufgerufen. Diese übermittelt den Nachrichteninhalt an einen Server und ersetzt den lokalen Inhalt durch einen Link auf eine Seite, auf der man die Route anschauen kann. Auf diese Weise werden Traceroute-Nachrichten beim Empfänger sinnvoll dargestellt und auch der Absender kann sich unter dem Link die Route anschauen.
 
 
 ## Kryptographie: Bibliothek libkalium
@@ -259,13 +257,15 @@ Die CryptoBox ist ein Konzept von `NaCl`, welche die Verschlüsselung und Signie
 BonfireChat unterstützt diverse Protokolle zur Nachrichtenübertragung. Um diese abstrakt zu verwenden, gibt es das Interface `IProtocol`. Diese wird von der abstrakten Basisklasse `SocketProtocol` implementiert und bietet die folgenden minimalen Anforderungen an ein Protokoll:
 
 ```java
-void sendMessage(Envelope envelope);
-void setIdentity(Identity identity);
-void setOnMessageReceivedListener(OnMessageReceivedListener listener);
-boolean canSend();
+    void sendPacket(Packet packet, Peer peer);
+    void setIdentity(Identity identity);
+    void setOnPacketReceivedListener(OnPacketReceivedListener listener);
+    void setOnPeerDiscoveredListener(OnPeerDiscoveredListener listener);
+    boolean canSend();
+    void shutdown();
 ```
 
-Mit `setIdentity` wird dem Protokoll die eigene Identität bekannt gemacht, falls diese für den Sendevorgang benötigt wird. `setOnMessageRecievedListener` erhält das Callback-Objekt, um eingehende Nachrichten an den `ConnectionManager` zu melden. Beide Funktionen werden bereits in `SocketProtocol` implementiert.
+Mit `setIdentity` wird dem Protokoll die eigene Identität bekannt gemacht, falls diese für den Sendevorgang benötigt wird. `setOnMessageReceivedListener` erhält das Callback-Objekt, um eingehende Nachrichten an den `ConnectionManager` zu melden. Beide Funktionen werden bereits in `SocketProtocol` implementiert.
 
 `canSend` gibt zurück, ob mit dem Protokoll momentan Daten versendet werden können. Das kann zum Beispiel nicht der Fall sein, wenn keine Geräte in der Nähe sind, zu denen eine Verbindung aufgebaut werden kann.
 
@@ -289,16 +289,21 @@ Wenn eine Nachricht gesendet werden soll, wird in der Methode `connect` zunächs
 
 Nachdem die Verbindungen aufgebaut wurden, wird mit `sendEnvelope` der Umschlag in jeden der erzeugten OutputStreams geschrieben. Daraufhin wird noch 50 Millisekunden gewartet, damit das Socket nicht direkt nach Ende der Daten geschlossen wird und die Daten sicher ankommen können. Anschließend werden die Verbindungen wieder getrennt und der DiscoveryMode wieder gestartet.
 
-### WiFiProtocol
+### WifiProtocol
 
-TODO: nach erfolgreicher Implementierung dokumentieren
+In diesem Protokoll wurde die Peer-to-Peer-Kommunikation über Wifi mit der `WifiP2pManager`-Klasse von Android implementiert. Diese Klasse stellt eine Schnittstelle bereit, um Gruppen aus Wifi-Geräten zu bilden, die dann untereinander kommunizieren können. Dabei muss jedoch immer ein `group owner` existieren, mit dem sich alle anderen Gruppenmitglieder verbinden. Des weiteren kann jedes Gerät nur mit genau einer Gruppe verbunden sein. Das ist für unseren Anwendungsfall nicht optimal, da wir gerne ein weiter verzweigtes Netz aufbauen würden. Da der `WifiP2pManager` aber die einzige Möglichkeit ist, auf nicht modifiziertem Android derartige P2P-Verbindungen aufzubauen, haben wir dennoch daran weiter entwickelt.
+
+Bei der Initialisierung des WifiProtocol wird der `WifiP2pManager` in den Discovery-Modus versetzt. Alle gefundenen Geräte in der Umgebung werden eingeladen, einer Gruppe beizutreten. Leider hat die Android-Version auf unseren Nexus-Testgeräten diverse Bugs, sodass das Herstellen von Verbindungen meistens fehlschlägt. Daher wurde die automatische Einladung deaktiviert und für weitere Tests müssen die Gruppen manuell in den Systemeinstellungen aufgebaut werden.
+
+Die Kommunikation innerhalb dieser Gruppen läuft über IP ab, wobei dynamisch IP-Adressen vergeben werden. Wir verwenden zur Kommunikation UDP-Broadcasts auf einem wohldefinierten Port, wobei ein UDP-Paket direkt einen serialisierten Envelope enthält.
+
 
 ### GcmProcotol: Client-Server-Architektur
 
 Das `GcmProtocol` implementiert Kommunikation über ein Client-Server-Modell. Dabei wird Google Cloud Messaging verwendet, um gezielt Verbindungen zum Zielgerät über das Internet aufzubauen. Über ein solches Socket wird dann der Umschlag mit den vorgesehenen Methoden übertragen.
 
-TODO: Dokumentation erweitern.
-
+Wenn eine Nachricht versendet werden soll, sendet die App diese an das API (Endpunkt POST /notify.php). Die Nachricht wird per Google Cloud Messaging an das Zielgerät übertragen und dort wird GcmBroadcastReceiver.onReceive aufgerufen, wobei der übergebene Intent den Extra "msg" erhält. Darin ist Base64-codiert der serialisierte Envelope enthalten.
+Falls die Nachricht die GCM-Maximalgröße von 4 KB überschreitet, wird sie vom Server in einer Datei zwischengespeichert und vom Empfänger per HTTP-GET-Request heruntergeladen.
 
 ## Routing
 
@@ -306,17 +311,38 @@ Falls Nachrichten zu Empfängern verschickt werden sollen, die nicht direkt bena
 
 ### Flooding
 
-Momentan werden Nachrichten über ein Protokoll an alle verfügbaren Empfänger geschickt. Das BluetoothProtocol zum Beispiel baut also zu allen Geräten in der Nähe eine Verbindung auf und verschickt den Umschlag. Geplant ist weiterhin, nicht nur ein Protokoll zu verwenden, sondern die Nachricht über alle verfügbaren Protokolle zu schicken.
+In einer ersten Version der App wurden Nachrichten generell an alle über ein Protokoll erreichbaren Empfänger geschickt. Das BluetoothProtocol zum Beispiel baut also zu allen Geräten in der Nähe eine Verbindung auf und verschickt den Umschlag. In der aktuellen Version wird Flooding als Fallback zum Dynamic Source Routing verwendet, wenn der Pfad unbekannt ist oder nicht mehr verfügbar ist. Dabei wird nicht nur ein Protokoll, sondern alle verfügbaren und vom Benutzer freigeschalteten Protokolle verwendet.
 
-Wenn eine Nachricht ankommt, die nicht für das eigene Gerät bestimmt ist oder noch weitere Empfänger hat, wird sie erneut versendet. Dabei wird sie mit der gleichen Technik an die Wartschlange der zu sendenden Nachrichten angehängt und somit also wieder an alle verfügbaren Empfänger geschickt. Außerdem wird der `hopCount` hochgezählt, und sichergestellt, dass eine Nachricht nur 20 mal weiterversendet wird. Damit wird vermieden, dass eine Nachricht ewig im Kreis gesendet wird.
+Wenn eine Nachricht ankommt, die nicht für das eigene Gerät bestimmt ist oder noch weitere Empfänger hat, wird sie weiter gesendet. Dabei wird sie mit der gleichen Technik an die Wartschlange der zu sendenden Nachrichten angehängt und somit also wieder an alle verfügbaren Empfänger geschickt. Außerdem wird der `hopCount` hochgezählt, und sichergestellt, dass eine Nachricht nur 20 mal weiterversendet wird. Damit wird vermieden, dass eine Nachricht ewig im Kreis gesendet wird.
 
 Bei diesem Flooding ist dann zu hoffen, dass die Nachricht früher oder später mindestens einmal beim korrekten Empfänger ankommt.
 
-### geplante Mechanismen
+### Dynamic Source Routing
 
 Stumpfes Broadcasting der Nachrichten führt zu einem unnötig hohen Datenaufkommen. Insbesondere über Bluetooth dauert das Versenden einer Nachricht recht lange, und es können auch nicht mehrere Nachrichten gleichzeitig versendet werden. Daher ist es wünschenswert, ein klügeres Routingverfahren einzusetzen.
 
-Probleme bereitet dabei, dass kein Knoten Kenntnis über den momentanen Aufbau des Netzes hat und sich das Netz außerdem stetig verändert. Das liegt daran, dass die Personen sich umher bewegen und die Signalqualität der eingesetzten Funktechnologien schwankt.
+Wir haben uns in Absprache mit unseren Auftraggebern zunächst für die Verwendung einer vereinfachten Variante von Dynamic Source Routing entschieden.
+
+#### Wenn ein Knoten eine Nachricht versenden möchte:
+
+* Fall a) Der Pfad zum Zielknoten ist dem Absender bekannt, das Paket wird zum ersten Mal versendet (retransmissionCount = 0)
+    * Setze packet.routingMode = ROUTING_MODE_DSR
+    * Setze packet.nextHops auf den bekannten Pfad
+* Fall b) Der Pfad zum Zielknoten ist dem Absender bekannt, der retransmissionCount ist > 0.
+    * Setze packet.routingMode = ROUTING_MODE_FLOODING
+* Fall c) Der Pfad zum Zielknoten ist dem Absender nicht bekannt
+    * Setze packet.routingMode = ROUTING_MODE_FLOODING
+
+#### Wenn ein Knoten eine Nachricht senden / weiterleiten möchte:
+
+* Wenn packet.routingMode == ROUTING_MODE_DSR
+    * Der erste Eintrag aus packet.nextHops wird als Ziel zwischengespeichert und aus packet.nextHops entfernt.
+    * Das Ziel wird an packet.path angehängt.
+    * Das Paket wird an das Ziel gesendet.
+* Wenn packet.routingMode == ROUTING_MODE_FLOODING
+    * Für jeden bekannten Nachbar:
+        * Der Nachbar wird an packet.path angehängt.
+        * Das Paket wird an den Nachbarn gesendet.
 
 
 ## Kontaktaustausch
@@ -340,7 +366,6 @@ Der Server antwortet daraufhin mit einem `JSON`-Array. Dieses enthält für jede
   "nickname". "",
   "phone": "",
   "publickey": "",
-  "xmppid": ""  // wird nicht mehr verwendet
 }
 ```
 
@@ -366,7 +391,6 @@ CREATE TABLE if not exists contacts (
   lastName TEXT,
   phoneNumber TEXT,
   publicKey TEXT,
-  xmppId TEXT,
   wifiMacAddress TEXT,
   bluetoothMacAddress TEXT
   );
@@ -411,7 +435,6 @@ Auf dem Server werden die Kontakte in der `MySQL` Datenbank gespeichert. Diese h
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `nickname` varchar(100) DEFAULT NULL,
-  `xmppid` varchar(100) DEFAULT NULL,
   `publickey` varchar(200) DEFAULT NULL,
   `phone` varchar(200) DEFAULT NULL,
   `gcmid` varchar(200) DEFAULT NULL,
@@ -431,11 +454,9 @@ CREATE TABLE `traceroutes` (
 
 ### API
 
-TODO: Genauer dokumentieren, insbesondere erwartete Encodings.
+Der Server bietet mehrere API-Endpunkte, die Antworten im `JSON`-Format zurückgeben:
 
-Der Server bietet mehrere API-Endpunkte, die Antworten im `JSON` Format zurückgeben:
-
-#### POST /register.php
+#### POST /api/v1/register
 
 Mit diesem Endpunkt lassen sich neue Benutzer registrieren. Folgende Daten werden als `multipart/formdata` erwartet:
 
@@ -444,7 +465,6 @@ postdata: {
   "nonce": "",
   "publickey": "",
   "data": {
-    "xmppid": "",
     "nickname": "",
     "phone": "",
     "gcmid": ""
@@ -456,7 +476,7 @@ Gibt bei Erfolg ein `200 OK` zurück, ansonsten den Fehlercode `400` mit Fehlerb
 
 Die Daten im Feld `data` müssen dabei mit dem korrekten Schlüssel signiert werden, was serverseitig mit dem übermittelten `publickey` geprüft wird.
 
-#### GET /search.php
+#### GET /api/v1/search
 
 Sucht nach passenden Kontakten und gibt gefundene als `JSON`-Array zurück.
 
@@ -468,7 +488,6 @@ Die Ausgabe sieht folgendermaßen aus:
 [
   {
     "nickname": "",
-    "xmppid": "",
     "publickey": "",
     "phone": "",
     "last_updated": ""
@@ -477,24 +496,67 @@ Die Ausgabe sieht folgendermaßen aus:
 ]
 ```
 
-#### POST /traceroute.php
+#### POST /api/v1/traceroute
 
-Dieser Endpunkt dient zum Veröffentlichen einer Route, welche mit einer Traceroute-Nachricht bestimmt wurde. Genauere Informationen hierzu stehen im Abschnitt *traceroute*.
+Dieser Endpunkt dient zum Veröffentlichen eines Ereignisses in einem Traceroute. Genauere Informationen hierzu stehen im Abschnitt *traceroute*.
 
 Der Endpunkt erwartet folgende Daten als `multipart/formdata`:
 
 ```javascript
 postdata: {
+  // Unique ID der Nachricht
   "uuid": "",
-  "traceroute": ""
+
+  // Stringrepräsentation des Pakets
+  "string": "",
+
+  // Zeitstempel dieses Traceroute-Events (Gerätezeit)
+  "datetime": "",
+
+  // Ereignis-Typ
+  "action": "",
+
+  // Peer-MAC-Adresse (optional)
+  "peer": "",
+
+  // Protokoll, über das das Paket verschickt wurde
+  "protocol": "",
+
+  // Nickname des Geräts, welches dieses Ereignis berichtet
+  "reporter": "",
+
+  // Quelle für Graphendarstellung (optional)
+  "hop1": "",
+
+  // Ziel für Graphendarstellung (optional)
+  "hop2": "",
 }
 ```
 
-Anschließend wird der entsprechende Tracroute in die Datenbank eingetragen.
+Das entsprechende Traceroute-Ereignis wird in die Datenbank eingetragen, um später im Dashboard angezeigt zu werden.
 
-#### GET /traceroute.php
+#### GET /api/v1/traceroute
 
 Mit `GET` kann eine eingetragene Route abgerufen und angezeigt werden. Der Endpunkt erwartet `uuid` als `GET`-Parameter und zeigt die Route einfach im Response Body an.
+
+
+#### POST /api/v1/notify
+
+Über diesen Endpunkt können Nachrichten an Google Cloud Messaging zur Zustellung an ein oder mehrere Handys übergeben werden.
+
+Der Endpunkt erwartet folgende Daten als `multipart/formdata`:
+
+```javascript
+postdata: {
+  // In `recipientPublicKey` wird der Base64-codierte Public Key des Empfängers übergeben.
+  "recipientPublicKey": "",
+
+  // Das Feld `msg` enthält als Binärdaten das serialisierte `Envelope`-Objekt.  
+  "msg": ""
+}
+```
+
+Das Backend liest die GCM-Registrierungs-ID aus der Datenbank aus und leitet die Nachricht damit an GCM weiter.
 
 
 ## User Interface Design

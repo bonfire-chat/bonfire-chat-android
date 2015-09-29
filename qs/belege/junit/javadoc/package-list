@@ -1,12 +1,3 @@
-de.tudarmstadt.informatik.bp.bonfirechat.data
 de.tudarmstadt.informatik.bp.bonfirechat.data.test
-de.tudarmstadt.informatik.bp.bonfirechat.helper
 de.tudarmstadt.informatik.bp.bonfirechat.helper.test
-de.tudarmstadt.informatik.bp.bonfirechat.helper.zxing
-de.tudarmstadt.informatik.bp.bonfirechat.location
-de.tudarmstadt.informatik.bp.bonfirechat.models
 de.tudarmstadt.informatik.bp.bonfirechat.models.test
-de.tudarmstadt.informatik.bp.bonfirechat.network
-de.tudarmstadt.informatik.bp.bonfirechat.routing
-de.tudarmstadt.informatik.bp.bonfirechat.stats
-de.tudarmstadt.informatik.bp.bonfirechat.ui
