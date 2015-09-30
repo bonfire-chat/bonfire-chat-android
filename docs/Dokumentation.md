@@ -214,7 +214,7 @@ public static final int FLAG_TRACEROUTE = 8;
 
 `FLAG_ENCRYPTED` zeigt an, dass der Nachrichteninhalt verschlüsselt im Umschlag steht. `FLAG_TRACEROUTE` markiert eine spezielle Traceroute-Nachricht. Mehr dazu wird im Abschnitt *Traceroute* beschrieben.
 
-### verschlüsselt übertragene Daten
+### Verschlüsselt übertragene Daten
 
 Das einzige Feld, das im `Envelope` Objekt verschlüsselt übertragen wird, ist `encryptedBody`. Dieses ist daher auch direkt ein Byte-Array und kein String. In BonfireChat werden alle Strings mit `UTF-8` Kodierung zu Byte-Arrays und zurück transformiert.
 
@@ -349,7 +349,7 @@ Wir haben uns in Absprache mit unseren Auftraggebern zunächst für die Verwendu
 
 Um eine Nachricht zu verschicken, muss dem Sender der Empfänger bekannt sein. Das ist nötig, um den korrekten Public Key in die Nachricht einzutragen und die Nachricht zu verschlüsseln. Zum Austausch von Kontaktdaten stehen mehrere Methoden zur Verfügung:
 
-### serverbasierte Suche
+### Serverbasierte Suche
 
 Neu angelegte Kontakte werden auf einem Server gespeichert. Dieser bietet auch eine Suche nach Kontakten. Der Benutzer kann mit der `SearchUserActivity` nach Nicknames anderer Kontakte suchen.
 
@@ -371,7 +371,7 @@ Der Server antwortet daraufhin mit einem `JSON`-Array. Dieses enthält für jede
 
 Wählt der Benutzer daraus einen Kontakt aus, wird ein entsprechendes `Contact` Objekt erstellt und in der Datenbank gespeichert.
 
-### direkter Austausch (NFC oder QR-Code)
+### Direkter Austausch (NFC oder QR-Code)
 
 Falls kein Internet vorhanden ist, oder die beiden Benutzer sich ohnehin gegenüber stehen, können die Kontaktdaten auch direkt untereinander ausgetauscht werden. Dafür können zum Einen die eigenen Kontaktdaten als QR-Code angezeigt werden. Mittels `startActivityForResult` und einer Integration der `BarcodeScanner` App kann dieser QR-Code auf einem anderen Handy eingescannt werden.
 
@@ -380,7 +380,7 @@ Zusätzlich dazu können die Kontaktdaten auch über NFC übertragen werden. Daf
 In beiden Fällen wird ebenfalls ein `Contact` Objekt erstellt und in die Datenbank geschrieben.
 
 
-## lokale Datenhaltung: SQLite
+## Lokale Datenhaltung: SQLite
 
 BonfireChat speichert einige Dinge lokal auf dem Gerät. Dazu gehören die eigene Identität, Kontakte, Unterhaltungen und Nachrichten. Diese Daten werden in einer `SQLite` Datenbank verwaltet. Diese verwendet das folgende Schema:
 
@@ -423,7 +423,7 @@ CREATE TABLE if not exists identities (
 In der Klasse `bonfirechat.data.BonfireData` befinden sich Methoden, um Objekte der Klassen `Identity`, `Contact`, `Conversation` oder `Message` zu speichern und zu laden.
 
 
-## serverseitige Datenhaltung
+## Serverseitige Datenhaltung
 
 Einige Daten, insbesondere die registrierten Benutzer, werden auf einem Server gespeichert, auf den die App zugreift. Die Adresse ist momentan `https://bonfire.projects.teamwiki.net/`.
 
@@ -581,6 +581,6 @@ Im Kontextmenü der Kontakte lassen sich diese bearbeiten. Dafür wird die `Cont
 
 Auch die eigene Identität lässt sich (in den Einstellungen) bearbeiten, hierzu wird die (etwas abgewandelte) `IdentityActivity` genutzt.
 
-### eigene Identität teilen
+### Eigene Identität teilen
 
 Um die eigene Identität zu teilen, klickt man im `NavigationDrawer` der `MainActivity` ganz unten auf einen entsprechenden Button, oder nutzt den Menüeintrag in der `ContactsActivity`. Es wird daraufhin die `ShareMyIdentityActivity` gestartet, welche den eigenen QR-Code anzeigt und auf NFC-Kontakte lauscht.
