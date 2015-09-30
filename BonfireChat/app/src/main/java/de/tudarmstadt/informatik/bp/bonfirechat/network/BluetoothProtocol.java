@@ -105,8 +105,6 @@ public class BluetoothProtocol extends SocketProtocol {
                 String name = device.getName();
                 Log.d(TAG, "device found: " + name + " - " + device.getAddress());
 
-                //TODO HACK: ignore non-bonfire devices...
-                //maybe blacklisting after n unsuccessful socket.connect
                 if (name != null && name.contains("BEACON")) {
                     return;
                 }
