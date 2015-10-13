@@ -370,7 +370,7 @@ public class MessageDetailsActivity extends Activity {
                 Log.d(TAG, "setting text to contact: " + node.getNickname() + " for view " + view);
                 ((TextView) view.findViewById(R.id.name)).setText(node.getNickname());
             } else if (segment instanceof TracerouteProgressSegment) {
-                inflater.inflate(R.layout.traceroute_rowlayout_progress, tracerouteList, false);
+                view = inflater.inflate(R.layout.traceroute_rowlayout_progress, tracerouteList, false);
             } else {
                 view = inflater.inflate(R.layout.traceroute_rowlayout_hop, tracerouteList, false);
                 TracerouteHopSegment hop = (TracerouteHopSegment) segment;
