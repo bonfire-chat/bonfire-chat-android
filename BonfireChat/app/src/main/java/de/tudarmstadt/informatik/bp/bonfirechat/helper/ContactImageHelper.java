@@ -48,7 +48,7 @@ public final class ContactImageHelper {
                 name.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "failed to create Drawable from URI: " + image);
-                name.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                name.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_launcher, 0, 0, 0);
             }
         }
     }
